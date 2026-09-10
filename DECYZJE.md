@@ -150,3 +150,147 @@ sprawdza 129.
 
 `warstwa3_kierunki.md` mówi o 68 kierunkach i 20 drogach bez studiów. W danych
 jest 75 i 56. Implementacja idzie za danymi.
+
+
+---
+
+## Zatwierdzone po fazie 1
+
+| # | Rozstrzygnięcie |
+|---|---|
+| 1 | Macierz sąsiedztwa: **wariant uśredniony**, statystyki zbiorcze poprawione na 0,167 i 0,800 |
+| 1b | Próg flagi „ten sam świat" zostaje **0,60** |
+| 2 | Wariant na własny rachunek: **17 obszarów**, suma obu list |
+| 3 | `postep_modulu` zatwierdzona, plus znaczniki czasu per blok |
+| 4 | Przy rozjeździe prozy z liczbami **wygrywają liczby**; zgłaszać, ale nie blokować się |
+
+---
+
+## Faza 2
+
+### D7. Macierz sąsiedztwa: wariant uśredniony
+
+Podobieństwo obszarów to teraz średnia dwóch kosinusów, liczonych osobno dla
+wektora zainteresowań i wektora kompetencji. Statystyki zbiorcze poprawione
+w `obszary_27_opis.md` i w przebiegu na sucho w `warstwa1_obszary.md`.
+
+**Skutek uboczny, o który pytałeś:** para medycyna–rehabilitacja wychodzi
+teraz **0,62**, czyli powyżej progu. Problem, który miał wymusić obniżenie
+progu, zniknął przy zmianie wzoru. Próg zostaje 0,60.
+
+### D8. Droga C: próg absolutny 42 punktów
+
+Specyfikacja mówi „wynik ≥ 0,40 × wynik(A) **oraz** ≥ 42 punktów".
+Prototyp `silnik.py` implementuje tylko pierwszy warunek.
+
+Różnica ujawnia się dokładnie na profilu społecznym: administracja ma
+**40,6 punktu**, czyli mieści się w progu względnym (38,3), ale nie w progu
+absolutnym. Prototyp pokazywał ją jako Drogę C, mimo że 40,6 to pasmo
+antydopasowania.
+
+Przyjęta specyfikacja: **alternatywa nie może być antydopasowaniem.**
+Droga C profilu społecznego zmienia się z administracji na zdrowie
+i rehabilitację. Liczba stoi w `config.ts` jako `PROG_DROGI_C_ABSOLUTNY`;
+ustawienie 0 przywraca zachowanie prototypu.
+
+Koszt tej decyzji jest realny i wart nazwania: przy tym profilu wszyscy
+kandydaci powyżej 42 punktów są z tego samego świata ludzi, więc Droga C
+jest mniej odmienna, niż była u prototypu. Zysk: nie proponujemy jako
+alternatywy czegoś, co według własnych pasm systemu do uczestnika nie pasuje.
+
+### D9. Zaokrąglanie przed normalizacją
+
+Prototyp warstwy drugiej zaokrągla wynik surowy do jednego miejsca **przed**
+normalizacją i dopiero potem dzieli przez najlepszy. Odtworzone dokładnie,
+razem z zaokrąglaniem bankierskim Pythona. Bez tego opublikowane liczby
+przebiegu na sucho rozjeżdżają się o jedną dziesiątą (fryzjer 72,5 zamiast
+72,4, wsparcie techniczne 59,4 zamiast 59,5).
+
+### D10. Antyprofil: zasada wyprowadzania i podział 34/26
+
+Przyjęta zasada: **antyprofil wynika wyłącznie z tego, co uczestnik
+zadeklarował jako granicę albo preferencję** — z warunków kluczowych A3,
+wartości A4, odpowiedzi A5, twardych parametrów M1 i faktów z A0. Nigdy
+z zainteresowań A1 ani z samooceny kompetencji A2.
+
+Powód: zdanie „Twoje odpowiedzi sugerują, że to może być dla Ciebie
+trudniejsze" oparte na samoocenie siedemnastolatka byłoby dokładnie tym,
+przed czym ostrzega cały moduł A2.
+
+Wynik: **34 kody aktywne, 26 nieaktywnych.** Pełna lista z uzasadnieniami:
+`npx tsx scripts/raport-luk.ts`.
+
+### D11. Kierunek nie może wyjść wyżej niż najlepszy zawód
+
+Test K-1 wymaga tego wprost, a wzmocnienie za mocny przedmiot (do 15%)
+potrafiło ten warunek złamać. Wynik kierunku jest teraz ograniczany z góry
+przez najlepszy zawód, do którego kierunek prowadzi.
+
+### D12. Zawody z zawetowanego obszaru trafiają na listę prowadzącego
+
+Kiedy warstwa pierwsza usunie cały obszar przez weto, jego zawody nie
+docierają do warstwy drugiej. Bez dodatkowego przepływu informacji
+pielęgniarka znikałaby po cichu i prowadzący nie miałby o czym rozmawiać na
+sesji. Warstwa druga dostaje teraz listę usunięć z warstwy pierwszej i
+zapisuje takie zawody jako usunięte wetem.
+
+### D13. Każda droga dostaje dwa do czterech zawodów, bez progu pokazania
+
+Przy wąskim profilu po normalizacji tylko zawody z Drogi A przekraczają
+próg 55 i Drogi B oraz C zostawały puste. Zawody dróg są teraz brane
+z rankingu obszaru bez progu — pasmo opisowe i tak mówi uczciwie, jak mocne
+jest dopasowanie.
+
+### D14. Zasoby z A0: cztery odpowiedzi na trzy kategorie
+
+`realne` → dobre, `raty` → ograniczone, `bardzo_trudne` i `nierealne` → brak.
+„Bardzo trudne, musiałbym zarobić na to sam" traktujemy jak brak zasobów:
+to jest sytuacja, w której bariera jest realna, a nie kwestia rozłożenia na raty.
+
+### D15. Etapy przedmaturalne w filtrze rekrutacyjnym
+
+Klasa maturalna liczy się jako **przedmaturalna**: matura jeszcze nie padła,
+więc brak przedmiotu jest informacją, nie faktem. Usunięcie kierunku
+następuje dopiero od etapu „po maturze".
+
+Kierunek ścisły w regule o matematyce: typ techniczny albo wymagany przedmiot
+z zestawu matematyka, fizyka, informatyka, chemia.
+
+### D16. Mianownik w etapie K1
+
+`liczba_zawodów_ważona` nie jest w specyfikacji zdefiniowana. Przyjęte:
+liczba zawodów bezpośrednich razy 1,0 plus liczba pośrednich razy 0,4, czyli
+średnia ważona wyników zawodów. Zawód usunięty w warstwie drugiej liczy się
+jako zero, ale zostaje w mianowniku — inaczej kierunek prowadzący głównie do
+zawodów zawetowanych wychodziłby wysoko na resztce.
+
+### D17. Profile kontrolne warstwy drugiej chodzą na prototypowym podzbiorze
+
+Przebieg na sucho z rozdziału 4 powstał na 24 zawodach zakodowanych ręcznie
+w `silnik_zawodowy.py`, które różnią się od pełnej bazy. Te 24 zawody są
+przepisane jako fixture i tylko na nich sprawdzamy opublikowane liczby.
+Testy na pełnej bazie 157 zawodów są osobne i sprawdzają warunki, nie cyfry.
+
+Jedna poprawka w fixture: prototyp używał innego słownika zagrożenia
+(`niski`) niż baza (`niskie`). Wartości przełożone na słownik bazy, inaczej
+tie-breaker nie działałby na danych prototypu.
+
+---
+
+## Luki w rozdzielczości, do rozstrzygnięcia po fazie 2
+
+Pełne listy z liczbami: `npx tsx scripts/raport-luk.ts`.
+
+### R4. Dwanaście wymogów gotowości z kart nie ma pozycji w module A5
+
+`halas` (14 zawodów), `umieranie` (11), `agresja` (8), `powtarzalnosc` (8),
+`chemikalia` (6), `goraco` (6), `wieczory` (4), `ciasnota` (2), `wysokosc` (1),
+`zimno` (0). Łącznie 60 wystąpień w kartach, których uczestnik nigdy nie może
+ani zawetować, ani odrzucić.
+
+### R5. Dwa wymiary modułu A3 nie mają odpowiednika w kartach
+
+`NAP` (napęd własny kontra zewnętrzny) i `RYT` (równe tempo kontra zrywy).
+Odwrotnie: `efekt_widoczny` z kart (15 zawodów) nie jest wymiarem A3.
+Skutek: składowa A3 mnożnika kartowego pracuje na dziesięciu wymiarach
+z dwunastu.

@@ -141,7 +141,14 @@ Wymaganie filtrowe **0,60 i wyżej** jest progiem, przy którym weto uczestnika 
 
 Podobieństwo między obszarami policzone z ich własnych profili — miara kosinusowa na połączonym wektorze zainteresowań i kompetencji. **Nie wymaga dodatkowego osądu eksperckiego** i aktualizuje się automatycznie przy każdej zmianie profilu.
 
-Rozkład w tej wersji bazy: średnie podobieństwo **0,17**, maksymalne **0,79**.
+Rozkład w tej wersji bazy: średnie podobieństwo **0,167**, maksymalne **0,800**.
+
+> Liczby przeliczone przy wariancie uśrednionym: podobieństwo to średnia dwóch
+> kosinusów, liczonych osobno dla wektora zainteresowań i wektora kompetencji.
+> Wariant wybrany po porównaniu z 81 wartościami podanymi przy poszczególnych
+> obszarach: odtwarza je ponad cztery razy wierniej niż kosinus na wektorze
+> połączonym. Macierz jest używana wyłącznie parami, więc wierność par jest
+> jedynym kryterium, które ma znaczenie.
 
 ## Pary najbardziej podobne
 

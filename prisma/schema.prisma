@@ -253,9 +253,13 @@ model Odpowiedz {
   /// JSON: ksztalt zalezny od typu pozycji.
   wartosc String
 
-  /// Pomiar czasu odpowiedzi. Zbyt szybkie wypelnianie jest sygnalem dla prowadzacego.
+  /// Znaczniki czasu pojedynczego bloku, nie tylko calego modulu. Panel ma
+  /// pokazywac, ze ktos przeklikal trzydziesci blokow w cztery minuty.
+  rozpoczeta           DateTime?
+  zakonczona           DateTime?
+  /// Czas spedzony na tym bloku. Zbyt szybkie wypelnianie jest sygnalem dla prowadzacego.
   msSpent              Int?
-  rewizje              Int     @default(0)
+  rewizje              Int       @default(0)
   /// JSON [] kolejnosc prezentacji elementow, do kontroli efektu pozycji
   kolejnoscPrezentacji String?
 

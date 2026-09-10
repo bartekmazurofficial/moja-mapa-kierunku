@@ -153,3 +153,16 @@ export const POZIOMY_ETYKIETY: Record<string, string> = {
 export const A2_ALIASY: Record<string, number> = {
   "Zapamiętywanie": 7, // w A2: "Zapamiętywanie i przywoływanie"
 };
+
+/**
+ * Obszary z realnym wariantem wlasnej firmy, ktorym brakuje adnotacji
+ * "Wariant na wlasny rachunek: realny", a ktore rozdzial 3 dokumentu wymienia
+ * w prozie. Adnotacja stoi przy 14 obszarach, proza wymienia 17 - i wsrod
+ * pominietych jest budownictwo, czyli sztandarowy przyklad calego rozroznienia
+ * ("wlasciciel firmy budowlanej"). Przyjeta suma obu list.
+ */
+export const WARIANT_WLASNY_UZUPELNIENIE = [
+  10, // Inzynieria i produkcja - wlasna dzialalnosc projektowa
+  12, // Budownictwo i architektura - firma wykonawcza, biuro projektowe, nadzor
+  14, // Transport i logistyka - wlasna firma transportowa albo spedycyjna
+];

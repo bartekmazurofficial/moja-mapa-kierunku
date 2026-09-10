@@ -24,6 +24,7 @@ import {
   A3_FRAZY,
   POZIOMY_ETYKIETY,
   A2_ALIASY,
+  WARIANT_WLASNY_UZUPELNIENIE,
 } from "./mapowanie-obszarow";
 
 const ZRODLO = join(process.cwd(), "program-doradztwa/03_dane/obszary_27_opis.md");
@@ -278,7 +279,9 @@ function main(): void {
       nazwa,
       grupa: grupy.get(id) ?? "",
       szczegolny: /\*\*Obszar szczególny\.\*\*/u.test(body),
-      wariantWlasny: /\*\*Wariant na własny rachunek:\*\*\s*realny/u.test(body),
+      wariantWlasny:
+        /\*\*Wariant na własny rachunek:\*\*\s*realny/u.test(body) ||
+        WARIANT_WLASNY_UZUPELNIENIE.includes(id),
       zainteresowania,
       kompetencje,
       wartosciPlus,
@@ -299,18 +302,24 @@ function main(): void {
     bledy.push(`oczekiwano 27 obszarow, sparsowano ${obszary.length}`);
   }
 
-  // Macierz sasiedztwa: kosinus na polaczonym wektorze A1 (24) + A2 (30).
-  const wektor = (o: ObszarSparsowany): number[] => [
-    ...OBSZARY_A1.map((a) => o.zainteresowania[String(a.id)] ?? 0),
-    ...KOMPETENCJE_A2.map((k) => o.kompetencje[String(k.id)] ?? 0),
-  ];
-  const wektory = new Map(obszary.map((o) => [o.id, wektor(o)]));
+  // Macierz sasiedztwa: srednia dwoch kosinusow, liczonych osobno dla
+  // zainteresowan i dla kompetencji. Wariant wybrany po porownaniu z 81
+  // wartosciami podanymi w dokumencie - odtwarza je ponad cztery razy
+  // wierniej niz kosinus na wektorze polaczonym (odchylenie 0,007 wobec
+  // 0,017; 39 trafien co do setnej wobec 10). Macierz jest uzywana wylacznie
+  // parami, wiec wiernosc par jest jedynym kryterium, ktore ma znaczenie.
+  const wektorA1 = (o: ObszarSparsowany): number[] =>
+    OBSZARY_A1.map((a) => o.zainteresowania[String(a.id)] ?? 0);
+  const wektorA2 = (o: ObszarSparsowany): number[] =>
+    KOMPETENCJE_A2.map((k) => o.kompetencje[String(k.id)] ?? 0);
+  const wektory = new Map(obszary.map((o) => [o.id, [wektorA1(o), wektorA2(o)] as const]));
   for (const a of obszary) {
     for (const b of obszary) {
       if (a.id === b.id) continue;
-      a.sasiedztwo[String(b.id)] = Number(
-        kosinus(wektory.get(a.id)!, wektory.get(b.id)!).toFixed(4),
-      );
+      const [a1a, a2a] = wektory.get(a.id)!;
+      const [a1b, a2b] = wektory.get(b.id)!;
+      const podobienstwo = 0.5 * kosinus(a1a, a1b) + 0.5 * kosinus(a2a, a2b);
+      a.sasiedztwo[String(b.id)] = Number(podobienstwo.toFixed(4));
     }
   }
 

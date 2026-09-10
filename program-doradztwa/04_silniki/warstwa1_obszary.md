@@ -402,7 +402,7 @@ Wysokie zainteresowanie liczbami, technologią, nauką. Kompetencje analityczne 
 | 66,5 | Nauka i badania | długie: pracownik naukowy, 9–11 lat |
 | 66,2 | Finanse i księgowość | długie: główny księgowy, 8+ lat |
 
-Trzy drogi: analiza danych → technologia → **prawo**. Podobieństwo A–B wynosi 0,79, więc silnik zgłasza flagę *ten sam świat*. Droga C została dobrana jako najodleglejszy sensowny obszar i wypadła na prawie, przy podobieństwie 0,25 do A.
+Trzy drogi: analiza danych → technologia → **prawo**. Podobieństwo A–B wynosi 0,80, więc silnik zgłasza flagę *ten sam świat*. Droga C została dobrana jako najodleglejszy sensowny obszar i wypadła na prawie, przy podobieństwie 0,24 do A.
 
 **To jest zachowanie prawidłowe i warto je rozumieć.** Analiza danych i technologia to dla tej osoby dwie najlepsze opcje i byłoby nieuczciwe pokazać tylko jedną. Ale uczestnik dostaje wprost informację, że to nie są dwa różne kierunki, tylko dwoje drzwi do tego samego świata — a trzecia droga jest naprawdę inna.
 
