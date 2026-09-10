@@ -1,0 +1,316 @@
+// Schemat bazy platformy programu doradztwa zawodowego 16-24.
+//
+// SQLite nie ma typu tablicowego ani JSON-owego. Wszystkie pola listowe i mapy
+// trzymane sa jako String z zawartoscia JSON i odczytywane przez mappery
+// w lib/db/mappers.ts. Przy przejsciu na PostgreSQL te pola zamieniaja sie
+// na Json/jsonb jedna zmiana w schemacie, bez zmiany kodu domenowego.
+//
+// Komentarz /// przy polu opisuje ksztalt JSON-a.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// =====================================================================
+// DANE REFERENCYJNE
+// =====================================================================
+
+/// 27 obszarow zawodowych. Zrodlo: 03_dane/obszary_27_opis.md (parser).
+model Obszar {
+  id            Int     @id
+  nazwa         String
+  grupa         String
+  /// Obszar 27: nigdy nie pokazywany samodzielnie, zawsze w parze z branza.
+  szczegolny    Boolean @default(false)
+  /// Czy obszar ma realny wariant pracy na wlasny rachunek.
+  wariantWlasny Boolean @default(false)
+
+  /// JSON {"<id obszaru A1 1-24>": waga 1|2|3}
+  zainteresowania String
+  /// JSON {"<id kompetencji A2 1-30>": waga 1|2|3}
+  kompetencje     String
+  /// JSON ["PIE","WOL",...] kody wartosci A4 zaspokajanych
+  wartosciPlus    String
+  /// JSON ["STA",...] kody wartosci A4 w konflikcie
+  wartosciMinus   String
+  /// JSON {"F19": 0.85, ...} wymagania filtrowe A5, 0.00-1.00
+  filtry          String
+  /// JSON {"CEN":"A","GOD":"A",...} typowy ksztalt zycia M1, biegun A albo B
+  zycie           String
+  /// JSON ["DEC:A","NOW:B",...] srodowisko oferowane, wymiar A3 z biegunem
+  srodowisko      String
+  /// JSON ["dużo spotkań", ...] co moze przeszkadzac
+  trudne          String
+  /// JSON [{"label","przyklad","czas","lata","studia"}] 2-4 poziomy wejscia
+  poziomy         String
+  /// JSON {"<id obszaru>": 0.00-1.00} pelna macierz sasiedztwa (kosinusowa)
+  sasiedztwo      String
+
+  przykladoweZawody String
+  kierunkiStudiow   String
+  drogaBezStudiow   String
+
+  zawody Zawod[]
+}
+
+/// 157 zawodow. Zrodlo: 03_dane/zawody_baza.json.
+model Zawod {
+  kod      String @id
+  nazwa    String
+  obszarId Int
+  obszar   Obszar @relation(fields: [obszarId], references: [id])
+
+  /// szybki | sredni | dlugi | bardzo_dlugi
+  poziom String
+  /// tak | nie | czesciowo
+  studia String
+
+  /// JSON [] kody obszarow zainteresowan A1 wystepujacych w karcie wysoko
+  a1   String
+  /// JSON [] kompetencje rdzeniowe A2
+  a2r  String
+  /// JSON [] kompetencje wspierajace A2
+  a2w  String
+  /// JSON [] bieguny stylu A3
+  a3   String
+  /// JSON [] wartosci A4 zaspokajane
+  a4p  String
+  /// JSON [] wartosci A4 niezaspokajane
+  a4m  String
+  /// JSON [] wymogi gotowosci A5
+  a5   String
+  /// JSON [] parametry ksztaltu zycia M1
+  m1   String
+  /// JSON [] kody antyprofilu ("kto sie nie odnajdzie")
+  anty String
+
+  /// zerowy | bardzo_niski | niski | sredni | wysoki | bardzo_wysoki
+  koszt String
+  /// docelowy | trampolina
+  flaga String
+  /// bardzo_niskie | niskie | umiarkowane | wysokie | bardzo_wysokie
+  zagr  String
+  /// Zdanie kierunkowe ("celuj w..."), moze byc puste.
+  kier  String?
+
+  klasterKod String?
+  klaster    Klaster? @relation(fields: [klasterKod], references: [kod])
+
+  /// Pola z audytu A0.
+  duzeMiasto Boolean
+  teren      Boolean
+  /// JSON [] przeciwwskazania zdrowotne wykluczajace
+  przeciw    String
+  /// JSON [] przedmioty szkolne powiazane
+  przedm     String
+  /// JSON [] doswiadczenia wzmacniajace
+  dosw       String
+
+  @@index([obszarId])
+  @@index([klasterKod])
+}
+
+/// 75 kierunkow studiow. Zrodlo: 03_dane/kierunki_baza.json.
+model Kierunek {
+  kod    String @id
+  nazwa  String
+  typ    String
+  poziom String
+  lata   Int
+
+  /// JSON [] przedmioty bez ktorych nie ma rekrutacji
+  wymagane   String
+  /// JSON [] przedmioty podnoszace wynik rekrutacyjny
+  punktowane String
+  /// bardzo_wysoka | wysoka | srednia | niska | wszyscy
+  trudnosc   String
+
+  /// JSON [] kody zawodow, do ktorych kierunek prowadzi wprost
+  bezposrednie String
+  /// JSON [] kody zawodow, do ktorych otwiera droge
+  posrednie    String
+
+  /// Odsetek absolwentow pracujacych w zawodzie kierunku.
+  odsetek               Int?
+  /// wszedzie | duze_miasta | kilka_osrodkow | jeden_dwa
+  gdzie                 String
+  robi                  String
+  /// Najczestsze rozczarowanie. Najcenniejsze pole tej bazy.
+  nieDaje               String?
+  /// Czy do tych zawodow istnieje droga bez studiow.
+  alternatywaBezStudiow Boolean @default(false)
+}
+
+/// 56 drog bez studiow. Prezentowane obok kierunkow, nie pod nimi.
+model DrogaBezStudiow {
+  kod       String @id
+  nazwa     String
+  typ       String
+  czas      String
+  koszt     String
+  /// JSON [] kody zawodow docelowych
+  zawody    String
+  wymagania String
+}
+
+/// 26 klastrow: grupy zawodow, ktorych assessment nie rozroznia.
+model Klaster {
+  kod     String  @id
+  nazwa   String
+  /// JSON [] kody zawodow w klastrze
+  sklad   String
+  /// Pytanie rozstrzygajace, zadawane uczestnikowi zamiast rankingu.
+  pytanie String
+  roznica String
+  uwaga   String?
+
+  zawody Zawod[]
+}
+
+// =====================================================================
+// UCZESTNICY I PRZEBIEG PROGRAMU
+// =====================================================================
+
+/// Grupa warsztatowa. Odslony warstw raportu dotycza grupy, nie osoby.
+model Grupa {
+  id        String   @id @default(cuid())
+  nazwa     String
+  /// Losowy kod grupy, niezgadywalny i niewyliczalny.
+  kod       String   @unique
+  utworzona DateTime @default(now())
+
+  uczestnicy Uczestnik[]
+  odslony    Odslona[]
+}
+
+model Uczestnik {
+  id      String @id @default(cuid())
+  grupaId String
+  grupa   Grupa  @relation(fields: [grupaId], references: [id], onDelete: Cascade)
+
+  imie       String
+  /// Losowy kod dostepu. Sluzy jednoczesnie jako identyfikator w adresie,
+  /// zeby nie dalo sie wyliczyc listy uczestnikow podmiana identyfikatora.
+  kodDostepu String   @unique
+  utworzony  DateTime @default(now())
+
+  punktStartu PunktStartu?
+  odpowiedzi  Odpowiedz[]
+  postepy     PostepModulu[]
+  wyniki      Wynik[]
+
+  @@index([grupaId])
+}
+
+/// Modul A0. Metryczka zasilajaca silnik, nie assessment.
+model PunktStartu {
+  uczestnikId String    @id
+  uczestnik   Uczestnik @relation(fields: [uczestnikId], references: [id], onDelete: Cascade)
+
+  etap              String
+  /// JSON [] rozszerzenia, moze byc puste
+  rozszerzenia      String
+  /// JSON [] dokladnie 3
+  przedmiotyMocne   String
+  /// JSON [] dokladnie 3
+  przedmiotyTrudne  String
+  /// dobrze | radze_sobie | trudna | najwiekszy_problem | null
+  matematyka        String?
+  /// JSON [] wielokrotny wybor
+  doswiadczenie     String
+  doswiadczenieOpis String?
+
+  miejsce        String
+  mobilnosc      String
+  dojazdDoMiasta String
+  zasoby         String
+
+  /// JSON [] ograniczenia zdrowotne, moga byc pominiete
+  ograniczenia          String
+  /// Odmowa odpowiedzi nie ma zadnych konsekwencji dla wyniku.
+  ograniczeniaPominiete Boolean @default(false)
+
+  zaktualizowany DateTime @updatedAt
+}
+
+/// Pojedyncza odpowiedz. Zapis na biezaco, bez przycisku "zapisz".
+model Odpowiedz {
+  id          String    @id @default(cuid())
+  uczestnikId String
+  uczestnik   Uczestnik @relation(fields: [uczestnikId], references: [id], onDelete: Cascade)
+
+  /// A0 | A1 | A2 | A3 | A4 | A5 | M1
+  modul   String
+  /// A | B | C
+  czesc   String
+  /// Identyfikator pozycji w module: "blok_14", "F07", "kotwica_11", "CEN".
+  pozycja String
+  /// JSON: ksztalt zalezny od typu pozycji.
+  wartosc String
+
+  /// Pomiar czasu odpowiedzi. Zbyt szybkie wypelnianie jest sygnalem dla prowadzacego.
+  msSpent              Int?
+  rewizje              Int     @default(0)
+  /// JSON [] kolejnosc prezentacji elementow, do kontroli efektu pozycji
+  kolejnoscPrezentacji String?
+
+  utworzona      DateTime @default(now())
+  zaktualizowana DateTime @updatedAt
+
+  @@unique([uczestnikId, modul, czesc, pozycja])
+  @@index([uczestnikId, modul])
+}
+
+/// Stan modulu u uczestnika: pozwala dokonczyc przerwany modul i mierzyc czas.
+model PostepModulu {
+  id          String    @id @default(cuid())
+  uczestnikId String
+  uczestnik   Uczestnik @relation(fields: [uczestnikId], references: [id], onDelete: Cascade)
+
+  /// A0 | A1 | A2 | A3 | A4 | A5 | M1
+  kod String
+
+  rozpoczety      DateTime?
+  zakonczony      DateTime?
+  /// Ostatnia pozycja, na ktorej uczestnik skonczyl.
+  ostatniaPozycja String?
+  /// JSON [] losowa kolejnosc blokow, ustalana raz i utrwalana.
+  kolejnosc       String?
+  /// JSON {} wskazniki jakosci policzone po zamknieciu modulu.
+  flagiJakosci    String?
+
+  @@unique([uczestnikId, kod])
+}
+
+/// Wynik silnika. Przechowywany w calosci, zeby raport byl odtwarzalny.
+model Wynik {
+  id          String    @id @default(cuid())
+  uczestnikId String
+  uczestnik   Uczestnik @relation(fields: [uczestnikId], references: [id], onDelete: Cascade)
+
+  wersjaSilnika String
+  /// JSON: pelne wyjscie trzech warstw silnika.
+  dane          String
+  utworzony     DateTime @default(now())
+
+  @@index([uczestnikId])
+}
+
+/// Odslanianie warstw raportu. Prowadzacy odblokowuje warstwe dla calej grupy.
+/// Regula egzekwowana po stronie serwera, nie ukrywaniem w interfejsie.
+model Odslona {
+  id      String @id @default(cuid())
+  grupaId String
+  grupa   Grupa  @relation(fields: [grupaId], references: [id], onDelete: Cascade)
+
+  /// Identyfikator warstwy odslaniania, np. "S1", "S2", "S4A", "S4B", "PO_1NA1".
+  warstwa     String
+  odblokowana DateTime?
+
+  @@unique([grupaId, warstwa])
+}
