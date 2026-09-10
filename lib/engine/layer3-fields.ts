@@ -31,6 +31,13 @@ const ETAPY_PRZEDMATURALNE = new Set<EtapEdukacji>([
 
 const PRZEDMIOTY_SCISLE = new Set(["matematyka", "fizyka", "informatyka", "chemia"]);
 
+/**
+ * Przedmioty, ktorych modul A0 nie zbiera, bo nie sa rozszerzeniem maturalnym.
+ * Rysunek to osobny egzamin wstepny na czterech kierunkach. Brak deklaracji
+ * nie moze usuwac kierunku, ale uczestnik ma o egzaminie wiedziec.
+ */
+const PRZEDMIOTY_SPOZA_MATURY = new Set(["rysunek"]);
+
 function kierunekScisly(k: Kierunek): boolean {
   if (k.typ === "techniczny") return true;
   return k.wymagane.some((p) => PRZEDMIOTY_SCISLE.has(p));
@@ -58,6 +65,19 @@ export function warstwa3(
     // Zawod usuniety w warstwie drugiej (weto, przeciwwskazanie) liczy sie
     // jako zero, ale zostaje w mianowniku. Kierunek prowadzacy glownie do
     // zawodow, ktorych uczestnik nie chce, ma z tego powodu spasc.
+    // Regula graniczna: kierunek, ktorego wszystkie zawody uczestnik zawetowal,
+    // znika. Kierunek z wynikiem trzech punktow i tak nie przeszedlby progu,
+    // ale zasmiecalby listy, a gdyby przeszedl, bylby bezsensowny.
+    const wszystkieZawody = [...k.bezposrednie, ...k.posrednie];
+    if (wszystkieZawody.length > 0 && wszystkieZawody.every((kod) => !wynikiZawodow.has(kod))) {
+      usuniete.push({
+        kod: k.kod,
+        nazwa: k.nazwa,
+        powod: "wszystkie zawody tego kierunku odpadły przez weto albo filtr twardy",
+      });
+      continue;
+    }
+
     const licznik =
       k.bezposrednie.reduce((s, kod) => s + (wynikiZawodow.get(kod) ?? 0), 0) +
       WARSTWA3.WAGA_POSREDNICH * k.posrednie.reduce((s, kod) => s + (wynikiZawodow.get(kod) ?? 0), 0);
@@ -74,10 +94,16 @@ export function warstwa3(
 
     // --- ETAP K2: FILTR REKRUTACYJNY ---
     let sytuacjaRekrutacyjna = "Rekrutacja bez przedmiotów obowiązkowych.";
+    const egzaminySpozaMatury = k.wymagane.filter((p) => PRZEDMIOTY_SPOZA_MATURY.has(p));
+    if (egzaminySpozaMatury.length > 0) {
+      ostrzezenia.push(
+        `Na ten kierunek jest egzamin z rysunku. To osobna rzecz od matury i trzeba się do niej przygotować z wyprzedzeniem.`,
+      );
+    }
     if (k.wymagane.length > 0) {
       const znaneRozszerzenia = (a0?.rozszerzenia.length ?? 0) > 0;
       const brakujace = znaneRozszerzenia
-        ? k.wymagane.filter((p) => !a0!.rozszerzenia.includes(p))
+        ? k.wymagane.filter((p) => !a0!.rozszerzenia.includes(p) && !PRZEDMIOTY_SPOZA_MATURY.has(p))
         : [];
       const przedMatura = a0 === null || ETAPY_PRZEDMATURALNE.has(a0.etap);
 
@@ -101,15 +127,17 @@ export function warstwa3(
       }
     }
 
+    // Kary rekrutacyjne skladamy osobno, zeby moc naloz na nie wspolny sufit.
+    let mnoznikRekrutacyjny = 1;
     const trudneWymagane = a0 ? k.wymagane.filter((p) => a0.przedmiotyTrudne.includes(p)) : [];
     if (trudneWymagane.length > 0) {
-      wynik *= 1 - WARSTWA3.KARA_PRZEDMIOT_TRUDNY;
+      mnoznikRekrutacyjny *= 1 - WARSTWA3.KARA_PRZEDMIOT_TRUDNY;
       ostrzezenia.push(
         `Wskazałeś jako trudne: ${trudneWymagane.join(", ")}. To jest tu przedmiot wymagany.`,
       );
     }
     if (a0?.matematyka === "najwiekszy_problem" && kierunekScisly(k)) {
-      wynik *= 1 - WARSTWA3.KARA_MATEMATYKA;
+      mnoznikRekrutacyjny *= 1 - WARSTWA3.KARA_MATEMATYKA;
       ostrzezenia.push(
         "To kierunek ścisły, a matematyka jest u Ciebie największym problemem. Zobacz drogi alternatywne obok.",
       );
@@ -124,7 +152,10 @@ export function warstwa3(
 
     // --- ETAP K3: MNOZNIK DOSTEPU. Nie karzemy nikogo za ambicje. ---
     const tabela = MNOZNIK_DOSTEPU[k.trudnosc] ?? { mocne: 1, trudne: 1 };
-    wynik *= trudneWymagane.length > 0 ? tabela.trudne : tabela.mocne;
+    mnoznikRekrutacyjny *= trudneWymagane.length > 0 ? tabela.trudne : tabela.mocne;
+
+    // Sufit lacznej kary z K2 i K3: kierunek ma zjechac, nie zniknac.
+    wynik *= Math.max(mnoznikRekrutacyjny, 1 - WARSTWA3.MAX_KARA_REKRUTACYJNA);
 
     // --- ETAP K4: FILTR GEOGRAFICZNY ---
     if (a0) {

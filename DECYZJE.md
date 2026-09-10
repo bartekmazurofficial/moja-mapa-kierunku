@@ -294,3 +294,83 @@ ani zawetować, ani odrzucić.
 Odwrotnie: `efekt_widoczny` z kart (15 zawodów) nie jest wymiarem A3.
 Skutek: składowa A3 mnożnika kartowego pracuje na dziesięciu wymiarach
 z dwunastu.
+
+
+---
+
+## Zatwierdzone po fazie 2
+
+| # | Rozstrzygnięcie |
+|---|---|
+| 1 | Droga C: **próg absolutny 42 zostaje**, plus komunikat, gdy trzy drogi są z jednej grupy obszarów |
+| 2 | **`MAX_KARA_REKRUTACYJNA = 0,40`** jako sufit łącznej kary z etapów K2 i K3 |
+| 3 | Składowa A3 zostaje na dziesięciu wymiarach z dwunastu — do poprawy przy redakcji kart, nie blokuje pilotażu |
+| 4 | Mianownik K1 przyjęty w całości; kierunek, którego wszystkie zawody odpadły przez weto, **znika** |
+| — | Zasada wyprowadzania antyprofilu zatwierdzona wprost |
+| — | Moduł A5 zostanie rozszerzony o siedem pozycji; do tego czasu kody nieaktywne |
+
+### D18. Rysunek nie jest rozszerzeniem maturalnym
+
+Cztery kierunki (architektura, architektura wnętrz, grafika, wzornictwo) mają
+`rysunek` wśród przedmiotów wymaganych. To jest egzamin wstępny, a nie
+rozszerzenie, którego uczestnik może nie mieć „w planach". Bez wyjątku etap K2
+usuwałby te cztery kierunki każdemu po maturze.
+
+Rysunek jest więc wyłączony z reguły o brakującym przedmiocie i zamiast tego
+dopina ostrzeżenie: „Na ten kierunek jest egzamin z rysunku. To osobna rzecz
+od matury i trzeba się do niej przygotować z wyprzedzeniem."
+
+---
+
+## Faza 3
+
+### D19. Treść pozycji wyciągnięta z dokumentów, nie przepisana ręcznie
+
+144 pozycje A1, 180 pozycji A2, 60 par A3, 36 par A4, 48 par M1 i 32 pozycje A5
+zostały wyciągnięte z dokumentów źródłowych skryptem i zapisane w `lib/content/`.
+Skrypt sprawdzał przy okazji bilans planów: każdy obszar dokładnie sześć razy,
+brak powtórzonej pary, maksymalnie jedna pozycja o podwyższonej atrakcyjności
+na blok. Te same warunki są teraz testami.
+
+### D20. Jeden komponent pozycji, dziesięć typów
+
+`components/Pozycja.tsx` obsługuje: ranking czterech, parę dwubiegunową, skalę
+1–5, kotwicę ze skalą i pytaniem o doświadczenie, skalę TAK/MOŻE/NIE, wybór
+pojedynczy, wybór wielokrotny z limitem, dowody, pole tekstowe i zestaw pól.
+
+Reguła „brak możliwości przewijania do przodu przed odpowiedzią" żyje osobno,
+w `lib/moduly/walidacja.ts`, bo to jest wymaganie programu, nie zachowanie
+widoku, i ma własne testy.
+
+### D21. Plan losowy utrwalany w bazie
+
+Kolejność bloków, kolejność opcji w bloku i strona wyświetlania każdej pary są
+losowane raz i zapisywane w `postep_modulu.kolejnosc`. Uczestnik, który
+przerwie moduł i wróci, dostaje tę samą kolejność.
+
+### D22. Marker zamknięcia części
+
+Części złożone z samych pól nieobowiązkowych (dowody w A2, zdania w A5, wizja
+życia w M1) nie dają się odróżnić od nierozpoczętych po samej liczbie
+odpowiedzi. Zamknięcie części zapisujemy więc jawnie, jako pozycję
+`__zakonczono`.
+
+### D23. Części zależne budowane na serwerze
+
+Kotwice A3 zależą od bieguna, który wyszedł w części A. Test kosztu A4 zależy
+od najwyższej wartości. Ekran wet A5 pokazuje wyłącznie pozycje z odpowiedzią
+NIE. Szkice w M1 powstają z części A i z warunków środowiskowych z A3.
+Te części są budowane dopiero wtedy, gdy uczestnik do nich dojdzie.
+
+### D24. Kontrast sprawdzany testem, nie okiem
+
+Pierwsza wersja koloru podpisów miała 3,5:1, czyli poniżej wymaganych 4,5:1.
+Po poprawce wszystkie jedenaście par kolorów interfejsu przechodzi próg,
+a `tests/dostepnosc.test.ts` pilnuje, żeby tak zostało.
+
+### D25. Dwa kroje, oba z pełnym zestawem polskich znaków
+
+Source Serif 4 do treści czytelniczej i nagłówków, Inter do interfejsu.
+Pobierane przy budowaniu przez `next/font` i serwowane z własnego serwera —
+w czasie działania aplikacja nie odpytuje żadnej zewnętrznej usługi.
+Sprawdzone na tekstach z kart zawodów, nie na „Lorem ipsum".

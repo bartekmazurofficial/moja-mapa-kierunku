@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { bezszeryfowy, szeryfowy } from "@/lib/ui/fonty";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -6,10 +7,16 @@ export const metadata: Metadata = {
   description: "Program warsztatów rozwojowo-zawodowych 16–24",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#faf8f5",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pl">
-      <body className="min-h-screen bg-stone-50 text-stone-900 antialiased">{children}</body>
+    <html lang="pl" className={`${bezszeryfowy.variable} ${szeryfowy.variable}`}>
+      <body className="min-h-dvh bg-tlo font-sans text-atrament antialiased">{children}</body>
     </html>
   );
 }

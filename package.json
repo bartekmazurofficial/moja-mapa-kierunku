@@ -20,7 +20,8 @@
     "@prisma/client": "^6.19.3",
     "next": "^15.5.25",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
@@ -29,6 +30,7 @@
     "@types/react-dom": "^19.3.0",
     "postcss": "^8.5.28",
     "prisma": "^6.19.3",
+    "puppeteer-core": "^25.10.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.13",
     "typescript": "^5.9.3",

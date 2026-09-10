@@ -1,10 +1,107 @@
 @import "tailwindcss";
 
-/* Mobile first. Wiekszosc uczestnikow otworzy to na telefonie. */
+/**
+ * System wizualny.
+ *
+ * Baza neutralna i ciepła, nie zimny szary. Jeden kolor akcentu, używany
+ * oszczędnie. Kolory semantyczne osobne i wyraźnie stonowane: to są
+ * informacje, nie błędy, więc nie mogą wyglądać jak alarm.
+ *
+ * Skala odstępów: 4 px, dziedziczona z Tailwinda, bez własnych wyjątków.
+ */
+
 @theme {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: var(--font-bezszeryfowy), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-szeryfowy), ui-serif, Georgia, serif;
+
+  /* Podłoże i tekst */
+  --color-tlo: #faf8f5;
+  --color-papier: #ffffff;
+  --color-atrament: #1c1917;
+  --color-atrament-sciszony: #57534e;
+  /* 5,25:1 na tle. Wymog kontrastu 4,5:1 dotyczy takze podpisow i etykiet. */
+  --color-atrament-slaby: #6f675e;
+  --color-linia: #e8e2d9;
+  --color-linia-mocna: #d6cec2;
+  --color-podklad: #f2eee8;
+
+  /* Jeden akcent, wyłącznie tam, gdzie coś jest ważne */
+  --color-akcent: #2f5d50;
+  --color-akcent-jasny: #e6efeb;
+  --color-akcent-ciemny: #234840;
+
+  /* Semantyka. Rozróżnialne, ale spokojne. Nigdy sam kolor jako nośnik. */
+  --color-uwaga: #8a6a1f;
+  --color-uwaga-tlo: #fbf4e2;
+  --color-trampolina: #3f5a6b;
+  --color-trampolina-tlo: #eef3f6;
+  --color-koszt: #7a5230;
+  --color-koszt-tlo: #f7f0e8;
+  --color-przyszlosc: #5f574d;
+  --color-przyszlosc-tlo: #f1eee9;
+
+  /* Skala rozmiarów: wyraźne stopnie, nie pięć wielkości po dwa piksele */
+  --text-drobne: 0.8125rem;
+  --text-drobne--line-height: 1.5;
+  --text-male: 0.9375rem;
+  --text-male--line-height: 1.6;
+  --text-tresc: 1.0625rem;
+  --text-tresc--line-height: 1.7;
+  --text-tresc-duza: 1.1875rem;
+  --text-tresc-duza--line-height: 1.65;
+  --text-naglowek-maly: 1.375rem;
+  --text-naglowek-maly--line-height: 1.35;
+  --text-naglowek: 1.75rem;
+  --text-naglowek--line-height: 1.25;
+  --text-naglowek-duzy: 2.375rem;
+  --text-naglowek-duzy--line-height: 1.15;
+
+  /* Szerokość kolumny czytelniczej: 60–72 znaki */
+  --container-czytelna: 34rem;
+  --container-artykul: 42rem;
 }
 
 html {
   -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--color-tlo);
+  color: var(--color-atrament);
+  font-feature-settings: "kern", "liga";
+}
+
+/* Fokus zawsze widoczny. Nigdy usuwany dla estetyki. */
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-akcent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Nic w tym produkcie nie jest na tyle pilne, żeby trwało dłużej niż 200 ms. */
+@media (prefers-reduced-motion: no-preference) {
+  .przejscie {
+    transition:
+      background-color 140ms ease,
+      border-color 140ms ease,
+      color 140ms ease,
+      transform 140ms ease;
+  }
+}
+
+/* Tekst czytelniczy: karty zawodów i raport */
+.proza {
+  font-family: var(--font-serif);
+  font-size: var(--text-tresc);
+  line-height: 1.75;
+  color: var(--color-atrament);
+}
+
+.proza p + p {
+  margin-top: 1.1em;
+}
+
+.proza strong {
+  font-weight: 600;
 }

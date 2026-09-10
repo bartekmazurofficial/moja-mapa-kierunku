@@ -43,3 +43,17 @@ scripts/            parser bazy obszarów, import danych
 tests/              testy regresyjne
 program-doradztwa/  dokumentacja źródłowa, nie kod
 ```
+
+## Grupa pilotażowa
+
+```bash
+npx tsx scripts/seed-grupa.ts "Pilotaż 2026"     # zakłada grupę i wypisuje kody dostępu
+npx tsx scripts/wypelnij-testowo.ts <kod> analityczny   # wypełnia siedem modułów danymi testowymi
+npx tsx scripts/policz-wynik.ts <kod>            # liczy pełny wynik z zapisanych odpowiedzi
+npx tsx scripts/raport-luk.ts                    # luki między słownikami kart a modułami
+npx tsx scripts/zrzuty.ts                        # zrzuty ekranu do przeglądu wizualnego
+```
+
+Kody dostępu są losowe i niewyliczalne: raport zawiera wizję życia, informacje
+o zdrowiu i o sytuacji finansowej, więc nie ma ścieżki, która pozwalałaby
+wyliczyć listę uczestników przez podmianę identyfikatora w adresie.

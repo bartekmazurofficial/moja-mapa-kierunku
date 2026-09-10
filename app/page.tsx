@@ -1,38 +1,29 @@
-import { prisma } from "@/lib/db/klient";
+import Link from "next/link";
+import { WejscieKodem } from "@/components/WejscieKodem";
 
-export const dynamic = "force-dynamic";
+export const metadata = { title: "Moja mapa kierunku" };
 
-export default async function Strona() {
-  const [obszary, zawody, kierunki, drogi, klastry] = await Promise.all([
-    prisma.obszar.count(),
-    prisma.zawod.count(),
-    prisma.kierunek.count(),
-    prisma.drogaBezStudiow.count(),
-    prisma.klaster.count(),
-  ]);
-
-  const pozycje: Array<[string, number]> = [
-    ["obszary zawodowe", obszary],
-    ["zawody", zawody],
-    ["kierunki studiów", kierunki],
-    ["drogi bez studiów", drogi],
-    ["klastry", klastry],
-  ];
-
+export default function Strona() {
   return (
-    <main className="mx-auto max-w-xl px-5 py-12">
-      <h1 className="text-xl font-semibold">Program doradztwa zawodowego 16–24</h1>
-      <p className="mt-2 text-sm text-stone-600">
-        Faza 1: fundament i dane. Interfejs uczestnika powstaje w fazie 3.
+    <main className="mx-auto flex min-h-dvh max-w-czytelna flex-col justify-center px-6 py-16">
+      <p className="text-drobne uppercase tracking-[0.1em] text-atrament-slaby">
+        Fundacja Służąc Życiu
       </p>
-      <dl className="mt-8 divide-y divide-stone-200 border-y border-stone-200 text-sm">
-        {pozycje.map(([nazwa, ile]) => (
-          <div key={nazwa} className="flex justify-between py-2">
-            <dt className="text-stone-600">{nazwa}</dt>
-            <dd className="font-medium tabular-nums">{ile}</dd>
-          </div>
-        ))}
-      </dl>
+      <h1 className="mt-3 font-serif text-naglowek-duzy leading-tight">Moja mapa kierunku</h1>
+      <p className="proza mt-4 text-atrament-sciszony">
+        Program warsztatów rozwojowo&#8209;zawodowych. Wpisz kod, który dostałeś od prowadzącego.
+      </p>
+
+      <div className="mt-10">
+        <WejscieKodem />
+      </div>
+
+      <p className="mt-16 text-drobne text-atrament-slaby">
+        Prowadzący?{" "}
+        <Link href="/prowadzacy" className="underline underline-offset-2 hover:text-atrament">
+          Wejście do panelu
+        </Link>
+      </p>
     </main>
   );
 }

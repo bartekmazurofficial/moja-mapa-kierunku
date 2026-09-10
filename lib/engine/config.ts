@@ -178,6 +178,18 @@ export const WARSTWA3 = {
 
   /** Etap K6: ponizej tego odsetka absolwentow w zawodzie dopinamy ostrzezenie. */
   PROG_OSTRZEZENIA_O_ODSETKU: 40,
+
+  /**
+   * Sufit lacznej kary rekrutacyjnej z etapow K2 i K3.
+   * K2 mowi "ten przedmiot jest dla Ciebie trudny", K3 mowi "na ten kierunek
+   * jest ciezko sie dostac". Zlozenie jest uzasadnione, ale bez sufitu daje
+   * 55% w dol z jednego powodu i grzebie kierunek.
+   * Kierunek wymagajacy ma zjechac w rankingu, ale ZOSTAC WIDOCZNY:
+   * siedemnastolatek, ktoremu matematyka idzie zle, ma zobaczyc, ze
+   * informatyka jest trudna droga, a nie ze informatyki nie ma na liscie.
+   * Do strojenia po pilotazu.
+   */
+  MAX_KARA_REKRUTACYJNA: 0.4,
 } as const;
 
 /** Etap K3: mnoznik dostepu. Karzemy tylko wtedy, gdy przedmiot wymagany jest trudny. */

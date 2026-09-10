@@ -255,6 +255,14 @@ function trzyDrogi(
     flagi.push("droga_b_slabsza_od_a");
   }
 
+  // Trzy drogi z jednej grupy obszarow. To jest informacja o uczestniku,
+  // nie awaria systemu, i uczestnik ma ja dostac wprost, zamiast domyslac sie,
+  // ze zabraklo alternatyw.
+  const grupy = new Set(
+    drogi.map((d) => obszary.find((o) => o.id === d.obszar)?.grupa).filter(Boolean),
+  );
+  if (drogi.length === 3 && grupy.size === 1) flagi.push("trzy_drogi_z_jednego_swiata");
+
   return { drogi, podobienstwa, flagi };
 }
 
