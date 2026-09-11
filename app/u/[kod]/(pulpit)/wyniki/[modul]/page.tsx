@@ -4,7 +4,8 @@ import { pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly } from "@/lib/moduly/otwarcie";
 import { planszaWynikow } from "@/lib/moduly/wyniki";
 import { NAZWY_MODULOW } from "@/lib/moduly/ekrany";
-import { Baner } from "@/components/Ikona";
+import { Ikona } from "@/components/Ikona";
+import { kolorKategorii } from "@/lib/ui/kolory";
 import { Bramy } from "@/components/pulpit/Bramy";
 import type { KodModulu } from "@/lib/moduly/typy";
 
@@ -73,31 +74,44 @@ export default async function Strona({
               ) : null}
 
               <ul className="mt-5 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
-                {sekcja.kafle.map((k) => (
-                  <li
-                    key={k.klucz}
-                    className={`flex flex-col gap-3 rounded-xl border p-3 ${
-                      k.mocne
-                        ? "border-akcent/40 bg-akcent-tlo/50"
-                        : "border-linia bg-tlo/40"
-                    }`}
-                  >
-                    {k.ikona ? <Baner klucz={k.ikona} aktywna={k.mocne} /> : null}
-                    <span className="min-w-0 flex-1 px-1 pb-1">
-                      <span className="block text-tresc font-semibold leading-snug">{k.tytul}</span>
-                      <span
-                        className={`mt-1 block text-male leading-snug ${
-                          k.mocne ? "text-akcent-jasny" : "text-atrament-sciszony"
-                        }`}
-                      >
-                        {k.odpowiedz}
+                {sekcja.kafle.map((k) => {
+                  // Blok odpowiedzi w kolorze kategorii. Kolor nigdy nie jest
+                  // jedynym nośnikiem: obok stoi znak i pełny tekst.
+                  const kolor = k.ikona ? kolorKategorii(k.ikona) : null;
+                  return (
+                    <li
+                      key={k.klucz}
+                      className="flex items-start gap-3 rounded-xl border p-3.5"
+                      style={
+                        kolor
+                          ? {
+                              borderColor: k.mocne ? kolor.neon : kolor.obwod,
+                              background: kolor.tlo,
+                              boxShadow: k.mocne ? `0 10px 26px -16px ${kolor.neon}` : undefined,
+                            }
+                          : undefined
+                      }
+                    >
+                      {k.ikona ? <Ikona klucz={k.ikona} rozmiar={56} aktywna={k.mocne} /> : null}
+                      <span className="min-w-0 flex-1">
+                        <span
+                          className="block text-tresc font-bold leading-snug"
+                          style={kolor ? { color: kolor.atrament } : undefined}
+                        >
+                          {k.tytul}
+                        </span>
+                        <span className="mt-0.5 block text-male font-semibold leading-snug text-atrament">
+                          {k.odpowiedz}
+                        </span>
+                        {k.podpis ? (
+                          <span className="mt-0.5 block text-drobne text-atrament-sciszony">
+                            {k.podpis}
+                          </span>
+                        ) : null}
                       </span>
-                      {k.podpis ? (
-                        <span className="mt-0.5 block text-drobne text-atrament-slaby">{k.podpis}</span>
-                      ) : null}
-                    </span>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           ))

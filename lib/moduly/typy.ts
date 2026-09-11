@@ -74,6 +74,8 @@ export interface Ekran {
   klucz: string;
   /** Znak kategorii dla całego ekranu, np. osi A3 albo obszaru wizji życia. */
   ikona?: string;
+  /** Klucz kategorii tylko dla koloru, bez ilustracji. */
+  kolor?: string;
   typ: "wstep" | "pozycje" | "przerwa" | "koniec";
   naglowek?: string;
   akapity?: string[];

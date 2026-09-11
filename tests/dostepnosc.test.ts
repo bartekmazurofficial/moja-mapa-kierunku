@@ -17,8 +17,21 @@ describe("kontrast", () => {
 
   it("kolory z arkusza stylów zgadzają się z tymi, które sprawdzamy", () => {
     const css = readFileSync("app/globals.css", "utf8");
-    for (const kolor of ["#0b0718", "#f3efff", "#c9bcf0", "#a395d4", "#a78bfa", "#f2c96b"]) {
+    // Podłoże, trzy poziomy atramentu, akcent i uwaga.
+    for (const kolor of ["#f4f6fb", "#10132a", "#3d4460", "#5b6480", "#1d5bff", "#a15c00"]) {
       expect(css, kolor).toContain(kolor);
+    }
+  });
+
+  it("sześć kolorów kategorii jest w arkuszu i w palecie", async () => {
+    const css = readFileSync("app/globals.css", "utf8");
+    const { KOLORY } = await import("@/lib/ui/kolory");
+    for (const k of Object.values(KOLORY)) {
+      expect(css, `${k.kod} neon`).toContain(k.neon);
+      expect(
+        PARY_KOLOROW.some((p) => p.tekst === k.atrament && p.tlo === k.tlo),
+        `${k.kod}: para tekst/tło nie jest sprawdzana`,
+      ).toBe(true);
     }
   });
 });

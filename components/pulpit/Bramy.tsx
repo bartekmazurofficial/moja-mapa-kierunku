@@ -13,26 +13,26 @@ export function Bramy({ klasa = "" }: { klasa?: string }) {
     <svg aria-hidden viewBox="0 0 560 360" className={klasa} fill="none">
       <defs>
         <linearGradient id="brama-luk" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f4edff" stopOpacity="1" />
-          <stop offset="45%" stopColor="#b79cff" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#7c5cf0" stopOpacity="0.25" />
+          <stop offset="0%" stopColor="#1d5bff" stopOpacity="0.95" />
+          <stop offset="45%" stopColor="#8b5cf6" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#ff2d55" stopOpacity="0.35" />
         </linearGradient>
         <linearGradient id="brama-wnetrze" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.05" />
-          <stop offset="100%" stopColor="#e3d5ff" stopOpacity="0.3" />
+          <stop offset="0%" stopColor="#1d5bff" stopOpacity="0.04" />
+          <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.16" />
         </linearGradient>
         <linearGradient id="brama-droga" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0%" stopColor="#c7aeff" stopOpacity="0" />
-          <stop offset="40%" stopColor="#c7aeff" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#f6f1ff" stopOpacity="0.95" />
+          <stop offset="0%" stopColor="#00c56a" stopOpacity="0" />
+          <stop offset="40%" stopColor="#00c2d8" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#1d5bff" stopOpacity="0.9" />
         </linearGradient>
         <radialGradient id="brama-halo" cx="50%" cy="46%">
-          <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
+          <stop offset="0%" stopColor="#ffc400" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="#ffc400" stopOpacity="0" />
         </radialGradient>
         <radialGradient id="brama-ziemia" cx="50%" cy="50%">
-          <stop offset="0%" stopColor="#b79cff" stopOpacity="0.24" />
-          <stop offset="100%" stopColor="#b79cff" stopOpacity="0" />
+          <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.16" />
+          <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
         </radialGradient>
         <filter id="brama-blask" x="-70%" y="-70%" width="240%" height="240%">
           <feGaussianBlur stdDeviation="5" result="r" />

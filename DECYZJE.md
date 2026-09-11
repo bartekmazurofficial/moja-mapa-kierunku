@@ -1323,3 +1323,57 @@ przechodzi dalej** — kto wypełnia z klawiatury, nie sięga po przycisk.
 Jeśli po pilotażu okaże się, że to za dużo, wracamy do automatu wyłącznie
 tam, gdzie ekran ma jedną decyzję (pary A3, warunki A5), a zestawy z numerami
 zostają na przycisku. Zapisuję to jako rzecz do obserwacji, nie do zmiany teraz.
+
+### D70. Biała karta zamiast ciemnego fioletu
+
+Cały system wizualny przewrócony na jasny. Podłoże białe, panele z matowego
+szkła, neon pod spodem jako cztery rozmyte plamy. Kolor niosą teraz **bloki
+kategorii**, a nie tło strony.
+
+Wszystkie liczby kontrastu policzone od nowa i wpisane do
+`lib/ui/kontrast.ts`: 27 par, najsłabsza 4,75:1, większość powyżej 5,5:1.
+Test pilnuje też, żeby kolory z arkusza zgadzały się z tymi, które sprawdza.
+
+Kolory znaczeniowe (uwaga, trampolina, koszt, zagrożenie) przeliczone na
+jasny motyw: ciemny tekst na bardzo jasnym tle tej samej rodziny.
+
+### D71. Sześć kolorów kategorii, nie cztery
+
+Zamówione były cztery neony: niebieski, żółty, czerwony i zielony. Dołożyłem
+turkus i fiolet, i mówię dlaczego.
+
+W zestawie stoją cztery kafle i żadne dwa nie mają prawa być tego samego
+koloru. Kolor ma być przypisany kategorii na stałe, żeby ten sam obszar
+wyglądał tak samo w module i w raporcie. Te dwa warunki razem to kolorowanie
+grafu: wierzchołek to obszar, krawędź to „te dwa kiedyś stanęły obok siebie”.
+Graf A1 ma 24 wierzchołki i **stopień szesnaście**, bo zestawy biorą po jednej
+pozycji z czterech różnych rodzin RIASEC.
+
+Przeszukiwanie z nawrotami: **czterema kolorami się nie da, pięcioma też nie,
+sześcioma tak.** Przy czterech w części zestawów dwa kafle miałyby ten sam
+kolor, czyli dokładnie to, czego mieliśmy uniknąć.
+
+Cztery zamówione są główne i pokrywają dwie trzecie kategorii. Turkus i fiolet
+są piąty i szósty.
+
+### D72. Ilustracja w całości, nie w kadrze
+
+Pliki są kwadratowe, więc ramka też jest kwadratowa i obraz wchodzi w nią bez
+przycinania. Pasek 104 px ucinał tym rysunkom połowę sceny, a scena jest w nich
+treścią: warsztat, lampa, ręce nad stołem.
+
+Kafel zestawu: kwadrat 124 px. Ekran pary A3: kwadrat 208 px.
+
+**Na kartach z odpowiedziami zdjęcia nie ma w ogóle.** Tam stoi rysowany znak
+w bloku w kolorze kategorii, bo na planszy wyników liczy się to, co uczestnik
+wybrał, a nie to, jak ładny jest obraz. Zdjęcia zostają tam, gdzie uczestnik
+podejmuje decyzję i obraz pomaga sobie coś wyobrazić.
+
+### D73. Części jednego spotkania w jednym szeregu
+
+Lista części szła po dwie w rzędzie, więc spotkanie pierwsze łamało się na
+dwa rzędy i wyglądało jak dwa różne spotkania. Teraz szereg ma tyle kolumn,
+ile części ma spotkanie: trzy, jedna, trzy. Na telefonie jedna pod drugą,
+bo trzy kolumny nie mieszczą tytułu.
+
+Każda część ma swój kolor, różny w obrębie spotkania.

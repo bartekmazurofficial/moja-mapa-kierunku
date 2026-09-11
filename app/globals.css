@@ -3,51 +3,64 @@
 /**
  * System wizualny.
  *
- * Głęboki fiolet, szkło i poświata. Jedna rodzina kroju niesie wszystko,
- * odręczny tylko na marginesy. Kolory semantyczne osobne i rozróżnialne
- * także dla kogoś, kto ich nie odróżnia: nigdy sam kolor jako nośnik.
+ * Biała karta, szkło i neon. Podłoże jest jasne, panele są z matowego szkła,
+ * a kolor niosą bloki kategorii: neonowy niebieski, żółty, czerwony i zielony,
+ * plus turkus i fiolet, bo cztery kolory nie wystarczą, żeby w każdym zestawie
+ * czterech pozycji żadne dwie nie miały tego samego (lib/ui/kolory.ts).
+ *
+ * Jedna rodzina kroju niesie wszystko, odręczny tylko na marginesy. Kolory
+ * semantyczne osobne i rozróżnialne także dla kogoś, kto ich nie odróżnia:
+ * nigdy sam kolor jako nośnik.
  *
  * Każda para tekst/tło poniżej ma co najmniej 4,5:1 i jest sprawdzana testem
- * w tests/dostepnosc.test.ts. Ciemny motyw łatwo robi się nieczytelny, więc
- * to nie jest kwestia gustu.
+ * w tests/dostepnosc.test.ts. Jasny motyw z neonem łatwo robi się nieczytelny,
+ * więc to nie jest kwestia gustu.
  */
 
 @theme {
   --font-sans: var(--font-bezszeryfowy), ui-sans-serif, system-ui, sans-serif;
   --font-odreczny: var(--font-odreczny), ui-serif, cursive;
 
-  /* Podłoże: trzy poziomy głębi, nie dwa */
-  --color-tlo: #0b0718;
-  --color-panel: #150e2e;
-  --color-szklo: #1b1338;
-  --color-szklo-mocne: #241a47;
+  /* Podłoże: trzy poziomy jasności, nie dwa */
+  --color-tlo: #f4f6fb;
+  --color-panel: #ffffff;
+  --color-szklo: #ffffff;
+  --color-szklo-mocne: #ffffff;
 
   /* Tekst */
-  --color-atrament: #f3efff;
-  --color-atrament-sciszony: #c9bcf0;
-  /* 7,4:1 na tle. Wymóg 4,5:1 dotyczy też podpisów i etykiet. */
-  --color-atrament-slaby: #a395d4;
+  --color-atrament: #10132a;
+  --color-atrament-sciszony: #3d4460;
+  /* 5,4:1 na tle. Wymóg 4,5:1 dotyczy też podpisów i etykiet. */
+  --color-atrament-slaby: #5b6480;
 
   /* Linie: ledwie widoczne, ale obecne */
-  --color-linia: #2a1f52;
-  --color-linia-mocna: #3b2c6e;
+  --color-linia: #e3e7f2;
+  --color-linia-mocna: #c9d1e6;
 
-  /* Akcent: jeden fiolet, trzy natężenia */
-  --color-akcent: #a78bfa;
-  --color-akcent-jasny: #b79cff;
-  --color-akcent-ciemny: #7c5cf0;
-  --color-akcent-tlo: #1e1540;
-  --color-na-akcencie: #120a26;
+  /* Akcent: neonowy niebieski. Jedyny z czterech, który czyta się jako tekst. */
+  --color-akcent: #1d5bff;
+  --color-akcent-jasny: #0a3ac9;
+  --color-akcent-ciemny: #0730a8;
+  --color-akcent-tlo: #e9f0ff;
+  --color-na-akcencie: #ffffff;
+
+  /* Sześć kolorów kategorii. Neon na wypełnienie, ciemny na tekst. */
+  --color-neon-niebieski: #1d5bff;
+  --color-neon-zolty: #ffc400;
+  --color-neon-czerwony: #ff2d55;
+  --color-neon-zielony: #00c56a;
+  --color-neon-turkus: #00c2d8;
+  --color-neon-fiolet: #8b5cf6;
 
   /* Semantyka. Rozróżnialne, spokojne, nigdy jak alarm. */
-  --color-uwaga: #f2c96b;
-  --color-uwaga-tlo: #2a2010;
-  --color-trampolina: #7fd3ec;
-  --color-trampolina-tlo: #0f2530;
-  --color-koszt: #f0a87a;
-  --color-koszt-tlo: #2c1b12;
-  --color-przyszlosc: #c3b7e0;
-  --color-przyszlosc-tlo: #1c1730;
+  --color-uwaga: #a15c00;
+  --color-uwaga-tlo: #fff4dc;
+  --color-trampolina: #05607a;
+  --color-trampolina-tlo: #e2f6fc;
+  --color-koszt: #a03b12;
+  --color-koszt-tlo: #ffeee6;
+  --color-przyszlosc: #4a4a6a;
+  --color-przyszlosc-tlo: #f0eefa;
 
   /* Skala rozmiarów: wyraźne stopnie, nie pięć wielkości po dwa piksele */
   --text-drobne: 0.8125rem;
@@ -77,7 +90,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
@@ -87,8 +100,8 @@ body {
 }
 
 /**
- * Zorza nad podłożem. Dwie plamy światła, nieruchome, bardzo rozmyte.
- * Pod spodem, więc nigdy nie wchodzi w drogę treści.
+ * Neon pod spodem. Cztery plamy koloru, nieruchome, bardzo rozmyte, na białym.
+ * Pod treścią, więc nigdy nie wchodzi jej w drogę.
  */
 body::before {
   content: "";
@@ -97,10 +110,11 @@ body::before {
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(58rem 40rem at 76% -6%, rgba(150, 106, 255, 0.42), transparent 60%),
-    radial-gradient(44rem 34rem at 6% 2%, rgba(104, 66, 220, 0.32), transparent 58%),
-    radial-gradient(72rem 52rem at 52% 112%, rgba(132, 96, 250, 0.24), transparent 64%),
-    linear-gradient(180deg, #0d0820 0%, #0b0718 55%, #08050f 100%);
+    radial-gradient(52rem 36rem at 82% -8%, rgba(29, 91, 255, 0.16), transparent 62%),
+    radial-gradient(40rem 30rem at 4% 4%, rgba(255, 196, 0, 0.14), transparent 60%),
+    radial-gradient(46rem 34rem at 96% 78%, rgba(0, 197, 106, 0.12), transparent 62%),
+    radial-gradient(58rem 40rem at 24% 108%, rgba(255, 45, 85, 0.1), transparent 64%),
+    linear-gradient(180deg, #ffffff 0%, #f4f6fb 60%, #eef1f9 100%);
 }
 
 /* Siatka: ledwie widoczna, daje głębię, nie rozprasza. */
@@ -110,10 +124,10 @@ body::after {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.6;
   background-image:
-    linear-gradient(rgba(167, 139, 250, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(167, 139, 250, 0.045) 1px, transparent 1px);
+    linear-gradient(rgba(16, 19, 42, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 19, 42, 0.035) 1px, transparent 1px);
   background-size: 4.5rem 4.5rem;
   mask-image: radial-gradient(64rem 48rem at 60% 0%, #000 0%, transparent 72%);
 }
@@ -185,27 +199,23 @@ body::after {
 }
 
 /**
- * Szkło. Półprzezroczysta płyta z jasną krawędzią u góry — światło pada
+ * Szkło. Biała, półprzezroczysta płyta z jasną krawędzią u góry: światło pada
  * z góry, więc górna krawędź jest jaśniejsza od dolnej.
  */
 .szklo {
   position: relative;
-  background: linear-gradient(
-    158deg,
-    color-mix(in oklab, var(--color-szklo) 78%, transparent),
-    color-mix(in oklab, var(--color-panel) 86%, transparent)
-  );
+  background: linear-gradient(158deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.74));
   border: 1px solid var(--color-linia);
   border-radius: var(--radius-karta);
   backdrop-filter: blur(14px);
   box-shadow:
-    inset 0 1px 0 rgba(210, 188, 255, 0.2),
-    inset 0 -1px 0 rgba(8, 4, 22, 0.5),
-    0 22px 54px -26px rgba(6, 3, 18, 0.95);
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(16, 19, 42, 0.04),
+    0 22px 54px -30px rgba(16, 19, 42, 0.28);
 }
 
 .szklo-mocne {
-  background: linear-gradient(160deg, var(--color-szklo-mocne), var(--color-szklo));
+  background: #ffffff;
   border-color: var(--color-linia-mocna);
 }
 
@@ -213,21 +223,21 @@ body::after {
 .szklo-akcent {
   border-color: color-mix(in oklab, var(--color-akcent) 45%, transparent);
   box-shadow:
-    inset 0 1px 0 rgba(196, 169, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
     0 0 0 1px color-mix(in oklab, var(--color-akcent) 18%, transparent),
-    0 24px 60px -28px rgba(124, 92, 240, 0.75);
+    0 20px 46px -26px rgba(29, 91, 255, 0.45);
 }
 
 /** Poświata pod przyciskiem głównym. */
 .poswiata {
   box-shadow:
-    0 0 0 1px rgba(196, 169, 255, 0.35),
-    0 14px 40px -14px rgba(139, 92, 246, 0.8);
+    0 0 0 1px rgba(29, 91, 255, 0.28),
+    0 14px 34px -14px rgba(29, 91, 255, 0.6);
 }
 
 /** Nagłówek z gradientem: druga linia jaśnieje. */
 .gradient-tytul {
-  background: linear-gradient(104deg, #c7aeff 0%, #e6d8ff 48%, #a78bfa 100%);
+  background: linear-gradient(104deg, #1d5bff 0%, #8b5cf6 42%, #ff2d55 78%, #ffc400 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -356,10 +366,10 @@ body::after {
   letter-spacing: 0.06em;
 }
 
-/* Pola formularzy: szkło, nie biała kartka wycięta z innego świata. */
+/* Pola formularzy: biała kartka z wyraźną krawędzią. */
 .pole {
   width: 100%;
-  background: color-mix(in oklab, var(--color-tlo) 70%, transparent);
+  background: #ffffff;
   border: 1px solid var(--color-linia-mocna);
   border-radius: 0.85rem;
   color: var(--color-atrament);

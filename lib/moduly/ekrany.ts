@@ -412,6 +412,7 @@ function czescA5A(): CzescModulu {
       typ: "pozycje",
       naglowek: f.nazwaBloku,
       polecenie: INSTRUKCJA_A5.polecenieBloku,
+      kolor: `a5-${f.blok}`,
       pozycje: [
         {
           id: f.kod,

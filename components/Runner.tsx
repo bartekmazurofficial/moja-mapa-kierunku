@@ -15,7 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Pozycja } from "./Pozycja";
-import { Baner } from "./Ikona";
+import { Obraz } from "./Ikona";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import type { CzescModulu, Ekran } from "@/lib/moduly/typy";
@@ -344,8 +344,8 @@ export function Runner({
             ) : null}
             {/* Ilustracja ekranu: jeden obraz na kategorię, nie na pozycję. */}
             {ekran.ikona ? (
-              <div className="mx-auto mb-5 w-full max-w-lg">
-                <Baner klucz={ekran.ikona} wysokosc={172} aktywna />
+              <div className="mb-5 flex justify-center">
+                <Obraz klucz={ekran.ikona} rozmiar={208} aktywna />
               </div>
             ) : null}
 
@@ -366,6 +366,7 @@ export function Runner({
                     pierwsza={i === 0}
                     ostatnia={i === lista.length - 1}
                     wSiatce={siatka}
+                    kluczKoloru={ekran.ikona ?? ekran.kolor}
                     wartosc={odpowiedzi[p.id]}
                     naZmiane={(v) => zmien(p.id, v, p.typ === "tekst" || p.typ === "kilka_tekstow")}
                   />

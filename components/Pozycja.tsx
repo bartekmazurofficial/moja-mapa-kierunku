@@ -13,7 +13,8 @@
 
 import { useId } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
-import { Baner, Ikona } from "@/components/Ikona";
+import { Ikona, Obraz } from "@/components/Ikona";
+import { kolorKategorii } from "@/lib/ui/kolory";
 import { nadajNumer, wlascicieleNumerow } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
@@ -28,6 +29,8 @@ export interface WlasciwosciPozycji {
   ostatnia?: boolean;
   /** Pozycja stoi w siatce kolumn, nie w jednej długiej liście. */
   wSiatce?: boolean;
+  /** Klucz kategorii ekranu: stąd bierze się kolor bloku wyboru. */
+  kluczKoloru?: string;
 }
 
 export function Pozycja(props: WlasciwosciPozycji) {
@@ -108,15 +111,26 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
       <ul className="mx-auto grid max-w-3xl gap-2.5 sm:grid-cols-2">
         {opcje.map((o) => {
           const numer = ranking[o.kod];
+          // Kafel bierze kolor swojej kategorii. W zestawie cztery pozycje
+          // pochodzą z czterech różnych kategorii, a kolory są tak dobrane,
+          // że żadne dwa kafle obok siebie nie mają tego samego.
+          const kolor = o.ikona ? kolorKategorii(o.ikona) : null;
           return (
             <li
               key={o.kod}
-              className={`przejscie flex flex-col rounded-xl border bg-szklo p-3 ${
-                numer ? "border-akcent bg-akcent-tlo" : "border-linia"
-              }`}
+              className="przejscie flex flex-col rounded-xl border-2 bg-szklo p-3"
+              style={
+                kolor
+                  ? {
+                      borderColor: numer ? kolor.neon : kolor.obwod,
+                      background: kolor.tlo,
+                      boxShadow: numer ? `0 14px 32px -16px ${kolor.neon}` : undefined,
+                    }
+                  : undefined
+              }
             >
-              <div className="flex flex-1 flex-col">
-                {o.ikona ? <Baner klucz={o.ikona} wysokosc={104} aktywna={Boolean(numer)} /> : null}
+              <div className="flex flex-1 flex-col items-center">
+                {o.ikona ? <Obraz klucz={o.ikona} rozmiar={124} aktywna={Boolean(numer)} /> : null}
                 <span className="mt-2.5 flex-1 text-center text-tresc leading-snug">
                   {o.etykieta}
                 </span>
@@ -139,11 +153,16 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
                       aria-label={`${o.etykieta}: miejsce ${n}`}
                       className={`przejscie h-11 w-11 rounded-lg border text-tresc font-bold tabular-nums ${
                         wybrany
-                          ? "border-akcent bg-akcent text-na-akcencie"
+                          ? "text-na-akcencie"
                           : uKogosInnego
                             ? "border-linia text-atrament-slaby opacity-45"
-                            : "border-linia-mocna text-atrament-sciszony hover:border-akcent/60 hover:text-akcent-jasny"
+                            : "border-linia-mocna bg-panel text-atrament-sciszony hover:text-atrament"
                       }`}
+                      style={
+                        wybrany && kolor
+                          ? { background: kolor.neon, borderColor: kolor.neon }
+                          : undefined
+                      }
                     >
                       {n}
                     </button>
@@ -158,11 +177,12 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
   );
 }
 
-function Para({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) {
+function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: WlasciwosciPozycji) {
   const strony = [pozycja.stronaA, pozycja.stronaB].filter(Boolean) as Array<{
     kod: string;
     tekst: string;
   }>;
+  const kolor = kluczKoloru ? kolorKategorii(kluczKoloru) : null;
 
   function wybierz(kod: string) {
     naZmiane(kod);
@@ -171,19 +191,31 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) 
 
   return (
     <div className="grid gap-2.5 sm:grid-cols-2">
-      {strony.map((s, i) => (
-        <button
-          key={`${s.kod}-${i}`}
-          type="button"
-          onClick={() => wybierz(s.kod)}
-          aria-pressed={wartosc === s.kod}
-          className={`${KAFELEK} min-h-[5.5rem] sm:min-h-[8rem] ${
-            wartosc === s.kod ? "border-akcent bg-akcent-tlo" : "border-linia"
-          }`}
-        >
-          <span className="leading-snug">{s.tekst}</span>
-        </button>
-      ))}
+      {strony.map((s, i) => {
+        const wybrana = wartosc === s.kod;
+        return (
+          <button
+            key={`${s.kod}-${i}`}
+            type="button"
+            onClick={() => wybierz(s.kod)}
+            aria-pressed={wybrana}
+            className={`${KAFELEK} min-h-[5.5rem] border-2 sm:min-h-[8rem] ${
+              wybrana ? "" : "border-linia"
+            }`}
+            style={
+              kolor
+                ? {
+                    borderColor: wybrana ? kolor.neon : kolor.obwod,
+                    background: kolor.tlo,
+                    boxShadow: wybrana ? `0 14px 32px -16px ${kolor.neon}` : undefined,
+                  }
+                : undefined
+            }
+          >
+            <span className="leading-snug">{s.tekst}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -273,8 +305,10 @@ function Trzystopniowa({
   pierwsza,
   ostatnia,
   wSiatce,
+  kluczKoloru,
 }: WlasciwosciPozycji) {
   const opcje = pozycja.opcje ?? [];
+  const kolor = kluczKoloru ? kolorKategorii(kluczKoloru) : null;
   // Jedyna pozycja na ekranie dostaje cały ekran: duże zdanie i trzy duże
   // przyciski pośrodku. Ten sam komponent w małym wydaniu obsługuje listy.
   const sama = Boolean(pierwsza && ostatnia && !wSiatce);
@@ -288,13 +322,18 @@ function Trzystopniowa({
         naDomkniecie?.();
       }}
       aria-pressed={wartosc === o.kod}
-      className={`przejscie rounded-xl border font-semibold ${
+      className={`przejscie rounded-xl border-2 font-semibold ${
         sama ? "min-h-14 min-w-[7rem] px-6 text-tresc-duza" : "h-11 min-w-[4.5rem] px-3 text-male"
       } ${
-        wartosc === o.kod
-          ? "border-akcent bg-akcent text-na-akcencie"
-          : "border-linia-mocna bg-szklo text-atrament-sciszony hover:border-akcent/55 hover:text-akcent-jasny"
+        wartosc === o.kod ? "text-na-akcencie" : "bg-panel text-atrament-sciszony hover:text-atrament"
       }`}
+      style={
+        kolor
+          ? wartosc === o.kod
+            ? { background: kolor.neon, borderColor: kolor.neon }
+            : { borderColor: kolor.obwod }
+          : undefined
+      }
     >
       {o.etykieta}
     </button>
@@ -393,6 +432,7 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
         {(pozycja.opcje ?? []).map((o) => {
           const zaznaczona = wybrane.includes(o.kod);
           const zablokowana = !zaznaczona && Boolean(maks) && wybrane.length >= (maks ?? 0) && !o.wylaczna;
+          const kolor = o.ikona ? kolorKategorii(o.ikona) : null;
           return (
             <button
               key={o.kod}
@@ -401,8 +441,17 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
               aria-pressed={zaznaczona}
               disabled={zablokowana}
               className={`${KAFELEK} flex items-center gap-3 ${
-                zaznaczona ? "border-akcent bg-akcent-tlo" : "border-linia"
+                kolor ? "border-2" : zaznaczona ? "border-akcent bg-akcent-tlo" : "border-linia"
               } ${zablokowana ? "opacity-40" : ""}`}
+              style={
+                kolor
+                  ? {
+                      borderColor: zaznaczona ? kolor.neon : kolor.obwod,
+                      background: kolor.tlo,
+                      boxShadow: zaznaczona ? `0 12px 28px -18px ${kolor.neon}` : undefined,
+                    }
+                  : undefined
+              }
             >
               <span
                 aria-hidden

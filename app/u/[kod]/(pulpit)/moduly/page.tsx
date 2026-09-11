@@ -1,9 +1,11 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { pobierzPostepModulow, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, MODULY_SPOTKANIA, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
 import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { Bramy } from "@/components/pulpit/Bramy";
+import { KOLORY_MODULOW } from "@/lib/ui/kolory";
 
 export const dynamic = "force-dynamic";
 
@@ -67,13 +69,25 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
             <span aria-hidden className="h-px flex-1 bg-linia" />
           </h2>
 
-          <ul className="grid gap-3 sm:grid-cols-2">
+          {/* Wszystkie części jednego spotkania w jednym szeregu: spotkanie
+              pierwsze ma trzy, drugie jedną, trzecie trzy. Na telefonie
+              jedna pod drugą, bo trzy kolumny nie mieszczą tytułu. */}
+          <ul
+            className="grid gap-3 md:[grid-template-columns:repeat(var(--ile),minmax(0,1fr))]"
+            style={{ "--ile": moduly.length } as CSSProperties}
+          >
             {moduly.map((m) => {
               const s = stan(m);
+              const kolor = KOLORY_MODULOW[m];
               const tresc = (
                 <>
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-tresc-duza font-bold">{NAZWY_MODULOW[m]}</h3>
+                    <h3
+                      className="text-tresc-duza font-bold"
+                      style={s === "zamkniety" ? undefined : { color: kolor.atrament }}
+                    >
+                      {NAZWY_MODULOW[m]}
+                    </h3>
                     <Odznaka stan={s} spotkanie={SPOTKANIE_MODULU[m]} />
                   </div>
                   <p className="mt-2 text-male leading-relaxed text-atrament-sciszony">{PO_CO[m]}</p>
@@ -92,9 +106,13 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
                   ) : (
                     <Link
                       href={`/u/${kod}/modul/${m}`}
-                      className={`przejscie group block flex-1 p-5 ${
-                        s === "wtrakcie" ? "szklo szklo-akcent" : "szklo hover:border-akcent/40"
-                      }`}
+                      className="przejscie group block flex-1 rounded-karta border-2 p-5"
+                      style={{
+                        borderColor: s === "wtrakcie" ? kolor.neon : kolor.obwod,
+                        background: kolor.tlo,
+                        boxShadow:
+                          s === "wtrakcie" ? `0 16px 34px -20px ${kolor.neon}` : undefined,
+                      }}
                     >
                       {tresc}
                     </Link>

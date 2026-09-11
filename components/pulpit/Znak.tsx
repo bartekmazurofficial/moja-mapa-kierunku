@@ -9,8 +9,8 @@ export function Znak({ rozmiar = 40 }: { rozmiar?: number }) {
       <svg viewBox="0 0 24 24" width={rozmiar * 0.55} height={rozmiar * 0.55} fill="none">
         <defs>
           <linearGradient id="znak" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#e6d8ff" />
-            <stop offset="100%" stopColor="#8b5cf6" />
+            <stop offset="0%" stopColor="#1d5bff" />
+            <stop offset="100%" stopColor="#ff2d55" />
           </linearGradient>
         </defs>
         <path

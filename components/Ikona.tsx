@@ -1,10 +1,14 @@
-import { GLIFY, odcien, type KluczGlifu } from "@/lib/ui/glify";
+import { GLIFY, type KluczGlifu } from "@/lib/ui/glify";
+import { kolorKategorii } from "@/lib/ui/kolory";
 import { obrazDuzy, obrazKafla } from "@/lib/ui/obrazy";
 
 /**
- * Znak kategorii. Ilustracja, jeśli dla kategorii jest plik; w przeciwnym razie
- * kontur rysowany w odcieniu przypisanym na stałe kluczowi. Ten sam obszar
- * wygląda tak samo w każdym zestawie i w raporcie.
+ * Znak kategorii: rysowany glif w bloku w kolorze kategorii.
+ *
+ * Bloki odpowiedzi mają nieść kolor, a nie zdjęcie: na karcie z wynikami
+ * liczy się to, co uczestnik wybrał, a nie to, jak ładny jest obraz.
+ * Kolor jest przypisany kategorii na stałe, więc ten sam obszar wygląda
+ * tak samo wszędzie.
  *
  * Ozdoba i pomoc w orientacji, nigdy jedyny nośnik treści: obok zawsze stoi
  * pełny tekst pozycji.
@@ -18,37 +22,9 @@ export function Ikona({
   rozmiar?: number;
   aktywna?: boolean;
 }) {
-  const h = odcien(klucz);
-  const obraz = obrazKafla(klucz);
-
-  if (obraz) {
-    return (
-      <span
-        aria-hidden
-        className="przejscie relative block shrink-0 overflow-hidden rounded-xl border"
-        style={{
-          width: rozmiar,
-          height: rozmiar,
-          borderColor: `hsl(${h} 70% 72% / ${aktywna ? 0.6 : 0.22})`,
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={obraz}
-          alt=""
-          width={rozmiar}
-          height={rozmiar}
-          loading="lazy"
-          decoding="async"
-          className="przejscie h-full w-full object-cover"
-          style={{ opacity: aktywna ? 1 : 0.82 }}
-        />
-      </span>
-    );
-  }
-
   const sciezki = GLIFY[klucz];
   if (!sciezki) return null;
+  const k = kolorKategorii(klucz);
 
   return (
     <span
@@ -57,18 +33,19 @@ export function Ikona({
       style={{
         width: rozmiar,
         height: rozmiar,
-        borderColor: `hsl(${h} 70% 72% / ${aktywna ? 0.55 : 0.24})`,
-        background: `linear-gradient(150deg, hsl(${h} 62% 62% / ${aktywna ? 0.26 : 0.12}), hsl(${h + 18} 58% 46% / 0.06))`,
-        color: `hsl(${h} 88% ${aktywna ? 86 : 78}%)`,
+        borderColor: aktywna ? k.neon : k.obwod,
+        background: aktywna ? k.neon : k.tlo,
+        color: aktywna ? "#ffffff" : k.atrament,
+        boxShadow: aktywna ? `0 8px 20px -10px ${k.neon}` : "none",
       }}
     >
       <svg
         viewBox="0 0 24 24"
-        width={rozmiar * 0.55}
-        height={rozmiar * 0.55}
+        width={rozmiar * 0.56}
+        height={rozmiar * 0.56}
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
       >
@@ -81,73 +58,52 @@ export function Ikona({
 }
 
 /**
- * Ilustracja na całą szerokość kafla. Kwadratowy znaczek przy tekście gubi
- * wszystko, co na obrazie jest: postać, światło, scenę. Na planszy wyników
- * jest miejsce, żeby obraz był obrazem, a nie ikoną.
+ * Ilustracja kategorii w całości.
  *
- * Kategoria bez pliku dostaje ten sam pasek z rysowanym glifem, żeby siatka
- * kafli nie rozjeżdżała się na dwa różne produkty.
+ * Pliki są kwadratowe, więc ramka też jest kwadratowa i obraz wchodzi w nią
+ * bez przycinania. Kadrowanie do paska ucinało tym rysunkom połowę sceny,
+ * a scena jest w nich treścią.
+ *
+ * Kategoria bez pliku dostaje glif w tym samym bloku, żeby ekran nie
+ * rozjeżdżał się na dwa różne produkty.
  */
-export function Baner({
+export function Obraz({
   klucz,
-  wysokosc = 132,
+  rozmiar = 128,
   aktywna,
 }: {
   klucz: KluczGlifu;
-  wysokosc?: number;
+  rozmiar?: number;
   aktywna?: boolean;
 }) {
-  const h = odcien(klucz);
-  const obraz = obrazDuzy(klucz) ?? obrazKafla(klucz);
+  const k = kolorKategorii(klucz);
+  const zrodlo = rozmiar > 200 ? (obrazDuzy(klucz) ?? obrazKafla(klucz)) : obrazKafla(klucz);
 
-  if (obraz) {
-    return (
-      <span
-        aria-hidden
-        className="przejscie relative block w-full overflow-hidden rounded-lg"
-        style={{ height: wysokosc }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={obraz}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="h-full w-full object-cover"
-          style={{ opacity: aktywna ? 1 : 0.78 }}
-        />
-      </span>
-    );
-  }
-
-  const sciezki = GLIFY[klucz];
-  if (!sciezki) return null;
+  if (!zrodlo) return <Ikona klucz={klucz} rozmiar={rozmiar} aktywna={aktywna} />;
 
   return (
     <span
       aria-hidden
-      className="przejscie flex w-full items-center justify-center rounded-lg border"
+      className="przejscie block shrink-0 overflow-hidden rounded-xl border"
       style={{
-        height: wysokosc,
-        borderColor: `hsl(${h} 70% 72% / ${aktywna ? 0.45 : 0.18})`,
-        background: `linear-gradient(150deg, hsl(${h} 62% 62% / ${aktywna ? 0.24 : 0.12}), hsl(${h + 18} 58% 46% / 0.06))`,
-        color: `hsl(${h} 88% ${aktywna ? 86 : 78}%)`,
+        width: rozmiar,
+        height: rozmiar,
+        borderColor: aktywna ? k.neon : k.obwod,
+        background: k.tlo,
+        boxShadow: aktywna ? `0 10px 26px -12px ${k.neon}` : "none",
       }}
     >
-      <svg
-        viewBox="0 0 24 24"
-        width={wysokosc * 0.42}
-        height={wysokosc * 0.42}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        {sciezki.map((d, i) => (
-          <path key={i} d={d} />
-        ))}
-      </svg>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={zrodlo}
+        alt=""
+        width={rozmiar}
+        height={rozmiar}
+        loading="lazy"
+        decoding="async"
+        className="przejscie h-full w-full object-contain"
+        style={{ opacity: aktywna ? 1 : 0.9 }}
+      />
     </span>
   );
 }
