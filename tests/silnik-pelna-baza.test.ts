@@ -439,10 +439,10 @@ describe("profil nieostry: druga reguła, licząca rozstęp czołówki", () => {
    * reguła nie pada), ale wszystkie obszary kariery wychodzą w kilku punktach.
    */
   async function plaski(): Promise<WynikiModulow> {
-    const { prisma } = await import("@/lib/db/klient");
     const { zbierzOdpowiedzi } = await import("@/lib/moduly/zbieranie");
     const { zlozWynikiModulow } = await import("@/lib/engine/moduly");
-    const u = await prisma.uczestnik.findUniqueOrThrow({ where: { kodDostepu: "S4YBD2DEJH" } });
+    const { uczestnikTestowy } = await import("./pomocnicze/fixtury");
+    const u = await uczestnikTestowy("plaski");
     return zlozWynikiModulow(await zbierzOdpowiedzi(u.id));
   }
 

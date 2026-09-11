@@ -1019,3 +1019,19 @@ zakomentowany. Cztery testy tego pilnują.
 
 **Przed pilotażem trzeba sprawdzić, że tej zmiennej nie ma w środowisku
 produkcyjnym.** Dopisane do listy przed pilotażem.
+
+### D52. Testy zasiewają własne dane
+
+Reset postępów uczestników wywrócił dwanaście testów naraz, bo zależały od
+tego, co ktoś ręcznie wpisał w aplikacji. To była ukryta wada zestawu: testy
+nie mogą zależeć od stanu, który wolno skasować jednym poleceniem.
+
+Logika wypełniania modułów przeniesiona ze skryptu do `lib/testy/wypelnianie.ts`.
+`tests/pomocnicze/fixtury.ts` zakłada osobną grupę `TESTAUTO`, wypełnia ją
+sama i jest idempotentna. Grupy pilotażowe i testowe nie mieszają się w żadną
+stronę: reset nie psuje testów, a testy nie zaśmiecają grupy pilotażowej.
+
+`scripts/reset.ts` kasuje wszystko, co wprowadził uczestnik, i ustawia grupę
+na stan pierwszego dnia: otwarte spotkanie pierwsze, żadna warstwa raportu.
+Kody dostępu zostają — inaczej trzeba by je rozdawać od nowa. Grupa testów
+automatycznych jest kasowana w całości, bo testy odtwarzają ją same.

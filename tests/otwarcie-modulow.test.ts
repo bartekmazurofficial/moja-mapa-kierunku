@@ -14,13 +14,14 @@ import {
   zamknijModul,
 } from "@/lib/moduly/otwarcie";
 import { KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
+import { grupaZKompletem } from "./pomocnicze/fixtury";
 import type { KodModulu } from "@/lib/moduly/typy";
 
 let grupaId: string;
 let stanPoczatkowy: KodModulu[];
 
 beforeAll(async () => {
-  const grupa = await prisma.grupa.findFirstOrThrow();
+  const grupa = await grupaZKompletem();
   grupaId = grupa.id;
   stanPoczatkowy = [...(await otwarteModuly(grupaId))];
 });

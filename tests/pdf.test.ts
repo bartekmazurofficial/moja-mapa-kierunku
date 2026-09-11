@@ -11,6 +11,7 @@ import { zbierzOdpowiedzi } from "@/lib/moduly/zbieranie";
 import { zbudujRaport } from "@/lib/raport/budowa";
 import { zbudujPdf } from "@/lib/raport/pdf";
 import { SEKCJE } from "@/lib/raport/sekcje";
+import { uczestnikTestowy } from "./pomocnicze/fixtury";
 import type { BazaReferencyjna } from "@/lib/domain/typy";
 import type { KompletOdpowiedzi } from "@/lib/engine/moduly";
 
@@ -22,7 +23,7 @@ const WSZYSTKIE = new Set(SEKCJE.map((s) => s.id));
 
 beforeAll(async () => {
   baza = await pobierzBazeReferencyjna();
-  const uczestnik = await prisma.uczestnik.findFirstOrThrow({ where: { kodDostepu: "3DEPKJBQW9" } });
+  const uczestnik = await uczestnikTestowy("rzemieslniczy");
   odpowiedzi = await zbierzOdpowiedzi(uczestnik.id);
   const wiersze = await prisma.karta.findMany({ select: { kod: true, pelna: true } });
   karty = new Map(wiersze.map((k) => [k.kod, { pelna: k.pelna }]));

@@ -11,6 +11,7 @@ import { pobierzGrupe } from "@/lib/prowadzacy/dane";
 import { TEMPO } from "@/lib/engine/config";
 import { otwarteModuly, otworzModul } from "@/lib/moduly/otwarcie";
 import { MARKER_ZAKONCZENIA } from "@/lib/moduly/typy";
+import { grupaZKompletem } from "./pomocnicze/fixtury";
 
 let grupaKod: string;
 let grupaId: string;
@@ -30,7 +31,7 @@ async function ustawCzas(uczestnikId: string, modul: string, ms: number) {
 }
 
 beforeAll(async () => {
-  const grupa = await prisma.grupa.findFirstOrThrow();
+  const grupa = await grupaZKompletem();
   grupaKod = grupa.kod;
   grupaId = grupa.id;
   if (!(await otwarteModuly(grupaId)).has("A1")) await otworzModul(grupaId, "A1");
@@ -94,13 +95,14 @@ describe("ostrzeżenie o tempie", () => {
     // To jest cała różnica wobec progu bezwzględnego: grupa, która pracuje
     // szybko, nie generuje ostrzeżeń u wszystkich naraz.
     const gotowi = await zGotowymA1();
+    // Jedna osoba pracuje wolno, cała reszta szybko. Mediana idzie za większością.
     for (const [i, u] of gotowi.entries()) {
       const id = (await prisma.uczestnik.findUniqueOrThrow({ where: { kodDostepu: u.kodDostepu } })).id;
-      await ustawCzas(id, "A1", i < 3 ? 10_000 : 500 + i * 100);
+      await ustawCzas(id, "A1", i === 0 ? 10_000 : 3_000);
     }
     const po = await zGotowymA1();
     const oflagowani = po.filter((u) => u.moduly.find((m) => m.kod === "A1")!.pobiezny);
-    expect(oflagowani).toEqual([]);
+    expect(oflagowani.map((u) => u.imie)).toEqual([]);
   });
 
   it("przy zbyt małej liczbie ukończeń mediana nie jest liczona", async () => {

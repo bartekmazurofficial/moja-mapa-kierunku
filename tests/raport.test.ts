@@ -10,6 +10,7 @@ import { zbierzOdpowiedzi } from "@/lib/moduly/zbieranie";
 import { zbudujRaport } from "@/lib/raport/budowa";
 import { SEKCJE, SLOWA_ZAKAZANE, stopkaRaportu, WARSTWY } from "@/lib/raport/sekcje";
 import { stanDostepu, odblokujWarstwe, zamknijWarstwe } from "@/lib/raport/dostep";
+import { uczestnikTestowy } from "./pomocnicze/fixtury";
 import type { BazaReferencyjna } from "@/lib/domain/typy";
 import type { KompletOdpowiedzi } from "@/lib/engine/moduly";
 
@@ -23,9 +24,7 @@ const WSZYSTKIE = new Set(SEKCJE.map((s) => s.id));
 
 beforeAll(async () => {
   baza = await pobierzBazeReferencyjna();
-  const uczestnik = await prisma.uczestnik.findFirstOrThrow({
-    where: { kodDostepu: "3DEPKJBQW9" },
-  });
+  const uczestnik = await uczestnikTestowy("rzemieslniczy");
   uczestnikId = uczestnik.id;
   grupaId = uczestnik.grupaId;
   odpowiedzi = await zbierzOdpowiedzi(uczestnik.id);
@@ -75,11 +74,23 @@ describe("odsłanianie warstw jest egzekwowane po stronie serwera", () => {
   });
 
   it("blokada z modułu A2 zamyka sekcje oparte na A1 i A3", async () => {
-    const uczestnik = await prisma.uczestnik.findFirstOrThrow({ where: { kodDostepu: "THJBQW2AJA" } });
-    await prisma.odpowiedz.deleteMany({
-      where: { uczestnikId: uczestnik.id, modul: "A2", czesc: "B", pozycja: "__zakonczono" },
-    });
+    // Osobny uczestnik, żeby nie psuć danych pozostałym testom w tym pliku.
+    const uczestnik = await uczestnikTestowy("spoleczny");
+    const marker = {
+      uczestnikId: uczestnik.id,
+      modul: "A2",
+      czesc: "B",
+      pozycja: "__zakonczono",
+    };
+    const zapisany = await prisma.odpowiedz.findFirst({ where: marker });
+    await prisma.odpowiedz.deleteMany({ where: marker });
     const stan = await stanDostepu(uczestnik.id, uczestnik.grupaId);
+    // Przywracamy od razu: blokada A2 zamyka sekcje także innym testom.
+    if (zapisany) {
+      await prisma.odpowiedz.create({
+        data: { ...marker, wartosc: zapisany.wartosc, msSpent: zapisany.msSpent },
+      });
+    }
     expect(stan.blokadaA2).toBe(true);
     expect(stan.dostepne.has("co_mnie_interesuje")).toBe(false);
     expect(stan.dostepne.has("jak_dzialam")).toBe(false);
