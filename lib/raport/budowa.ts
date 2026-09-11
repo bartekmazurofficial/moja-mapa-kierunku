@@ -198,10 +198,10 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
   if (wolno("wartosci")) {
     const opisKosztu =
       a4.koszt >= 3
-        ? "Ta wartość jest u Ciebie mocno zakorzeniona — jesteś gotów za nią zapłacić."
+        ? "Ta wartość jest u Ciebie mocno zakorzeniona. Jesteś gotów za nią zapłacić."
         : a4.koszt >= 1
           ? "Ta wartość jest ważna, ale ma swoją granicę."
-          : "Deklarujesz ją jako najważniejszą, ale nie chcesz za nią nic oddać — warto o tym porozmawiać.";
+          : "Deklarujesz ją jako najważniejszą, ale nie chcesz za nią nic oddać. Warto o tym porozmawiać.";
     raport.wartosci = {
       gora: a4.top5.map((kod) => ({
         tytul: A4_PO_KODZIE.get(kod)?.nazwa ?? kod,
@@ -222,7 +222,7 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
         opis: etykietaM1(w.kod, m1.shape[w.kod]),
       })).filter((p) => p.opis.length > 0),
       zdanie:
-        "To nie jest przepowiednia ani zobowiązanie. To punkt wyjścia do tego, co napisałeś obok — możesz się z tym zgodzić albo napisać zupełnie co innego.",
+        "To nie jest przepowiednia ani zobowiązanie. To punkt wyjścia do tego, co napisałeś obok. Możesz się z tym zgodzić albo napisać zupełnie co innego.",
     };
   }
 
@@ -497,7 +497,7 @@ function uzasadnienieZawodu(
     zdania.push(scalPowody(obszar.dlaczegoPasuje.slice(0, 2)));
   }
   if (z.pokrycie.a2 >= 0.5) zdania.push("Kompetencje, na których ten zawód stoi, masz już mocne.");
-  else zdania.push("Część kompetencji, na których ten zawód stoi, dopiero zbudujesz — to normalne w Twoim wieku.");
+  else zdania.push("Część kompetencji, na których ten zawód stoi, dopiero zbudujesz. To normalne w Twoim wieku.");
   if (obszar && obszar.coPrzeszkadza.length > 0) zdania.push(`Może przeszkadzać: ${obszar.coPrzeszkadza[0]}.`);
   return zdania;
 }
@@ -539,7 +539,7 @@ function profilWJednymEkranie(
   const sens = silnik.warstwa3.sensStudiow;
   zdania.push(
     sens === "warunek"
-      ? "W Twoim przypadku studia są warunkiem — większość Twoich dróg jest bez dyplomu zamknięta."
+      ? "W Twoim przypadku studia są warunkiem, bo większość Twoich dróg jest bez dyplomu zamknięta."
       : sens === "niepotrzebne"
         ? "Większość Twoich dróg nie wymaga studiów. To nie jest gorsza wiadomość, tylko inna."
         : "Studia otwierają część Twoich dróg, ale nie wszystkie. Masz realny wybór.",

@@ -82,7 +82,7 @@ export default async function Strona({
                         : "border-linia bg-tlo/40"
                     }`}
                   >
-                    {k.ikona ? <Ikona klucz={k.ikona} rozmiar={40} aktywna={k.mocne} /> : null}
+                    {k.ikona ? <Ikona klucz={k.ikona} rozmiar={52} aktywna={k.mocne} /> : null}
                     <span className="min-w-0 flex-1">
                       <span className="block text-male font-semibold leading-snug">{k.tytul}</span>
                       <span

@@ -14,6 +14,7 @@
 import { useId } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
 import { Ikona } from "@/components/Ikona";
+import { nadajNumer, wlascicieleNumerow } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
 export interface WlasciwosciPozycji {
@@ -63,56 +64,73 @@ const KAFELEK =
 function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) {
   const ranking = (wartosc as Record<string, number>) ?? {};
   const opcje = pozycja.opcje ?? [];
+  const ile = opcje.length;
 
-  function stuknij(kod: string) {
-    const nowy = { ...ranking };
-    if (nowy[kod]) {
-      // Ponowne stukniecie cofa przypisanie i przenumerowuje reszte.
-      const usuwany = nowy[kod];
-      delete nowy[kod];
-      for (const k of Object.keys(nowy)) if (nowy[k] > usuwany) nowy[k] -= 1;
-      naZmiane(nowy);
-      return;
-    }
-    nowy[kod] = Object.keys(nowy).length + 1;
-    if (Object.keys(nowy).length === 3) {
-      const ostatni = opcje.find((o) => !nowy[o.kod]);
-      if (ostatni) nowy[ostatni.kod] = 4;
-    }
+  /** Numer -> kod pozycji, ktora go trzyma. Jeden numer nalezy do jednej pozycji. */
+  const wlasciciel = wlascicieleNumerow(ranking);
+
+  function ustaw(kod: string, numer: number) {
+    const nowy = nadajNumer(ranking, kod, numer);
     naZmiane(nowy);
-    if (Object.keys(nowy).length === 4) naDomkniecie?.();
+    if (Object.keys(nowy).length === ile) naDomkniecie?.();
   }
 
   return (
-    <ul className="flex flex-col gap-2.5">
-      {opcje.map((o) => {
-        const numer = ranking[o.kod];
-        return (
-          <li key={o.kod}>
-            <button
-              type="button"
-              onClick={() => stuknij(o.kod)}
-              aria-pressed={Boolean(numer)}
-              className={`${KAFELEK} flex items-center gap-3.5 ${
+    <div>
+      {pozycja.krance ? (
+        <p className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-drobne text-atrament-slaby">
+          <span>{pozycja.krance[0]}</span>
+          <span>{pozycja.krance[1]}</span>
+        </p>
+      ) : null}
+
+      <ul className="flex flex-col gap-2.5">
+        {opcje.map((o) => {
+          const numer = ranking[o.kod];
+          return (
+            <li
+              key={o.kod}
+              className={`przejscie flex flex-wrap items-center gap-x-4 gap-y-3 rounded-lg border bg-szklo px-4 py-3 ${
                 numer ? "border-akcent bg-akcent-tlo" : "border-linia"
               }`}
             >
-              {o.ikona ? <Ikona klucz={o.ikona} aktywna={Boolean(numer)} /> : null}
-              <span className="flex-1 leading-snug">{o.etykieta}</span>
-              <span
-                aria-hidden
-                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-drobne font-bold tabular-nums ${
-                  numer ? "bg-akcent text-na-akcencie" : "border border-linia-mocna text-atrament-slaby"
-                }`}
+              {o.ikona ? <Ikona klucz={o.ikona} rozmiar={64} aktywna={Boolean(numer)} /> : null}
+
+              <span className="min-w-[8rem] flex-1 text-tresc leading-snug">{o.etykieta}</span>
+
+              <div
+                role="group"
+                aria-label={o.etykieta}
+                className="ml-auto flex shrink-0 gap-1.5"
               >
-                {numer ?? ""}
-              </span>
-              {numer ? <span className="sr-only">pozycja {numer}</span> : null}
-            </button>
-          </li>
-        );
-      })}
-    </ul>
+                {Array.from({ length: ile }, (_, i) => i + 1).map((n) => {
+                  const wybrany = numer === n;
+                  const uKogosInnego = wlasciciel.get(n) !== undefined && !wybrany;
+                  return (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => ustaw(o.kod, n)}
+                      aria-pressed={wybrany}
+                      aria-label={`${o.etykieta}: miejsce ${n}`}
+                      className={`przejscie h-11 w-11 rounded-lg border text-tresc font-bold tabular-nums ${
+                        wybrany
+                          ? "border-akcent bg-akcent text-na-akcencie"
+                          : uKogosInnego
+                            ? "border-linia text-atrament-slaby opacity-45"
+                            : "border-linia-mocna text-atrament-sciszony hover:border-akcent/60 hover:text-akcent-jasny"
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  );
+                })}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
@@ -275,7 +293,12 @@ function Pojedynczy({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
                 wartosc === o.kod ? "border-akcent bg-akcent" : "border-linia-mocna"
               }`}
             />
-            <span className="leading-snug">{o.etykieta}</span>
+            <span className="min-w-0 flex-1 leading-snug">
+              {o.etykieta}
+              {o.podpis ? (
+                <span className="mt-0.5 block text-male text-atrament-sciszony">{o.podpis}</span>
+              ) : null}
+            </span>
           </button>
         ))}
       </div>
@@ -343,7 +366,13 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
                   </svg>
                 ) : null}
               </span>
-              <span className="leading-snug">{o.etykieta}</span>
+              {o.ikona ? <Ikona klucz={o.ikona} rozmiar={44} aktywna={zaznaczona} /> : null}
+              <span className="min-w-0 flex-1 leading-snug">
+                {o.etykieta}
+                {o.podpis ? (
+                  <span className="mt-0.5 block text-male text-atrament-sciszony">{o.podpis}</span>
+                ) : null}
+              </span>
             </button>
           );
         })}

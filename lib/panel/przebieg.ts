@@ -54,9 +54,9 @@ export const PRZEBIEG: EtapSesji[] = [
       "Które z tych dwóch jest twardsze?",
     ],
     uwagi: [
-      "„Nie wiedziałem, że to tak wygląda” — wyobrażenie, nie decyzja. Otwórzcie kartę i przeczytajcie konkretną sekcję.",
-      "„Znam kogoś, kto to robi i to koszmar” — jedno źródło, uogólnione. To jedna osoba i jedno miejsce pracy.",
-      "„Po prostu nie chcę” — decyzja. Przyjąć bez drążenia: „Dobrze. Wykreślamy”.",
+      "„Nie wiedziałem, że to tak wygląda”: wyobrażenie, nie decyzja. Otwórzcie kartę i przeczytajcie konkretną sekcję.",
+      "„Znam kogoś, kto to robi i to koszmar”: jedno źródło, uogólnione. To jedna osoba i jedno miejsce pracy.",
+      "„Po prostu nie chcę”: decyzja. Przyjąć bez drążenia: „Dobrze. Wykreślamy”.",
       "Ostrzeżenie antyprofilowe wprowadzasz miękko: „Nie mówię, żebyś rezygnował. Mówię, żebyś to sprawdził, zanim zainwestujesz w to pięć lat”.",
     ],
   },

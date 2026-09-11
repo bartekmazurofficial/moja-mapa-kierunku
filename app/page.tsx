@@ -15,7 +15,7 @@ async function wejscieUczestnika(): Promise<{ href: string; opis: string }> {
   if (!trybTestowy()) {
     return {
       href: "/wejscie",
-      opis: "Twoje moduły, raport i karty zawodów. Wchodzisz kodem od prowadzącego — bez konta i bez hasła.",
+      opis: "Twoje moduły, raport i karty zawodów. Wchodzisz kodem od prowadzącego, bez konta i bez hasła.",
     };
   }
   const pierwszy = await prisma.uczestnik.findFirst({ orderBy: { imie: "asc" } });

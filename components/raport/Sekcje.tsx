@@ -452,7 +452,7 @@ export function Zawody({
   return (
     <div className="flex flex-col gap-5">
       <p className="text-tresc leading-relaxed text-atrament-sciszony">
-        Przy każdym zawodzie zaznacz, jak go widzisz. Prowadzący zobaczy to przed rozmową — jeśli
+        Przy każdym zawodzie zaznacz, jak go widzisz. Prowadzący zobaczy to przed rozmową. Jeśli
         odrzucasz coś, co wyszło wysoko, tym lepiej. Właśnie o tym będziecie rozmawiać.
       </p>
       {dane.wynikiWstepne ? (

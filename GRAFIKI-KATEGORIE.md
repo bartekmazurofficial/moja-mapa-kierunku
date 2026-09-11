@@ -1,21 +1,33 @@
 # Spis grafik kategorii
 
 Klucze są te same, których używa aplikacja. Każdy plik zastępuje jeden
-rysowany dziś znak. Kolumna **ilustruje** mówi, jaką treść obraz ma nieść —
+rysowany dziś znak. Kolumna **ilustruje** mówi, jaką treść obraz ma nieść:
 nie jak ma wyglądać, tylko co ma znaczyć.
 
-**Format dla wszystkich pozycji z tej listy:** PNG z przezroczystością,
-**512 × 512 px**, kontur albo płaska forma, bez tła i bez cienia. Trafiają
-na ciemny fiolet w kaflu 44 × 44 i 40 × 40 px, więc muszą być czytelne
-po zmniejszeniu do jednej dziesiątej.
+## Format
 
-Nazwa pliku = klucz. Na przykład `a1-7.png`.
+**Tak jak dwadzieścia cztery obrazy A1, które już są w aplikacji.** To jest
+wzorzec, do którego dopasowujemy resztę, żeby moduły nie wyglądały jak
+złożone z dwóch różnych produktów:
+
+- **PNG, kwadrat, 1254 × 1254 px** (albo więcej, byle kwadrat)
+- **z tłem**, nie do wycięcia: tło jest częścią obrazu
+- malarska, ciepłe światło na fiolecie, jedna scena z człowiekiem przy pracy
+- czytelna po zmniejszeniu do kwadratu **64 px**: jedna postać, jedno światło,
+  żadnych drobnych detali niosących sens
+- bez napisów, które trzeba przeczytać, żeby zrozumieć obraz
+
+Nazwa pliku = klucz. Na przykład `a1-7.png`, `a2-13.png`.
+
+Aplikacja sama przelicza oryginały na dwie wersje (256 px na kafel,
+768 px na nagłówek): `npx tsx scripts/grafiki.ts <katalog> <moduł>`.
+Do repozytorium trafiają tylko przeliczone, bo oryginał waży 2 MB.
 
 ---
 
-## A1 · 24 obszary zainteresowań
+## A1 · 24 obszary zainteresowań · DOSTARCZONE, są w aplikacji
 
-Pokazywane przy każdej z 144 pozycji modułu „Co mnie ciągnie” i na planszy wyników. Jedna grafika obsługuje sześć pozycji, więc to tutaj jest największy zysk z pracy.
+Komplet jest wgrany i widać go przy każdej z 144 pozycji modułu „Co mnie ciągnie” oraz na planszy wyników. Zostawiam tabelę jako opis tego, co który plik znaczy.
 
 | Klucz | Plik | Ilustruje |
 |---|---|---|
@@ -179,9 +191,10 @@ Moduł startowy. Nie ma kategorii wynikowych, więc grupujemy po tym, o co pytam
 
 Bez tej optymalizacji trzeba by ich było **ponad czterysta**: tyle jest
 pojedynczych pozycji we wszystkich modułach. Ilustrujemy kategorie, więc
-jedna grafika pracuje średnio na sześciu ekranach — a w jednym zestawie
+jedna grafika pracuje średnio na sześciu ekranach, a w jednym zestawie
 cztery pozycje pochodzą z czterech różnych kategorii, więc żadne dwa kafle
 obok siebie nie są takie same.
 
-Można zacząć od samego A1: dwadzieścia cztery pliki zmieniają wygląd
-pierwszej sesji, która jest najdłuższa i była najbardziej monotonna.
+A1 jest już zrobione: dwadzieścia cztery obrazy siedzą w aplikacji.
+Następne w kolejności zysku to **A2, trzydzieści kompetencji**: to drugi
+najdłuższy moduł, 180 pozycji, i jedyny, który dalej wygląda na rysowany.

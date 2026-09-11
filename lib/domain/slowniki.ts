@@ -224,7 +224,7 @@ export const FILTRY_A5: FiltrA5[] = [
   { kod: "F40", blok: 6, nazwaBloku: "Pieniądze i ryzyko", tekst: "samodzielne zdobywanie klientów i sprzedawanie własnych usług" },
   { kod: "F31", blok: 7, nazwaBloku: "Odpowiedzialność", tekst: "odpowiedzialność za czyjeś zdrowie lub bezpieczeństwo" },
   { kod: "F32", blok: 7, nazwaBloku: "Odpowiedzialność", tekst: "pracę pod stałą presją czasu i wyniku" },
-  { kod: "F41", blok: 7, nazwaBloku: "Odpowiedzialność", tekst: "dużą ilość dokumentów, sprawozdań i pracy papierkowej" },
+  { kod: "F41", blok: 7, nazwaBloku: "Odpowiedzialność", tekst: "dużo dokumentów, sprawozdań i papierkowej roboty" },
   { kod: "F43", blok: 7, nazwaBloku: "Odpowiedzialność", tekst: "poprawianie własnej pracy na cudze polecenie, także po raz czwarty" },
 ];
 

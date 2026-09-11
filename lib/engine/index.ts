@@ -214,7 +214,7 @@ function pytaniaNaSesje(
 
   if (w2.wynikiWstepne) {
     pytania.push(
-      "Mniej niż pięć zawodów przekroczyło próg pokazania. Wynik jest wstępny — sprawdź, czy któryś moduł nie został wypełniony pobieżnie.",
+      "Mniej niż pięć zawodów przekroczyło próg pokazania. Wynik jest wstępny. Sprawdź, czy któryś moduł nie został wypełniony pobieżnie.",
     );
   }
   if (w3.sensStudiow === "niepotrzebne") {

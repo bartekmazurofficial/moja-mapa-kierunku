@@ -15,15 +15,27 @@ const w = (s = "") => linie.push(s);
 w("# Spis grafik kategorii");
 w();
 w("Klucze są te same, których używa aplikacja. Każdy plik zastępuje jeden");
-w("rysowany dziś znak. Kolumna **ilustruje** mówi, jaką treść obraz ma nieść —");
+w("rysowany dziś znak. Kolumna **ilustruje** mówi, jaką treść obraz ma nieść:");
 w("nie jak ma wyglądać, tylko co ma znaczyć.");
 w();
-w("**Format dla wszystkich pozycji z tej listy:** PNG z przezroczystością,");
-w("**512 × 512 px**, kontur albo płaska forma, bez tła i bez cienia. Trafiają");
-w("na ciemny fiolet w kaflu 44 × 44 i 40 × 40 px, więc muszą być czytelne");
-w("po zmniejszeniu do jednej dziesiątej.");
+w("## Format");
 w();
-w("Nazwa pliku = klucz. Na przykład `a1-7.png`.");
+w("**Tak jak dwadzieścia cztery obrazy A1, które już są w aplikacji.** To jest");
+w("wzorzec, do którego dopasowujemy resztę, żeby moduły nie wyglądały jak");
+w("złożone z dwóch różnych produktów:");
+w();
+w("- **PNG, kwadrat, 1254 × 1254 px** (albo więcej, byle kwadrat)");
+w("- **z tłem**, nie do wycięcia: tło jest częścią obrazu");
+w("- malarska, ciepłe światło na fiolecie, jedna scena z człowiekiem przy pracy");
+w("- czytelna po zmniejszeniu do kwadratu **64 px**: jedna postać, jedno światło,");
+w("  żadnych drobnych detali niosących sens");
+w("- bez napisów, które trzeba przeczytać, żeby zrozumieć obraz");
+w();
+w("Nazwa pliku = klucz. Na przykład `a1-7.png`, `a2-13.png`.");
+w();
+w("Aplikacja sama przelicza oryginały na dwie wersje (256 px na kafel,");
+w("768 px na nagłówek): `npx tsx scripts/grafiki.ts <katalog> <moduł>`.");
+w("Do repozytorium trafiają tylko przeliczone, bo oryginał waży 2 MB.");
 w();
 
 function sekcja(tytul: string, wstep: string, wiersze: Array<[string, string, string]>) {
@@ -40,9 +52,9 @@ function sekcja(tytul: string, wstep: string, wiersze: Array<[string, string, st
 }
 
 sekcja(
-  "A1 · 24 obszary zainteresowań",
-  "Pokazywane przy każdej z 144 pozycji modułu „Co mnie ciągnie” i na planszy wyników. " +
-    "Jedna grafika obsługuje sześć pozycji, więc to tutaj jest największy zysk z pracy.",
+  "A1 · 24 obszary zainteresowań · DOSTARCZONE, są w aplikacji",
+  "Komplet jest wgrany i widać go przy każdej z 144 pozycji modułu „Co mnie ciągnie” " +
+    "oraz na planszy wyników. Zostawiam tabelę jako opis tego, co który plik znaczy.",
   OBSZARY_A1.map((o) => [`a1-${o.id}`, `a1-${o.id}.png`, o.etykieta] as [string, string, string]),
 );
 
@@ -113,11 +125,12 @@ w(`## Razem: ${suma} grafik`);
 w();
 w("Bez tej optymalizacji trzeba by ich było **ponad czterysta**: tyle jest");
 w("pojedynczych pozycji we wszystkich modułach. Ilustrujemy kategorie, więc");
-w("jedna grafika pracuje średnio na sześciu ekranach — a w jednym zestawie");
+w("jedna grafika pracuje średnio na sześciu ekranach, a w jednym zestawie");
 w("cztery pozycje pochodzą z czterech różnych kategorii, więc żadne dwa kafle");
 w("obok siebie nie są takie same.");
 w();
-w("Można zacząć od samego A1: dwadzieścia cztery pliki zmieniają wygląd");
-w("pierwszej sesji, która jest najdłuższa i była najbardziej monotonna.");
+w("A1 jest już zrobione: dwadzieścia cztery obrazy siedzą w aplikacji.");
+w("Następne w kolejności zysku to **A2, trzydzieści kompetencji**: to drugi");
+w("najdłuższy moduł, 180 pozycji, i jedyny, który dalej wygląda na rysowany.");
 
 console.log(linie.join("\n"));

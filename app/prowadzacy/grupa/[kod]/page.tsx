@@ -141,7 +141,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
                   </span>
                 </td>
                 <td className="py-3 pr-4 text-male text-atrament-sciszony">
-                  {u.brakiDanych.length > 0 ? u.brakiDanych.join(", ") : "—"}
+                  {u.brakiDanych.length > 0 ? u.brakiDanych.join(", ") : "komplet"}
                 </td>
                 <td className="py-3 pr-4 text-male tabular-nums">{u.liczbaWet}</td>
                 <td className="py-3 pr-4 text-male">

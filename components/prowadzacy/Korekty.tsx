@@ -31,7 +31,7 @@ export function Korekty({ karta }: { karta: KartaUczestnika }) {
             <li key={k.id} className="flex items-baseline justify-between gap-3 border-b border-linia pb-2">
               <span className="text-male">
                 <span className="text-atrament-slaby">{OPISY[k.typ] ?? k.typ}:</span>{" "}
-                {k.wartosc ? (nazwy.get(k.wartosc) ?? k.wartosc) : "—"}
+                {k.wartosc ? (nazwy.get(k.wartosc) ?? k.wartosc) : "brak"}
                 {k.uzasadnienie ? (
                   <span className="block text-drobne text-atrament-slaby">{k.uzasadnienie}</span>
                 ) : null}

@@ -336,7 +336,7 @@ export const ANTYPROFIL: Record<string, RegulaAntyprofilu> = {
   dokumentacja_nie: {
     aktywna: true,
     wZawodzie: "Dokumenty, sprawozdania i praca papierkowa zajmują tu znaczną część dnia.",
-    zrodlo: "odpowiedziałeś NIE na pytanie o dużą ilość dokumentów i sprawozdań",
+    zrodlo: "odpowiedziałeś NIE na pytanie o dużo dokumentów i sprawozdań",
     sprawdz: (w) => odmowa(w, "F41"),
   },
   odmowa_do_siebie: {

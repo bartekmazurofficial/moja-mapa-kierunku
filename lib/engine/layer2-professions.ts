@@ -189,7 +189,7 @@ export function warstwa2(
       if (!regula?.aktywna) continue;
       ostrzezenia.push({
         kod,
-        zdanie: `${regula.wZawodzie} Twoje odpowiedzi sugerują, że to może być dla Ciebie trudniejsze niż dla innych — ${regula.zrodlo}. Warto o tym porozmawiać na sesji indywidualnej.`,
+        zdanie: `${regula.wZawodzie} Twoje odpowiedzi sugerują, że to może być dla Ciebie trudniejsze niż dla innych, bo ${regula.zrodlo}. Warto o tym porozmawiać na sesji indywidualnej.`,
         zrodlo: regula.zrodlo,
       });
     }

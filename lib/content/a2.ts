@@ -32,14 +32,15 @@ export const INSTRUKCJA_A2 = {
   naglowek: "W czym mogę być dobry",
   wprowadzenie: [
     "Poprzednio pytaliśmy, co chciałbyś robić. Teraz pytamy o coś innego.",
-    "W czym, Twoim zdaniem, poradziłbyś sobie najlepiej — nawet jeśli wcale byś tego nie lubił?",
+    "W czym, Twoim zdaniem, poradziłbyś sobie najlepiej, nawet jeśli wcale byś tego nie lubił?",
     "Twoje odpowiedzi nie muszą zgadzać się z poprzednim wynikiem. Jeśli się nie zgadzają, to najciekawsza rzecz, jaką dziś znajdziemy.",
   ],
   rozwiniecie: [
-    "To nie jest to samo pytanie. Często najlepiej wychodzą nam rzeczy, za którymi nie przepadamy. I odwrotnie — uwielbiamy coś, co idzie nam średnio.",
-    "Nie oceniaj, czy to ważne albo czy dobrze brzmi. Pytamy tylko: co poszłoby Ci lepiej niż pozostałe trzy rzeczy w zestawie.",
+    "To nie jest to samo pytanie. Często najlepiej wychodzą nam rzeczy, za którymi nie przepadamy. I odwrotnie: uwielbiamy coś, co idzie nam średnio.",
+    "Nie oceniaj, czy to ważne albo czy dobrze brzmi. Pytamy tylko: co poszłoby Ci lepiej niż pozostałe trzy rzeczy w zestawie. W każdym zestawie nadajesz numery od 1 do 4, a jeden numer możesz przypisać tylko raz.",
   ],
-  polecenieBloku: "Ustaw w kolejności: od tej, która poszłaby Ci najlepiej",
+  polecenieBloku: "Nadaj numery od 1 do 4. Jeden numer możesz przypisać tylko raz.",
+  krancePozycji: ["1 to ta, która poszłaby Ci najlepiej", "4 to ta, która najsłabiej"],
   przerwa: "Połowa za Tobą. Odetchnij chwilę.",
   dowodyNaglowek: "Gdzie to widać?",
   dowodyPodtytul:
@@ -71,14 +72,14 @@ export const CWIARTKI = [
     kod: "do_zbudowania",
     etykieta: "Chcę, ale muszę zbudować",
     komunikat:
-      "Bardzo Cię to ciągnie, ale zaplecza jeszcze nie ma. To nie znaczy nie — to znaczy: najpierw te umiejętności.",
+      "Bardzo Cię to ciągnie, ale zaplecza jeszcze nie ma. To nie znaczy nie. To znaczy: najpierw te umiejętności.",
   },
   { kod: "raczej_nie", etykieta: "Raczej nie", komunikat: "" },
 ] as const;
 
 export const RAMKI_A2 = {
   najslabsze:
-    "To nie jest wyrok. W Twoim wieku większość kompetencji dopiero się buduje — to lista rzeczy, których możesz się nauczyć, jeśli będą potrzebne na Twojej drodze.",
+    "To nie jest wyrok. W Twoim wieku większość kompetencji dopiero się buduje. To lista rzeczy, których możesz się nauczyć, jeśli będą potrzebne na Twojej drodze.",
   zDowodami: "i masz na to konkretne przykłady",
   bezDowodow: "na razie bez doświadczeń, które by to potwierdzały",
 } as const;

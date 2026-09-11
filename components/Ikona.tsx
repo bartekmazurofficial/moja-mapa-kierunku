@@ -1,8 +1,10 @@
 import { GLIFY, odcien, type KluczGlifu } from "@/lib/ui/glify";
+import { obrazKafla } from "@/lib/ui/obrazy";
 
 /**
- * Znak kategorii. Rysowany konturem, w odcieniu przypisanym na stałe kluczowi,
- * więc ten sam obszar wygląda tak samo w każdym zestawie i w raporcie.
+ * Znak kategorii. Ilustracja, jeśli dla kategorii jest plik; w przeciwnym razie
+ * kontur rysowany w odcieniu przypisanym na stałe kluczowi. Ten sam obszar
+ * wygląda tak samo w każdym zestawie i w raporcie.
  *
  * Ozdoba i pomoc w orientacji, nigdy jedyny nośnik treści: obok zawsze stoi
  * pełny tekst pozycji.
@@ -16,9 +18,37 @@ export function Ikona({
   rozmiar?: number;
   aktywna?: boolean;
 }) {
+  const h = odcien(klucz);
+  const obraz = obrazKafla(klucz);
+
+  if (obraz) {
+    return (
+      <span
+        aria-hidden
+        className="przejscie relative block shrink-0 overflow-hidden rounded-xl border"
+        style={{
+          width: rozmiar,
+          height: rozmiar,
+          borderColor: `hsl(${h} 70% 72% / ${aktywna ? 0.6 : 0.22})`,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={obraz}
+          alt=""
+          width={rozmiar}
+          height={rozmiar}
+          loading="lazy"
+          decoding="async"
+          className="przejscie h-full w-full object-cover"
+          style={{ opacity: aktywna ? 1 : 0.82 }}
+        />
+      </span>
+    );
+  }
+
   const sciezki = GLIFY[klucz];
   if (!sciezki) return null;
-  const h = odcien(klucz);
 
   return (
     <span

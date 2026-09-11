@@ -30,6 +30,8 @@ export type TypPozycji =
 export interface OpcjaWyboru {
   kod: string;
   etykieta: string;
+  /** Druga linia pod etykieta. Zdanie wyjasniajace, nie druga nazwa. */
+  podpis?: string;
   /** Klucz znaku kategorii, np. "a1-7". Ilustrujemy kategorie, nie pozycje. */
   ikona?: string;
   /** Opcja wykluczajaca sie z pozostalymi, np. "nic z tego". */

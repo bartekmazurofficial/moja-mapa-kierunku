@@ -117,7 +117,18 @@ function wagi(
   return wynik;
 }
 
-/** "0–1 rok", "3–5 lat", "8+ lat", "11+ lat" -> liczba lat do samodzielnej pracy. */
+/**
+ * Czas dojscia w wersji do czytania. Zakresy typu "3-5 lat" sa poprawne
+ * i zostaja; poprawiamy dwa zapisy, ktore po polsku nie brzmia: "0 lat"
+ * i "0-1 rok". Pole `lata`, od ktorego zalezy silnik, liczy sie z oryginalu.
+ */
+function czasNaEkran(czas: string): string {
+  if (czas === "0 lat") return "bez dodatkowej nauki";
+  if (czas === "0\u20131 rok") return "do roku";
+  return czas;
+}
+
+/** "0-1 rok", "3-5 lat", "8+ lat", "11+ lat" -> liczba lat do samodzielnej pracy. */
 function lataZCzasu(czas: string, obszar: number): number {
   const m = czas.match(/(\d+)/);
   if (!m) {
@@ -134,14 +145,14 @@ function parsujPoziomy(body: string, obszar: number): PoziomWejscia[] {
     const etykieta = w[1].trim();
     const kod = POZIOMY_ETYKIETY[etykieta];
     if (!kod) continue; // naglowek tabeli albo inna tabela
-    const czas = w[3].trim();
+    const czasZrodlowy = w[3].trim();
     const studiaOpis = w[4].trim();
     poziomy.push({
       poziom: kod,
       etykieta,
       przyklad: w[2].trim(),
-      czas,
-      lata: lataZCzasu(czas, obszar),
+      czas: czasNaEkran(czasZrodlowy),
+      lata: lataZCzasu(czasZrodlowy, obszar),
       studiaOpis,
       // Regula z prototypu warstwy pierwszej: wymog studiow tylko wtedy,
       // gdy opis zaczyna sie od "tak". "zwykle tak" nie zamyka poziomu

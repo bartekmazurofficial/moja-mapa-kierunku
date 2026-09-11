@@ -71,10 +71,10 @@ export function TrzyDrogiPanel({ karta }: { karta: KartaUczestnika }) {
 export function Rozjazdy({ rozjazdy }: { rozjazdy: Rozjazd[] }) {
   return (
     <section className="szklo szklo-akcent p-6">
-      <Naglowek>Rozjazdy — po to jest ta sesja</Naglowek>
+      <Naglowek>Rozjazdy, po to jest ta sesja</Naglowek>
       {rozjazdy.length === 0 ? (
         <p className="text-tresc leading-relaxed">
-          System nie znalazł sprzeczności. To nie znaczy, że ich nie ma — znaczy, że rozmowę
+          System nie znalazł sprzeczności. To nie znaczy, że ich nie ma. Znaczy, że rozmowę
           zaczynasz od pytania otwartego, nie od gotowego tematu.
         </p>
       ) : (
@@ -98,7 +98,7 @@ export function Rozjazdy({ rozjazdy }: { rozjazdy: Rozjazd[] }) {
 export function Ostrzezenia({ karta }: { karta: KartaUczestnika }) {
   if (karta.ostrzezenia.length === 0) return null;
   return (
-    <Blok tytul="Ostrzeżenia antyprofilowe — do omówienia, nie do przemilczenia">
+    <Blok tytul="Ostrzeżenia antyprofilowe: do omówienia, nie do przemilczenia">
       <ul className="flex flex-col gap-3">
         {karta.ostrzezenia.map((o) => (
           <li key={o.zawod} className="rounded-lg bg-uwaga-tlo p-3">
@@ -152,12 +152,12 @@ export function PytanieUczestnika({ karta }: { karta: KartaUczestnika }) {
 export function UsunieteWetem({ karta }: { karta: KartaUczestnika }) {
   if (karta.usunieteWetem.length === 0) return null;
   return (
-    <Blok tytul={`Odpadło przez weto — ${karta.usunieteWetem.length} zawodów, tylko dla Ciebie`}>
+    <Blok tytul={`Odpadło przez weto: ${karta.usunieteWetem.length} zawodów, tylko dla Ciebie`}>
       <ul className="flex flex-col gap-1.5">
         {karta.usunieteWetem.slice(0, 12).map((z) => (
           <li key={z.nazwa} className="text-male">
             {z.nazwa}{" "}
-            <span className="text-atrament-slaby">— {z.filtry.join(", ")}</span>
+            <span className="text-atrament-slaby">· {z.filtry.join(", ")}</span>
           </li>
         ))}
       </ul>

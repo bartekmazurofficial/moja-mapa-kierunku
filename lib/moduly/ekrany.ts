@@ -41,16 +41,6 @@ export const NAZWY_MODULOW: Record<KodModulu, string> = {
   M1: "Jakiego życia chcesz",
 };
 
-export const CZASY_MODULOW: Record<KodModulu, string> = {
-  A0: "8 minut",
-  A1: "20 minut",
-  A2: "27 minut",
-  A3: "21 minut",
-  A4: "12 minut",
-  A5: "22 minuty",
-  M1: "45 minut",
-};
-
 /**
  * Kolejnosc modulow zgodna ze scenariuszami czterech spotkan.
  * Na spotkaniu trzecim: wartosci, przerwa, wizja zycia, filtry. A5 musi isc
@@ -137,7 +127,14 @@ function czescA1A(plan: PlanModulu): CzescModulu {
       klucz: `A1_blok_${blok.index}`,
       typ: "pozycje",
       polecenie: INSTRUKCJA_A1.polecenieBloku,
-      pozycje: [{ id: `blok_${blok.index}`, typ: "ranking4", opcje }],
+      pozycje: [
+        {
+          id: `blok_${blok.index}`,
+          typ: "ranking4",
+          opcje,
+          krance: [...INSTRUKCJA_A1.krancePozycji] as [string, string],
+        },
+      ],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "zestaw" },
       autoDalej: true,
     });
@@ -175,7 +172,7 @@ function czescA1B(plan: PlanModulu): CzescModulu {
         typ: "pozycje",
         naglowek: INSTRUKCJA_A1.kotwiceNaglowek,
         podpis:
-          "Przy każdej pozycji zaznacz też, czy już czegoś takiego próbowałeś. To nie jest ocena — chodzi o to, żeby odróżnić wyobrażenie od doświadczenia.",
+          "Przy każdej pozycji zaznacz też, czy już czegoś takiego próbowałeś. To nie jest ocena. Chodzi o to, żeby odróżnić wyobrażenie od doświadczenia.",
         pozycje,
         skupiskaCo: 5,
         przyciskDalej: "Zakończ moduł",
@@ -204,7 +201,14 @@ function czescA2A(plan: PlanModulu): CzescModulu {
       klucz: `A2_blok_${blok.index}`,
       typ: "pozycje",
       polecenie: INSTRUKCJA_A2.polecenieBloku,
-      pozycje: [{ id: `blok_${blok.index}`, typ: "ranking4", opcje }],
+      pozycje: [
+        {
+          id: `blok_${blok.index}`,
+          typ: "ranking4",
+          opcje,
+          krance: [...INSTRUKCJA_A2.krancePozycji] as [string, string],
+        },
+      ],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "zestaw" },
       autoDalej: true,
     });
@@ -344,7 +348,8 @@ function czescA4B(): CzescModulu {
             opcjonalna: true,
             opcje: WARTOSCI_A4.map((w) => ({
               kod: w.kod,
-              etykieta: `${w.nazwa} — ${w.znaczenie.toLowerCase()}`,
+              etykieta: w.nazwa,
+              podpis: w.znaczenie,
               ikona: `a4-${w.kod}`,
             })),
           },

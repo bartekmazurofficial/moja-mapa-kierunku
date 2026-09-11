@@ -48,8 +48,8 @@ export default async function Strona({
       <main className="mx-auto flex min-h-dvh max-w-czytelna flex-col justify-center px-6 py-16">
         <h1 className="text-naglowek font-extrabold tracking-tight">To już masz za sobą</h1>
         <p className="proza mt-4 text-atrament-sciszony">
-          Ta część jest wypełniona. Możesz zobaczyć swoje odpowiedzi albo wypełnić ją jeszcze raz —
-          wtedy poprzednie odpowiedzi znikają i zaczynasz od pierwszego ekranu.
+          Ta część jest wypełniona. Możesz zobaczyć swoje odpowiedzi albo wypełnić ją jeszcze raz. Wtedy poprzednie
+          odpowiedzi znikają i zaczynasz od pierwszego ekranu.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
           {modul !== "A0" ? (

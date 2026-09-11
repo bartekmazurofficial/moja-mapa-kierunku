@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { pobierzPostepModulow, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, MODULY_SPOTKANIA, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
-import { CZASY_MODULOW, CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
+import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { Bramy } from "@/components/pulpit/Bramy";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +12,7 @@ const PO_CO: Record<string, string> = {
   A0: "Kilka podstawowych informacji o Twojej sytuacji: gdzie jesteś, co Ci idzie, na co masz przestrzeń.",
   A1: "Co Cię realnie ciągnie. Nie deklaracje, tylko wybory między konkretnymi zajęciami.",
   A3: "Jak naturalnie działasz: sam czy z ludźmi, z planem czy w biegu, cisza czy ruch.",
-  A2: "W czym możesz być dobry. Osobno od tego, co lubisz — to nie zawsze to samo.",
+  A2: "W czym możesz być dobry. Osobno od tego, co lubisz, bo to nie zawsze to samo.",
   A4: "Czego potrzebujesz od pracy, żeby miała dla Ciebie sens.",
   M1: "Jakiego życia chcesz. Jedyna część, w której piszesz własnymi słowami.",
   A5: "Warunki pracy, które są nie do pogodzenia z tym, jak chcesz żyć.",
@@ -55,7 +55,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           <span className="gradient-tytul">Wielkie możliwości.</span>
         </h1>
         <p className="proza mt-4 max-w-czytelna">
-          Każdą część można przerwać i wrócić. Nie ma dobrych ani złych odpowiedzi — liczy się to,
+          Każdą część można przerwać i wrócić. Nie ma dobrych ani złych odpowiedzi. Liczy się to,
           co jest najbliżej prawdy o Tobie.
         </p>
       </header>
@@ -77,15 +77,11 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
                     <Odznaka stan={s} spotkanie={SPOTKANIE_MODULU[m]} />
                   </div>
                   <p className="mt-2 text-male leading-relaxed text-atrament-sciszony">{PO_CO[m]}</p>
-                  <p className="mt-4 flex items-center gap-2 text-drobne text-atrament-slaby">
-                    <Zegar />
-                    {CZASY_MODULOW[m]}
-                    {s !== "zamkniety" ? (
-                      <span aria-hidden className="przejscie ml-auto text-akcent-jasny group-hover:translate-x-0.5">
-                        →
-                      </span>
-                    ) : null}
-                  </p>
+                  {s !== "zamkniety" ? (
+                    <p className="mt-4 flex items-center justify-end text-drobne text-akcent-jasny">
+                      <span aria-hidden className="przejscie group-hover:translate-x-0.5">→</span>
+                    </p>
+                  ) : null}
                 </>
               );
 
@@ -156,14 +152,5 @@ function Odznaka({ stan, spotkanie }: { stan: string; spotkanie: number }) {
     <span className={`shrink-0 rounded-full border px-2.5 py-1 text-drobne font-semibold ${style[stan]}`}>
       {tekst[stan]}
     </span>
-  );
-}
-
-function Zegar() {
-  return (
-    <svg aria-hidden viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.4">
-      <circle cx="8" cy="8" r="5.8" />
-      <path d="M8 4.8V8l2.2 1.4" strokeLinecap="round" />
-    </svg>
   );
 }

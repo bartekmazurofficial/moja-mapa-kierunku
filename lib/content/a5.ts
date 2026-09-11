@@ -26,13 +26,13 @@ export const INSTRUKCJA_A5 = {
   naglowek: "Filtry rzeczywistości",
   wprowadzenie: [
     "Przed chwilą opisałeś, jak chcesz żyć. Teraz zaznacz warunki pracy, które są z tym nie do pogodzenia.",
-    "Odpowiadasz TAK, MOŻE albo NIE. MOŻE jest pełnoprawną odpowiedzią — jeśli nie wiesz, zaznacz MOŻE.",
+    "Odpowiadasz TAK, MOŻE albo NIE. MOŻE jest pełnoprawną odpowiedzią. Jeśli nie wiesz, zaznacz MOŻE.",
     "Na koniec wybierzesz najwyżej trzy rzeczy, które są dla Ciebie absolutnie wykluczone. Tylko trzy, więc zastanów się, które naprawdę. Wykluczenie usuwa zawody całkowicie, nie przesuwa ich niżej.",
   ],
   polecenieBloku: "Czy jesteś gotów na…",
   wetaNaglowek: "Co jest nie do przejścia",
   wetaPolecenie:
-    "Wybierz najwyżej trzy, które są dla Ciebie granicą nie do przekroczenia — takie, że nawet praca idealna pod każdym innym względem odpadłaby przez to jedno. Reszta zostaje jako minus, nie jako koniec rozmowy.",
+    "Wybierz najwyżej trzy, które są dla Ciebie granicą nie do przekroczenia, czyli takie, że nawet praca idealna pod każdym innym względem odpadłaby przez to jedno. Reszta zostaje jako minus, nie jako koniec rozmowy.",
   wetaMoznaPominac: "Możesz nie zaznaczyć żadnego.",
   zdaniaNaglowek: "Trzy zdania własnymi słowami",
   zdaniaPodpis:

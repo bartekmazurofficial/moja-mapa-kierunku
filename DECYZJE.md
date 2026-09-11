@@ -1103,3 +1103,94 @@ pokazywał „do zrobienia"; pokazuje „zaczęte".
 
 Moduł zamknięty przez prowadzącego nie daje się ani wypełnić, ani wyczyścić —
 inaczej uczestnik skasowałby odpowiedzi i został z niczym.
+
+### D57. Czas modułu znika z ekranu uczestnika
+
+Siedemnastolatek, który przed startem czyta „27 minut”, zaczyna liczyć zamiast
+odpowiadać, a moduł wypełniony w pośpiechu jest gorszy niż wypełniony wolno.
+Tabela `CZASY_MODULOW` usunięta, zdanie „Zajmie około 20 minut” z instrukcji A1
+usunięte. Postęp mówi „7 z 36 zestawów”, czyli ile zostało, a nie ile to potrwa.
+
+Prowadzący **zachowuje** minutówkę: scenariusz spotkania i panel sesji dalej
+podają czasy. To jest jego narzędzie do prowadzenia grupy, nie presja dla
+uczestnika.
+
+### D58. Myślnik pauzowy znika z tekstów
+
+Decyzja redakcyjna: zdanie ma być poukładane tak, żeby myślnik nie był
+potrzebny. Zamiast niego kropka, przecinek, dwukropek albo spójnik, zależnie
+od tego, co zdanie robi. Poprawionych 67 miejsc w treściach, widokach,
+raporcie i PDF-ie.
+
+Dwa miejsca dostały coś lepszego niż zamiennik interpunkcyjny:
+
+- wartości A4 miały etykietę `nazwa — znaczenie`; teraz nazwa i wyjaśnienie
+  stoją w dwóch liniach (`OpcjaWyboru.podpis`), co czyta się lepiej
+  niż jedno długie zdanie,
+- puste komórki w panelu pokazywały „—”, teraz piszą „brak” albo „komplet”.
+
+`tests/bez-myslnika.test.ts` przegląda pliki widoków i treści (bez komentarzy)
+oraz pola wyświetlane w bazie. Test pada, gdy „—” wróci przy kolejnej edycji.
+
+Półpauza w zakresach („3–5 lat”) **zostaje**: to jest poprawny polski zapis
+zakresu, nie myślnik w zdaniu. Poprawione zostały dwa zapisy, które po polsku
+nie brzmiały: „0 lat” na „bez dodatkowej nauki” i „0–1 rok” na „do roku”.
+Normalizacja siedzi w parserze obszarów, więc przetrwa kolejny import; pole
+`lata`, od którego zależy silnik, liczy się dalej z oryginału.
+
+### D59. Poprawki polszczyzny w parach M1 i A3
+
+Jedna z nich była błędem merytorycznym, nie stylistycznym. Para GRA_2 miała
+biegun B „Wolę pracować w swoich godzinach i mieć spokój”, a biegun B tej osi
+znaczy **ostre rozdzielenie pracy i życia**. „W swoich godzinach” czyta się
+jako „sam sobie ustalam pory”, czyli dokładnie biegun A. Uczestnik wybierający
+zgodnie z sobą trafiał w przeciwny biegun. Teraz: „Wolę pracować w stałych
+godzinach i mieć wolny wieczór”.
+
+Reszta to polszczyzna: „Wolę wynajmować i móc się ruszyć”, „Wolę być lekki”,
+„Ulżyło mi, gdy decyduje ktoś inny” (czas przeszły przy stanie stałym),
+„Wolę mniejszy, ale pewny” (urwane), „dużą ilość dokumentów” (ilość łączy się
+z niepoliczalnymi). Pięć zdań osi EFE miało kropkę na końcu, a wszystkie
+pozostałe pary jej nie mają.
+
+**Kody i identyfikatory nietknięte.** Zmienione wyłącznie pola wyświetlane.
+
+### D60. Numery w zestawie zamiast kolejności klikania
+
+Ranking czterech pozycji działał tak, że numer nadawał się sam, w kolejności
+stukania, a czwarta pozycja dopełniała się bez udziału uczestnika. Trzy
+kliknięcia i nagle wszystko ponumerowane, ekran ucieka.
+
+Teraz każda pozycja ma cztery przyciski `1 2 3 4` i numer wybiera się wprost.
+Jedna zasada: **jeden numer należy do jednej pozycji**. Nadanie zajętego numeru
+zabiera go poprzedniej pozycji, zamiast blokować przycisk, bo blokada kończy
+się tym, że pomyłki nie da się poprawić inaczej niż kasując wszystko.
+
+Reguła jako czysta funkcja w `lib/moduly/ranking.ts`, z testem, który przy stu
+losowych kliknięciach sprawdza, że żaden numer nie występuje dwa razy.
+Kształt zapisu w bazie bez zmian, silnik nie wie o niczym.
+
+### D61. Ilustracje kategorii zamiast rysowanych glifów
+
+Dwadzieścia cztery obrazy A1 są w aplikacji. Nie są tym, co zamawiałem
+(kontur 512 px na przezroczystości), tylko pełnymi ilustracjami z tłem,
+1254 px. **Lepiej.** Kafel z obrazem widać z drugiego końca pokoju, a znak
+konturowy ginął przy 44 px. Format A1 staje się wzorcem dla reszty modułów.
+
+Oryginały ważą po 2 MB, czyli 49 MB na moduł. Do repozytorium trafiają dwie
+przeliczone wersje: 256 px na kafel (razem 470 kB) i 768 px na nagłówek.
+Przelicza `scripts/grafiki.ts`, sprawdza `tests/grafiki.test.ts`, który pilnuje
+też budżetu wagi i tego, że deklaracja w `lib/ui/obrazy.ts` zgadza się z dyskiem.
+
+Kategoria bez pliku dostaje rysowany glif, więc dosyłanie grafik partiami
+niczego nie psuje.
+
+### D62. Przejście między ekranami modułu
+
+Po ostatniej odpowiedzi ekran czekał 400 ms i podmieniał się w jednej klatce,
+razem ze skokiem na górę strony. Wyglądało to jak zawieszenie, a potem awaria.
+
+Teraz: 150 ms na zobaczenie własnego wyboru, wygaszenie starego ekranu,
+wejście nowego animacją 190 ms. Przewijamy tylko wtedy, gdy strona faktycznie
+jest przewinięta, bo skok do zera na ekranie, który się mieści, sam wyglądał
+jak błąd. Wszystko pod `prefers-reduced-motion`.

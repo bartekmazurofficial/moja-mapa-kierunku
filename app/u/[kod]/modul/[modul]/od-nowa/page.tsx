@@ -61,7 +61,7 @@ export default async function Strona({
               </>
             ) : null}
           </li>
-          <li>kolejność bloków wylosowana dla Ciebie — nowy przebieg będzie w innej kolejności</li>
+          <li>kolejność bloków wylosowana dla Ciebie, więc nowy przebieg pójdzie inaczej</li>
           {modul === "M1" ? <li>tekst, który napisałeś własnymi słowami</li> : null}
         </ul>
         <p className="proza mt-4 text-atrament-sciszony">

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { pobierzPostepModulow, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
 import { stanDostepu } from "@/lib/raport/dostep";
-import { CZASY_MODULOW, CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
+import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { WARSTWY } from "@/lib/raport/sekcje";
 import { Bramy } from "@/components/pulpit/Bramy";
 
@@ -49,7 +49,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </h1>
         <p className="proza mt-4 max-w-czytelna">
           Wypełniasz kolejne części na spotkaniach, a raport otwiera się stopniowo. Nic nie musisz
-          robić jednym ciągiem — odpowiedzi zapisują się same.
+          robić jednym ciągiem, bo odpowiedzi zapisują się same.
         </p>
 
         {dalej ? (
@@ -88,7 +88,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
                         : s === "wtrakcie"
                           ? "zaczęte, można dokończyć"
                           : s === "przed"
-                            ? CZASY_MODULOW[m]
+                            ? "do zrobienia"
                             : `otworzy się na ${SPOTKANIE_MODULU[m]}. spotkaniu`}
                     </span>
                   </span>

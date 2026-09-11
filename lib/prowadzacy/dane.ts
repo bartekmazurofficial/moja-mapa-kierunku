@@ -256,7 +256,7 @@ export async function pobierzKarteUczestnika(kodDostepu: string): Promise<KartaU
     .filter((z) => z.ostrzezenia.length > 0)
     .map((z) => ({
       zawod: z.nazwa,
-      droga: silnik.warstwa1.drogi.find((d) => d.obszar === z.obszar)?.etykieta ?? "—",
+      droga: silnik.warstwa1.drogi.find((d) => d.obszar === z.obszar)?.etykieta ?? "brak",
       zdania: z.ostrzezenia.map((o) => o.zdanie),
     }));
 

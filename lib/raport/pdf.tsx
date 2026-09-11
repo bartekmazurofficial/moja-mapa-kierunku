@@ -130,7 +130,7 @@ function Dokument({ raport, oceny }: DanePdf) {
   );
 
   return (
-    <Document title={`Moja mapa kierunku — ${raport.imie}`} author="Fundacja Służąc Życiu">
+    <Document title={`Moja mapa kierunku: ${raport.imie}`} author="Fundacja Służąc Życiu">
       <Page size="A4" style={s.tytulowaStrona}>
         <Text style={s.nadtytul}>FUNDACJA SŁUŻĄC ŻYCIU</Text>
         <Text style={s.tytul}>Moja mapa kierunku</Text>
@@ -196,7 +196,7 @@ function Dokument({ raport, oceny }: DanePdf) {
 
         {raport.wartosci ? (
           <Sekcja id="wartosci">
-            <Punkty pozycje={raport.wartosci.gora.map((w) => `${w.tytul} — ${w.opis ?? ""}`)} />
+            <Punkty pozycje={raport.wartosci.gora.map((w) => `${w.tytul}: ${w.opis ?? ""}`)} />
             {raport.wartosci.progowe.length > 0 ? (
               <>
                 <Text style={s.etykieta}>BEZ TEGO NIE WYOBRAŻASZ SOBIE PRACY</Text>
@@ -240,7 +240,7 @@ function Dokument({ raport, oceny }: DanePdf) {
             {raport.obszary.pozycje.map((o) => (
               <View key={o.nazwa} style={s.karta}>
                 <Text style={s.pozycja}>
-                  {o.pasmoOpis ? `${o.nazwa} — ${o.pasmoOpis}` : o.nazwa}
+                  {o.pasmoOpis ? `${o.nazwa}: ${o.pasmoOpis}` : o.nazwa}
                 </Text>
                 <Text style={s.drobne}>
                   Wejście: {o.przyklad} · {o.czas}
@@ -256,7 +256,7 @@ function Dokument({ raport, oceny }: DanePdf) {
             {raport.zawody.pozycje.map((p) => (
               <View key={p.kod} style={s.karta}>
                 <Text style={s.pozycja}>
-                  {p.pasmoOpis ? `${p.nazwa} — ${p.pasmoOpis}` : p.nazwa}
+                  {p.pasmoOpis ? `${p.nazwa}: ${p.pasmoOpis}` : p.nazwa}
                 </Text>
                 {p.pytanieRozstrzygajace ? (
                   <Text style={s.drobne}>Pytanie rozstrzygające: {p.pytanieRozstrzygajace}</Text>
@@ -282,8 +282,8 @@ function Dokument({ raport, oceny }: DanePdf) {
             <Punkty
               pozycje={
                 raport.kierunki.drogiBezStudiowPierwsze
-                  ? raport.kierunki.drogiBezStudiow.map((d) => `${d.nazwa} — ${d.czas}, ${d.koszt}`)
-                  : raport.kierunki.kierunki.map((k) => `${k.nazwa} — ${k.rekrutacja}`)
+                  ? raport.kierunki.drogiBezStudiow.map((d) => `${d.nazwa}: ${d.czas}, ${d.koszt}`)
+                  : raport.kierunki.kierunki.map((k) => `${k.nazwa}: ${k.rekrutacja}`)
               }
             />
             <Text style={s.etykieta}>
@@ -292,8 +292,8 @@ function Dokument({ raport, oceny }: DanePdf) {
             <Punkty
               pozycje={
                 raport.kierunki.drogiBezStudiowPierwsze
-                  ? raport.kierunki.kierunki.map((k) => `${k.nazwa} — ${k.rekrutacja}`)
-                  : raport.kierunki.drogiBezStudiow.map((d) => `${d.nazwa} — ${d.czas}, ${d.koszt}`)
+                  ? raport.kierunki.kierunki.map((k) => `${k.nazwa}: ${k.rekrutacja}`)
+                  : raport.kierunki.drogiBezStudiow.map((d) => `${d.nazwa}: ${d.czas}, ${d.koszt}`)
               }
             />
             <Text style={s.akapit}>{raport.kierunki.kierunekToNieZawod}</Text>

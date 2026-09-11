@@ -50,7 +50,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           <span className="gradient-tytul">człowieka, który to robi.</span>
         </h1>
         <p className="proza mt-4 max-w-czytelna">
-          Nie obowiązki — życie. O której wstaje, ile go boli, kiedy ma wolne, co go wykańcza.
+          Nie obowiązki, tylko życie. O której wstaje, ile go boli, kiedy ma wolne, co go wykańcza.
           To jest różnica między katalogiem zawodów a materiałem do decyzji.
         </p>
       </header>

@@ -19,7 +19,7 @@ export const KOMUNIKATY_FLAG: Record<string, string> = {
   profil_nieostry:
     "Twoje zainteresowania nie są jeszcze wyraźnie ukształtowane, i to zupełnie normalne w Twoim wieku. Zamiast rankingu pokazujemy Ci ogólny kierunek i rzeczy, które warto wypróbować.",
   wszystkie_obszary_ponizej_progu:
-    "Twój profil jest na tym etapie jeszcze nieostry. To nie znaczy, że nic do Ciebie nie pasuje — znaczy, że warto sprawdzić kilka rzeczy w praktyce.",
+    "Twój profil jest na tym etapie jeszcze nieostry. To nie znaczy, że nic do Ciebie nie pasuje. Znaczy, że warto sprawdzić kilka rzeczy w praktyce.",
 };
 
 /** Flagi widoczne wylacznie dla prowadzacego. Uczestnik ich nie dostaje. */

@@ -164,7 +164,7 @@ export async function zbudujKontekst(
       6: "Nie chcesz {…}. To jest granica, do której wrócimy przy każdej z trzech dróg.",
       7:
         `Za kilka lat chcesz ${biegun("TEMP", "mieć już coś za sobą", "spokojnie budować")}. ` +
-        "Nie musi się sprawdzić — ma służyć jako punkt, do którego porównasz to, co wybierzesz.",
+        "Nie musi się sprawdzić. Ma służyć jako punkt, do którego porównasz to, co wybierzesz.",
     };
 
     if (wynikA3) {

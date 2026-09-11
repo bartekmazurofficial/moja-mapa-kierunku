@@ -111,7 +111,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
 
       {/* NA DOLE: podsumowanie, słowami uczestnika */}
       <section className="szklo p-6 sm:p-8">
-        <Naglowek>Podsumowanie rozmowy — sekcja 18 raportu</Naglowek>
+        <Naglowek>Podsumowanie rozmowy (sekcja 18 raportu)</Naglowek>
         <p className="text-male text-atrament-sciszony">
           Pisane słowami uczestnika, nie Twoimi. Bez własnej oceny: raport jest jego własnością
           i ma być czytelny dla niego za dwa lata.
@@ -131,7 +131,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
 
           <fieldset className="flex flex-col gap-2">
             <legend className="text-male text-atrament-sciszony">
-              Pierwsze kroki — każdy z datą, liczbą i czasownikiem
+              Pierwsze kroki, każdy z datą, liczbą i czasownikiem
             </legend>
             {[1, 2, 3].map((i) => (
               <input
@@ -148,7 +148,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           <Pole id="wrocicZa" etykieta="Do czego wrócę za pół roku" wartosc={s?.wrocicZa} />
           <Pole
             id="notatka"
-            etykieta="Notatka prowadzącego — trafia do raportu jako sekcja 20"
+            etykieta="Notatka prowadzącego (trafia do raportu jako sekcja 20)"
             wartosc={s?.notatka}
             duze
           />

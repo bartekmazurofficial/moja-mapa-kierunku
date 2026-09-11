@@ -45,11 +45,15 @@ export function Runner({
   const [odpowiedzi, ustawOdpowiedzi] = useState<Record<string, unknown>>(zapisane);
   const [indeks, ustawIndeks] = useState(0);
   const [konczy, ustawKonczy] = useState(false);
+  /** Ekran gasnie przez chwilę przed podmianą: bez tego podmiana wygląda jak przeskok. */
+  const [wychodzi, ustawWychodzi] = useState(false);
   const wejscieNaEkran = useRef<number>(Date.now());
   /** Odroczenie zapisu pola tekstowego: nie wysyłamy przy każdej literze. */
   const odroczone = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const [nieZapisane, ustawNieZapisane] = useState(0);
   const [zablokowane, ustawZablokowane] = useState(false);
+  /** `domknij` powstaje przed `dalej`, więc sięga po nie referencją. */
+  const dalejRef = useRef<null | (() => Promise<void>)>(null);
 
   const kolejka = useRef<KolejkaZapisu | null>(null);
   if (kolejka.current === null) {
@@ -123,6 +127,17 @@ export function Runner({
 
   const ekran = widoczne[indeks];
 
+  /**
+   * Ostatnia odpowiedź na ekranie z automatycznym przejściem. Krótka pauza
+   * jest po to, żeby uczestnik zobaczył, że jego wybór się zapisał; dłuższa
+   * wygląda jak zawieszenie aplikacji.
+   */
+  const domknij = useCallback(() => {
+    ustawWychodzi(true);
+    setTimeout(() => void dalejRef.current?.(), 150);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const zmien = useCallback(
     (pozycjaId: string, wartosc: unknown, tekstowa: boolean) => {
       ustawOdpowiedzi((poprzednie) => ({ ...poprzednie, [pozycjaId]: wartosc }));
@@ -134,7 +149,10 @@ export function Runner({
   const dalej = useCallback(async () => {
     if (indeks < widoczne.length - 1) {
       ustawIndeks((i) => i + 1);
-      window.scrollTo({ top: 0 });
+      ustawWychodzi(false);
+      // Przewijamy tylko wtedy, gdy strona faktycznie jest przewinięta.
+      // Skok do zera na ekranie, który się mieści, sam wygląda jak błąd.
+      if (window.scrollY > 8) window.scrollTo({ top: 0, behavior: "auto" });
       return;
     }
     ustawKonczy(true);
@@ -163,6 +181,8 @@ export function Runner({
     }
     router.refresh();
   }, [indeks, odpowiedzi, router, widoczne.length]);
+
+  dalejRef.current = dalej;
 
   if (!ekran) return null;
 
@@ -237,12 +257,17 @@ export function Runner({
           className="mb-5 rounded-xl border border-uwaga/35 bg-uwaga-tlo px-4 py-3 text-male text-uwaga"
         >
           {zablokowane
-            ? `Nie ma połączenia, więc ${nieZapisane === 1 ? "jedna odpowiedź" : `${nieZapisane} odpowiedzi`} jeszcze nie ${nieZapisane === 1 ? "doszła" : "doszły"}. Nie zamykam tej części, żeby nic nie przepadło. Zostań na tym ekranie — spróbuję ponownie, gdy sieć wróci.`
+            ? `Nie ma połączenia, więc ${nieZapisane === 1 ? "jedna odpowiedź" : `${nieZapisane} odpowiedzi`} jeszcze nie ${nieZapisane === 1 ? "doszła" : "doszły"}. Nie zamykam tej części, żeby nic nie przepadło. Zostań na tym ekranie. Spróbuję ponownie, gdy sieć wróci.`
             : `Brak połączenia. ${nieZapisane === 1 ? "Jedna odpowiedź czeka" : `${nieZapisane} odpowiedzi czeka`} na wysłanie i zapisze się, gdy sieć wróci. Możesz pisać dalej.`}
         </p>
       ) : null}
 
-      <main className={`szklo flex-1 p-6 sm:p-8 ${jednaPozycja ? "flex flex-col justify-center" : ""}`}>
+      <main
+        key={ekran.klucz ?? indeks}
+        className={`szklo flex-1 p-6 sm:p-8 ${jednaPozycja ? "flex flex-col justify-center" : ""} ${
+          wychodzi ? "wyjscie-ekranu" : "wejscie-ekranu"
+        }`}
+      >
         {ekran.typ === "wstep" || ekran.typ === "przerwa" ? (
           <div className="max-w-czytelna">
             {ekran.naglowek ? (
@@ -298,7 +323,7 @@ export function Runner({
                       wartosc={odpowiedzi[p.id]}
                       naZmiane={(v) => zmien(p.id, v, p.typ === "tekst" || p.typ === "kilka_tekstow")}
                       naDomkniecie={
-                        ekran.autoDalej && !ostatni ? () => setTimeout(() => void dalej(), 400) : undefined
+                        ekran.autoDalej && !ostatni ? () => domknij() : undefined
                       }
                     />
                   </div>
@@ -316,7 +341,7 @@ export function Runner({
                 </p>
                 <p className="mt-1.5 text-drobne text-atrament-slaby">
                   Tak wyszło z poprzedniego ćwiczenia. Możesz się z tym zgodzić albo napisać
-                  zupełnie co innego — to Twój tekst, nie nasz.
+                  zupełnie co innego. To Twój tekst, nie nasz.
                 </p>
               </div>
             ) : null}
@@ -329,7 +354,8 @@ export function Runner({
           type="button"
           onClick={() => {
             ustawIndeks((i) => Math.max(0, i - 1));
-            window.scrollTo({ top: 0 });
+            ustawWychodzi(false);
+            if (window.scrollY > 8) window.scrollTo({ top: 0, behavior: "auto" });
           }}
           disabled={indeks === 0}
           className="przejscie min-h-12 rounded-xl border border-linia px-5 text-male font-semibold text-atrament-sciszony hover:border-linia-mocna hover:text-atrament disabled:invisible"
