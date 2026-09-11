@@ -34,7 +34,10 @@ export interface Obszar {
 /** 24 pola karty zawodu. */
 export interface Zawod {
   kod: string;
+  /** Nazwa z bazy, bez znakow diakrytycznych. Do zestawien i testow. */
   nazwa: string;
+  /** Nazwa pokazywana uczestnikowi. */
+  nazwaWyswietlana: string;
   obszar: number;
   poziom: string;
   studia: string;

@@ -80,7 +80,21 @@ export interface Ekran {
    * odpowiedzia: tu nie ma pomiaru, jest swiadomy wybor.
    */
   notatka?: string;
+  /**
+   * Pozycja, z ktorej bierzemy tresc w miejsce znacznika {…} w notatce.
+   * Sluzy tam, gdzie szkic jest odbiciem tego, co uczestnik wlasnie napisal.
+   */
+  notatkaZPola?: string;
   pozycje?: Pozycja[];
+  /** Dalsza czesc instrukcji, schowana pod "rozwin". */
+  rozwiniecie?: string[];
+  /**
+   * Co ile pozycji zostawic wieksza przerwe. Dwadziescia cztery pozycje w
+   * jednej liscie czytaja sie jak sciana, te same w pieciu skupiskach czytaja
+   * sie jak piec rzeczy. Grupy sa wylacznie przestrzenne i nienazwane:
+   * etykieta sugerowalaby strukture i wplynelaby na odpowiedzi.
+   */
+  skupiskaCo?: number;
   /** "blok 12 z 36". Nigdy procent: procent wywoluje pospiech. */
   postep?: { nr: number; z: number; slowo: string };
   /** Ekran z jedna pozycja rankingowa przechodzi dalej sam po 400 ms. */

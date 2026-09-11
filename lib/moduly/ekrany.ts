@@ -54,12 +54,16 @@ export const CZASY_MODULOW: Record<KodModulu, string> = {
 /** Kolejnosc modulow zgodna ze scenariuszami czterech spotkan. */
 export const KOLEJNOSC_MODULOW: KodModulu[] = ["A0", "A1", "A3", "A2", "M1", "A4", "A5"];
 
-function wstep(modul: KodModulu, instrukcja: { naglowek: string; wprowadzenie: readonly string[] }): Ekran {
+function wstep(
+  modul: KodModulu,
+  instrukcja: { naglowek: string; wprowadzenie: readonly string[]; rozwiniecie?: readonly string[] },
+): Ekran {
   return {
     klucz: `${modul}_wstep`,
     typ: "wstep",
     naglowek: instrukcja.naglowek,
     akapity: [...instrukcja.wprowadzenie],
+    rozwiniecie: instrukcja.rozwiniecie ? [...instrukcja.rozwiniecie] : undefined,
     przyciskDalej: "Zaczynamy",
   };
 }
@@ -141,14 +145,20 @@ function czescA1A(plan: PlanModulu): CzescModulu {
   return { kod: "A", nazwa: "Zestawy czynności", ekrany };
 }
 
-function czescA1B(): CzescModulu {
-  const pozycje: Pozycja[] = OBSZARY_A1.map((o) => ({
-    id: `kotwica_${o.id}`,
-    typ: "kotwica",
-    tresc: o.kotwica,
-    krance: [INSTRUKCJA_A1.kotwiceSkala[0], INSTRUKCJA_A1.kotwiceSkala[4]],
-    pytanieEkspozycja: INSTRUKCJA_A1.ekspozycjaTak,
-  }));
+function czescA1B(plan: PlanModulu): CzescModulu {
+  // Kolejnosc 24 kotwic losowa dla kazdego uczestnika i utrwalona razem z planem.
+  const kolejnosc = plan.kotwice ?? OBSZARY_A1.map((o) => String(o.id));
+  const poId = new Map(OBSZARY_A1.map((o) => [String(o.id), o]));
+  const pozycje: Pozycja[] = kolejnosc
+    .map((id) => poId.get(id))
+    .filter((o): o is (typeof OBSZARY_A1)[number] => Boolean(o))
+    .map((o) => ({
+      id: `kotwica_${o.id}`,
+      typ: "kotwica",
+      tresc: o.kotwica,
+      krance: [INSTRUKCJA_A1.kotwiceSkala[0], INSTRUKCJA_A1.kotwiceSkala[4]],
+      pytanieEkspozycja: INSTRUKCJA_A1.ekspozycjaTak,
+    }));
   return {
     kod: "B",
     nazwa: "Kotwice",
@@ -160,6 +170,7 @@ function czescA1B(): CzescModulu {
         podpis:
           "Przy każdej pozycji zaznacz też, czy już czegoś takiego próbowałeś. To nie jest ocena — chodzi o to, żeby odróżnić wyobrażenie od doświadczenia.",
         pozycje,
+        skupiskaCo: 5,
         przyciskDalej: "Zakończ moduł",
       },
     ],
@@ -521,6 +532,12 @@ function czescM1B(kontekst: KontekstModulu): CzescModulu {
       typ: "pozycje",
       naglowek: obszar.tytul,
       notatka: szkic,
+      notatkaZPola:
+        obszar.typ === "lista_i_tekst"
+          ? `obszar_${obszar.nr}_lista`
+          : obszar.typ === "piec_zdan"
+            ? `obszar_${obszar.nr}`
+            : undefined,
       pozycje,
       postep: { nr: obszar.nr, z: OBSZARY_M1.length, slowo: "obszar" },
       przyciskDalej: obszar.nr === OBSZARY_M1.length ? "Zakończ moduł" : "Dalej",
@@ -558,7 +575,7 @@ export function zbudujCzesc(
     case "A1A":
       return czescA1A(plan);
     case "A1B":
-      return czescA1B();
+      return czescA1B(plan);
     case "A2A":
       return czescA2A(plan);
     case "A2B":

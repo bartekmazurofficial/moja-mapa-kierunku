@@ -56,7 +56,7 @@ export function warstwa3(
 ): WynikWarstwy3 {
   const a0 = opcje.punktStartu;
   const wynikiZawodow = new Map(wynik2.wszystkie.map((z) => [z.kod, z.wynik]));
-  const nazwyZawodow = new Map(zawody.map((z) => [z.kod, z.nazwa]));
+  const nazwyZawodow = new Map(zawody.map((z) => [z.kod, z.nazwaWyswietlana]));
   const usuniete: WynikWarstwy3["usuniete"] = [];
   const oceniane: WynikKierunku[] = [];
 

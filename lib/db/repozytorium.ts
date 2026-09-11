@@ -49,6 +49,7 @@ export function naZawod(w: WierszZawodu): Zawod {
   return {
     kod: w.kod,
     nazwa: w.nazwa,
+    nazwaWyswietlana: w.nazwaWyswietlana,
     obszar: w.obszarId,
     poziom: w.poziom,
     studia: w.studia,

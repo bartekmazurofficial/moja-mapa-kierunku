@@ -20,6 +20,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "programista",
     nazwa: "programista",
+    nazwaWyswietlana: "programista",
     obszar: 9,
     poziom: "sredni",
     studia: "nie",
@@ -46,6 +47,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "tester",
     nazwa: "tester",
+    nazwaWyswietlana: "tester",
     obszar: 9,
     poziom: "szybki",
     studia: "nie",
@@ -72,6 +74,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "wsparcie_tech",
     nazwa: "wsparcie_tech",
+    nazwaWyswietlana: "wsparcie_tech",
     obszar: 9,
     poziom: "szybki",
     studia: "nie",
@@ -98,6 +101,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "devops",
     nazwa: "devops",
+    nazwaWyswietlana: "devops",
     obszar: 9,
     poziom: "dlugi",
     studia: "nie",
@@ -124,6 +128,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "elektryk",
     nazwa: "elektryk",
+    nazwaWyswietlana: "elektryk",
     obszar: 13,
     poziom: "szybki",
     studia: "nie",
@@ -150,6 +155,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "hydraulik",
     nazwa: "hydraulik",
+    nazwaWyswietlana: "hydraulik",
     obszar: 13,
     poziom: "szybki",
     studia: "nie",
@@ -176,6 +182,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "spawacz",
     nazwa: "spawacz",
+    nazwaWyswietlana: "spawacz",
     obszar: 13,
     poziom: "szybki",
     studia: "nie",
@@ -202,6 +209,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "fryzjer",
     nazwa: "fryzjer",
+    nazwaWyswietlana: "fryzjer",
     obszar: 13,
     poziom: "szybki",
     studia: "nie",
@@ -228,6 +236,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "mechanik",
     nazwa: "mechanik",
+    nazwaWyswietlana: "mechanik",
     obszar: 13,
     poziom: "szybki",
     studia: "nie",
@@ -254,6 +263,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "pielegniarka",
     nazwa: "pielegniarka",
+    nazwaWyswietlana: "pielegniarka",
     obszar: 16,
     poziom: "sredni",
     studia: "tak",
@@ -280,6 +290,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "ratownik_med",
     nazwa: "ratownik_med",
+    nazwaWyswietlana: "ratownik_med",
     obszar: 16,
     poziom: "sredni",
     studia: "tak",
@@ -306,6 +317,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "opiekun_med",
     nazwa: "opiekun_med",
+    nazwaWyswietlana: "opiekun_med",
     obszar: 16,
     poziom: "szybki",
     studia: "nie",
@@ -332,6 +344,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "fizjoterapeuta",
     nazwa: "fizjoterapeuta",
+    nazwaWyswietlana: "fizjoterapeuta",
     obszar: 17,
     poziom: "dlugi",
     studia: "tak",
@@ -358,6 +371,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "masazysta",
     nazwa: "masazysta",
+    nazwaWyswietlana: "masazysta",
     obszar: 17,
     poziom: "szybki",
     studia: "nie",
@@ -384,6 +398,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "nauczyciel",
     nazwa: "nauczyciel",
+    nazwaWyswietlana: "nauczyciel",
     obszar: 21,
     poziom: "dlugi",
     studia: "tak",
@@ -410,6 +425,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "pedagog_spec",
     nazwa: "pedagog_spec",
+    nazwaWyswietlana: "pedagog_spec",
     obszar: 21,
     poziom: "dlugi",
     studia: "tak",
@@ -436,6 +452,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "lektor",
     nazwa: "lektor",
+    nazwaWyswietlana: "lektor",
     obszar: 21,
     poziom: "szybki",
     studia: "czesciowo",
@@ -462,6 +479,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "pracownik_socjalny",
     nazwa: "pracownik_socjalny",
+    nazwaWyswietlana: "pracownik_socjalny",
     obszar: 19,
     poziom: "sredni",
     studia: "tak",
@@ -488,6 +506,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "opiekun_starszej",
     nazwa: "opiekun_starszej",
+    nazwaWyswietlana: "opiekun_starszej",
     obszar: 19,
     poziom: "szybki",
     studia: "nie",
@@ -514,6 +533,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "spec_admin",
     nazwa: "spec_admin",
+    nazwaWyswietlana: "spec_admin",
     obszar: 5,
     poziom: "sredni",
     studia: "czesciowo",
@@ -540,6 +560,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "obsluga_klienta",
     nazwa: "obsluga_klienta",
+    nazwaWyswietlana: "obsluga_klienta",
     obszar: 5,
     poziom: "szybki",
     studia: "nie",
@@ -566,6 +587,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "kucharz",
     nazwa: "kucharz",
+    nazwaWyswietlana: "kucharz",
     obszar: 26,
     poziom: "szybki",
     studia: "nie",
@@ -592,6 +614,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "kelner",
     nazwa: "kelner",
+    nazwaWyswietlana: "kelner",
     obszar: 26,
     poziom: "szybki",
     studia: "nie",
@@ -618,6 +641,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "grafik",
     nazwa: "grafik",
+    nazwaWyswietlana: "grafik",
     obszar: 23,
     poziom: "szybki",
     studia: "nie",
@@ -644,6 +668,7 @@ export const ZAWODY_PROTOTYPU: Zawod[] = [
   {
     kod: "projektant_ux",
     nazwa: "projektant_ux",
+    nazwaWyswietlana: "projektant_ux",
     obszar: 23,
     poziom: "sredni",
     studia: "nie",

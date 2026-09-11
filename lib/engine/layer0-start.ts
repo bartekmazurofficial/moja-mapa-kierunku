@@ -11,7 +11,7 @@
  * Etap edukacji NIE zmienia doboru zawodow. Zmienia zakonczenie raportu.
  */
 
-import { WARSTWA0 } from "./config";
+import { OBSZARY_WARSZTATOWE, WARSTWA0 } from "./config";
 import type { Zawod } from "../domain/typy";
 import type { EtapEdukacji, PunktStartu } from "./typy";
 
@@ -57,6 +57,9 @@ export function korektaMiekkaA0(zawod: Zawod, a0: PunktStartu | null): KorektaA0
   }
 
   // Wzmocnienia, wylacznie w gore.
+  if (a0.przedmiotyMocne.includes("warsztat") && OBSZARY_WARSZTATOWE.has(zawod.obszar)) {
+    mnoznik *= 1 + WARSTWA0.WZMOCNIENIE_WARSZTAT;
+  }
   const maDoswiadczenie = zawod.dosw.some((d) => d !== "konkursy" && a0.doswiadczenie.includes(d));
   if (maDoswiadczenie) mnoznik *= 1 + WARSTWA0.WZMOCNIENIE_DOSWIADCZENIE;
   if (zawod.dosw.includes("konkursy") && a0.doswiadczenie.includes("konkursy")) {

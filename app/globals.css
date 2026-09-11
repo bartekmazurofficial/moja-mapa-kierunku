@@ -105,3 +105,78 @@ body {
 .proza strong {
   font-weight: 600;
 }
+
+/* Karta zawodu: układ czytelniczy, jak dobrze złożony artykuł. */
+.karta {
+  font-family: var(--font-serif);
+  font-size: var(--text-tresc);
+  line-height: 1.75;
+}
+
+.karta p {
+  margin-block: 0.9em;
+}
+
+.karta strong {
+  font-weight: 600;
+}
+
+.karta ul,
+.karta ol {
+  margin-block: 0.9em;
+  padding-left: 1.1em;
+  list-style: disc;
+}
+
+.karta ol {
+  list-style: decimal;
+}
+
+.karta li {
+  margin-block: 0.35em;
+}
+
+.karta h3,
+.karta h4 {
+  margin-top: 1.4em;
+  font-size: var(--text-tresc-duza);
+  font-weight: 600;
+}
+
+/* Tabele muszą być czytelne na telefonie: przewijają się we własnym oknie. */
+.karta table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  margin-block: 1.2em;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: var(--text-male);
+  line-height: 1.55;
+}
+
+.karta th,
+.karta td {
+  border-bottom: 1px solid var(--color-linia);
+  padding: 0.55em 0.9em 0.55em 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.karta th {
+  color: var(--color-atrament-sciszony);
+  font-weight: 500;
+}
+
+.karta blockquote {
+  margin-block: 1.1em;
+  border-left: 2px solid var(--color-linia-mocna);
+  padding-left: 1em;
+  color: var(--color-atrament-sciszony);
+}
+
+.karta hr {
+  margin-block: 1.6em;
+  border: 0;
+  border-top: 1px solid var(--color-linia);
+}

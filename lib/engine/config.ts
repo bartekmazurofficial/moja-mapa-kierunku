@@ -214,7 +214,17 @@ export const WARSTWA0 = {
   WZMOCNIENIE_DOSWIADCZENIE: 0.1,
   /** Wzmocnienie, wylacznie w gore: konkursy i olimpiady w dziedzinie zawodu. */
   WZMOCNIENIE_KONKURSY: 0.1,
+  /**
+   * Wzmocnienie za prace w warsztacie albo pracowni wskazana jako mocna strona.
+   * Uczestnik mowi wtedy rzecz konkretna: ma sprawnosc manualna potwierdzona
+   * doswiadczeniem, a nie deklaracja. W przedmiotach trudnych nie robi nic -
+   * nie karzemy nikogo za to, ze nie mial warsztatu w szkole.
+   */
+  WZMOCNIENIE_WARSZTAT: 0.1,
 } as const;
+
+/** Obszary, dla ktorych praca w warsztacie jest realnym sygnalem. */
+export const OBSZARY_WARSZTATOWE = new Set([10, 12, 13]);
 
 // =====================================================================
 // WYPROWADZANIE PROFILU UCZESTNIKA Z WYNIKOW MODULOW

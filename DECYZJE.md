@@ -374,3 +374,155 @@ Source Serif 4 do treści czytelniczej i nagłówków, Inter do interfejsu.
 Pobierane przy budowaniu przez `next/font` i serwowane z własnego serwera —
 w czasie działania aplikacja nie odpytuje żadnej zewnętrznej usługi.
 Sprawdzone na tekstach z kart zawodów, nie na „Lorem ipsum".
+
+
+---
+
+## Zatwierdzone po fazie 3
+
+| # | Rozstrzygnięcie |
+|---|---|
+| 1 | Teksty z dokumentacji to materiał źródłowy, nie gotowa treść interfejsu. **Instrukcje skracać, komunikaty o znaczeniu zostawiać w pełnym brzmieniu** |
+| 2 | Siedem nowych szkiców w M1, pokazywanych **po** wypełnieniu obszaru, nigdy przed |
+| 3 | Kotwice A1 zostają na jednym ekranie, pogrupowane wizualnie po pięć, bez nazw grup |
+| 4 | Prowadzący otwiera moduły tak samo jak warstwy raportu — faza 5 |
+| 5 | `warsztat` wśród przedmiotów mocnych daje wzmocnienie do 10% dla obszarów 10, 12 i 13 |
+
+### L1. Luka wykryta podczas budowy: nic nie blokowało modułów w czasie
+
+To nie jest decyzja projektowa, tylko dziura w specyfikacji, znaleziona przy
+składaniu fazy trzeciej.
+
+Specyfikacja A2 wymaga wprost, żeby uczestnik nie widział wyniku A1 przed
+wypełnieniem A2, bo oceni własne kompetencje pod to, co przed chwilą
+przeczytał. Reguły odsłaniania z dokumentacji dotyczyły jednak wyłącznie
+raportu. Nic nie stało na przeszkodzie, żeby uczestnik wszedł pierwszego dnia
+i wypełnił wszystkie siedem modułów — a to zanieczyściłoby najważniejszy
+pomiar w całym programie.
+
+Rozwiązanie: moduły otwiera prowadzący, tym samym mechanizmem co warstwy
+raportu. Otwarte zostaje otwarte, żeby dało się dokończyć przerwany moduł.
+Moduł nieotwarty jest niedostępny także pod bezpośrednim adresem.
+Do zbudowania w fazie piątej.
+
+### D26. Szkice w M1: dwa miejsca, gdzie nie dało się utrzymać oryginalnej treści
+
+Dwa sloty w przekazanych tekstach nie mają źródła w żadnym module.
+
+**Obszar 1**, „chcesz mieszkać {w dużym mieście / w mniejszym mieście / na
+wsi}": wielkość miejscowości, w której uczestnik chce mieszkać, nie jest
+mierzona. A0 zbiera, gdzie mieszka teraz, a to nie to samo. Slot usunięty,
+zdanie oparte na `KOR` i na gotowości do przeprowadzki z A5.
+
+**Obszar 3**, „dzień zaczyna się {wcześnie / raczej później}": godzina
+rozpoczęcia pracy nie jest mierzona przez żaden moduł. Slot usunięty, zdanie
+oparte na `GOD` i `GRA`.
+
+Pozostałe pięć szkiców odtwarza przekazane brzmienie w całości.
+
+---
+
+## Faza 4
+
+### D27. Odsłanianie egzekwowane przez niebudowanie, nie przez ukrywanie
+
+`lib/raport/budowa.ts` dostaje zbiór identyfikatorów sekcji, które wolno
+zbudować, i każda sekcja jest opakowana w `if (wolno("…"))`. Sekcja zamknięta
+nie powstaje w obiekcie raportu, więc nie da się jej zobaczyć ani w HTML, ani
+w źródle strony, ani w PDF, ani przez podmianę adresu. Karta zawodu ma osobną
+bramkę w `pobierzKarte`: bez otwartej warstwy „zawody" zwraca `null`, nawet
+gdy ktoś zna kod zawodu.
+
+**Przeciek znaleziony przy składaniu fazy.** Sekcja „punkt startu" wypisywała
+trzy najmocniejsze obszary, mimo że warstwa z obszarami była jeszcze zamknięta
+— czyli pokazywała wynik spotkania drugiego na spotkaniu pierwszym. Poprawione,
+z testem: lista jest pusta, dopóki sekcja „obszary" nie jest otwarta.
+
+### D28. Parser kart: trzy układy nagłówków w tych samych plikach
+
+Osiemnaście plików z kartami używa trzech różnych układów: karta na `#` i
+sekcje na `##`, karta na `##` i sekcje na `###`, oraz — w obu plikach grupy
+„biznes" — karta na `#` i sekcje na `###`. Pierwsza wersja parsera zakładała
+stałą różnicę jednego poziomu i gubiła 21 zawodów. Parser rozpoznaje teraz
+poziom nagłówka karty w pliku i traktuje **każdy głębszy nagłówek** jako
+sekcję.
+
+Wynik: **157 zawodów na 157 ma kartę**, 126 pełnych i 31 skróconych. Skrócone
+to zawody z obszarów 1, 2, 3, 10, 11 i 27. Skrypt wypisuje listę braków przy
+każdym imporcie; obecnie jest pusta.
+
+### D29. Nazwy wyświetlane odtworzone z tytułów kart
+
+Nazwy zawodów w bazie referencyjnej są bez polskich znaków (`pielegniarka`,
+`ksiegowy`). Tytuły kart mają znaki, ale są wersalikami. `nazwaZeZnakami`
+składa wielkość liter z nazwy bazowej z glifami z tytułu karty. Poprawiło 46
+nazw. Jeden wyjątek wpisany ręcznie: `koordynator_ngo`, bo tytuł karty i nazwa
+w bazie różnią się nie tylko znakami.
+
+### D30. Fonty do PDF scalane z dwóch podzbiorów
+
+`@react-pdf/renderer` nie umie wybrać kroju per znak, a podzbiory `latin` z
+@fontsource nie zawierają polskich znaków — pierwsza wersja PDF-u renderowała
+polskie litery Helveticą albo gubiła je. Podanie dwóch krojów naraz działało,
+ale dawało plik 818 kB, bo każdy przebieg osadzał osobny podzbiór.
+`scripts/przygotuj-fonty.ts` rozpakowuje woff2 do TTF i **scala `latin` z
+`latin-ext`** w jeden plik na odmianę. Raport ma 46 kB i osadza wyłącznie
+Source Serif 4 oraz Inter.
+
+### D31. PDF pomija to, co źle się zestarzeje
+
+Raport na ekranie i raport w PDF nie mają tej samej zawartości. PDF pomija
+słabsze strony i antydopasowania. Kryterium: jeśli zdanie źle zabrzmi czytane
+za dwa lata, nie wchodzi do pliku, który uczestnik zachowa. Sekcje zamknięte
+nie wchodzą do PDF-u tak samo jak na ekran.
+
+### D32. Trzy drogi: umiejętności liczone per droga, pierwszy krok raz
+
+Silnik liczy jedną listę umiejętności do rozwoju dla całego profilu i jeden
+pierwszy krok, wynikający z etapu edukacji. Wstawione do trzech kart dawały
+trzy razy to samo zdanie, co wygląda na błąd szablonu i nie mówi nic o różnicy
+między drogami.
+
+Umiejętności są teraz liczone osobno dla każdej drogi: kompetencje ważne dla
+**tego** obszaru (waga ≥ 2), w których uczestnik ma najniżej. Pierwszy krok
+stoi raz, pod trzema kartami, podpisany „przy każdej z tych dróg".
+
+---
+
+## Luki i uwagi z fazy 4, do rozstrzygnięcia
+
+### L2. Pole 14 karty („pierwszy krok w tym miesiącu") nie istnieje w żadnej karcie
+
+`00_metodyka_kart.md` wymienia dwadzieścia pól, w tym pole 14 — pierwszy krok
+wykonalny w cztery tygodnie — i osobno zapowiada, że ekran karty w raporcie ma
+pokazywać „pierwsze zdanie, skalę, obciążenie i pierwszy krok". W 157 kartach
+tego pola nie ma ani razu. Karta zawodu pokazuje więc pierwsze zdanie, skalę i
+obciążenie, a pierwszy krok jest wyłącznie ogólny, z etapu edukacji.
+
+### L3. Nazwy pasm przy trzech drogach a wymóg braku hierarchii
+
+`warstwa1_obszary.md` nazywa drogi wprost: „Droga A — najmocniejsze
+dopasowanie, Droga B — bardzo dobre dopasowanie, Droga C — alternatywa".
+Oczekiwanie po fazie 3 brzmi: na ekranie trzech dróg nie ma być widać
+hierarchii ważności.
+
+Układ jest zrównany — trzy identyczne karty, bez numeracji, bez wyróżnienia
+kolorem, w kolejności A, B, C tylko dlatego, że jakaś musi być pierwsza.
+Hierarchię niesie samo słownictwo pasm. Zdanie wstępne zostało przepisane tak,
+żeby nie zaprzeczać etykietom („to nie jest ranking" tuż nad słowem
+„najmocniejsze" czytało się jak wykręt), tylko nazywać rolę każdej drogi.
+Zmiana samych etykiet wymaga decyzji, bo to słownictwo z modelu programu.
+
+### U1. Tekst ćwiartki „ukryty atut" porównuje uczestnika z innymi
+
+`A2_w_czym_moge_byc_dobry.md`, komunikat dla `Z < 45` i `W ≥ 60`: „Nie palisz
+się do tego, ale prawdopodobnie **poszłoby Ci lepiej niż większości**".
+Reguła nienaruszalna numer 2 zabrania porównywania uczestnika z innymi.
+Tekst jest w programie, więc został użyty bez zmiany, ale to jedyne miejsce w
+całym produkcie, gdzie pada porównanie z grupą.
+
+### U2. Test zakazanych słów obejmuje tylko tekst generowany przez aplikację
+
+`SLOWA_ZAKAZANE` sprawdza zdania, które składa aplikacja. Nie obejmuje treści
+kart, bo słowo „diagnoza" pada tam w znaczeniu technicznym — diagnostyka
+usterek w zawodach warsztatowych — i wycięcie go zepsułoby karty.

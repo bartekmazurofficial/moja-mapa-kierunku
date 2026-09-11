@@ -17,6 +17,8 @@ import { join } from "node:path";
 import { prisma } from "../lib/db/klient";
 import { zapiszJson } from "../lib/db/json";
 import type { ObszarSparsowany } from "./parse-obszary";
+import type { Karta } from "./parse-karty";
+import { nazwaZeZnakami } from "./nazwy-wyswietlane";
 import {
   KODY_A1,
   KODY_A2,
@@ -121,6 +123,7 @@ async function main(): Promise<void> {
     drogi_bez_studiow: Record<string, DrogaZrodlowa>;
   }>(join(KATALOG_DANYCH, "kierunki_baza.json"));
   const klastry = wczytaj<Record<string, KlasterZrodlowy>>(join(KATALOG_DANYCH, "klastry.json"));
+  const karty = wczytaj<Karta[]>(join(process.cwd(), "data/generated/karty.json"));
 
   const kierunki = kierunkiPlik.kierunki;
   const drogi = kierunkiPlik.drogi_bez_studiow;
@@ -132,6 +135,7 @@ async function main(): Promise<void> {
     ["kierunki", Object.keys(kierunki).length, 75],
     ["drogi bez studiow", Object.keys(drogi).length, 56],
     ["klastry", Object.keys(klastry).length, 26],
+    ["karty", karty.length, 157],
   ];
   for (const [nazwa, jest, ma] of oczekiwane) {
     if (jest !== ma) bledy.push(`${nazwa}: jest ${jest}, oczekiwano ${ma}`);
@@ -175,6 +179,18 @@ async function main(): Promise<void> {
     if (z.klaster && !(z.klaster in klastry)) bledy.push(`zawod ${kod}: nieznany klaster "${z.klaster}"`);
   }
 
+  // --- WALIDACJA: karty ---
+  // Kazdy ze 157 zawodow musi miec dopasowana karte. To jest tresc, ktora
+  // uczestnik czyta, i brak karty oznacza zawod pokazany bez wyjasnienia.
+  const kodyKart = new Set(karty.map((k) => k.kod));
+  for (const kod of Object.keys(zawody)) {
+    if (!kodyKart.has(kod)) bledy.push(`zawod ${kod}: brak karty`);
+  }
+  for (const k of karty) {
+    if (!(k.kod in zawody)) bledy.push(`karta ${k.kod}: nie ma takiego zawodu`);
+    if (k.sekcje.length === 0) bledy.push(`karta ${k.kod}: pusta`);
+  }
+
   // --- WALIDACJA: drogi edukacyjne ---
   const pokryte = new Set<string>();
   for (const [kod, k] of Object.entries(kierunki)) {
@@ -212,6 +228,7 @@ async function main(): Promise<void> {
 
   // --- ZAPIS ---
   await prisma.$transaction([
+    prisma.karta.deleteMany(),
     prisma.zawod.deleteMany(),
     prisma.klaster.deleteMany(),
     prisma.kierunek.deleteMany(),
@@ -253,10 +270,19 @@ async function main(): Promise<void> {
     })),
   });
 
+  // Nazwy pokazywane uczestnikowi maja polskie znaki odtworzone z kart.
+  const tytulyKart = new Map(karty.map((k) => [k.kod, k.tytul]));
+  const WYJATKI_NAZW: Record<string, string> = {
+    koordynator_ngo: "Koordynator projektów w NGO",
+  };
+  const doWyswietlenia = (kod: string, nazwa: string): string =>
+    WYJATKI_NAZW[kod] ?? nazwaZeZnakami(nazwa, tytulyKart.get(kod) ?? "") ?? nazwa;
+
   await prisma.zawod.createMany({
     data: Object.entries(zawody).map(([kod, z]) => ({
       kod,
       nazwa: z.nazwa,
+      nazwaWyswietlana: doWyswietlenia(kod, z.nazwa),
       obszarId: z.obszar,
       poziom: z.poziom,
       studia: z.studia,
@@ -302,6 +328,17 @@ async function main(): Promise<void> {
     })),
   });
 
+  await prisma.karta.createMany({
+    data: karty.map((k) => ({
+      kod: k.kod,
+      tytul: k.tytul,
+      plik: k.plik,
+      sekcje: zapiszJson(k.sekcje),
+      // Karty z obszarow 1, 2, 3, 10, 11 i 27 sa w wersji skroconej.
+      pelna: k.sekcje.length >= 10,
+    })),
+  });
+
   await prisma.drogaBezStudiow.createMany({
     data: Object.entries(drogi).map(([kod, d]) => ({
       kod,
@@ -315,12 +352,14 @@ async function main(): Promise<void> {
   });
 
   // --- RAPORT ---
-  const [lObszary, lZawody, lKierunki, lDrogi, lKlastry] = await Promise.all([
+  const [lObszary, lZawody, lKierunki, lDrogi, lKlastry, lKarty, lKartyPelne] = await Promise.all([
     prisma.obszar.count(),
     prisma.zawod.count(),
     prisma.kierunek.count(),
     prisma.drogaBezStudiow.count(),
     prisma.klaster.count(),
+    prisma.karta.count(),
+    prisma.karta.count({ where: { pelna: true } }),
   ]);
   const wKlastrach = Object.values(klastry).reduce((s, k) => s + k.sklad.length, 0);
 
@@ -330,6 +369,13 @@ async function main(): Promise<void> {
   console.log(`  kierunki           ${lKierunki}`);
   console.log(`  drogi bez studiow  ${lDrogi}`);
   console.log(`  klastry            ${lKlastry}  (${wKlastrach} zawodow)`);
+  console.log(`  karty zawodow      ${lKarty}  (pelne ${lKartyPelne}, skrocone ${lKarty - lKartyPelne})`);
+  const bezZnakow = await prisma.zawod.count({ where: { NOT: { nazwaWyswietlana: { contains: "ą" } } } });
+  const poprawione = Object.entries(zawody).filter(
+    ([kod, z]) => doWyswietlenia(kod, z.nazwa) !== z.nazwa,
+  ).length;
+  console.log(`  nazwy z polskimi znakami odtworzone dla ${poprawione} zawodow`);
+  void bezZnakow;
   console.log(`  rozdzielczosc      ${lZawody - wKlastrach + lKlastry} pozycji rozroznialnych`);
   if (ostrzezenia.length > 0) {
     console.log("\nOSTRZEZENIA:");

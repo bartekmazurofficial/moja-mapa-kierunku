@@ -111,8 +111,10 @@ export const INSTRUKCJA_M1 = {
   wprowadzenie: [
     "Teraz coś innego: nie o pracy, tylko o życiu.",
     "Zobaczysz pary zdań. W obu przypadkach ktoś mógłby powiedzieć, że tak właśnie chce żyć — i miałby rację. Nie ma tu lepszej odpowiedzi.",
-    "Wybierz to, co jest bliżej Ciebie. Jeśli oba są blisko, wybierz to odrobinę bliższe. Jeśli żadne nie pasuje, wybierz to mniej odległe.",
     "Nie zastanawiaj się, co byłoby rozsądne. Pytamy o to, czego chcesz.",
+  ],
+  rozwiniecie: [
+    "Wybierz to, co jest bliżej Ciebie. Jeśli oba są blisko, wybierz to odrobinę bliższe. Jeśli żadne nie pasuje, wybierz to mniej odległe.",
   ],
   polecenieBloku: "Co jest bliżej Ciebie?",
   czescBWstep: [

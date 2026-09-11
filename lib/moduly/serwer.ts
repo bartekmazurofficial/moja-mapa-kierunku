@@ -6,7 +6,7 @@
 import "server-only";
 import { prisma } from "../db/klient";
 import { zbudujPlan, type PlanModulu } from "./plan";
-import { CZESCI_MODULOW, etykietaM1, zbudujCzesc, type KontekstModulu } from "./ekrany";
+import { CZESCI_MODULOW, zbudujCzesc, type KontekstModulu } from "./ekrany";
 import { policzA3, policzA4 } from "../engine/moduly";
 import { PARY_A3 } from "../content/a3";
 import { WYMIARY_A3, WYMIARY_M1 } from "../domain/slowniki";
@@ -112,33 +112,66 @@ export async function zbudujKontekst(
         ? (pary.filter(([, v]) => v === "A").length / pary.length) * 100
         : null;
     }
-    const e = (kod: string) => etykietaM1(kod, pozycje[kod]);
-    kontekst.m1Szkice = {
-      1: `Wygląda na to, że chcesz: ${e("KOR")}.`,
-      2: `Widzisz siebie tak: ${e("ORG")}, ${e("MIE")}. ${e("LUD")}.`,
-      3: `Chcesz pracować tak: ${e("GOD")}. Granica między pracą a resztą: ${e("GRA")}.`,
-      5: `Poziom życia: ${e("POZ")}. Wejście na rynek: ${e("INW")}.`,
-      7: `Za kilka lat: ${e("TEMP")}. Praca ma być: ${e("CEN")}. ${e("ROD")}.`,
+    /** Biegun A czy B, z progiem 50. Null, gdy wymiar nie zostal wypelniony. */
+    const biegun = (kod: string, a: string, b: string): string => {
+      const p = pozycje[kod];
+      if (p === null || p === undefined) return a;
+      return p > 50 ? a : b;
     };
 
     const a3 = await pobierzOdpowiedzi(uczestnikId, "A3");
-    if (a3["A"]) {
-      const wynik = policzA3({
-        czescA: a3["A"] as Record<string, "A" | "B">,
-        czescB: Object.fromEntries(
-          Object.entries((a3["B"] ?? {}) as Record<string, number>).map(([k, v]) => [
-            k.replace("kotwica_", ""),
-            v,
-          ]),
-        ),
-      });
-      const warunki = (wynik.warunkiKluczowe.length > 0 ? wynik.warunkiKluczowe : wynik.preferencje)
+    const wynikA3 = a3["A"]
+      ? policzA3({
+          czescA: a3["A"] as Record<string, "A" | "B">,
+          czescB: Object.fromEntries(
+            Object.entries((a3["B"] ?? {}) as Record<string, number>).map(([k, v]) => [
+              k.replace("kotwica_", ""),
+              v,
+            ]),
+          ),
+        })
+      : null;
+    const a3Biegun = (kod: string, a: string, b: string): string => {
+      const poz = wynikA3?.pozycje[kod];
+      if (poz === undefined) return a;
+      return poz > 50 ? a : b;
+    };
+
+    const a5 = await pobierzOdpowiedzi(uczestnikId, "A5");
+    const przeprowadzka = ((a5["A"] ?? {})["F06"] as string | undefined) ?? "moze";
+    const gotowoscNaPrzeprowadzke =
+      przeprowadzka === "tak"
+        ? "jesteś gotów"
+        : przeprowadzka === "nie"
+          ? "raczej nie"
+          : "nie masz jeszcze zdania";
+
+    kontekst.m1Szkice = {
+      1:
+        `Chcesz ${biegun("KOR", "zapuścić korzenie w jednym miejscu", "mieć możliwość ruszenia się, kiedy będzie trzeba")}. ` +
+        `Na przeprowadzkę ${gotowoscNaPrzeprowadzke}.`,
+      2:
+        `Najbardziej odpowiada Ci praca ${biegun("ORG", "w dużej organizacji", "na swoim albo w małym zespole")}, ` +
+        `${biegun("MIE", "w jednym miejscu", "zdalnie")}, i raczej ` +
+        `${a3Biegun("SAM", "samodzielnie", "z zespołem")}.`,
+      3:
+        `Twój dzień trwa ${biegun("GOD", "tyle, ile trzeba", "około ośmiu godzin")} i ` +
+        `${biegun("GRA", "przechodzi płynnie w wieczór", "kończy się o stałej porze")}.`,
+      4: "Poza pracą chcesz mieć miejsce na {…}. To jest lista, która później zawęzi drogi bardziej, niż się teraz wydaje.",
+      5:
+        `Pieniądze ${biegun("POZ", "są dla Ciebie ważne", "nie są najważniejsze")}, ale bardziej niż o wysokie zarobki ` +
+        `chodzi Ci o ${a3Biegun("RYZ", "możliwość ryzyka i wyższy sufit", "spokój i przewidywalność")}.`,
+      6: "Nie chcesz {…}. To jest granica, do której wrócimy przy każdej z trzech dróg.",
+      7:
+        `Za kilka lat chcesz ${biegun("TEMP", "mieć już coś za sobą", "spokojnie budować")}. ` +
+        "Nie musi się sprawdzić — ma służyć jako punkt, do którego porównasz to, co wybierzesz.",
+    };
+
+    if (wynikA3) {
+      const warunki = (wynikA3.warunkiKluczowe.length > 0 ? wynikA3.warunkiKluczowe : wynikA3.preferencje)
         .slice(0, 3)
         .map((w) => w.warunek);
-      if (warunki.length > 0) {
-        kontekst.a3Warunki = warunki;
-        kontekst.m1Szkice[2] += ` W poprzednim ćwiczeniu wyszło Ci, że najlepiej działasz przy: ${warunki.join(", ")}.`;
-      }
+      if (warunki.length > 0) kontekst.a3Warunki = warunki;
     }
   }
 

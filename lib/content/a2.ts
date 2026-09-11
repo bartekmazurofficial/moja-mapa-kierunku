@@ -33,8 +33,10 @@ export const INSTRUKCJA_A2 = {
   wprowadzenie: [
     "Poprzednio pytaliśmy, co chciałbyś robić. Teraz pytamy o coś innego.",
     "W czym, Twoim zdaniem, poradziłbyś sobie najlepiej — nawet jeśli wcale byś tego nie lubił?",
-    "To nie jest to samo pytanie. Często najlepiej wychodzą nam rzeczy, za którymi nie przepadamy. I odwrotnie — uwielbiamy coś, co idzie nam średnio.",
     "Twoje odpowiedzi nie muszą zgadzać się z poprzednim wynikiem. Jeśli się nie zgadzają, to najciekawsza rzecz, jaką dziś znajdziemy.",
+  ],
+  rozwiniecie: [
+    "To nie jest to samo pytanie. Często najlepiej wychodzą nam rzeczy, za którymi nie przepadamy. I odwrotnie — uwielbiamy coś, co idzie nam średnio.",
     "Nie oceniaj, czy to ważne albo czy dobrze brzmi. Pytamy tylko: co poszłoby Ci lepiej niż pozostałe trzy rzeczy w zestawie.",
   ],
   polecenieBloku: "Ustaw w kolejności: od tej, która poszłaby Ci najlepiej",
@@ -42,4 +44,41 @@ export const INSTRUKCJA_A2 = {
   dowodyNaglowek: "Gdzie to widać?",
   dowodyPodtytul:
     "Zamiast pytać, jak dobry jesteś, pytamy o ślad w rzeczywistości. Zaznacz to, co się zdarzyło.",
+} as const;
+
+/**
+ * Macierz powiazania A1 z A2, rozdzial 11.1. Kazdy z 24 obszarow zainteresowan
+ * ma kompetencje z wagami sumujacymi sie do 1,00.
+ *
+ * Wsparcie[obszar] = suma ( waga x K[kompetencja] )
+ */
+export const MACIERZ_WSPARCIA: Record<string, Record<string, number>> = {"1": {"27": 0.3, "1": 0.25, "26": 0.2, "4": 0.15, "22": 0.1}, "2": {"26": 0.3, "10": 0.2, "23": 0.2, "27": 0.15, "22": 0.15}, "3": {"28": 0.25, "17": 0.25, "23": 0.2, "27": 0.15, "22": 0.15}, "4": {"28": 0.35, "29": 0.25, "27": 0.15, "20": 0.15, "25": 0.1}, "5": {"1": 0.3, "6": 0.25, "4": 0.2, "22": 0.15, "25": 0.1}, "6": {"2": 0.25, "4": 0.25, "22": 0.2, "23": 0.15, "6": 0.15}, "7": {"17": 0.2, "22": 0.2, "29": 0.2, "7": 0.15, "16": 0.15, "6": 0.1}, "8": {"2": 0.3, "3": 0.3, "22": 0.2, "4": 0.2}, "9": {"9": 0.45, "8": 0.25, "10": 0.2, "22": 0.1}, "10": {"11": 0.5, "8": 0.2, "2": 0.2, "22": 0.1}, "11": {"9": 0.3, "26": 0.2, "23": 0.2, "6": 0.15, "27": 0.15}, "12": {"13": 0.35, "9": 0.2, "8": 0.15, "29": 0.15, "30": 0.15}, "13": {"17": 0.4, "16": 0.2, "19": 0.15, "23": 0.15, "29": 0.1}, "14": {"12": 0.4, "13": 0.2, "16": 0.15, "17": 0.15, "21": 0.1}, "15": {"16": 0.4, "18": 0.25, "17": 0.2, "12": 0.15}, "16": {"20": 0.25, "21": 0.25, "16": 0.2, "13": 0.15, "14": 0.15}, "17": {"14": 0.35, "15": 0.2, "30": 0.2, "16": 0.15, "19": 0.1}, "18": {"20": 0.35, "21": 0.2, "18": 0.15, "29": 0.15, "15": 0.15}, "19": {"30": 0.25, "8": 0.2, "25": 0.2, "14": 0.15, "21": 0.1, "29": 0.1}, "20": {"15": 0.25, "5": 0.25, "14": 0.2, "11": 0.15, "2": 0.15}, "21": {"21": 0.35, "22": 0.25, "24": 0.2, "5": 0.1, "23": 0.1}, "22": {"22": 0.45, "5": 0.2, "23": 0.2, "7": 0.15}, "23": {"3": 0.35, "22": 0.3, "5": 0.2, "21": 0.15}, "24": {"21": 0.35, "24": 0.3, "29": 0.15, "10": 0.1, "4": 0.1}};
+
+/** Cztery cwiartki z rozdzialu 11.2. */
+export const CWIARTKI = [
+  {
+    kod: "mocna_droga",
+    etykieta: "Mocna droga",
+    komunikat: "Ciągnie Cię do tego i masz na to zaplecze. Tu warto szukać najmocniej.",
+  },
+  {
+    kod: "ukryty_atut",
+    etykieta: "Ukryty atut",
+    komunikat:
+      "Nie palisz się do tego, ale prawdopodobnie poszłoby Ci lepiej niż większości. Warto sprawdzić, zanim odrzucisz.",
+  },
+  {
+    kod: "do_zbudowania",
+    etykieta: "Chcę, ale muszę zbudować",
+    komunikat:
+      "Bardzo Cię to ciągnie, ale zaplecza jeszcze nie ma. To nie znaczy nie — to znaczy: najpierw te umiejętności.",
+  },
+  { kod: "raczej_nie", etykieta: "Raczej nie", komunikat: "" },
+] as const;
+
+export const RAMKI_A2 = {
+  najslabsze:
+    "To nie jest wyrok. W Twoim wieku większość kompetencji dopiero się buduje — to lista rzeczy, których możesz się nauczyć, jeśli będą potrzebne na Twojej drodze.",
+  zDowodami: "i masz na to konkretne przykłady",
+  bezDowodow: "na razie bez doświadczeń, które by to potwierdzały",
 } as const;

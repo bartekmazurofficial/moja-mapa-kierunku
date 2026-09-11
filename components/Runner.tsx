@@ -175,6 +175,18 @@ export function Runner({
                 <p key={i}>{a}</p>
               ))}
             </div>
+            {ekran.rozwiniecie ? (
+              <details className="mt-5 max-w-czytelna">
+                <summary className="cursor-pointer list-none text-male text-atrament-sciszony underline decoration-linia-mocna underline-offset-4 hover:text-atrament">
+                  Więcej o tym ćwiczeniu
+                </summary>
+                <div className="proza mt-3 text-atrament-sciszony">
+                  {ekran.rozwiniecie.map((a, i) => (
+                    <p key={i}>{a}</p>
+                  ))}
+                </div>
+              </details>
+            ) : null}
           </div>
         ) : (
           <>
@@ -189,34 +201,47 @@ export function Runner({
                 {ekran.podpis}
               </p>
             ) : null}
-            {ekran.notatka ? (
-              <div className="mb-7 max-w-czytelna border-l-2 border-linia-mocna pl-4">
-                <p className="font-serif text-tresc italic leading-relaxed text-atrament-sciszony">
-                  {ekran.notatka}
-                </p>
-                <p className="mt-1.5 text-drobne text-atrament-slaby">
-                  To tylko szkic z poprzedniego ćwiczenia. Możesz go potwierdzić, poprawić albo
-                  napisać coś zupełnie innego.
-                </p>
-              </div>
-            ) : null}
+
             <div className="mt-1 flex flex-col gap-6">
               {(ekran.pozycje ?? [])
                 .filter((p) => spelniaWarunek(p.warunek, odpowiedzi))
                 .map((p, i, lista) => (
-                  <Pozycja
+                  <div
                     key={p.id}
-                    pozycja={p}
-                    pierwsza={i === 0}
-                    ostatnia={i === lista.length - 1}
-                    wartosc={odpowiedzi[p.id]}
-                    naZmiane={(v) => zmien(p.id, v, p.typ === "tekst" || p.typ === "kilka_tekstow")}
-                    naDomkniecie={
-                      ekran.autoDalej && !ostatni ? () => setTimeout(() => void dalej(), 400) : undefined
+                    // Skupiska sa wylacznie przestrzenne i nienazwane.
+                    className={
+                      ekran.skupiskaCo && i > 0 && i % ekran.skupiskaCo === 0 ? "mt-8" : undefined
                     }
-                  />
+                  >
+                    <Pozycja
+                      pozycja={p}
+                      pierwsza={i === 0}
+                      ostatnia={i === lista.length - 1}
+                      wartosc={odpowiedzi[p.id]}
+                      naZmiane={(v) => zmien(p.id, v, p.typ === "tekst" || p.typ === "kilka_tekstow")}
+                      naDomkniecie={
+                        ekran.autoDalej && !ostatni ? () => setTimeout(() => void dalej(), 400) : undefined
+                      }
+                    />
+                  </div>
                 ))}
             </div>
+
+            {/* Szkic jest odbiciem, nie podpowiedzia: pojawia sie dopiero wtedy,
+                gdy uczestnik cos napisal. Przy pustym polu nie ma ani szkicu,
+                ani zachety - wizja zycia to jedyny modul, w ktorym wolno
+                zostawic puste pole bez konsekwencji. */}
+            {ekran.notatka && maTresc(ekran, odpowiedzi) ? (
+              <div className="mt-8 max-w-czytelna border-l-2 border-akcent/40 pl-4">
+                <p className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
+                  {zloszNotatke(ekran, odpowiedzi)}
+                </p>
+                <p className="mt-1.5 text-drobne text-atrament-slaby">
+                  Tak wyszło z poprzedniego ćwiczenia. Możesz się z tym zgodzić albo napisać
+                  zupełnie co innego — to Twój tekst, nie nasz.
+                </p>
+              </div>
+            ) : null}
           </>
         )}
       </main>
@@ -260,6 +285,32 @@ function spelniaWarunek(
   if (!warunek) return true;
   const wartosc = odpowiedzi[warunek.pozycja];
   return typeof wartosc === "string" && warunek.wartosci.includes(wartosc);
+}
+
+/** Wstawia w miejsce {…} to, co uczestnik wlasnie napisal albo zaznaczyl. */
+function zloszNotatke(ekran: Ekran, odpowiedzi: Record<string, unknown>): string {
+  const notatka = ekran.notatka ?? "";
+  if (!ekran.notatkaZPola || !notatka.includes("{…}")) return notatka;
+  const wartosc = odpowiedzi[ekran.notatkaZPola];
+  let tekst = "";
+  if (Array.isArray(wartosc)) {
+    const elementy = wartosc.filter((x): x is string => typeof x === "string" && x.trim().length > 0);
+    tekst = elementy.length > 1 ? `${elementy.slice(0, -1).join(", ")} i ${elementy.at(-1)}` : (elementy[0] ?? "");
+  } else if (typeof wartosc === "string") {
+    tekst = wartosc.trim();
+  }
+  if (!tekst) return "";
+  return notatka.replace("{…}", tekst.replace(/\.$/, "").toLowerCase());
+}
+
+/** Czy uczestnik cokolwiek na tym ekranie napisal. */
+function maTresc(ekran: Ekran, odpowiedzi: Record<string, unknown>): boolean {
+  return (ekran.pozycje ?? []).some((p) => {
+    const w = odpowiedzi[p.id];
+    if (typeof w === "string") return w.trim().length > 0;
+    if (Array.isArray(w)) return w.some((x) => typeof x === "string" && x.trim().length > 0);
+    return false;
+  });
 }
 
 function ekranKompletny(ekran: Ekran, odpowiedzi: Record<string, unknown>): boolean {

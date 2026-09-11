@@ -22,6 +22,8 @@ export interface PlanModulu {
   wewnatrz: Record<string, string[]>;
   /** Czy dla danej pary zamieniamy strony. */
   odwrocone: Record<string, boolean>;
+  /** A1 czesc B: losowa kolejnosc 24 kotwic, utrwalona razem z planem. */
+  kotwice?: string[];
 }
 
 function mieszaj<T>(tablica: T[], losowa: () => number): T[] {
@@ -42,6 +44,10 @@ export function zbudujPlan(modul: KodModulu, losowa: () => number = Math.random)
       for (const b of BLOKI_A1) {
         plan.wewnatrz[String(b.index)] = mieszaj(b.pozycje.map((p) => p.id), losowa);
       }
+      plan.kotwice = mieszaj(
+        Array.from({ length: 24 }, (_, i) => String(i + 1)),
+        losowa,
+      );
       break;
     }
     case "A2": {

@@ -55,8 +55,10 @@ describe("zapytanie o zawód zwraca komplet 24 pól", () => {
   it("elektryk ma wszystkie 24 pola, listy są listami", async () => {
     const z = await pobierzZawod("elektryk");
     expect(z).not.toBeNull();
-    expect(Object.keys(z!).sort()).toEqual([...POLA].sort());
+    // 24 pola z bazy plus nazwaWyswietlana, wyliczana z karty przy imporcie.
+    expect(Object.keys(z!).sort()).toEqual([...POLA, "nazwaWyswietlana"].sort());
     expect(POLA).toHaveLength(24);
+    expect(z!.nazwaWyswietlana).toBe("Elektryk");
     expect(Array.isArray(z!.a1)).toBe(true);
     expect(z!.a1.length).toBeGreaterThan(0);
     expect(z!.obszar).toBe(13);
@@ -65,11 +67,23 @@ describe("zapytanie o zawód zwraca komplet 24 pól", () => {
 
   it("wszystkie 157 zawodów ma komplet 24 pól i niepusty profil obowiązkowy", () => {
     for (const z of baza.zawody) {
-      expect(Object.keys(z), z.kod).toHaveLength(24);
+      expect(Object.keys(z), z.kod).toHaveLength(25);
       expect(z.a1.length, z.kod).toBeGreaterThan(0);
       expect(z.a2r.length, z.kod).toBeGreaterThan(0);
       expect(z.a5.length, z.kod).toBeGreaterThan(0);
       expect(z.anty.length, z.kod).toBeGreaterThan(0);
+    }
+  });
+
+  it("nazwy pokazywane uczestnikowi mają polskie znaki", () => {
+    // Baza trzyma nazwy bez znakow diakrytycznych; odtwarzamy je z kart.
+    const poKodzie = new Map(baza.zawody.map((z) => [z.kod, z.nazwaWyswietlana]));
+    expect(poKodzie.get("lesnik")).toBe("Leśnik");
+    expect(poKodzie.get("technik_serwisu")).toBe("Technik serwisu urządzeń");
+    expect(poKodzie.get("pielegniarka")).toBe("Pielęgniarka");
+    expect(poKodzie.get("koordynator_ngo")).toBe("Koordynator projektów w NGO");
+    for (const z of baza.zawody) {
+      expect(z.nazwaWyswietlana.length, z.kod).toBeGreaterThan(2);
     }
   });
 

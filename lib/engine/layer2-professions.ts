@@ -121,11 +121,11 @@ export function warstwa2(
       if (usuniety?.powod === "weto") {
         usunieteWetem.push({
           kod: zawod.kod,
-          nazwa: zawod.nazwa,
+          nazwa: zawod.nazwaWyswietlana,
           filtry: usuniety.filtr ? [usuniety.filtr] : [],
         });
       } else if (usuniety?.powod === "brak_poziomu") {
-        usunieteBezPoziomu.push({ kod: zawod.kod, nazwa: zawod.nazwa, obszar: usuniety.nazwa });
+        usunieteBezPoziomu.push({ kod: zawod.kod, nazwa: zawod.nazwaWyswietlana, obszar: usuniety.nazwa });
       }
       continue;
     }
@@ -133,18 +133,18 @@ export function warstwa2(
     // --- ETAP A: WETO ZAWODOWE. Jedyne miejsce, gdzie cos znika bezwarunkowo. ---
     const trafioneWeta = zawod.a5.filter((k) => profil.a5Weta.has(k));
     if (trafioneWeta.length > 0) {
-      usunieteWetem.push({ kod: zawod.kod, nazwa: zawod.nazwa, filtry: trafioneWeta });
+      usunieteWetem.push({ kod: zawod.kod, nazwa: zawod.nazwaWyswietlana, filtry: trafioneWeta });
       continue;
     }
     if (zawod.studia === "tak" && profil.a5Weta.has("studia")) {
-      usunieteWetem.push({ kod: zawod.kod, nazwa: zawod.nazwa, filtry: ["studia"] });
+      usunieteWetem.push({ kod: zawod.kod, nazwa: zawod.nazwaWyswietlana, filtry: ["studia"] });
       continue;
     }
 
     // --- WARSTWA 0: dwa filtry twarde, reszta jest miekka ---
     const powodUsunieciaA0 = filtrTwardyA0(zawod, a0);
     if (powodUsunieciaA0 !== null) {
-      usunieteA0.push({ kod: zawod.kod, nazwa: zawod.nazwa, powod: powodUsunieciaA0 });
+      usunieteA0.push({ kod: zawod.kod, nazwa: zawod.nazwaWyswietlana, powod: powodUsunieciaA0 });
       continue;
     }
 
@@ -199,7 +199,7 @@ export function warstwa2(
 
     wyniki.push({
       kod: zawod.kod,
-      nazwa: zawod.nazwa,
+      nazwa: zawod.nazwaWyswietlana,
       obszar: zawod.obszar,
       wynik,
       pasmo: "",

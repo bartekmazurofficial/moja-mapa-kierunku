@@ -60,10 +60,13 @@ model Obszar {
 
 /// 157 zawodow. Zrodlo: 03_dane/zawody_baza.json.
 model Zawod {
-  kod      String @id
-  nazwa    String
-  obszarId Int
-  obszar   Obszar @relation(fields: [obszarId], references: [id])
+  kod              String @id
+  /// Nazwa z bazy danych, bez znakow diakrytycznych.
+  nazwa            String
+  /// Nazwa pokazywana uczestnikowi, ze znakami odtworzonymi z karty.
+  nazwaWyswietlana String
+  obszarId         Int
+  obszar           Obszar @relation(fields: [obszarId], references: [id])
 
   /// szybki | sredni | dlugi | bardzo_dlugi
   poziom String
@@ -158,6 +161,18 @@ model DrogaBezStudiow {
   wymagania String
 }
 
+/// 157 kart zawodow, wyciagnietych z 05_karty_zawodow/*.md.
+/// Karta jest trescia wyswietlana uczestnikowi, nie danymi silnika.
+model Karta {
+  kod    String  @id
+  tytul  String
+  plik   String
+  /// JSON [{tytul, klucz, tresc}] - sekcje w kolejnosci z dokumentu.
+  sekcje String
+  /// Karta pelna (kilkanascie sekcji) albo skrocona (kilka).
+  pelna  Boolean @default(true)
+}
+
 /// 26 klastrow: grupy zawodow, ktorych assessment nie rozroznia.
 model Klaster {
   kod     String  @id
@@ -203,6 +218,8 @@ model Uczestnik {
   odpowiedzi  Odpowiedz[]
   postepy     PostepModulu[]
   wyniki      Wynik[]
+  oceny       OcenaZawodu[]
+  pytanie     PytanieUczestnika?
 
   @@index([grupaId])
 }
@@ -303,6 +320,30 @@ model Wynik {
   utworzony     DateTime @default(now())
 
   @@index([uczestnikId])
+}
+
+/// Oznaczenie zawodu przez uczestnika w sekcji 13 raportu.
+/// To nie jest cwiczenie porzadkujace, tylko dane wejsciowe do sesji 1:1:
+/// rozjazd miedzy wynikiem a ocena uczestnika jest tematem rozmowy.
+model OcenaZawodu {
+  id          String    @id @default(cuid())
+  uczestnikId String
+  uczestnik   Uczestnik @relation(fields: [uczestnikId], references: [id], onDelete: Cascade)
+  zawodKod    String
+  /// interesuje | moze | nie_dla_mnie
+  ocena       String
+  zapisana    DateTime  @updatedAt
+
+  @@unique([uczestnikId, zawodKod])
+  @@index([uczestnikId])
+}
+
+/// Pytanie, ktore uczestnik zapisal na sesje indywidualna (koniec spotkania 4).
+model PytanieUczestnika {
+  uczestnikId String    @id
+  uczestnik   Uczestnik @relation(fields: [uczestnikId], references: [id], onDelete: Cascade)
+  tresc       String
+  zapisane    DateTime  @updatedAt
 }
 
 /// Odslanianie warstw raportu. Prowadzacy odblokowuje warstwe dla calej grupy.
