@@ -550,3 +550,156 @@ do sprawdzenia, czy dostaję poprawione pliki.
 Silnik zwraca powody jako osobne frazy z przedrostkiem, więc dwa powody tego
 samego rodzaju dawały „ciągnie Cię: X; ciągnie Cię: Y". Powody o tym samym
 przedrostku są teraz łączone w jedną listę.
+
+---
+
+## Zatwierdzone po fazie 4
+
+| # | Rozstrzygnięcie |
+|---|---|
+| 1 | Polskie znaki w bazie referencyjnej poprawione po stronie programu, nowa paczka zaimportowana |
+| 2 | Nazwy trzech dróg zmienione na opisujące rolę: „Tu pasujesz najmocniej", „Tu też pasujesz, ale to inna praca", „Coś zupełnie innego" |
+| 3 | Tekst ćwiartki „ukryty atut" wymieniony, bo porównywał uczestnika z innymi |
+| 4 | Pole 14 karty usunięte z metodyki — pierwszy krok należy do sesji 1:1 |
+| 5 | Raport profilu płaskiego sprawdzony w fazie 5 |
+| 6 | Klawiatura i fokus teraz; prawdziwe urządzenia i druk przed pilotażem |
+
+### Nazwy obszarów: zgłoszenie wycofane
+
+Policzyłem „14 nazw obszarów na 27 bez znaków", licząc nazwy bez **ani jednej**
+polskiej litery. Większość z nich żadnej nie potrzebuje: „Prawo", „Transport i
+logistyka". Porównanie wszystkich 27 z nagłówkami w `obszary_27_opis.md` nie
+pokazuje różnicy. Parser jest w porządku, źródło też. Miara była zła, nie dane.
+
+Reszta braków po imporcie nowej paczki jest w `DO_POPRAWY_polskie_znaki.md`:
+osiem miejsc w opisach kierunków, dziewięć w „czego nie daje", pięć w pytaniach
+klastrów, trzynaście w opisach różnic, dwie nazwy dróg bez studiów oraz `zl`
+zamiast `zł` w 27 z 56 pól kosztu.
+
+---
+
+## Faza 5
+
+### D33. Logowanie bez tabeli użytkowników
+
+Jedno konto, hasło w `PROWADZACY_HASLO`, sesja w ciasteczku podpisanym HMAC
+z `SESJA_SEKRET`. Ciasteczko nie niesie żadnych danych poza datą ważności,
+więc nie ma czego podmienić, a podpis pilnuje, żeby nie dało się przedłużyć
+ważności. Osiem godzin: tyle trwa dzień warsztatowy. Porównania haseł i podpisów
+są odporne na pomiar czasu. Krótszy sekret niż 32 znaki to błąd uruchomienia,
+nie ciche obniżenie bezpieczeństwa.
+
+### D34. Blokowanie modułów tym samym mechanizmem co warstwy raportu (luka L1)
+
+Osobna tabela `OtwarcieModulu`, klucz `grupa + moduł`, bez stanu na uczestnika.
+Egzekwowane w dwóch miejscach: strona modułu nie renderuje kreatora, a `POST
+/api/odpowiedz` odrzuca zapis do nieotwartego modułu. Samo ukrycie linku by nie
+wystarczyło — odpowiedzi da się wysłać bez interfejsu.
+
+Otwarte zostaje otwarte: ponowne otwarcie nie przesuwa daty, więc przerwany
+moduł zawsze da się dokończyć. Zamknięcie istnieje tylko na wypadek pomyłki
+i do testów.
+
+Uczestnik widzi moduł zamknięty na liście, wygaszony, z podpisem, na którym
+spotkaniu się otworzy. Pusta lista przez trzy tygodnie byłaby gorsza.
+
+### D35. Rozjazdy liczone jako funkcja czysta
+
+`lib/panel/rozjazdy.ts` nie dotyka bazy. Wejście to wynik silnika, wyniki
+modułów, baza referencyjna i oceny zawodów. Dzięki temu wszystkie pięć typów
+sprawdzają testy na profilach kontrolnych, a nie na atrapie wyniku.
+
+Trzy definicje wymagały rozstrzygnięcia, bo specyfikacja podaje sens, nie próg:
+
+**Odrzucony faworyt** — zawód z pasma „bardzo mocne" albo „mocne", oznaczony
+jako nie dla mnie.
+
+**Wybrany outsider** — zawód oznaczony jako interesujący z najsłabszego
+pokazanego pasma albo dosypany gwarancją reprezentacji. Mierzymy względem tego,
+co uczestnik w ogóle widzi: zawodu spoza raportu nie mógł oznaczyć.
+
+**Sprzeczność A1 z A5** — obszar usunięty wetem, którego ciągnienie z A1 jest
+nie niższe niż u trzeciego obszaru w rankingu. Weto na obszarze, do którego nie
+ciągnie, to poprawny odsiew, nie sprzeczność. Wymagało dołożenia `ciagniecie`
+do usuniętych obszarów: silnik liczył je dopiero po wecie, więc dla usuniętych
+nie istniało. Kolejność etapów w warstwie pierwszej się zmieniła, wyniki nie —
+ciągnienie nie zależy od wykonalności i wszystkie przebiegi na sucho przechodzą
+bez zmiany.
+
+**Sprzeczność z wizją** — Droga A z mnożnikiem zgodności poniżej jedności, czyli
+obszar wygrał samym ciągnieniem, mimo że wizja życia działa przeciw niemu.
+Nazywamy konkretny wymiar M1 o największym rozjeździe, bo bez tego nie ma
+o czym rozmawiać.
+
+### D36. Korekta ręczna zapisywana osobno od wyniku
+
+Tabela `Korekta` z typem, wartością i uzasadnieniem. Raport nie miesza tego
+z wynikiem silnika: usunięty zawód znika z listy, dopisany stoi w osobnej ramce
+podpisanej „to nie wyszło z kwestionariusza, wskazał to prowadzący", a zmiana
+kolejności dróg dokłada zdanie wprost o tym, że zmienił ją człowiek.
+
+### D37. Ekran sesji przepisuje skrypt z dokumentacji, nie streszcza
+
+`lib/panel/przebieg.ts` zawiera siedem etapów z minutami i siedem skryptów do
+sytuacji trudnych w pełnym brzmieniu. Prowadzący czyta to na żywo; skracanie
+zepsułoby jedyną rzecz, po którą się do tego sięga. Zasada z fazy 3 („instrukcje
+skracaj") dotyczy ekranów uczestnika, nie ściągi dla prowadzącego.
+
+---
+
+## Luki i błędy znalezione w fazie 5
+
+### B1. Kod techniczny pasma trafiał na ekran uczestnika
+
+Komponent pasma renderował `{opis || pasmo}`. Pasma bez opisu — `antydopasowanie`
+w obszarach i `ponizej_progu` w zawodach — pokazywały uczestnikowi surowy kod.
+Przy profilu płaskim wszystkie trzy najmocniejsze obszary dostawały zieloną
+plakietkę „antydopasowanie", czyli dokładnie to, czego zabrania reguła numer 3.
+
+Poprawione w trzech miejscach: pasmo bez opisu nie renderuje się wcale, obszar
+z czołówki nigdy nie dostaje etykiety antydopasowania, a PDF pomija myślnik
+i opis, gdy opisu nie ma. Trzy testy pilnują, żeby kod techniczny nie wrócił.
+
+### B2. Droga C jako inny poziom wejścia dostawała zawody Drogi A
+
+Gdy nie ma sensownej trzeciej dziedziny, silnik buduje Drogę C jako inny poziom
+wejścia w obszarze A albo B. Zawody dla drogi brały się z samego obszaru, bez
+poziomu, więc obie karty pokazywały te same cztery zawody i tę samą listę
+kierunków. Różnica, która jest całym sensem tej drogi, nie była widoczna.
+
+Zawody są teraz filtrowane po poziomie wejścia drogi, z odwrotem do pełnej listy,
+gdyby dla danego poziomu nie było ani jednego zawodu. Etykieta i zdanie
+wyjaśniające też się zmieniają: „Ta sama dziedzina, inne wejście" zamiast „Coś
+zupełnie innego", bo to drugie byłoby nieprawdą.
+
+### L5. Tabela `PunktStartu` jest martwa
+
+Model istnieje od fazy pierwszej, ale nic do niego nie pisze i nic z niego nie
+czyta. Moduł A0 żyje w tabeli odpowiedzi i jest składany przez
+`zbierzOdpowiedzi`. Panel najpierw zgłaszał przez to „brak metryczki A0" u
+wszystkich uczestników, łącznie z tymi, którzy A0 wypełnili. Panel czyta teraz
+prawdziwe źródło. **Tabelę warto usunąć, ale to zmiana w modelu danych, więc
+czeka na decyzję.**
+
+### L6. Próg profilu płaskiego mierzy wejście, nie wynik
+
+`A1_PROFIL_PLASKI` porównuje rozstęp wyników 24 obszarów zainteresowań. Profil
+kontrolny „płaski" ma rozstęp 19,4, czyli tuż nad progiem 18 — flaga nie pada,
+a mimo to wszystkie 27 obszarów kariery wychodzi w przedziale 40,7 do 36,9,
+czyli w rozstępie czterech punktów, i wszystkie poniżej progu 42.
+
+Raport zachowuje się wtedy poprawnie, bo osobna flaga
+`wszystkie_obszary_ponizej_progu` daje komunikat o nieostrym profilu. Ale to
+przypadek, nie projekt: gdyby czołówka wypadła po 45 punktów, uczestnik dostałby
+pewnie brzmiący ranking oparty na różnicy czterech punktów. **Do rozważenia:
+druga reguła degradacji liczona na rozstępie wyników obszarów, nie zainteresowań.**
+
+### Do sprawdzenia przed pilotażem
+
+| Co | Dlaczego nie teraz |
+|---|---|
+| Prawdziwy telefon: Safari na iOS i Chrome na Androidzie | Chrome przy 390 px to przybliżenie; Safari ma własne zachowania przy wysokości okna i czcionkach |
+| Wydrukowany PDF na papierze | Marginesy A4 oceniane dotąd wyłącznie na ekranie |
+| Czytnik ekranu na raporcie i na module | Sprawdzona jest nawigacja klawiaturą i widoczny fokus, nie odczyt |
+| Zmiana `PROWADZACY_HASLO` i `SESJA_SEKRET` | W repozytorium stoją wartości zastępcze |
+| Pomiar czasu wypełniania na żywych danych | Ostrzeżenie o pobieżnym wypełnieniu ma próg połowy czasu ze scenariusza, nieprzetestowany na ludziach |
