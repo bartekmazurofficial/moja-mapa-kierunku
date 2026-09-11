@@ -215,7 +215,6 @@ model Uczestnik {
   kodDostepu String   @unique
   utworzony  DateTime @default(now())
 
-  punktStartu PunktStartu?
   odpowiedzi  Odpowiedz[]
   postepy     PostepModulu[]
   wyniki      Wynik[]
@@ -225,37 +224,6 @@ model Uczestnik {
   sesja       Sesja?
 
   @@index([grupaId])
-}
-
-/// Modul A0. Metryczka zasilajaca silnik, nie assessment.
-model PunktStartu {
-  uczestnikId String    @id
-  uczestnik   Uczestnik @relation(fields: [uczestnikId], references: [id], onDelete: Cascade)
-
-  etap              String
-  /// JSON [] rozszerzenia, moze byc puste
-  rozszerzenia      String
-  /// JSON [] dokladnie 3
-  przedmiotyMocne   String
-  /// JSON [] dokladnie 3
-  przedmiotyTrudne  String
-  /// dobrze | radze_sobie | trudna | najwiekszy_problem | null
-  matematyka        String?
-  /// JSON [] wielokrotny wybor
-  doswiadczenie     String
-  doswiadczenieOpis String?
-
-  miejsce        String
-  mobilnosc      String
-  dojazdDoMiasta String
-  zasoby         String
-
-  /// JSON [] ograniczenia zdrowotne, moga byc pominiete
-  ograniczenia          String
-  /// Odmowa odpowiedzi nie ma zadnych konsekwencji dla wyniku.
-  ograniczeniaPominiete Boolean @default(false)
-
-  zaktualizowany DateTime @updatedAt
 }
 
 /// Pojedyncza odpowiedz. Zapis na biezaco, bez przycisku "zapisz".

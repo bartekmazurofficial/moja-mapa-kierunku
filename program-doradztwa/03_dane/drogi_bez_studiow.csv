@@ -19,39 +19,39 @@ sp_bhp;Szkoła policealna: technik BHP;policealna;1,5 roku;bezpłatna w publiczn
 sp_masaz;Szkoła policealna: technik masażysta;policealna;2 lata;bezpłatna w publicznej;masazysta;Po szkole średniej.
 sp_optyk;Szkoła policealna: technik optyk;policealna;2 lata;bezpłatna w publicznej;optyk protetyk_sluchu;Po szkole średniej.
 sp_analityk;Szkoła policealna: technik analityki;policealna;2 lata;bezpłatna w publicznej;technik_lab;Po szkole średniej.
-kurs_spawanie;Kurs spawania z uprawnieniami;kurs;2 do 6 tygodni;1500 do 3500 zl;spawacz;Od 18 lat. Najkrótsza droga do zarobków powyżej średniej krajowej.
-kurs_pv;Kurs instalatora fotowoltaiki;kurs;1 do 3 tygodni;1500 do 4000 zl;instalator_pv;Od 18 lat. Plus uprawnienia SEP i do pracy na wysokości.
-kurs_cnc;Kurs operatora CNC;kurs;1 do 3 miesięcy;2000 do 5000 zl;operator_cnc;Często finansowany przez pracodawcę albo urząd pracy.
-kurs_prawo_jazdy_c;Prawo jazdy C, CE i kwalifikacja wstępna;kurs;3 do 6 miesięcy;11000 do 20000 zl;kierowca;Od 18 lat, transport międzynarodowy zwykle od 21. Często finansowany przez przewoźnika.
-kurs_opiekun;Kurs opiekuna osoby starszej;kurs;kilka tygodni;800 do 3000 zl;opiekun_starszej asystent_niepelno;Często bezpłatny w programach urzędu pracy albo agencji.
-kurs_zlobek;Kurs opiekuna w żłobku;kurs;280 godzin;600 do 2500 zl;opiekunka_dziecieca;Najszybsze wejście do pracy z dziećmi.
-kurs_barber;Kurs fryzjerski i barberski;kurs;3 do 12 miesięcy;3000 do 12000 zl;fryzjer;Alternatywa dla szkoły branżowej dla osób po maturze.
-kurs_ksiegowosc;Kurs księgowości od podstaw;kurs;3 do 6 miesięcy;2500 do 7000 zl;ksiegowy spec_plac;Realna droga także dla osób zmieniających zawód.
-kurs_kosztorys;Kurs kosztorysowania;kurs;1 do 3 miesięcy;2000 do 6000 zl;kosztorysant;Najlepsza droga dla osoby z budowy przechodzacej do biura.
-kurs_trener;Kurs instruktora i trenera personalnego;kurs;kilka tygodni;1500 do 4000 zl;trener_personalny instruktor_rekreacji;Od 18 lat.
-kurs_it;Bootcamp albo nauka własna: programowanie i testowanie;kurs;6 do 18 miesięcy;0 do 20000 zl;programista tester wsparcie_tech administrator;Bez wymagań formalnych. Decyduje portfolio, nie certyfikat.
-kurs_marketing;Nauka własna i kursy: marketing cyfrowy;kurs;6 do 12 miesięcy;0 do 6000 zl;spec_marketingu seo social_media copywriter;Bez wymagań. Decyduje własny projekt z realnym odbiorca.
-kurs_grafika;Nauka własna i kursy: projektowanie;kurs;6 do 18 miesięcy;0 do 15000 zl;grafik projektant_ux ilustrator montazysta;Bez wymagań. Decyduje portfolio.
-pod_pedagogiczne;Studia podyplomowe: przygotowanie pedagogiczne;podyplomowe;2 semestry;3000 do 6000 zl;nauczyciel katecheta nauczyciel_wf;Dla osób po dowolnych studiach kierunkowych.
-pod_doradztwo;Studia podyplomowe: doradztwo zawodowe;podyplomowe;2 semestry;4000 do 8000 zl;doradca_zawodowy;Najczęstsza droga do tego zawodu.
-pod_pedspec;Studia podyplomowe: pedagogika specjalna;podyplomowe;2 do 3 semestry;4000 do 9000 zl;pedagog_specjalny terapeuta_zajeciowy;Dla nauczycieli innych przedmiotów. Droga coraz częstsza.
-aplikacje;Aplikacja prawnicza;aplikacja;3 do 4 lata;20000 do 40000 zl;radca_prawny notariusz;Po studiach prawniczych, po zdaniu egzaminu wstępnego.
-szkola_terapii;Szkoła psychoterapii;szkolenie;4 lata;35000 do 70000 zl;psychoterapeuta interwent;Po studiach i po doświadczeniu w ochronie zdrowia albo pomocy.
+kurs_spawanie;Kurs spawania z uprawnieniami;kurs;2 do 6 tygodni;1500 do 3500 zł;spawacz;Od 18 lat. Najkrótsza droga do zarobków powyżej średniej krajowej.
+kurs_pv;Kurs instalatora fotowoltaiki;kurs;1 do 3 tygodni;1500 do 4000 zł;instalator_pv;Od 18 lat. Plus uprawnienia SEP i do pracy na wysokości.
+kurs_cnc;Kurs operatora CNC;kurs;1 do 3 miesięcy;2000 do 5000 zł;operator_cnc;Często finansowany przez pracodawcę albo urząd pracy.
+kurs_prawo_jazdy_c;Prawo jazdy C, CE i kwalifikacja wstępna;kurs;3 do 6 miesięcy;11000 do 20000 zł;kierowca;Od 18 lat, transport międzynarodowy zwykle od 21. Często finansowany przez przewoźnika.
+kurs_opiekun;Kurs opiekuna osoby starszej;kurs;kilka tygodni;800 do 3000 zł;opiekun_starszej asystent_niepelno;Często bezpłatny w programach urzędu pracy albo agencji.
+kurs_zlobek;Kurs opiekuna w żłobku;kurs;280 godzin;600 do 2500 zł;opiekunka_dziecieca;Najszybsze wejście do pracy z dziećmi.
+kurs_barber;Kurs fryzjerski i barberski;kurs;3 do 12 miesięcy;3000 do 12000 zł;fryzjer;Alternatywa dla szkoły branżowej dla osób po maturze.
+kurs_ksiegowosc;Kurs księgowości od podstaw;kurs;3 do 6 miesięcy;2500 do 7000 zł;ksiegowy spec_plac;Realna droga także dla osób zmieniających zawód.
+kurs_kosztorys;Kurs kosztorysowania;kurs;1 do 3 miesięcy;2000 do 6000 zł;kosztorysant;Najlepsza droga dla osoby z budowy przechodzacej do biura.
+kurs_trener;Kurs instruktora i trenera personalnego;kurs;kilka tygodni;1500 do 4000 zł;trener_personalny instruktor_rekreacji;Od 18 lat.
+kurs_it;Bootcamp albo nauka własna: programowanie i testowanie;kurs;6 do 18 miesięcy;0 do 20000 zł;programista tester wsparcie_tech administrator;Bez wymagań formalnych. Decyduje portfolio, nie certyfikat.
+kurs_marketing;Nauka własna i kursy: marketing cyfrowy;kurs;6 do 12 miesięcy;0 do 6000 zł;spec_marketingu seo social_media copywriter;Bez wymagań. Decyduje własny projekt z realnym odbiorca.
+kurs_grafika;Nauka własna i kursy: projektowanie;kurs;6 do 18 miesięcy;0 do 15000 zł;grafik projektant_ux ilustrator montazysta;Bez wymagań. Decyduje portfolio.
+pod_pedagogiczne;Studia podyplomowe: przygotowanie pedagogiczne;podyplomowe;2 semestry;3000 do 6000 zł;nauczyciel katecheta nauczyciel_wf;Dla osób po dowolnych studiach kierunkowych.
+pod_doradztwo;Studia podyplomowe: doradztwo zawodowe;podyplomowe;2 semestry;4000 do 8000 zł;doradca_zawodowy;Najczęstsza droga do tego zawodu.
+pod_pedspec;Studia podyplomowe: pedagogika specjalna;podyplomowe;2 do 3 semestry;4000 do 9000 zł;pedagog_specjalny terapeuta_zajeciowy;Dla nauczycieli innych przedmiotów. Droga coraz częstsza.
+aplikacje;Aplikacja prawnicza;aplikacja;3 do 4 lata;20000 do 40000 zł;radca_prawny notariusz;Po studiach prawniczych, po zdaniu egzaminu wstępnego.
+szkola_terapii;Szkoła psychoterapii;szkolenie;4 lata;35000 do 70000 zł;psychoterapeuta interwent;Po studiach i po doświadczeniu w ochronie zdrowia albo pomocy.
 specjalizacja_med;Rezydentura i specjalizacja medyczna;specjalizacja;4 do 6 lat;bezpłatna, płatna praca;lekarz;Po studiach i stażu, po egzaminie LEK.
-uprawnienia_bud;Uprawnienia budowlane;uprawnienia;1 do 3 lata praktyki;2000 do 3500 zl egzamin;inzynier_budownictwa kierownik_budowy architekt projektant_instalacji;Po studiach technicznych.
+uprawnienia_bud;Uprawnienia budowlane;uprawnienia;1 do 3 lata praktyki;2000 do 3500 zł egzamin;inzynier_budownictwa kierownik_budowy architekt projektant_instalacji;Po studiach technicznych.
 nabor_sluzby;Nabór do służb mundurowych;nabor;6 do 12 miesięcy;bezpłatny;policjant zolnierz funkcjonariusz_sw strazak;Matura, testy sprawnościowe, psychologiczne i badania. Szkolenie w szkole służby, płatne od pierwszego dnia.
-nabor_ratownictwo;Kursy ratownictwa gorskiego i wodnego;kurs;6 do 24 miesięcy;2000 do 8000 zl;ratownik_gorski strazak;Członkostwo w służbie ochotniczej, kursy stopniowe, bardzo dobra sprawność fizyczna.
-praca_handel;Wejście przez pracodawcę: sprzedaż i obsługa;pracodawca;0 do 3 miesięcy szkolenia;bezpłatne;handlowiec account_manager agent_nieruchomosci rekruter doradca_bank obsluga_klienta;Bez wymagań formalnych. Pracodawca szkoli, daje narzędzia, często samochod. Najtańsze wejście do dobrze płatnego zawodu.
-praca_transport;Wejście przez pracodawcę: spedycja i dyspozytornia;pracodawca;0 do 3 miesięcy szkolenia;bezpłatne;spedytor dyspozytor kierownik_magazynu;Bez wymagań formalnych. Jezyk obcy podnosi stawkę bardziej niż dyplom.
-praca_it_wejscie;Wejście przez pracodawcę: wsparcie i wdrożenia IT;pracodawca;1 do 3 miesięcy szkolenia;bezpłatne;wsparcie_tech spec_wdrozen tester administrator devops;Podstawy techniczne plus jezyk. Często brama do dalszych ról w IT.
+nabor_ratownictwo;Kursy ratownictwa górskiego i wodnego;kurs;6 do 24 miesięcy;2000 do 8000 zł;ratownik_gorski strazak;Członkostwo w służbie ochotniczej, kursy stopniowe, bardzo dobra sprawność fizyczna.
+praca_handel;Wejście przez pracodawcę: sprzedaż i obsługa;pracodawca;0 do 3 miesięcy szkolenia;bezpłatne;handlowiec account_manager agent_nieruchomosci rekruter doradca_bank obsluga_klienta;Bez wymagań formalnych. Pracodawca szkoli, daje narzędzia, często samochód. Najtańsze wejście do dobrze płatnego zawodu.
+praca_transport;Wejście przez pracodawcę: spedycja i dyspozytornia;pracodawca;0 do 3 miesięcy szkolenia;bezpłatne;spedytor dyspozytor kierownik_magazynu;Bez wymagań formalnych. Język obcy podnosi stawkę bardziej niż dyplom.
+praca_it_wejscie;Wejście przez pracodawcę: wsparcie i wdrożenia IT;pracodawca;1 do 3 miesięcy szkolenia;bezpłatne;wsparcie_tech spec_wdrozen tester administrator devops;Podstawy techniczne plus język. Często brama do dalszych ról w IT.
 praca_gastro;Wejście przez pracodawcę: gastronomia i hotelarstwo;pracodawca;od zaraz;bezpłatne;kelner barista kucharz recepcjonista menedzer_restauracji;Bez żadnych wymagań wstępnych. Najłatwiejsze wejście na rynek pracy w całej bazie.
 awans_wewnetrzny;Awans wewnętrzny po latach pracy;awans;4 do 10 lat;bezpłatny;kierownik_zespolu szef_kuchni menedzer_restauracji kierownik_magazynu kierownik_ruchu kierownik_placowki glowny_ksiegowy;Droga przez lata pracy w tym samym obszarze. Bez doświadczenia wykonawczego zespół nie uzna autorytetu.
-wlasna_po_fachu;Własna działalność po latach w fachu;dzialalnosc;3 do 8 lat fachu;20 do 500 tys. zl;wlasciciel_uslugowej wlasciciel_warsztatu wlasciciel_lokalu franczyzobiorca zalozyciel_tech;Najpierw fach albo branża, potem firma. Przedsiębiorczość jest nadbudowa nad kompetencja, nie jej zamiennikiem.
-kurs_fotografia;Kursy i asysta: fotografia i obraz;kurs;1 do 3 lata;4000 do 50000 zl sprzętu;fotograf operator_kamery montazysta;Bez wymagań formalnych. Decyduje portfolio i asysta u doświadczonego fotografa albo na planie.
-kurs_dzwiek;Kursy i asysta: realizacja dźwięku;kurs;1 do 3 lata;0 do 20000 zl;realizator_dzwieku;Wejście od noszenia sprzętu przy nagłośnieniu wydarzeń. Szkoła pomaga, ale nie zastąpi godzin przy konsolecie.
-kurs_trenerski;Kursy trenerskie i licencje sportowe;kurs;1 do 4 lata;1500 do 8000 zl;trener_druzyny trener_personalny instruktor_rekreacji nauczyciel_wf;Licencje związkowe zdobywane stopniowo. W wielu dyscyplinach znaczą więcej niż studia.
-kurs_coaching;Szkoła coachingu i szkoleń;kurs;6 do 18 miesięcy;8000 do 25000 zl;coach trener_biznesu;Wymaga wcześniejszego doświadczenia zawodowego. Bez niego nie ma czego uczyć.
-kurs_lektorski;Certyfikat jezykowy i kurs metodyczny;kurs;6 do 18 miesięcy;2500 do 9000 zl;lektor;Certyfikat C1 albo C2 plus metodyka. Decyduje poziom jezyka, nie dyplom.
+wlasna_po_fachu;Własna działalność po latach w fachu;dzialalnosc;3 do 8 lat fachu;20 do 500 tys. zł;wlasciciel_uslugowej wlasciciel_warsztatu wlasciciel_lokalu franczyzobiorca zalozyciel_tech;Najpierw fach albo branża, potem firma. Przedsiębiorczość jest nadbudową nad kompetencją, nie jej zamiennikiem.
+kurs_fotografia;Kursy i asysta: fotografia i obraz;kurs;1 do 3 lata;4000 do 50000 zł sprzętu;fotograf operator_kamery montazysta;Bez wymagań formalnych. Decyduje portfolio i asysta u doświadczonego fotografa albo na planie.
+kurs_dzwiek;Kursy i asysta: realizacja dźwięku;kurs;1 do 3 lata;0 do 20000 zł;realizator_dzwieku;Wejście od noszenia sprzętu przy nagłośnieniu wydarzeń. Szkoła pomaga, ale nie zastąpi godzin przy konsolecie.
+kurs_trenerski;Kursy trenerskie i licencje sportowe;kurs;1 do 4 lata;1500 do 8000 zł;trener_druzyny trener_personalny instruktor_rekreacji nauczyciel_wf;Licencje związkowe zdobywane stopniowo. W wielu dyscyplinach znaczą więcej niż studia.
+kurs_coaching;Szkoła coachingu i szkoleń;kurs;6 do 18 miesięcy;8000 do 25000 zł;coach trener_biznesu;Wymaga wcześniejszego doświadczenia zawodowego. Bez niego nie ma czego uczyć.
+kurs_lektorski;Certyfikat językowy i kurs metodyczny;kurs;6 do 18 miesięcy;2500 do 9000 zł;lektor;Certyfikat C1 albo C2 plus metodyka. Decyduje poziom języka, nie dyplom.
 wolontariat_ngo;Wolontariat i praca w organizacji;wolontariat;6 miesięcy do 2 lat;bezpłatny;animator koordynator_ngo fundraiser asystent_niepelno misjonarz;Najczęstsza i najtańsza droga do sektora pozarządowego. Kierunek studiów ma tu mniejsze znaczenie niż doświadczenie.
-nauka_wlasna_media;Nauka własna: tworzenie treści;nauka_wlasna;1 do 3 lata;1000 do 8000 zl sprzętu;tworca_internetowy montazysta social_media;Brak formalnej drogi. Decyduje regularność publikowania przez lata. Realistycznie: rok do trzech bez dochodu.
-misje_formacja;Formacja misyjna;formacja;6 do 24 miesięcy;bezpłatna albo symboliczna;misjonarz;Wymaga wcześniej zdobytego zawodu. Krótki wyjazd przed decyzja jest odpowiednikiem stażu.
+nauka_wlasna_media;Nauka własna: tworzenie treści;nauka_wlasna;1 do 3 lata;1000 do 8000 zł sprzętu;tworca_internetowy montazysta social_media;Brak formalnej drogi. Decyduje regularność publikowania przez lata. Realistycznie: rok do trzech bez dochodu.
+misje_formacja;Formacja misyjna;formacja;6 do 24 miesięcy;bezpłatna albo symboliczna;misjonarz;Wymaga wcześniej zdobytego zawodu. Krótki wyjazd przed decyzją jest odpowiednikiem stażu.

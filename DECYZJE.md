@@ -703,3 +703,86 @@ druga reguła degradacji liczona na rozstępie wyników obszarów, nie zainteres
 | Czytnik ekranu na raporcie i na module | Sprawdzona jest nawigacja klawiaturą i widoczny fokus, nie odczyt |
 | Zmiana `PROWADZACY_HASLO` i `SESJA_SEKRET` | W repozytorium stoją wartości zastępcze |
 | Pomiar czasu wypełniania na żywych danych | Ostrzeżenie o pobieżnym wypełnieniu ma próg połowy czasu ze scenariusza, nieprzetestowany na ludziach |
+
+---
+
+## Zatwierdzone po fazie 5
+
+| # | Rozstrzygnięcie |
+|---|---|
+| 1 | Polskie znaki poprawione samodzielnie, wyłącznie w polach wyświetlanych, z testem regresyjnym |
+| 2 | Druga reguła profilu nieostrego: rozstęp między pierwszym a piątym obszarem poniżej 12 punktów |
+| 3 | Tabela `PunktStartu` usunięta |
+| 4 | Ostrzeżenie o tempie liczone względem mediany grupy, nie względem czasu ze scenariusza |
+
+### D38. Ortografia poprawiona skryptem, nie ręcznie
+
+`scripts/popraw-polszczyzne.ts` rusza wyłącznie pola wyświetlane — nazwy,
+opisy, pytania, uzasadnienia, wymagania, koszty, czas. Kody, identyfikatory,
+wartości słownikowe i listy kodów są nietknięte, bo od nich zależą powiązania
+między bazami. Skrypt jest idempotentny, ma tryb `--sprawdz`, a poprawki
+punktowe są zapisane jako całe frazy, nie pojedyncze słowa: `plac` to raz plac,
+raz płac, a `prace` raz prace, raz pracę. Kontekst jest częścią reguły.
+
+**Pułapka, na którą się nadziałem.** Granica słowa `\b` w JavaScripcie nie zna
+polskich liter. Dla „zleceń" uznaje, że słowo kończy się przed „ń", więc reguła
+`zlece → zleceń` zrobiła ze „zleceń" — „zleceńń". Skrypt ma własną granicę,
+która traktuje ą, ć, ę, ł, ń, ó, ś, ź, ż jak litery. Test regresyjny to łapie.
+
+Poprawionych pól: 168 w dwóch przebiegach. Drugi przebieg objął rzeczy, które
+wyszły dopiero po pierwszym: końcówki narzędnika i biernika w polach `uwaga`
+klastrów oraz `wymagania` dróg bez studiów. Liczby po imporcie bez zmian.
+
+`tests/polszczyzna.test.ts` sprawdza cztery rzeczy: brak `zl`, brak dwudziestu
+form, które w tych tekstach zawsze są błędem, brak mianownika po przyimku
+wymagającym narzędnika i brak zdania dłuższego niż sto znaków bez ani jednej
+polskiej litery.
+
+### D39. Druga reguła profilu nieostrego
+
+`PROFIL_ROZSTEP_CZOLOWKI: 12` w `config.ts`, do strojenia po pilotażu.
+Obie reguły działają alternatywnie: pierwsza mierzy rozstęp na wejściu i łapie
+osoby, które odpowiadały bez różnicowania, druga mierzy rozstęp na wyjściu
+i łapie osoby, które odpowiadały normalnie, ale ich profil rozkłada się
+równomiernie na wszystko. Piąty obszar, nie ostatni, bo do raportu trafia
+czołówka.
+
+Profil kontrolny „płaski" ma rozstęp A1 równy 19,4, czyli powyżej progu
+pierwszej reguły — i teraz dostaje flagę od drugiej. Trzy profile kontrolne
+z przebiegu na sucho jej nie dostają.
+
+### D40. Tabela `PunktStartu` usunięta (luka L5)
+
+Model istniał od fazy pierwszej, nic do niego nie pisało i nic z niego nie
+czytało. Moduł A0 żyje w tabeli odpowiedzi. **To jest zmiana modelu danych
+wobec specyfikacji:** dokumentacja przewidywała osobną tabelę na metryczkę,
+a metryczka okazała się zwykłym modułem. Interfejs `PunktStartu` w
+`lib/engine/typy.ts` zostaje — to typ wejścia silnika, nie tabela.
+
+### D41. Ostrzeżenie o tempie liczone względem grupy
+
+`TEMPO` w `config.ts`: 40% mediany, co najmniej 5 ukończeń, najwyżej 2 flagi
+na moduł. Porównujemy czas na blok uczestnika z medianą tej samej grupy na tym
+samym module.
+
+Próg bezwzględny nie działał z powodu, który widać było dopiero na zrzucie
+ekranu: dane testowe generuje skrypt, więc każdy moduł był „wypełniony poniżej
+połowy czasu" i obwódka świeciła się przy wszystkich kropkach naraz.
+Ostrzeżenie u całej grupy nie jest ostrzeżeniem.
+
+Test sprawdza obie strony reguły: osoba odstająca od swojej grupy dostaje
+ostrzeżenie, a grupa pracująca szybko w całości — nie dostaje go nikt.
+
+---
+
+## Do obserwacji w pilotażu
+
+Dwie liczby, o które nikt nie pyta, a które mówią, czy progi są dobre:
+
+1. **Ilu uczestników dostało flagę profilu nieostrego.**
+2. **Ilu powiedziało „to nie o mnie".**
+
+Jeśli którakolwiek przekroczy jedną trzecią grupy, problem jest w progach,
+nie w ludziach. Wtedy wracamy do czterech liczb decyzyjnych każdej warstwy,
+zmieniając po jednej naraz i sprawdzając, co się dzieje z trzema profilami
+kontrolnymi.

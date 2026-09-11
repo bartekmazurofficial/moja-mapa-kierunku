@@ -20,18 +20,28 @@ import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "../moduly/ekra
 import { OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_A3, FILTRY_A5 } from "../domain/slowniki";
 import { OBSZARY_M1 } from "../content/m1";
 import { MARKER_ZAKONCZENIA, type KodModulu } from "../moduly/typy";
+import { TEMPO } from "../engine/config";
 import type { KodWarstwy } from "../raport/sekcje";
 
 /**
- * Czas, ponizej ktorego wypelnienie modulu uznajemy za pobiezne.
- * Polowa czasu przewidzianego w scenariuszu. Prog jest sygnalem do rozmowy,
- * nie ocena: „ktos przeklikal trzydziesci blokow w cztery minuty".
+ * Ostrzezenie o pobieznym wypelnieniu, liczone wzglednie.
+ *
+ * Prog bezwzgledny ze scenariusza nie dzialal: tempo zalezy od modulu,
+ * urzadzenia i szybkosci czytania, wiec albo swiecil sie u calej grupy, albo
+ * u nikogo. Porownujemy czas na blok z mediana tej samej grupy na tym samym
+ * module. To sie samo kalibruje: grupa wypelniajaca szybko nie generuje
+ * dwunastu ostrzezen, a osoba klikajaca na oslep odstaje od swoich niezaleznie
+ * od tego, jak szybka jest reszta.
+ *
+ * Liczby w `TEMPO` w lib/engine/config.ts.
  */
-const PROG_POBIEZNOSCI = 0.5;
-
-const MINUTY_MODULU: Record<KodModulu, number> = {
-  A0: 8, A1: 20, A2: 27, A3: 18, A4: 12, A5: 15, M1: 45,
-};
+function mediana(liczby: number[]): number {
+  const posortowane = [...liczby].sort((a, b) => a - b);
+  const srodek = Math.floor(posortowane.length / 2);
+  return posortowane.length % 2 === 1
+    ? posortowane[srodek]
+    : (posortowane[srodek - 1] + posortowane[srodek]) / 2;
+}
 
 export type StanModulu = "zamkniety" | "pusty" | "wtrakcie" | "gotowy";
 
@@ -71,6 +81,7 @@ export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null>
     by: ["uczestnikId", "modul"],
     where: { uczestnikId: { in: idUczestnikow } },
     _sum: { msSpent: true },
+    _count: { _all: true },
   });
   const czasPo = new Map(czasy.map((c) => [`${c.uczestnikId}|${c.modul}`, c._sum.msSpent ?? 0]));
 
@@ -85,30 +96,52 @@ export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null>
     zamkniete.get(klucz)!.add(z.czesc);
   }
 
+  const blokiPo = new Map(czasy.map((c) => [`${c.uczestnikId}|${c.modul}`, c._count._all]));
+
+  const stanModulu = (uczestnikId: string, m: KodModulu): StanModulu => {
+    const klucz = `${uczestnikId}|${m}`;
+    const gotowe = zamkniete.get(klucz)?.size ?? 0;
+    const wszystkie = CZESCI_MODULOW[m].length;
+    const postep = grupa.uczestnicy.find((u) => u.id === uczestnikId)?.postepy.find((p) => p.kod === m);
+    if (!otwarte.has(m)) return "zamkniety";
+    if (gotowe >= wszystkie) return "gotowy";
+    return postep?.rozpoczety ? "wtrakcie" : "pusty";
+  };
+
+  /** Czas na blok, tylko dla ukonczonych modulow ze zmierzonym czasem. */
+  const naBlok = (uczestnikId: string, m: KodModulu): number | null => {
+    const klucz = `${uczestnikId}|${m}`;
+    const ms = czasPo.get(klucz) ?? 0;
+    const bloki = blokiPo.get(klucz) ?? 0;
+    if (ms <= 0 || bloki === 0) return null;
+    return ms / bloki;
+  };
+
+  // Ostrzezenia liczymy per modul, bo mediana jest wlasnoscia modulu,
+  // nie uczestnika. Najpierw mediana, potem najwyzej dwie najbardziej odstajace
+  // osoby: ostrzezenie u polowy grupy przestaje byc ostrzezeniem.
+  const oflagowani = new Set<string>();
+  for (const m of KOLEJNOSC_MODULOW) {
+    const czasyModulu = grupa.uczestnicy
+      .filter((u) => stanModulu(u.id, m) === "gotowy")
+      .map((u) => ({ id: u.id, naBlok: naBlok(u.id, m) }))
+      .filter((x): x is { id: string; naBlok: number } => x.naBlok !== null);
+    if (czasyModulu.length < TEMPO.MIN_UKONCZEN) continue;
+    const prog = mediana(czasyModulu.map((x) => x.naBlok)) * TEMPO.UDZIAL_MEDIANY;
+    for (const x of czasyModulu
+      .filter((x) => x.naBlok < prog)
+      .sort((a, b) => a.naBlok - b.naBlok)
+      .slice(0, TEMPO.MAKS_OFLAGOWANYCH)) {
+      oflagowani.add(`${x.id}|${m}`);
+    }
+  }
+
   const uczestnicy: WierszGrupy[] = grupa.uczestnicy.map((u) => {
-    const moduly = KOLEJNOSC_MODULOW.map((m) => {
-      const klucz = `${u.id}|${m}`;
-      const gotowe = zamkniete.get(klucz)?.size ?? 0;
-      const wszystkie = CZESCI_MODULOW[m].length;
-      const zaczety = (u.postepy.find((p) => p.kod === m)?.rozpoczety ?? null) !== null;
-      const stan: StanModulu = !otwarte.has(m)
-        ? "zamkniety"
-        : gotowe >= wszystkie
-          ? "gotowy"
-          : zaczety
-            ? "wtrakcie"
-            : "pusty";
-      // Bez zmierzonego czasu nie ma podstawy do ostrzezenia. Zero milisekund
-      // przy stu odpowiedziach znaczy „nie zmierzono", nie „przeklikal".
-      const ms = czasPo.get(klucz) ?? 0;
-      const zmierzony = ms > 0;
-      const minuty = ms / 60000;
-      return {
-        kod: m,
-        stan,
-        pobiezny: stan === "gotowy" && zmierzony && minuty < MINUTY_MODULU[m] * PROG_POBIEZNOSCI,
-      };
-    });
+    const moduly = KOLEJNOSC_MODULOW.map((m) => ({
+      kod: m,
+      stan: stanModulu(u.id, m),
+      pobiezny: oflagowani.has(`${u.id}|${m}`),
+    }));
 
     const brakiDanych: string[] = [];
     for (const m of moduly) {

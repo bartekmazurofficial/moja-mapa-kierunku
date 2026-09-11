@@ -476,9 +476,17 @@ export function warstwa1(
     przedsiebiorczoscWObszarze = branza?.id ?? null;
   }
 
-  // Profil plaski: nie generujemy rankingu ani trzech drog. System nigdy nie
+  // Profil nieostry: nie generujemy rankingu ani trzech drog. System nigdy nie
   // mowi, ze nic nie pasuje - mowi, ze profil jest jeszcze nieostry.
-  const profilNieostry = wskazniki.profilPlaskiA1;
+  //
+  // Dwie reguly, alternatywne. Pierwsza patrzy na wejscie: uczestnik nie
+  // rozroznil zainteresowan. Druga na wyjscie: rozroznil, ale wszystko wyszlo
+  // rowno, wiec kolejnosc czolowki jest szumem podanym jako wynik.
+  const naRankingu = Math.min(4, ranking.length - 1);
+  const rozstepCzolowki =
+    ranking.length >= 2 ? ranking[0].wynik - ranking[naRankingu].wynik : Infinity;
+  const czolowkaPlaska = rozstepCzolowki < DEGRADACJA.PROFIL_ROZSTEP_CZOLOWKI;
+  const profilNieostry = wskazniki.profilPlaskiA1 || czolowkaPlaska;
 
   const { drogi, podobienstwa, flagi } = profilNieostry
     ? { drogi: [] as Droga[], podobienstwa: {}, flagi: ["profil_nieostry"] }

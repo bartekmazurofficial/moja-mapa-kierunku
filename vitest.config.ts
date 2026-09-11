@@ -10,7 +10,10 @@ export default defineConfig({
     fileParallelism: false,
   },
   resolve: {
-    alias: { "@": fileURLToPath(new URL("./", import.meta.url)) },
+    alias: {
+      "@": fileURLToPath(new URL("./", import.meta.url)),
+      "server-only": fileURLToPath(new URL("./tests/atrapy/server-only.ts", import.meta.url)),
+    },
   },
   // tsconfig ma jsx: "preserve", bo JSX kompiluje Next. Vitest musi dostac
   // wlasne ustawienie, zeby dalo sie testowac eksport PDF z lib/raport/pdf.tsx.

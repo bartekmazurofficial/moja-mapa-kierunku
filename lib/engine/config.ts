@@ -263,6 +263,20 @@ export const PROGI_PROFILU = {
 export const DEGRADACJA = {
   /** A1: max(Z) - min(Z) ponizej tego progu to profil plaski. Bez rankingu obszarow. */
   A1_PROFIL_PLASKI: 18,
+  /**
+   * Druga regula profilu nieostrego, dopisana po fazie piatej.
+   * Pierwsza mierzy rozstep na WEJSCIU i lapie osoby, ktore odpowiadaly bez
+   * roznicowania. Ta mierzy rozstep na WYJSCIU: roznice miedzy pierwszym
+   * a piatym obszarem. Lapie osoby, ktore odpowiadaly normalnie, ale ich
+   * profil rozklada sie rownomiernie na wszystko.
+   *
+   * Piaty, nie ostatni, bo do raportu trafia czolowka. Dwanascie punktow, bo
+   * pasma opisowe maja okolo pietnastu: jesli piec pierwszych obszarow miesci
+   * sie w mniej niz jednym pasmie, nie ma podstaw mowic o pierwszym miejscu.
+   *
+   * Do strojenia po pilotazu.
+   */
+  PROFIL_ROZSTEP_CZOLOWKI: 12,
   /** A2: max(K) - min(K) ponizej tego progu to profil plaski. */
   A2_PROFIL_PLASKI: 18,
   /** A5: liczba odpowiedzi NIE, powyzej ktorej wylaczamy filtry calkowicie. */
@@ -277,6 +291,26 @@ export const DEGRADACJA = {
   MAKS_ANTYDOPASOWAN: 3,
   /** Ile obszarow pokazac zawsze, takze przy profilu plaskim. */
   MIN_OBSZAROW_W_RAPORCIE: 5,
+} as const;
+
+// =====================================================================
+// PANEL: OSTRZEZENIE O TEMPIE WYPELNIANIA
+// =====================================================================
+
+/**
+ * Prog bezwzgledny (polowa czasu ze scenariusza) nigdy nie bedzie dobry:
+ * tempo zalezy od modulu, urzadzenia i szybkosci czytania. Porownujemy wiec
+ * uczestnika z jego wlasna grupa na tym samym module.
+ *
+ * Do strojenia po pilotazu.
+ */
+export const TEMPO = {
+  /** Ponizej tylu procent mediany grupy zapala sie ostrzezenie. */
+  UDZIAL_MEDIANY: 0.4,
+  /** Ponizej tylu ukonczen mediana nie ma sensu i ostrzezenia nie liczymy. */
+  MIN_UKONCZEN: 5,
+  /** Ostrzezenie u polowy grupy przestaje byc ostrzezeniem. */
+  MAKS_OFLAGOWANYCH: 2,
 } as const;
 
 /** Wersja silnika. Zmieniac przy kazdej zmianie logiki albo liczb powyzej. */

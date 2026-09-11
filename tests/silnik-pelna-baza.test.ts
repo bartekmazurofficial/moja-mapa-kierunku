@@ -10,7 +10,7 @@ import { uruchomSilnik } from "@/lib/engine";
 import { profilKartowy } from "@/lib/engine/profil";
 import { KIERUNEK_TO_NIE_ZAWOD } from "@/lib/engine/layer3-fields";
 import { sekcjaPunktStartu, zakonczenieWedlugEtapu } from "@/lib/engine/layer0-start";
-import { PROGI_PROFILU } from "@/lib/engine/config";
+import { DEGRADACJA, PROGI_PROFILU } from "@/lib/engine/config";
 import type { BazaReferencyjna } from "@/lib/domain/typy";
 import type { EtapEdukacji, PunktStartu, WynikiModulow } from "@/lib/engine/typy";
 import { ANALITYK_22, PROFILE_WARSTWY1, RZEMIESLNIK_17, SPOLECZNA_19 } from "./fixtures/profile-warstwy1";
@@ -429,5 +429,49 @@ describe("zasady, których nie wolno złamać, na pełnym wyniku", () => {
     const a = JSON.stringify(silnik(SPOLECZNA));
     const b = JSON.stringify(silnik(SPOLECZNA));
     expect(a).toBe(b);
+  });
+});
+
+describe("profil nieostry: druga reguła, licząca rozstęp czołówki", () => {
+  /**
+   * Uczestnik z bazy testowej wypełniony profilem „płaski": odpowiadał
+   * różnicując zainteresowania (rozstęp A1 powyżej progu 18, więc pierwsza
+   * reguła nie pada), ale wszystkie obszary kariery wychodzą w kilku punktach.
+   */
+  async function plaski(): Promise<WynikiModulow> {
+    const { prisma } = await import("@/lib/db/klient");
+    const { zbierzOdpowiedzi } = await import("@/lib/moduly/zbieranie");
+    const { zlozWynikiModulow } = await import("@/lib/engine/moduly");
+    const u = await prisma.uczestnik.findUniqueOrThrow({ where: { kodDostepu: "S4YBD2DEJH" } });
+    return zlozWynikiModulow(await zbierzOdpowiedzi(u.id));
+  }
+
+  it("pierwsza reguła nie wystarcza, druga łapie", async () => {
+    const w = await plaski();
+    const r = uruchomSilnik(w, baza);
+    expect(r.wskazniki.profilPlaskiA1, "rozstęp A1 jest nad progiem").toBe(false);
+    expect(r.warstwa1.profilNieostry).toBe(true);
+    expect(r.warstwa1.flagi).toContain("profil_nieostry");
+  });
+
+  it("rozstęp czołówki naprawdę jest poniżej progu", async () => {
+    const r = uruchomSilnik(await plaski(), baza);
+    const czolowka = r.warstwa1.obszary.slice(0, 5);
+    expect(czolowka.length).toBe(5);
+    expect(czolowka[0].wynik - czolowka[4].wynik).toBeLessThan(DEGRADACJA.PROFIL_ROZSTEP_CZOLOWKI);
+  });
+
+  it("profile kontrolne nie dostają flagi", () => {
+    for (const w of [RZEMIESLNIK, SPOLECZNA, ANALITYK]) {
+      const r = uruchomSilnik(w, baza);
+      expect(r.warstwa1.profilNieostry, r.warstwa1.obszary[0].nazwa).toBe(false);
+    }
+  });
+
+  it("przy nieostrym profilu raport nadal pokazuje pięć obszarów i nie mówi, że nic nie pasuje", async () => {
+    const r = uruchomSilnik(await plaski(), baza);
+    expect(r.warstwa1.obszary.length).toBeGreaterThanOrEqual(5);
+    expect(r.warstwa1.drogi).toEqual([]);
+    expect(JSON.stringify(r)).not.toMatch(/nic nie pasuje|nie nadajesz się|brak dopasowania/i);
   });
 });

@@ -19,7 +19,7 @@ export type ZapisaneOdpowiedzi = Record<string, Record<string, unknown>>;
 export async function pobierzUczestnika(kodDostepu: string) {
   return prisma.uczestnik.findUnique({
     where: { kodDostepu },
-    include: { grupa: true, postepy: true, punktStartu: true },
+    include: { grupa: true, postepy: true },
   });
 }
 

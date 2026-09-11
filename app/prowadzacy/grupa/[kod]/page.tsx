@@ -6,6 +6,7 @@ import { otworzModulAkcja, odslonWarstweAkcja } from "@/lib/prowadzacy/akcje";
 import { Logowanie } from "@/components/prowadzacy/Logowanie";
 import { MODULY_SPOTKANIA } from "@/lib/moduly/otwarcie";
 import { WARSTWY } from "@/lib/raport/sekcje";
+import { TEMPO } from "@/lib/engine/config";
 
 export const dynamic = "force-dynamic";
 
@@ -86,7 +87,9 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
       <h2 className="mt-12 font-serif text-naglowek">Uczestnicy</h2>
       <p className="mt-1 text-male text-atrament-slaby">
         Kropki to moduły w kolejności {grupa.uczestnicy[0]?.moduly.map((m) => m.kod).join(" ")}.
-        Obwódka oznacza wypełnienie poniżej połowy przewidzianego czasu.
+        Obwódka oznacza czas na blok poniżej {Math.round(TEMPO.UDZIAL_MEDIANY * 100)}% mediany tej
+        grupy na tym module. Liczona dopiero od {TEMPO.MIN_UKONCZEN} ukończeń, najwyżej{" "}
+        {TEMPO.MAKS_OFLAGOWANYCH} osoby na moduł.
       </p>
 
       <div className="mt-5 overflow-x-auto">
@@ -161,7 +164,7 @@ function Kropka({
   const opis =
     stan === "gotowy"
       ? pobiezny
-        ? "wypełniony bardzo szybko"
+        ? "wypełniony znacznie szybciej niż w grupie"
         : "wypełniony"
       : stan === "wtrakcie"
         ? "zaczęty"
