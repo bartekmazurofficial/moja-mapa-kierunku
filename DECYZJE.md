@@ -964,8 +964,58 @@ wyłącznie na prawdziwych odpowiedziach.
 | 2 | Zachowanie przy zerwanym połączeniu podczas zapisu | **zrobione, D47** |
 | 3 | Wydrukowany PDF: marginesy i podział stron na papierze A4 | zostaje |
 | 4 | Czytnik ekranu na jednym module i na raporcie | zostaje |
+| 5 | **Brak `TRYB_TESTOWY` w środowisku produkcyjnym** | zostaje |
 
 Do tego rzeczy, które przychodzą ze strony programu przy redakcji kart:
 usunięcie dwunastu nieaktywnych kodów antyprofilu, ewentualne dopisanie NAP
 i RYT do kart, decyzja o nazwie siódmego bloku A5 i o progu
 `A5_WSKAZNIK_ZAMKNIECIA` po rozszerzeniu modułu do 43 pozycji.
+
+---
+
+## Zmiana wyglądu po zamknięciu budowy
+
+### D48. Nowy system wizualny
+
+Poprzedni — ciepła, jasna baza, typografia szeryfowa, jeden stonowany akcent —
+został odrzucony przez fundację. Nowy: głęboki fiolet, szkło z jasną krawędzią
+u góry, poświata, gradientowe nagłówki, jedna rodzina kroju (Plus Jakarta
+Sans) plus Caveat wyłącznie na odręczne dopiski.
+
+Co zostało z poprzednich ustaleń, bo to nie były kwestie gustu: **kontrast
+4,5:1 dla każdego tekstu** (dziewiętnaście par, najsłabsza 6,5:1, sprawdzane
+testem), **kolor nigdy jako jedyny nośnik**, **widoczny fokus**, **przejścia
+poniżej 200 ms**, **brak modali i gamifikacji**.
+
+### D49. Pulpit uczestnika z nawigacją po lewej
+
+Zamiast jednej listy modułów: przegląd, moduły, raport, zawody. Sekcja
+zamknięta jest widoczna, podpisana kłódką i informacją, kiedy się otworzy —
+ale nieklikalna. Blokada i tak stoi na serwerze; na ekranie chodzi o to, żeby
+uczestnik wiedział, co go czeka.
+
+Nowy ekran: lista kart zawodów. Wcześniej karty były dostępne tylko z raportu.
+
+Ekran modułu został bez nawigacji bocznej, bo tam obowiązuje zasada „jedna
+rzecz na ekranie".
+
+### D50. Trzy bramy rysowane wektorem
+
+Znak rozpoznawczy z makiet fundacji, na razie jako SVG: nic się nie pobiera,
+skaluje się do każdej szerokości, jest ukryty przed czytnikiem ekranu i znika
+na wąskim ekranie. Miejsce na render — wtedy wystarczy podmienić komponent.
+
+### D51. Tryb testowy z listą uczestników
+
+Ekran wejścia dzieli się na dwa: wybór roli (uczestnik albo prowadzący)
+i wejście kodem. Przy `TRYB_TESTOWY=1` pod polem kodu pojawia się lista
+uczestników, żeby dało się klikać po aplikacji bez wpisywania kodu.
+
+**To łamie zasadę, że nie da się wyliczyć listy uczestników**, a raport zawiera
+wizję życia, informacje o zdrowiu i sytuacji finansowej. Dlatego: przełącznik
+jest domyślnie wyłączony, włącza go wyłącznie dokładna wartość `1`, komponent
+sprawdza go sam zamiast ufać miejscu użycia, a w `.env.example` stoi
+zakomentowany. Cztery testy tego pilnują.
+
+**Przed pilotażem trzeba sprawdzić, że tej zmiennej nie ma w środowisku
+produkcyjnym.** Dopisane do listy przed pilotażem.

@@ -1,77 +1,132 @@
 import Link from "next/link";
-import { WejscieKodem } from "@/components/WejscieKodem";
 import { Bramy } from "@/components/pulpit/Bramy";
 import { Znak } from "@/components/pulpit/Znak";
 
 export const metadata = { title: "Moja mapa kierunku" };
 
 /**
- * Wejście do programu. Bez rejestracji, bez hasła, bez konta — tylko kod,
- * który uczestnik dostaje od prowadzącego.
+ * Wejście do programu: dwie drogi, uczestnika i prowadzącego.
+ *
+ * Uczestnik wchodzi kodem, bez rejestracji i bez hasła. Prowadzący ma jedno
+ * konto na cały program.
  */
 export default function Strona() {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-[78rem] items-center px-5 py-10 sm:px-8">
-      <div className="szklo relative w-full overflow-hidden p-8 sm:p-12 lg:p-14">
-        <Bramy klasa="pointer-events-none absolute -right-10 bottom-0 hidden h-[22rem] w-[32rem] opacity-80 lg:block" />
-
-        <div className="relative max-w-[34rem]">
-          <div className="flex items-center gap-3">
-            <Znak rozmiar={44} />
-            <span>
-              <span className="block text-tresc-duza font-extrabold tracking-tight">Kierunek</span>
-              <span className="block text-drobne uppercase tracking-[0.14em] text-atrament-slaby">
-                Fundacja Służąc Życiu
-              </span>
+    <main className="mx-auto flex min-h-dvh max-w-[76rem] flex-col justify-center px-5 py-10 sm:px-8">
+      <header className="relative">
+        <Bramy klasa="pointer-events-none absolute -right-6 -top-10 hidden h-[20rem] w-[30rem] opacity-60 xl:block" />
+        <div className="relative flex items-center gap-3">
+          <Znak rozmiar={44} />
+          <span>
+            <span className="block text-tresc-duza font-extrabold tracking-tight">Kierunek</span>
+            <span className="block text-drobne uppercase tracking-[0.14em] text-atrament-slaby">
+              Fundacja Służąc Życiu
             </span>
-          </div>
-
-          <h1 className="mt-9 text-tytul font-extrabold leading-[1.03] tracking-tight">
-            Trzy drogi.
-            <br />
-            <span className="gradient-tytul">Wiele możliwości.</span>
-          </h1>
-
-          <p className="proza mt-5">
-            Program warsztatów rozwojowo&#8209;zawodowych dla osób 16–24. Cztery spotkania
-            grupowe i jedna rozmowa indywidualna. Bez zgadywania, kim chcesz być.
-          </p>
-
-          <div className="mt-9">
-            <WejscieKodem />
-          </div>
-
-          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-drobne text-atrament-slaby">
-            <span className="inline-flex items-center gap-2">
-              <Klodka /> Dostęp tylko z kodem od prowadzącego
-            </span>
-            <span className="inline-flex items-center gap-2">
-              Prowadzący?{" "}
-              <Link
-                href="/prowadzacy"
-                className="przejscie underline underline-offset-4 hover:text-akcent-jasny"
-              >
-                wejście do panelu
-              </Link>
-            </span>
-          </div>
+          </span>
         </div>
 
-        <p className="odreczny absolute bottom-10 right-12 hidden text-right xl:block">
+        <h1 className="relative mt-8 max-w-[24ch] text-tytul font-extrabold leading-[1.03] tracking-tight">
           Trzy drogi.
           <br />
-          Twój kierunek.
+          <span className="gradient-tytul">Wiele możliwości.</span>
+        </h1>
+        <p className="proza relative mt-5 max-w-czytelna">
+          Program warsztatów rozwojowo&#8209;zawodowych dla osób 16–24. Cztery spotkania grupowe
+          i jedna rozmowa indywidualna.
         </p>
+      </header>
+
+      <div className="mt-12 grid gap-4 md:grid-cols-2">
+        <Kafel
+          href="/wejscie"
+          nadtytul="Wchodzę jako"
+          tytul="Uczestnik"
+          opis="Twoje moduły, raport i karty zawodów. Wchodzisz kodem od prowadzącego — bez konta i bez hasła."
+          akcja="Wejdź kodem"
+          glowny
+          ikona={
+            <>
+              <circle cx="12" cy="8" r="3.6" />
+              <path d="M4.5 20c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6" />
+            </>
+          }
+        />
+        <Kafel
+          href="/prowadzacy"
+          nadtytul="Wchodzę jako"
+          tytul="Prowadzący"
+          opis="Grupy, karty uczestników przed rozmową i ekran sesji indywidualnej. Jedno konto na cały program."
+          akcja="Wejdź hasłem"
+          ikona={
+            <>
+              <circle cx="9" cy="8" r="3.2" />
+              <path d="M2.5 20c0-3.4 2.9-5.6 6.5-5.6 1.3 0 2.5.3 3.5.8" />
+              <path d="M16.5 13.5a2.6 2.6 0 1 1 0 5.2 2.6 2.6 0 0 1 0-5.2ZM19.6 16.1h2M11.9 16.1h2" />
+            </>
+          }
+        />
       </div>
+
+      <p className="mt-10 text-drobne text-atrament-slaby">
+        Nie ma tu rejestracji ani zakładania konta. Uczestnik dostaje kod od prowadzącego.
+      </p>
     </main>
   );
 }
 
-function Klodka() {
+function Kafel({
+  href,
+  nadtytul,
+  tytul,
+  opis,
+  akcja,
+  ikona,
+  glowny,
+}: {
+  href: string;
+  nadtytul: string;
+  tytul: string;
+  opis: string;
+  akcja: string;
+  ikona: React.ReactNode;
+  glowny?: boolean;
+}) {
   return (
-    <svg aria-hidden viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.4">
-      <rect x="3.2" y="7" width="9.6" height="6.6" rx="1.4" />
-      <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
-    </svg>
+    <Link
+      href={href}
+      className={`przejscie szklo group flex flex-col p-7 sm:p-9 ${
+        glowny ? "szklo-akcent" : "hover:border-akcent/40"
+      }`}
+    >
+      <span
+        aria-hidden
+        className={`flex h-14 w-14 items-center justify-center rounded-2xl border ${
+          glowny ? "border-akcent/50 bg-akcent-tlo text-akcent-jasny" : "border-linia bg-szklo text-atrament-sciszony"
+        }`}
+      >
+        <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          {ikona}
+        </svg>
+      </span>
+
+      <span className="mt-6 block text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
+        {nadtytul}
+      </span>
+      <span className="mt-1.5 block text-naglowek font-extrabold tracking-tight">{tytul}</span>
+      <span className="proza mt-3 block">{opis}</span>
+
+      <span
+        className={`przejscie mt-7 inline-flex min-h-12 w-fit items-center gap-2 rounded-xl px-6 text-male font-bold ${
+          glowny
+            ? "poswiata bg-gradient-to-r from-akcent-ciemny to-akcent text-na-akcencie group-hover:brightness-110"
+            : "border border-linia-mocna bg-szklo text-atrament group-hover:border-akcent/50 group-hover:text-akcent-jasny"
+        }`}
+      >
+        {akcja}
+        <span aria-hidden className="przejscie group-hover:translate-x-0.5">
+          →
+        </span>
+      </span>
+    </Link>
   );
 }
