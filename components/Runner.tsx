@@ -125,7 +125,10 @@ export function Runner({
     [],
   );
 
-  const ekran = widoczne[indeks];
+  // Bezpiecznik: numer ekranu poza zakresem nie ma prawa wygasić ekranu.
+  // Pusta strona wyglada jak zawieszenie aplikacji i nie da sie z niej wyjsc.
+  const bezpiecznyIndeks = Math.min(indeks, Math.max(0, widoczne.length - 1));
+  const ekran = widoczne[bezpiecznyIndeks];
 
   /**
    * Ostatnia odpowiedź na ekranie z automatycznym przejściem. Krótka pauza
@@ -187,16 +190,28 @@ export function Runner({
   if (!ekran) return null;
 
   const kompletny = ekranKompletny(ekran, odpowiedzi);
-  const ostatni = indeks === widoczne.length - 1;
+  const widocznePozycje = (ekran.pozycje ?? []).filter((p) => spelniaWarunek(p.warunek, odpowiedzi));
+  /**
+   * Ekran z dwudziestoma czterema pozycjami w jednej kolumnie jest ścianą,
+   * przez którą trzeba przewijać. Od sześciu pozycji układamy je w dwie
+   * kolumny. Dotyczy tylko typów, które mieszczą się w kolumnie: pole
+   * tekstowe i ranking zostają na całej szerokości.
+   */
+  const siatka =
+    widocznePozycje.length >= 6 &&
+    widocznePozycje.every((p) => ["skala5", "kotwica", "dowody"].includes(p.typ));
+  const ostatni = bezpiecznyIndeks === widoczne.length - 1;
   // Ekran z jedna pozycja jest optycznie wysrodkowany: nic wiecej na nim nie ma.
   const jednaPozycja = ekran.typ === "pozycje" && (ekran.pozycje?.length ?? 0) === 1 && Boolean(ekran.autoDalej);
 
   const postepCzesci = czescLacznie > 1 ? (czescNumer - 1) / czescLacznie : 0;
-  const postepEkranu = ekran.postep ? ekran.postep.nr / ekran.postep.z : (indeks + 1) / widoczne.length;
+  const postepEkranu = ekran.postep
+    ? ekran.postep.nr / ekran.postep.z
+    : (bezpiecznyIndeks + 1) / widoczne.length;
   const postep = Math.round((postepCzesci + postepEkranu / Math.max(1, czescLacznie)) * 100);
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-artykul flex-col px-5 pb-10 pt-5 sm:px-8 sm:pt-8">
+    <div className="mx-auto flex min-h-dvh max-w-artykul flex-col px-5 pb-6 pt-4 sm:px-8 sm:pt-6">
       <header className="szklo mb-5 px-5 py-4">
         <div className="flex items-center justify-between gap-4">
           <Link
@@ -263,8 +278,8 @@ export function Runner({
       ) : null}
 
       <main
-        key={ekran.klucz ?? indeks}
-        className={`szklo flex-1 p-6 sm:p-8 ${jednaPozycja ? "flex flex-col justify-center" : ""} ${
+        key={ekran.klucz ?? bezpiecznyIndeks}
+        className={`szklo flex-1 p-5 sm:p-7 ${jednaPozycja ? "flex flex-col justify-center" : ""} ${
           wychodzi ? "wyjscie-ekranu" : "wejscie-ekranu"
         }`}
       >
@@ -294,10 +309,24 @@ export function Runner({
         ) : (
           <>
             {ekran.naglowek ? (
-              <h1 className="mb-1 text-naglowek-maly font-bold text-atrament">{ekran.naglowek}</h1>
+              <h1
+                className={`mb-1 font-bold text-atrament ${
+                  jednaPozycja
+                    ? "text-center text-drobne uppercase tracking-[0.16em] text-atrament-slaby"
+                    : "text-naglowek-maly"
+                }`}
+              >
+                {ekran.naglowek}
+              </h1>
             ) : null}
             {ekran.polecenie ? (
-              <p className="mb-5 max-w-czytelna text-tresc text-atrament-sciszony">{ekran.polecenie}</p>
+              <p
+                className={`mb-4 text-tresc text-atrament-sciszony ${
+                  jednaPozycja ? "text-center" : "max-w-czytelna"
+                }`}
+              >
+                {ekran.polecenie}
+              </p>
             ) : null}
             {ekran.podpis ? (
               <p className="mb-6 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
@@ -305,29 +334,29 @@ export function Runner({
               </p>
             ) : null}
 
-            <div className="mt-1 flex flex-col gap-6">
-              {(ekran.pozycje ?? [])
-                .filter((p) => spelniaWarunek(p.warunek, odpowiedzi))
-                .map((p, i, lista) => (
-                  <div
-                    key={p.id}
-                    // Skupiska sa wylacznie przestrzenne i nienazwane.
-                    className={
-                      ekran.skupiskaCo && i > 0 && i % ekran.skupiskaCo === 0 ? "mt-8" : undefined
-                    }
-                  >
-                    <Pozycja
-                      pozycja={p}
-                      pierwsza={i === 0}
-                      ostatnia={i === lista.length - 1}
-                      wartosc={odpowiedzi[p.id]}
-                      naZmiane={(v) => zmien(p.id, v, p.typ === "tekst" || p.typ === "kilka_tekstow")}
-                      naDomkniecie={
-                        ekran.autoDalej && !ostatni ? () => domknij() : undefined
-                      }
-                    />
-                  </div>
-                ))}
+            <div className={siatka ? "mt-1 grid gap-3 sm:grid-cols-2" : "mt-1 flex flex-col gap-6"}>
+              {widocznePozycje.map((p, i, lista) => (
+                <div
+                  key={p.id}
+                  // Skupiska sa wylacznie przestrzenne i nienazwane. W siatce
+                  // robia je same kolumny, wiec dokladamy je tylko w liscie.
+                  className={
+                    !siatka && ekran.skupiskaCo && i > 0 && i % ekran.skupiskaCo === 0
+                      ? "mt-8"
+                      : undefined
+                  }
+                >
+                  <Pozycja
+                    pozycja={p}
+                    pierwsza={i === 0}
+                    ostatnia={i === lista.length - 1}
+                    wSiatce={siatka}
+                    wartosc={odpowiedzi[p.id]}
+                    naZmiane={(v) => zmien(p.id, v, p.typ === "tekst" || p.typ === "kilka_tekstow")}
+                    naDomkniecie={ekran.autoDalej && !ostatni ? () => domknij() : undefined}
+                  />
+                </div>
+              ))}
             </div>
 
             {/* Szkic jest odbiciem, nie podpowiedzia: pojawia sie dopiero wtedy,
@@ -349,7 +378,7 @@ export function Runner({
         )}
       </main>
 
-      <footer className="mt-6 flex items-center justify-between gap-4">
+      <footer className="mt-5 flex items-center justify-between gap-4">
         <button
           type="button"
           onClick={() => {
@@ -357,7 +386,7 @@ export function Runner({
             ustawWychodzi(false);
             if (window.scrollY > 8) window.scrollTo({ top: 0, behavior: "auto" });
           }}
-          disabled={indeks === 0}
+          disabled={bezpiecznyIndeks === 0}
           className="przejscie min-h-12 rounded-xl border border-linia px-5 text-male font-semibold text-atrament-sciszony hover:border-linia-mocna hover:text-atrament disabled:invisible"
         >
           <span aria-hidden className="mr-2">←</span>

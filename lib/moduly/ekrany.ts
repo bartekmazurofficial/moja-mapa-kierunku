@@ -135,7 +135,7 @@ function czescA1A(plan: PlanModulu): CzescModulu {
           krance: [...INSTRUKCJA_A1.krancePozycji] as [string, string],
         },
       ],
-      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "zestaw" },
+      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "zestawów" },
       autoDalej: true,
     });
   });
@@ -209,7 +209,7 @@ function czescA2A(plan: PlanModulu): CzescModulu {
           krance: [...INSTRUKCJA_A2.krancePozycji] as [string, string],
         },
       ],
-      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "zestaw" },
+      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "zestawów" },
       autoDalej: true,
     });
     // Przerwa obowiazkowa po 23 blokach: bez niej jakosc drugiej polowy spada.
@@ -242,7 +242,7 @@ function czescA2B(): CzescModulu {
         pola: [...DOWODY_A2],
         opcjonalna: true,
       })),
-      postep: { nr: strona + 1, z: 3, slowo: "część" },
+      postep: { nr: strona + 1, z: 3, slowo: "części" },
       przyciskDalej: strona === 2 ? "Zakończ moduł" : "Dalej",
     });
   }
@@ -270,7 +270,7 @@ function czescA3A(plan: PlanModulu): CzescModulu {
       pozycje: [
         { id, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b },
       ],
-      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "para" },
+      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
       autoDalej: true,
     });
   });
@@ -323,7 +323,7 @@ function czescA4A(plan: PlanModulu): CzescModulu {
       pozycje: [
         { id: `para_${para.nr}`, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b },
       ],
-      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "para" },
+      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
       autoDalej: true,
     });
   });
@@ -404,21 +404,26 @@ function czescA4C(kontekst: KontekstModulu): CzescModulu {
 
 function czescA5A(): CzescModulu {
   const ekrany: Ekran[] = [wstep("A5", INSTRUKCJA_A5)];
-  const bloki = [...new Set(FILTRY_A5.map((f) => f.blok))];
-  bloki.forEach((blok, i) => {
-    const pozycje = FILTRY_A5.filter((f) => f.blok === blok);
+
+  // Jeden warunek na ekran. Pieciu naraz nikt nie czyta osobno: wzrok laduje
+  // na pierwszym, reszta dostaje te sama odpowiedz co on. Kazdy z tych
+  // warunkow moze samodzielnie usunac zawod, wiec zasluguje na wlasny ekran.
+  FILTRY_A5.forEach((f, i) => {
     ekrany.push({
-      klucz: `A5_blok_${blok}`,
+      klucz: `A5_${f.kod}`,
       typ: "pozycje",
-      naglowek: pozycje[0].nazwaBloku,
+      naglowek: f.nazwaBloku,
       polecenie: INSTRUKCJA_A5.polecenieBloku,
-      pozycje: pozycje.map((f) => ({
-        id: f.kod,
-        typ: "trzystopniowa",
-        tresc: f.tekst,
-        opcje: ODPOWIEDZI_A5.map((o) => ({ kod: o.kod, etykieta: o.etykieta })),
-      })),
-      postep: { nr: i + 1, z: bloki.length, slowo: "blok" },
+      pozycje: [
+        {
+          id: f.kod,
+          typ: "trzystopniowa",
+          tresc: f.tekst,
+          opcje: ODPOWIEDZI_A5.map((o) => ({ kod: o.kod, etykieta: o.etykieta })),
+        },
+      ],
+      postep: { nr: i + 1, z: FILTRY_A5.length, slowo: "warunków" },
+      autoDalej: true,
     });
   });
   return { kod: "A", nazwa: "Warunki pracy", ekrany };
@@ -498,7 +503,7 @@ function czescM1A(plan: PlanModulu): CzescModulu {
       typ: "pozycje",
       polecenie: INSTRUKCJA_M1.polecenieBloku,
       pozycje: [{ id, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b }],
-      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "para" },
+      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
       autoDalej: true,
     });
   });
@@ -555,7 +560,7 @@ function czescM1B(kontekst: KontekstModulu): CzescModulu {
             ? `obszar_${obszar.nr}`
             : undefined,
       pozycje,
-      postep: { nr: obszar.nr, z: OBSZARY_M1.length, slowo: "obszar" },
+      postep: { nr: obszar.nr, z: OBSZARY_M1.length, slowo: "obszarów" },
       przyciskDalej: obszar.nr === OBSZARY_M1.length ? "Zakończ moduł" : "Dalej",
     });
   }
@@ -635,6 +640,25 @@ export const ETYKIETY_M1: Record<string, [string, string, string]> = {
   LUD: ["chęć prowadzenia ludzi", "otwartość, bez ambicji", "odpowiedzialność wyłącznie za siebie"],
   WID: ["życie widoczne", "umiarkowana widoczność", "życie prywatne, praca w cieniu"],
   ROD: ["rodzina stosunkowo wcześnie", "rodzina kiedyś, bez terminu", "najpierw co innego"],
+};
+
+/**
+ * Nazwa wymiaru dla uczestnika. Slownik ma same kody i nazwy biegunow, a kod
+ * na ekranie („CEN bardzo wysoko”) nie znaczy dla uczestnika nic.
+ */
+export const NAZWY_M1: Record<string, string> = {
+  CEN: "Miejsce pracy w życiu",
+  GRA: "Granica pracy i reszty życia",
+  GOD: "Ile godzin",
+  TEMP: "Tempo kariery",
+  MIE: "Gdzie pracujesz",
+  ORG: "Skala miejsca pracy",
+  KOR: "Jedno miejsce czy ruch",
+  INW: "Zarabiać wcześniej czy uczyć się dłużej",
+  POZ: "Poziom życia",
+  LUD: "Prowadzenie ludzi",
+  WID: "Widoczność",
+  ROD: "Rodzina",
 };
 
 export function etykietaM1(wymiar: string, pozycja: number | null): string {

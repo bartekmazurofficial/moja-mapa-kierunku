@@ -26,6 +26,8 @@ export interface WlasciwosciPozycji {
   /** Pierwsza pozycja na ekranie: tylko przy niej pokazujemy opis skali. */
   pierwsza?: boolean;
   ostatnia?: boolean;
+  /** Pozycja stoi w siatce kolumn, nie w jednej długiej liście. */
+  wSiatce?: boolean;
 }
 
 export function Pozycja(props: WlasciwosciPozycji) {
@@ -57,6 +59,24 @@ export function Pozycja(props: WlasciwosciPozycji) {
 
 // =====================================================================
 
+/**
+ * Obramowanie pozycji. W jednej kolumnie wystarcza kreska u dolu; w siatce
+ * kolumn kreska nie wiadomo czego dotyczy, wiec pozycja dostaje wlasna ramke.
+ */
+function ramka(wSiatce: boolean | undefined, ostatnia: boolean | undefined): string {
+  if (wSiatce) return "h-full rounded-xl border border-linia bg-tlo/35 p-4";
+  return ostatnia ? "" : "border-b border-linia pb-5";
+}
+
+/**
+ * Dziewiec opcji jedna pod druga to sciana tekstu, przez ktora trzeba
+ * przewijac. Od pieciu wzwyz ukladamy je w dwie kolumny; na telefonie
+ * zostaje jedna, bo dwie nie zmieszcza sie z czytelna etykieta.
+ */
+function kolumnyOpcji(ile: number): string {
+  return ile > 4 ? "grid sm:grid-cols-2" : "flex flex-col";
+}
+
 const KAFELEK =
   "przejscie w-full min-h-[3rem] rounded-lg border bg-szklo px-4 py-3 text-left text-tresc " +
   "hover:border-linia-mocna active:scale-[0.995]";
@@ -65,8 +85,6 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
   const ranking = (wartosc as Record<string, number>) ?? {};
   const opcje = pozycja.opcje ?? [];
   const ile = opcje.length;
-
-  /** Numer -> kod pozycji, ktora go trzyma. Jeden numer nalezy do jednej pozycji. */
   const wlasciciel = wlascicieleNumerow(ranking);
 
   function ustaw(kod: string, numer: number) {
@@ -78,30 +96,36 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
   return (
     <div>
       {pozycja.krance ? (
-        <p className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-drobne text-atrament-slaby">
+        <p className="mb-3 flex flex-wrap justify-center gap-x-5 gap-y-1 text-center text-drobne text-atrament-slaby">
           <span>{pozycja.krance[0]}</span>
           <span>{pozycja.krance[1]}</span>
         </p>
       ) : null}
 
-      <ul className="flex flex-col gap-2.5">
+      {/* Cztery kafle w dwóch rzędach po dwa. Na telefonie jeden pod drugim:
+          przy dwóch kolumnach cztery przyciski numerów zeszłyby poniżej
+          czterdziestu czterech pikseli, czyli poniżej progu dotyku. */}
+      <ul className="mx-auto grid max-w-3xl gap-2.5 sm:grid-cols-2">
         {opcje.map((o) => {
           const numer = ranking[o.kod];
           return (
             <li
               key={o.kod}
-              className={`przejscie flex flex-wrap items-center gap-x-4 gap-y-3 rounded-lg border bg-szklo px-4 py-3 ${
+              className={`przejscie flex flex-col rounded-xl border bg-szklo p-3 ${
                 numer ? "border-akcent bg-akcent-tlo" : "border-linia"
               }`}
             >
-              {o.ikona ? <Ikona klucz={o.ikona} rozmiar={64} aktywna={Boolean(numer)} /> : null}
-
-              <span className="min-w-[8rem] flex-1 text-tresc leading-snug">{o.etykieta}</span>
+              <div className="flex flex-1 items-center gap-3.5 sm:flex-col sm:items-center sm:text-center">
+                {o.ikona ? <Ikona klucz={o.ikona} rozmiar={64} aktywna={Boolean(numer)} /> : null}
+                <span className="flex-1 text-tresc leading-snug sm:mt-2.5 sm:flex-none">
+                  {o.etykieta}
+                </span>
+              </div>
 
               <div
                 role="group"
                 aria-label={o.etykieta}
-                className="ml-auto flex shrink-0 gap-1.5"
+                className="mt-3 flex justify-center gap-1.5 border-t border-linia pt-2.5"
               >
                 {Array.from({ length: ile }, (_, i) => i + 1).map((n) => {
                   const wybrany = numer === n;
@@ -164,9 +188,9 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) 
   );
 }
 
-function Skala5({ pozycja, wartosc, naZmiane, pierwsza, ostatnia }: WlasciwosciPozycji) {
+function Skala5({ pozycja, wartosc, naZmiane, pierwsza, ostatnia, wSiatce }: WlasciwosciPozycji) {
   return (
-    <div className={`${ostatnia ? "" : "border-b border-linia pb-5"}`}>
+    <div className={ramka(wSiatce, ostatnia)}>
       {pozycja.tresc ? (
         <p className="mb-2 text-tresc leading-snug">{pozycja.tresc}</p>
       ) : null}
@@ -218,10 +242,10 @@ function SkalaPrzyciski({
   );
 }
 
-function Kotwica({ pozycja, wartosc, naZmiane, pierwsza, ostatnia }: WlasciwosciPozycji) {
+function Kotwica({ pozycja, wartosc, naZmiane, pierwsza, ostatnia, wSiatce }: WlasciwosciPozycji) {
   const w = (wartosc as { skala?: number; probowal?: boolean }) ?? {};
   return (
-    <div className={`${ostatnia ? "" : "border-b border-linia pb-5"}`}>
+    <div className={ramka(wSiatce, ostatnia)}>
       <p className="mb-2 text-tresc leading-snug">{pozycja.tresc}</p>
       <SkalaPrzyciski
         wartosc={w.skala}
@@ -241,28 +265,54 @@ function Kotwica({ pozycja, wartosc, naZmiane, pierwsza, ostatnia }: Wlasciwosci
   );
 }
 
-function Trzystopniowa({ pozycja, wartosc, naZmiane, ostatnia }: WlasciwosciPozycji) {
+function Trzystopniowa({
+  pozycja,
+  wartosc,
+  naZmiane,
+  naDomkniecie,
+  pierwsza,
+  ostatnia,
+  wSiatce,
+}: WlasciwosciPozycji) {
   const opcje = pozycja.opcje ?? [];
-  return (
-    <div className={`sm:flex sm:items-center sm:gap-4 ${ostatnia ? "" : "border-b border-linia pb-4"}`}>
-      <p className="mb-2.5 flex-1 text-tresc leading-snug sm:mb-0">{pozycja.tresc}</p>
-      <div className="flex shrink-0 gap-1.5">
-        {opcje.map((o) => (
-          <button
-            key={o.kod}
-            type="button"
-            onClick={() => naZmiane(o.kod)}
-            aria-pressed={wartosc === o.kod}
-            className={`przejscie h-11 min-w-[4.5rem] rounded-md border px-3 text-male ${
-              wartosc === o.kod
-                ? "border-akcent bg-akcent text-na-akcencie"
-                : "border-linia bg-szklo text-atrament-sciszony hover:border-linia-mocna"
-            }`}
-          >
-            {o.etykieta}
-          </button>
-        ))}
+  // Jedyna pozycja na ekranie dostaje cały ekran: duże zdanie i trzy duże
+  // przyciski pośrodku. Ten sam komponent w małym wydaniu obsługuje listy.
+  const sama = Boolean(pierwsza && ostatnia && !wSiatce);
+
+  const przycisk = (o: { kod: string; etykieta: string }) => (
+    <button
+      key={o.kod}
+      type="button"
+      onClick={() => {
+        naZmiane(o.kod);
+        naDomkniecie?.();
+      }}
+      aria-pressed={wartosc === o.kod}
+      className={`przejscie rounded-xl border font-semibold ${
+        sama ? "min-h-14 min-w-[7rem] px-6 text-tresc-duza" : "h-11 min-w-[4.5rem] px-3 text-male"
+      } ${
+        wartosc === o.kod
+          ? "border-akcent bg-akcent text-na-akcencie"
+          : "border-linia-mocna bg-szklo text-atrament-sciszony hover:border-akcent/55 hover:text-akcent-jasny"
+      }`}
+    >
+      {o.etykieta}
+    </button>
+  );
+
+  if (sama) {
+    return (
+      <div className="mx-auto max-w-czytelna text-center">
+        <p className="text-naglowek-maly font-bold leading-snug text-atrament">{pozycja.tresc}</p>
+        <div className="mt-7 flex flex-wrap justify-center gap-2.5">{opcje.map(przycisk)}</div>
       </div>
+    );
+  }
+
+  return (
+    <div className={`sm:flex sm:items-center sm:gap-4 ${ramka(wSiatce, ostatnia)}`}>
+      <p className="mb-2.5 flex-1 text-tresc leading-snug sm:mb-0">{pozycja.tresc}</p>
+      <div className="flex shrink-0 gap-1.5">{opcje.map(przycisk)}</div>
     </div>
   );
 }
@@ -276,7 +326,7 @@ function Pojedynczy({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
       {pozycja.podpis ? (
         <p className="mb-3 max-w-czytelna text-male text-atrament-sciszony">{pozycja.podpis}</p>
       ) : null}
-      <div className="mt-3 flex flex-col gap-2">
+      <div className={`mt-3 gap-2 ${kolumnyOpcji(pozycja.opcje?.length ?? 0)}`}>
         {(pozycja.opcje ?? []).map((o) => (
           <button
             key={o.kod}
@@ -339,7 +389,7 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
       {limit ? (
         <p className="mb-3 text-drobne tabular-nums text-atrament-slaby">Wybrano {limit}</p>
       ) : null}
-      <div className="mt-2 flex flex-col gap-2">
+      <div className={`mt-2 gap-2 ${kolumnyOpcji(pozycja.opcje?.length ?? 0)}`}>
         {(pozycja.opcje ?? []).map((o) => {
           const zaznaczona = wybrane.includes(o.kod);
           const zablokowana = !zaznaczona && Boolean(maks) && wybrane.length >= (maks ?? 0) && !o.wylaczna;
@@ -381,11 +431,11 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
   );
 }
 
-function Dowody({ pozycja, wartosc, naZmiane, ostatnia }: WlasciwosciPozycji) {
+function Dowody({ pozycja, wartosc, naZmiane, ostatnia, wSiatce }: WlasciwosciPozycji) {
   const zaznaczone = (wartosc as boolean[]) ?? [false, false, false];
   const id = useId();
   return (
-    <div className={`${ostatnia ? "" : "border-b border-linia pb-5"}`}>
+    <div className={ramka(wSiatce, ostatnia)}>
       <p className="text-tresc font-medium">{pozycja.tresc}</p>
       <p className="mt-0.5 max-w-czytelna text-male text-atrament-sciszony">{pozycja.podpis}</p>
       <div className="mt-2.5 flex flex-col gap-1">

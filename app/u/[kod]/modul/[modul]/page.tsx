@@ -79,6 +79,14 @@ export default async function Strona({
 
   return (
     <Runner
+      /**
+       * Klucz z części, nie z modułu. Po domknięciu części `router.refresh()`
+       * podmienia definicję w locie, a stan komponentu (numer ekranu) zostaje
+       * z poprzedniej części. Część A modułu A1 ma 38 ekranów, część B jeden,
+       * więc numer 37 wskazywał w pustkę i ekran robił się pusty. Klucz wymusza
+       * nowy komponent, czyli numer ekranu od zera.
+       */
+      key={`${modul}-${stan.czesc}`}
       kodUczestnika={kod}
       modul={modul}
       definicja={stan.definicja}

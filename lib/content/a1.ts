@@ -41,7 +41,7 @@ export const INSTRUKCJA_A1 = {
   ],
   polecenieBloku: "Nadaj numery od 1 do 4. Jeden numer możesz przypisać tylko raz.",
   krancePozycji: ["1 to ta, którą najchętniej byś robił", "4 to ta, którą najmniej"],
-  przejscie: "Najtrudniejsze za Tobą. Zostały dwie krótkie części.",
+  przejscie: "Najtrudniejsze za Tobą. Została jeszcze jedna krótka część.",
   kotwiceNaglowek: "Jak bardzo chciałbyś się tym zajmować?",
   kotwiceSkala: ["w ogóle", "", "", "", "bardzo"],
   ekspozycjaNaglowek: "A czy próbowałeś już czegoś takiego?",

@@ -1194,3 +1194,69 @@ Teraz: 150 ms na zobaczenie własnego wyboru, wygaszenie starego ekranu,
 wejście nowego animacją 190 ms. Przewijamy tylko wtedy, gdy strona faktycznie
 jest przewinięta, bo skok do zera na ekranie, który się mieści, sam wyglądał
 jak błąd. Wszystko pod `prefers-reduced-motion`.
+
+### D63. Pusty ekran przy przejściu między częściami modułu
+
+**To był najpoważniejszy błąd w całej aplikacji i dotyczył wszystkich siedmiu
+modułów.**
+
+Po domknięciu części `router.refresh()` podmieniał definicję w locie, a numer
+ekranu zostawał ze stanu komponentu, czyli z części poprzedniej. Część A
+modułu A1 ma 38 ekranów, część B jeden. Numer 37 wskazywał w pustkę, komponent
+trafiał na `return null` i **strona robiła się pusta**. To samo w A2 (47 do 3),
+A3 (66 do 1), A4 (37 do 1), A5 (44 do 1) i M1 (49 do 8).
+
+Uczestnik kończył najdłuższą część programu i zostawał z czarnym ekranem, bez
+przycisku, bez komunikatu. Jedynym wyjściem było przeładowanie strony, po
+którym wszystko wracało, bo przy montowaniu komponent ustawia numer ekranu
+z zapisanych odpowiedzi.
+
+Poprawka: `<Runner key={modul-czesc}>`. Nowa część to nowy komponent, czyli
+numer ekranu od zera. Do tego bezpiecznik w samym komponencie: numer poza
+zakresem jest przycinany do ostatniego ekranu, a nie wygasza strony.
+
+**Zmierzone po poprawce: 26 ms od kliknięcia do następnej części.** Serwer
+renderuje część w 6 ms, oba zapisy idą w 13 ms. Nie było tu problemu
+z wydajnością, tylko z pustym ekranem.
+
+Test pilnuje trzech rzeczy: że części różnią się długością (bez tego błąd
+nigdy by się nie ujawnił), że klucz jest w kodzie strony i że stan serwera
+przechodzi do kolejnej części.
+
+### D64. Ile treści na jednym ekranie
+
+Cztery reguły, wszystkie z jednego przeglądu:
+
+**Zestaw czterech pozycji to dwa rzędy po dwa**, nie lista czterech wierszy.
+Obraz na górze kafla, tekst pod nim, numery na dole kafla. Na telefonie
+zostaje jedna kolumna: przy dwóch kolumnach cztery przyciski numerów zeszłyby
+poniżej czterdziestu czterech pikseli, czyli poniżej progu dotyku.
+
+**Warunek A5 dostaje własny ekran.** Było pięć naraz. Wzrok ląduje na
+pierwszym, reszta dostaje tę samą odpowiedź co on, a każdy z tych warunków
+może samodzielnie usunąć zawód z wyniku. Moduł rośnie z 8 do 44 ekranów,
+ale każdy ekran to jedna decyzja i przechodzi sam po odpowiedzi.
+
+**Lista dłuższa niż cztery pozycje idzie w dwie kolumny.** Dotyczy wyborów
+pojedynczych i wielokrotnych; „Na jakim etapie nauki jesteś?” miało dziewięć
+opcji w jednej kolumnie i nie mieściło się na ekranie.
+
+**Ekran z sześcioma pozycjami i więcej idzie w dwie kolumny.** Dotyczy skal
+i kotwic: część B modułu A1 to dwadzieścia cztery pozycje, które w jednej
+kolumnie były ścianą. W siatce każda pozycja dostaje własną ramkę, bo kreska
+u dołu nie wiadomo czego dotyczy, gdy obok stoi druga kolumna.
+
+### D65. Wymiar dwubiegunowy opisuje się stroną, nie poziomem
+
+Plansza wyników M1 pokazywała „CEN bardzo wysoko”, „GRA bardzo wysoko”.
+Kod wymiaru nie znaczy dla uczestnika nic, a „wysoko” przy wymiarze
+dwubiegunowym nie znaczy nic dla nikogo: ten wymiar nie ma góry i dołu,
+ma dwie strony.
+
+Teraz: nazwa wymiaru („Granica pracy i reszty życia”) i strona, na której
+uczestnik jest, słowami („wyraźna granica między pracą a resztą”). Etykiety
+były już w kodzie, używał ich raport; plansza ich nie wołała.
+
+Przy okazji poprawiona jednostka postępu. „3 z 36 zestaw” nie jest
+polszczyzną, po liczebniku z przyimkiem „z” idzie dopełniacz: „3 z 36
+zestawów”, „1 z 43 warunków”.
