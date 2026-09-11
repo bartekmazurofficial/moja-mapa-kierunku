@@ -9,6 +9,7 @@
  */
 
 import { useState } from "react";
+import { Bramy } from "@/components/pulpit/Bramy";
 import { useSearchParams } from "next/navigation";
 import { BLOKADA_A2, KOLEJNOSC_WYSWIETLANIA, SEKCJE_PO_ID } from "@/lib/raport/sekcje";
 import type { WidokRaportu } from "@/lib/raport/serwer";
@@ -78,7 +79,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
         return raport.czego_nie_sprawdzilem ? (
           <div>
             <Lista pozycje={raport.czego_nie_sprawdzilem.pozycje} />
-            <p className="mt-3 font-serif text-tresc leading-relaxed text-atrament-sciszony">
+            <p className="mt-3 text-tresc leading-relaxed text-atrament-sciszony">
               {raport.czego_nie_sprawdzilem.podpis}
             </p>
           </div>
@@ -90,7 +91,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
           <div>
             <Lista pozycje={raport.srodowisko.warunki} />
             {raport.srodowisko.komunikatGdyPusto ? (
-              <p className="mt-3 font-serif text-tresc leading-relaxed text-atrament-sciszony">
+              <p className="mt-3 text-tresc leading-relaxed text-atrament-sciszony">
                 {raport.srodowisko.komunikatGdyPusto}
               </p>
             ) : null}
@@ -106,7 +107,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
         return raport.ksztalt_zycia ? (
           <div>
             <Lista pozycje={raport.ksztalt_zycia.parametry.map((p) => p.opis)} />
-            <p className="mt-3 font-serif text-tresc leading-relaxed text-atrament-sciszony">
+            <p className="mt-3 text-tresc leading-relaxed text-atrament-sciszony">
               {raport.ksztalt_zycia.zdanie}
             </p>
           </div>
@@ -119,7 +120,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
             {raport.czego_nie_chce.zdania.length > 0 ? (
               <div className="flex flex-col gap-2">
                 {raport.czego_nie_chce.zdania.map((z, i) => (
-                  <p key={i} className="font-serif text-tresc leading-relaxed">
+                  <p key={i} className="text-tresc leading-relaxed">
                     {z}
                   </p>
                 ))}
@@ -170,7 +171,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
             {raport.umiejetnosci.pozycje.map((p) => (
               <div key={p.tytul}>
                 <p className="text-tresc-duza">{p.tytul}</p>
-                <p className="font-serif text-tresc text-atrament-sciszony">{p.opis}</p>
+                <p className="text-tresc text-atrament-sciszony">{p.opis}</p>
               </div>
             ))}
           </div>
@@ -181,7 +182,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
         return raport.czego_unikac ? <CzegoUnikac dane={raport.czego_unikac} /> : null;
       case "moja_decyzja":
         return raport.moja_decyzja?.tresc ? (
-          <p className="font-serif text-tresc-duza leading-relaxed">{raport.moja_decyzja.tresc}</p>
+          <p className="text-tresc-duza font-semibold leading-relaxed">{raport.moja_decyzja.tresc}</p>
         ) : (
           <p className="text-male text-atrament-slaby">Tu znajdzie się to, co powiesz na rozmowie.</p>
         );
@@ -193,7 +194,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
         );
       case "notatka":
         return raport.notatka?.tresc ? (
-          <p className="font-serif text-tresc leading-relaxed">{raport.notatka.tresc}</p>
+          <p className="text-tresc leading-relaxed">{raport.notatka.tresc}</p>
         ) : (
           <p className="text-male text-atrament-slaby">
             Tu trafi tylko to, co prowadzący przeczyta Ci na głos podczas rozmowy.
@@ -208,21 +209,32 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
   const mozePobracPdf = dostepne.has("trzy_drogi");
 
   return (
-    <main className="mx-auto max-w-artykul px-5 py-10 sm:px-8 sm:py-14">
-      <header>
-        <p className="text-drobne uppercase tracking-[0.1em] text-atrament-slaby">Moja mapa kierunku</p>
-        <h1 className="mt-2 font-serif text-naglowek-duzy leading-tight">{raport.imie}</h1>
+    <div className="flex flex-col gap-6">
+      <header className="szklo relative overflow-hidden p-7 sm:p-9 lg:pr-[24rem]">
+        <Bramy klasa="pointer-events-none absolute -right-8 bottom-0 hidden h-[14rem] w-[22rem] opacity-70 lg:block" />
+        <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">
+          Moja mapa kierunku
+        </p>
+        <h1 className="mt-3 text-naglowek-duzy font-extrabold leading-tight tracking-tight">
+          {raport.imie},
+          <br />
+          <span className="gradient-tytul">to jest Twoja mapa.</span>
+        </h1>
+        <p className="proza mt-4 max-w-czytelna">
+          Nie wynik testu. Uporządkowanie tego, co sam o sobie napisałeś przez cztery tygodnie.
+          Kolejne części otwierają się po spotkaniach.
+        </p>
       </header>
 
       {widok.blokadaA2 ? (
-        <p className="mt-8 rounded-xl border border-uwaga/30 bg-uwaga-tlo px-5 py-4 font-serif text-tresc leading-relaxed text-uwaga">
+        <p className="rounded-xl border border-uwaga/30 bg-uwaga-tlo px-5 py-4 text-tresc leading-relaxed text-uwaga">
           {BLOKADA_A2}
         </p>
       ) : null}
 
       {raport.profil_w_jednym_ekranie ? (
-        <section className="mt-9 rounded-xl border border-linia bg-papier p-6 sm:p-8">
-          <h2 className="font-serif text-naglowek leading-snug">Mój profil w jednym ekranie</h2>
+        <section className="szklo szklo-akcent p-6 sm:p-8">
+          <h2 className="text-naglowek font-extrabold tracking-tight leading-snug">Mój profil w jednym ekranie</h2>
           <div className="proza mt-4">
             {raport.profil_w_jednym_ekranie.zdania.map((z, i) => (
               <p key={i}>{z}</p>
@@ -231,35 +243,44 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
         </section>
       ) : null}
 
-      <div className="mt-10 border-t border-linia">
+      <div className="flex flex-col gap-3">
         {widoczneSekcje
           .filter((id) => id !== "profil_w_jednym_ekranie")
           .map((id) => {
             const def = SEKCJE_PO_ID.get(id)!;
             const otwarta = rozwiniete.has(id);
             return (
-              <section key={id} className="border-b border-linia">
+              <section key={id} className={`szklo overflow-hidden ${otwarta ? "szklo-akcent" : ""}`}>
                 <h2>
                   <button
                     type="button"
                     onClick={() => przelacz(id)}
                     aria-expanded={otwarta}
-                    className="przejscie flex w-full items-baseline justify-between gap-4 py-5 text-left hover:text-akcent"
+                    className="przejscie flex w-full items-center justify-between gap-4 px-6 py-5 text-left hover:text-akcent-jasny"
                   >
-                    <span className="font-serif text-naglowek-maly leading-snug">{def.tytul}</span>
-                    <span aria-hidden className="shrink-0 text-atrament-slaby">
-                      {otwarta ? "−" : "+"}
+                    <span className="text-naglowek-maly font-bold leading-snug">{def.tytul}</span>
+                    <span
+                      aria-hidden
+                      className={`przejscie flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${
+                        otwarta
+                          ? "rotate-45 border-akcent/50 bg-akcent-tlo text-akcent-jasny"
+                          : "border-linia-mocna text-atrament-sciszony"
+                      }`}
+                    >
+                      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8">
+                        <path d="M8 3v10M3 8h10" strokeLinecap="round" />
+                      </svg>
                     </span>
                   </button>
                 </h2>
-                {otwarta ? <div className="pb-8">{zawartosc(id)}</div> : null}
+                {otwarta ? <div className="px-6 pb-7">{zawartosc(id)}</div> : null}
               </section>
             );
           })}
       </div>
 
       {widok.zamkniete.length > 0 ? (
-        <section className="mt-10">
+        <section className="szklo p-6">
           <Naglowek>Co się jeszcze otworzy</Naglowek>
           <ul className="flex flex-col gap-3">
             {widok.zamkniete.map((w) => (
@@ -274,8 +295,8 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
       ) : null}
 
       {dostepne.has("zawody") ? (
-        <section className="mt-10 rounded-xl border border-linia bg-papier p-6">
-          <h2 className="font-serif text-naglowek-maly">Pytanie na rozmowę indywidualną</h2>
+        <section className="szklo p-6">
+          <h2 className="text-naglowek-maly font-bold">Pytanie na rozmowę indywidualną</h2>
           <p className="mt-1 text-male text-atrament-sciszony">
             Jedno pytanie, które chcesz zadać. Prowadzący zobaczy je przed rozmową.
           </p>
@@ -283,22 +304,22 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
             value={pytanie}
             onChange={(e) => zapiszPytanie(e.target.value)}
             rows={3}
-            className="mt-3 w-full rounded-lg border border-linia bg-tlo p-3 font-serif text-tresc leading-relaxed"
+            className="pole mt-3 leading-relaxed"
           />
         </section>
       ) : null}
 
-      <footer className="mt-12 border-t border-linia pt-6">
+      <footer className="szklo p-6">
         {mozePobracPdf ? (
           <a
             href={`/u/${kodUczestnika}/raport/pdf`}
-            className="przejscie inline-flex min-h-11 items-center rounded-lg border border-linia-mocna px-5 text-male hover:border-atrament-slaby"
+            className="przejscie inline-flex min-h-12 items-center gap-2 rounded-xl border border-linia-mocna bg-szklo px-6 text-male font-semibold hover:border-akcent/50 hover:text-akcent-jasny"
           >
             Pobierz raport w PDF
           </a>
         ) : null}
         <p className="mt-6 text-drobne leading-relaxed text-atrament-slaby">{raport.stopka}</p>
       </footer>
-    </main>
+    </div>
   );
 }

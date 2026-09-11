@@ -15,7 +15,7 @@ export default async function Strona() {
   return (
     <main className="mx-auto max-w-artykul px-5 py-12 sm:px-8 sm:py-16">
       <div className="flex items-baseline justify-between gap-4">
-        <h1 className="font-serif text-naglowek-duzy leading-tight">Grupy</h1>
+        <h1 className="text-naglowek-duzy font-extrabold tracking-tight leading-tight">Grupy</h1>
         <form action={wyloguj}>
           <button type="submit" className="przejscie text-male text-atrament-slaby underline underline-offset-4 hover:text-atrament">
             Wyloguj
@@ -33,7 +33,7 @@ export default async function Strona() {
             <li key={g.kod}>
               <Link
                 href={`/prowadzacy/grupa/${g.kod}`}
-                className="przejscie group flex items-baseline gap-4 border-b border-linia py-4 hover:bg-podklad/60"
+                className="przejscie group flex items-baseline gap-4 border-b border-linia py-4 hover:bg-szklo/60"
               >
                 <span className="flex-1 text-tresc-duza">{g.nazwa}</span>
                 <span className="text-male tabular-nums text-atrament-slaby">

@@ -37,10 +37,10 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
       </Link>
 
       <div className="mt-3 flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="font-serif text-naglowek-duzy leading-tight">{karta.imie}</h1>
+        <h1 className="text-naglowek-duzy font-extrabold tracking-tight leading-tight">{karta.imie}</h1>
         <Link
           href={`/prowadzacy/sesja/${karta.kodDostepu}`}
-          className="przejscie min-h-11 rounded-lg bg-akcent px-5 py-2.5 text-male font-medium text-white hover:bg-akcent-ciemny"
+          className="przejscie min-h-11 rounded-lg bg-akcent px-5 py-2.5 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny"
         >
           Ekran sesji
         </Link>

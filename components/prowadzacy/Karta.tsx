@@ -9,7 +9,7 @@ export function Naglowek({ children }: { children: React.ReactNode }) {
 
 export function Blok({ tytul, children }: { tytul: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-xl border border-linia bg-papier p-5">
+    <section className="szklo p-5">
       <Naglowek>{tytul}</Naglowek>
       {children}
     </section>
@@ -70,10 +70,10 @@ export function TrzyDrogiPanel({ karta }: { karta: KartaUczestnika }) {
  */
 export function Rozjazdy({ rozjazdy }: { rozjazdy: Rozjazd[] }) {
   return (
-    <section className="rounded-xl border border-akcent/40 bg-akcent-jasny p-5">
+    <section className="szklo szklo-akcent p-5">
       <Naglowek>Rozjazdy — po to jest ta sesja</Naglowek>
       {rozjazdy.length === 0 ? (
-        <p className="font-serif text-tresc leading-relaxed">
+        <p className="text-tresc leading-relaxed">
           System nie znalazł sprzeczności. To nie znaczy, że ich nie ma — znaczy, że rozmowę
           zaczynasz od pytania otwartego, nie od gotowego tematu.
         </p>
@@ -86,7 +86,7 @@ export function Rozjazdy({ rozjazdy }: { rozjazdy: Rozjazd[] }) {
               </p>
               <p className="text-tresc-duza">{r.tytul}</p>
               <p className="text-male text-atrament-sciszony">{r.obserwacja}</p>
-              <p className="mt-1.5 font-serif text-tresc leading-relaxed">„{r.pytanie}”</p>
+              <p className="mt-1.5 text-tresc leading-relaxed">„{r.pytanie}”</p>
             </li>
           ))}
         </ol>
@@ -127,7 +127,7 @@ export function Wizja({ karta }: { karta: KartaUczestnika }) {
           {karta.wizja.map((w) => (
             <div key={w.tytul}>
               <dt className="text-male text-atrament-slaby">{w.tytul}</dt>
-              <dd className="font-serif text-tresc leading-relaxed">{w.tresc}</dd>
+              <dd className="text-tresc leading-relaxed">{w.tresc}</dd>
             </div>
           ))}
         </dl>
@@ -140,7 +140,7 @@ export function PytanieUczestnika({ karta }: { karta: KartaUczestnika }) {
   return (
     <Blok tytul="Pytanie zapisane na spotkaniu 4">
       {karta.pytanie ? (
-        <p className="font-serif text-tresc-duza leading-relaxed">„{karta.pytanie}”</p>
+        <p className="text-tresc-duza font-semibold leading-relaxed">„{karta.pytanie}”</p>
       ) : (
         <p className="text-male text-atrament-slaby">Nie zapisał pytania.</p>
       )}

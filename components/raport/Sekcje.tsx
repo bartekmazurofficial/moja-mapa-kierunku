@@ -34,7 +34,7 @@ export function Pasmo({ opis }: { pasmo?: string; opis: string }) {
   // („ponizej_progu", „antydopasowanie") i trafial wprost na ekran uczestnika.
   if (!opis) return null;
   return (
-    <span className="inline-flex items-center rounded-full bg-akcent-jasny px-2.5 py-0.5 text-drobne text-akcent">
+    <span className="inline-flex items-center rounded-full bg-akcent-tlo px-2.5 py-0.5 text-drobne text-akcent">
       {opis}
     </span>
   );
@@ -91,13 +91,13 @@ export function PunktStartu({ dane }: { dane: NonNullable<Raport["punkt_startu"]
 export function CoMnieInteresuje({ dane }: { dane: NonNullable<Raport["co_mnie_interesuje"]> }) {
   return (
     <div className="flex flex-col gap-7">
-      <p className="font-serif text-tresc-duza leading-relaxed">{dane.zdanie}</p>
+      <p className="text-tresc-duza font-semibold leading-relaxed">{dane.zdanie}</p>
       {dane.gora.length > 0 ? (
         <ol className="flex flex-col gap-5">
           {dane.gora.map((p) => (
             <li key={p.tytul} className="border-l-2 border-akcent/30 pl-4">
               <p className="text-tresc-duza">{p.tytul}</p>
-              <p className="mt-1 font-serif text-tresc leading-relaxed text-atrament-sciszony">{p.opis}</p>
+              <p className="mt-1 text-tresc leading-relaxed text-atrament-sciszony">{p.opis}</p>
               <p className="mt-1.5 text-male text-atrament-sciszony">
                 <span className="text-atrament-slaby">Co to zmienia: </span>
                 {p.coZmienia}
@@ -130,7 +130,7 @@ export function JakDzialam({ dane }: { dane: NonNullable<Raport["jak_dzialam"]> 
               <span>{o.biegunA}</span>
               <span>{o.biegunB}</span>
             </div>
-            <div className="relative mt-1 h-1.5 rounded-full bg-podklad" aria-hidden>
+            <div className="relative mt-1 h-1.5 rounded-full bg-tlo/50" aria-hidden>
               <span
                 className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-akcent"
                 style={{ left: `${100 - o.polozenie}%` }}
@@ -148,12 +148,12 @@ export function JakDzialam({ dane }: { dane: NonNullable<Raport["jak_dzialam"]> 
 export function WCzymDobry({ dane }: { dane: NonNullable<Raport["w_czym_dobry"]> }) {
   return (
     <div className="flex flex-col gap-7">
-      <p className="font-serif text-tresc-duza leading-relaxed">{dane.zdanie}</p>
+      <p className="text-tresc-duza font-semibold leading-relaxed">{dane.zdanie}</p>
       <ol className="flex flex-col gap-4">
         {dane.mocne.map((p) => (
           <li key={p.tytul} className="border-l-2 border-akcent/30 pl-4">
             <p className="text-tresc-duza">{p.tytul}</p>
-            <p className="mt-0.5 font-serif text-tresc leading-relaxed text-atrament-sciszony">{p.opis}</p>
+            <p className="mt-0.5 text-tresc leading-relaxed text-atrament-sciszony">{p.opis}</p>
             {p.dopisek ? <p className="mt-1 text-drobne text-atrament-slaby">{p.dopisek}</p> : null}
           </li>
         ))}
@@ -161,7 +161,7 @@ export function WCzymDobry({ dane }: { dane: NonNullable<Raport["w_czym_dobry"]>
       <div>
         <Naglowek>Słabsze strony</Naglowek>
         <Lista pozycje={dane.slabsze.map((p) => p.tytul)} />
-        <p className="mt-3 font-serif text-tresc leading-relaxed text-atrament-sciszony">{dane.ramka}</p>
+        <p className="mt-3 text-tresc leading-relaxed text-atrament-sciszony">{dane.ramka}</p>
       </div>
     </div>
   );
@@ -170,12 +170,12 @@ export function WCzymDobry({ dane }: { dane: NonNullable<Raport["w_czym_dobry"]>
 export function LubieAWychodzi({ dane }: { dane: NonNullable<Raport["lubie_a_wychodzi"]> }) {
   const cwiartka = (tytul: string, pozycje: { tytul: string }[], komunikat: string) =>
     pozycje.length === 0 ? null : (
-      <div key={tytul} className="rounded-xl border border-linia bg-papier p-5">
+      <div key={tytul} className="szklo p-5">
         <p className="text-tresc-duza">{tytul}</p>
-        <p className="mt-1 font-serif text-male leading-relaxed text-atrament-sciszony">{komunikat}</p>
+        <p className="mt-1  text-male leading-relaxed text-atrament-sciszony">{komunikat}</p>
         <ul className="mt-3 flex flex-wrap gap-1.5">
           {pozycje.map((p) => (
-            <li key={p.tytul} className="rounded bg-podklad px-2 py-1 text-drobne">
+            <li key={p.tytul} className="rounded bg-tlo/50 px-2 py-1 text-drobne">
               {p.tytul}
             </li>
           ))}
@@ -205,7 +205,7 @@ export function Wartosci({ dane }: { dane: NonNullable<Raport["wartosci"]> }) {
                 </span>
               ) : null}
             </p>
-            <p className="font-serif text-tresc text-atrament-sciszony">{w.opis}</p>
+            <p className="text-tresc text-atrament-sciszony">{w.opis}</p>
           </li>
         ))}
       </ol>
@@ -213,7 +213,7 @@ export function Wartosci({ dane }: { dane: NonNullable<Raport["wartosci"]> }) {
         <Naglowek>Z czego jesteś gotów zrezygnować</Naglowek>
         <Lista pozycje={dane.dol.map((w) => w.tytul)} />
       </div>
-      <p className="font-serif text-tresc leading-relaxed text-atrament-sciszony">{dane.testKosztu}</p>
+      <p className="text-tresc leading-relaxed text-atrament-sciszony">{dane.testKosztu}</p>
     </div>
   );
 }
@@ -229,7 +229,7 @@ export function WizjaZycia({ dane }: { dane: NonNullable<Raport["wizja_zycia"]> 
           <Naglowek>{o.tytul}</Naglowek>
           {/* Cytowane doslownie, bez skracania i bez interpretacji. */}
           {o.tresc.map((t, i) => (
-            <p key={i} className="font-serif text-tresc leading-relaxed">
+            <p key={i} className="text-tresc leading-relaxed">
               {t}
             </p>
           ))}
@@ -247,7 +247,7 @@ export function TrzyDrogi({ dane }: { dane: NonNullable<Raport["trzy_drogi"]> })
   };
   return (
     <div className="flex flex-col gap-5">
-      <p className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
+      <p className="text-tresc leading-relaxed text-atrament-sciszony">
         {dane.drogi.some((d) => d.tenSamObszar)
           ? "Trzy drogi, nie jedna rekomendacja. Dwie pierwsze wyszły z Twoich odpowiedzi najmocniej, trzecia prowadzi do tej samej dziedziny innym, krótszym wejściem."
           : "Trzy drogi, nie jedna rekomendacja. Dwie wyszły z Twoich odpowiedzi najmocniej, trzecia jest tu po to, żeby była od nich naprawdę inna i żebyś miał je z czym porównać."}
@@ -255,11 +255,11 @@ export function TrzyDrogi({ dane }: { dane: NonNullable<Raport["trzy_drogi"]> })
       {/* Trzy rowne kolumny, identyczne pod kazdym wzgledem poza trescia. */}
       <div className="grid gap-4 lg:grid-cols-3">
         {dane.drogi.map((d) => (
-          <article key={d.etykieta} className="flex flex-col rounded-xl border border-linia bg-papier p-5">
+          <article key={d.etykieta} className="flex flex-col szklo p-5">
             <p className="text-drobne uppercase tracking-[0.08em] text-atrament-slaby">
               {d.tenSamObszar ? "Ta sama dziedzina, inne wejście" : ROLE[d.etykieta]}
             </p>
-            <h3 className="mt-1.5 font-serif text-naglowek-maly leading-snug">{d.obszar}</h3>
+            <h3 className="mt-1.5 text-naglowek-maly font-bold leading-snug">{d.obszar}</h3>
             <p className="mt-2 text-male text-atrament-sciszony">
               {d.przyklad} · {d.czas}
             </p>
@@ -294,18 +294,18 @@ export function TrzyDrogi({ dane }: { dane: NonNullable<Raport["trzy_drogi"]> })
       </div>
       {/* Pierwszy krok wynika z etapu edukacji, nie z drogi. Powtorzony w trzech
           kartach wygladalby na blad szablonu, wiec stoi raz, pod nimi. */}
-      <div className="rounded-xl border border-linia bg-papier p-5">
+      <div className="szklo p-5">
         <Naglowek>Pierwszy krok, przy każdej z tych dróg</Naglowek>
         <p className="text-male">{dane.pierwszyKrok}</p>
       </div>
       {dane.kolejnoscOdProwadzacego ? (
-        <p className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
+        <p className="text-tresc leading-relaxed text-atrament-sciszony">
           Kolejność tych trzech dróg zmienił prowadzący po Waszej rozmowie. To nie jest wynik
           kwestionariusza, tylko wniosek z tego, co powiedziałeś.
         </p>
       ) : null}
       {dane.flagi.map((f, i) => (
-        <p key={i} className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
+        <p key={i} className="text-tresc leading-relaxed text-atrament-sciszony">
           {f}
         </p>
       ))}
@@ -319,8 +319,8 @@ export function Kierunki({ dane }: { dane: NonNullable<Raport["kierunki"]> }) {
       <Naglowek>Najbardziej logiczne kierunki</Naglowek>
       <ol className="flex flex-col gap-5">
         {dane.kierunki.map((k) => (
-          <li key={k.kod} className="rounded-xl border border-linia bg-papier p-5">
-            <p className="font-serif text-naglowek-maly leading-snug">{k.nazwa}</p>
+          <li key={k.kod} className="szklo p-5">
+            <p className="text-naglowek-maly font-bold leading-snug">{k.nazwa}</p>
             <dl className="mt-3 grid gap-x-5 gap-y-1.5 text-male sm:grid-cols-[auto_1fr]">
               <dt className="text-atrament-slaby">Prowadzi do</dt>
               <dd>{k.prowadziDo.join(", ")}</dd>
@@ -357,7 +357,7 @@ export function Kierunki({ dane }: { dane: NonNullable<Raport["kierunki"]> }) {
       <Naglowek>Drogi bez studiów prowadzące do tych samych zawodów</Naglowek>
       <ul className="flex flex-col gap-3">
         {dane.drogiBezStudiow.map((d) => (
-          <li key={d.nazwa} className="rounded-xl border border-linia bg-papier p-4">
+          <li key={d.nazwa} className="szklo p-4">
             <p className="text-tresc-duza">{d.nazwa}</p>
             <p className="mt-1 text-male text-atrament-sciszony">
               {d.czas} · {d.koszt}
@@ -372,9 +372,9 @@ export function Kierunki({ dane }: { dane: NonNullable<Raport["kierunki"]> }) {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="rounded-xl border border-akcent/25 bg-akcent-jasny p-5">
+      <div className="rounded-xl border border-akcent/25 bg-akcent-tlo p-5">
         <Naglowek>Czy studia są w Twoim przypadku potrzebne</Naglowek>
-        <p className="font-serif text-tresc-duza leading-relaxed">{dane.komunikat}</p>
+        <p className="text-tresc-duza font-semibold leading-relaxed">{dane.komunikat}</p>
       </div>
       {/* Kolejnosc odzwierciedla to, co dla uczestnika realne, a nie hierarchie prestizu. */}
       {dane.drogiBezStudiowPierwsze ? (
@@ -388,7 +388,7 @@ export function Kierunki({ dane }: { dane: NonNullable<Raport["kierunki"]> }) {
           {drogi}
         </>
       )}
-      <p className="border-t border-linia pt-5 font-serif text-tresc leading-relaxed text-atrament-sciszony">
+      <p className="border-t border-linia pt-5 text-tresc leading-relaxed text-atrament-sciszony">
         {dane.kierunekToNieZawod}
       </p>
     </div>
@@ -399,15 +399,15 @@ export function Obszary({ dane }: { dane: NonNullable<Raport["obszary"]> }) {
   return (
     <div className="flex flex-col gap-5">
       {dane.komunikatNieostry ? (
-        <p className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
+        <p className="text-tresc leading-relaxed text-atrament-sciszony">
           {dane.komunikatNieostry}
         </p>
       ) : null}
       <ol className="flex flex-col gap-4">
         {dane.pozycje.map((o) => (
-          <li key={o.nazwa} className="rounded-xl border border-linia bg-papier p-5">
+          <li key={o.nazwa} className="szklo p-5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h3 className="font-serif text-naglowek-maly leading-snug">{o.nazwa}</h3>
+              <h3 className="text-naglowek-maly font-bold leading-snug">{o.nazwa}</h3>
               <Pasmo pasmo={o.pasmo} opis={o.pasmoOpis} />
             </div>
             <p className="mt-1.5 text-male text-atrament-sciszony">
@@ -451,7 +451,7 @@ export function Zawody({
 
   return (
     <div className="flex flex-col gap-5">
-      <p className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
+      <p className="text-tresc leading-relaxed text-atrament-sciszony">
         Przy każdym zawodzie zaznacz, jak go widzisz. Prowadzący zobaczy to przed rozmową — jeśli
         odrzucasz coś, co wyszło wysoko, tym lepiej. Właśnie o tym będziecie rozmawiać.
       </p>
@@ -462,19 +462,19 @@ export function Zawody({
       ) : null}
       <ol className="flex flex-col gap-4">
         {dane.pozycje.map((p) => (
-          <li key={p.kod} className="rounded-xl border border-linia bg-papier p-5">
+          <li key={p.kod} className="szklo p-5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h3 className="font-serif text-naglowek-maly leading-snug">{p.nazwa}</h3>
+              <h3 className="text-naglowek-maly font-bold leading-snug">{p.nazwa}</h3>
               <Pasmo pasmo={p.pasmo} opis={p.pasmoOpis} />
             </div>
 
             {p.typ === "klaster" ? (
-              <div className="mt-3 rounded-lg bg-podklad p-4">
+              <div className="mt-3 rounded-xl border border-linia bg-tlo/50 p-4">
                 <p className="text-male text-atrament-sciszony">
                   Twoje odpowiedzi nie rozstrzygają między tymi zawodami, bo różnią się rzeczami,
                   których nie da się zmierzyć kwestionariuszem. Przeczytaj obie karty.
                 </p>
-                <p className="mt-2 font-serif text-tresc leading-relaxed">{p.pytanieRozstrzygajace}</p>
+                <p className="mt-2 text-tresc leading-relaxed">{p.pytanieRozstrzygajace}</p>
                 {p.roznica ? (
                   <p className="mt-2 text-male text-atrament-sciszony">{p.roznica}</p>
                 ) : null}
@@ -506,7 +506,7 @@ export function Zawody({
                     {z.zGwarancji === "droga_krotsza" ? <Flaga rodzaj="trampolina">droga krótsza</Flaga> : null}
                   </div>
                   {z.flagi.zdanieKierunkowe ? (
-                    <p className="mt-2 border-l-2 border-akcent/40 pl-3 font-serif text-tresc leading-relaxed">
+                    <p className="mt-2 border-l-2 border-akcent/40 pl-3 text-tresc leading-relaxed">
                       {z.flagi.zdanieKierunkowe}
                     </p>
                   ) : null}
@@ -531,7 +531,7 @@ export function Zawody({
                           aria-pressed={oceny[z.kod] === o.kod}
                           className={`przejscie min-h-9 rounded-md border px-3 py-1.5 text-drobne ${
                             oceny[z.kod] === o.kod
-                              ? "border-akcent bg-akcent text-white"
+                              ? "border-akcent bg-akcent text-na-akcencie"
                               : "border-linia hover:border-linia-mocna"
                           }`}
                         >
@@ -550,9 +550,9 @@ export function Zawody({
       {/* Korekta prowadzacego stoi osobno i jest podpisana: uczestnik ma
           wiedziec, co powiedzial mu algorytm, a co czlowiek. */}
       {dane.odProwadzacego.length > 0 ? (
-        <section className="rounded-xl border border-akcent/40 bg-akcent-jasny p-5">
+        <section className="szklo szklo-akcent p-5">
           <Naglowek>Dopisane podczas rozmowy</Naglowek>
-          <p className="font-serif text-tresc leading-relaxed">
+          <p className="text-tresc leading-relaxed">
             To nie wyszło z kwestionariusza. Wskazał to prowadzący podczas Waszej rozmowy.
           </p>
           <ul className="mt-3 flex flex-col gap-2">
@@ -580,7 +580,7 @@ export function CzegoUnikac({ dane }: { dane: NonNullable<Raport["czego_unikac"]
       {dane.pozycje.map((p) => (
         <li key={p.nazwa}>
           <p className="text-tresc-duza">{p.nazwa}</p>
-          <p className="font-serif text-tresc leading-relaxed text-atrament-sciszony">{p.komunikat}</p>
+          <p className="text-tresc leading-relaxed text-atrament-sciszony">{p.komunikat}</p>
         </li>
       ))}
     </ul>

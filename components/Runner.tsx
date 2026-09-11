@@ -12,6 +12,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Pozycja } from "./Pozycja";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
@@ -170,19 +171,44 @@ export function Runner({
   // Ekran z jedna pozycja jest optycznie wysrodkowany: nic wiecej na nim nie ma.
   const jednaPozycja = ekran.typ === "pozycje" && (ekran.pozycje?.length ?? 0) === 1 && Boolean(ekran.autoDalej);
 
+  const postepCzesci = czescLacznie > 1 ? (czescNumer - 1) / czescLacznie : 0;
+  const postepEkranu = ekran.postep ? ekran.postep.nr / ekran.postep.z : (indeks + 1) / widoczne.length;
+  const postep = Math.round((postepCzesci + postepEkranu / Math.max(1, czescLacznie)) * 100);
+
   return (
-    <div className="mx-auto flex min-h-dvh max-w-artykul flex-col px-5 pb-10 pt-5 sm:px-8 sm:pt-10">
-      <header className="mb-7 flex items-baseline justify-between gap-4">
-        <p className="truncate text-drobne uppercase tracking-[0.08em] text-atrament-slaby">
-          {nazwaModulu}
-        </p>
-        <p className="shrink-0 text-drobne tabular-nums text-atrament-slaby">
-          {ekran.postep
-            ? `${ekran.postep.slowo} ${ekran.postep.nr} z ${ekran.postep.z}`
-            : czescLacznie > 1
-              ? `część ${czescNumer} z ${czescLacznie}`
-              : ""}
-        </p>
+    <div className="mx-auto flex min-h-dvh max-w-artykul flex-col px-5 pb-10 pt-5 sm:px-8 sm:pt-8">
+      <header className="mb-6">
+        <div className="flex items-center justify-between gap-4">
+          <Link
+            href={`/u/${kodUczestnika}/moduly`}
+            className="przejscie flex min-w-0 items-center gap-2.5 text-drobne uppercase tracking-[0.14em] text-atrament-slaby hover:text-atrament"
+          >
+            <span aria-hidden>←</span>
+            <span className="truncate">{nazwaModulu}</span>
+          </Link>
+          <p className="shrink-0 text-drobne tabular-nums text-atrament-slaby">
+            {ekran.postep
+              ? `${ekran.postep.slowo} ${ekran.postep.nr} z ${ekran.postep.z}`
+              : czescLacznie > 1
+                ? `część ${czescNumer} z ${czescLacznie}`
+                : ""}
+          </p>
+        </div>
+
+        {/* Szyna postępu. Nigdy procent liczbą: procent wywołuje pośpiech. */}
+        <div
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={postep}
+          aria-label="Postęp w tej części"
+          className="mt-3 h-1 overflow-hidden rounded-full bg-linia"
+        >
+          <div
+            className="przejscie h-full rounded-full bg-gradient-to-r from-akcent-ciemny to-akcent-jasny"
+            style={{ width: `${Math.min(100, Math.max(4, postep))}%` }}
+          />
+        </div>
       </header>
 
       {/* Uczestnik ma wiedzieć od razu, że coś nie doszło, a nie dopiero wtedy,
@@ -190,7 +216,7 @@ export function Runner({
       {nieZapisane > 0 ? (
         <p
           role="status"
-          className="mb-5 rounded-lg bg-uwaga-tlo px-4 py-3 text-male text-uwaga"
+          className="mb-5 rounded-xl border border-uwaga/35 bg-uwaga-tlo px-4 py-3 text-male text-uwaga"
         >
           {zablokowane
             ? `Nie ma połączenia, więc ${nieZapisane === 1 ? "jedna odpowiedź" : `${nieZapisane} odpowiedzi`} jeszcze nie ${nieZapisane === 1 ? "doszła" : "doszły"}. Nie zamykam tej części, żeby nic nie przepadło. Zostań na tym ekranie — spróbuję ponownie, gdy sieć wróci.`
@@ -198,11 +224,11 @@ export function Runner({
         </p>
       ) : null}
 
-      <main className={`flex-1 ${jednaPozycja ? "flex flex-col justify-center pb-12" : ""}`}>
+      <main className={`szklo flex-1 p-6 sm:p-8 ${jednaPozycja ? "flex flex-col justify-center" : ""}`}>
         {ekran.typ === "wstep" || ekran.typ === "przerwa" ? (
           <div className="max-w-czytelna">
             {ekran.naglowek ? (
-              <h1 className="font-serif text-naglowek text-atrament">{ekran.naglowek}</h1>
+              <h1 className="text-naglowek font-extrabold tracking-tight text-atrament">{ekran.naglowek}</h1>
             ) : null}
             <div className="proza mt-5">
               {(ekran.akapity ?? []).map((a, i) => (
@@ -225,13 +251,13 @@ export function Runner({
         ) : (
           <>
             {ekran.naglowek ? (
-              <h1 className="mb-1 font-serif text-naglowek-maly text-atrament">{ekran.naglowek}</h1>
+              <h1 className="mb-1 text-naglowek-maly font-bold text-atrament">{ekran.naglowek}</h1>
             ) : null}
             {ekran.polecenie ? (
               <p className="mb-5 max-w-czytelna text-tresc text-atrament-sciszony">{ekran.polecenie}</p>
             ) : null}
             {ekran.podpis ? (
-              <p className="mb-6 max-w-czytelna font-serif text-tresc leading-relaxed text-atrament-sciszony">
+              <p className="mb-6 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
                 {ekran.podpis}
               </p>
             ) : null}
@@ -267,7 +293,7 @@ export function Runner({
                 zostawic puste pole bez konsekwencji. */}
             {ekran.notatka && maTresc(ekran, odpowiedzi) ? (
               <div className="mt-8 max-w-czytelna border-l-2 border-akcent/40 pl-4">
-                <p className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
+                <p className="text-tresc leading-relaxed text-atrament-sciszony">
                   {zloszNotatke(ekran, odpowiedzi)}
                 </p>
                 <p className="mt-1.5 text-drobne text-atrament-slaby">
@@ -280,7 +306,7 @@ export function Runner({
         )}
       </main>
 
-      <footer className="mt-9 flex items-center justify-between gap-4">
+      <footer className="mt-6 flex items-center justify-between gap-4">
         <button
           type="button"
           onClick={() => {
@@ -288,8 +314,9 @@ export function Runner({
             window.scrollTo({ top: 0 });
           }}
           disabled={indeks === 0}
-          className="przejscie -ml-2 min-h-11 rounded-md px-2 text-male text-atrament-slaby hover:text-atrament disabled:invisible"
+          className="przejscie min-h-12 rounded-xl border border-linia px-5 text-male font-semibold text-atrament-sciszony hover:border-linia-mocna hover:text-atrament disabled:invisible"
         >
+          <span aria-hidden className="mr-2">←</span>
           Wstecz
         </button>
 
@@ -298,9 +325,18 @@ export function Runner({
             type="button"
             onClick={() => void dalej()}
             disabled={!kompletny || konczy}
-            className="przejscie min-h-11 rounded-md bg-akcent px-6 text-male font-medium text-white hover:bg-akcent-ciemny disabled:bg-podklad disabled:text-atrament-slaby"
+            className={`przejscie min-h-12 rounded-xl px-8 text-tresc font-bold ${
+              !kompletny || konczy
+                ? "border border-linia text-atrament-slaby"
+                : "poswiata bg-gradient-to-r from-akcent-ciemny to-akcent text-na-akcencie hover:brightness-110"
+            }`}
           >
             {konczy ? "Zapisuję…" : (ekran.przyciskDalej ?? "Dalej")}
+            {konczy ? null : (
+              <span aria-hidden className="ml-2">
+                →
+              </span>
+            )}
           </button>
         ) : (
           <p className="text-drobne text-atrament-slaby">

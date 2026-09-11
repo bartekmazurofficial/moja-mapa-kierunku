@@ -8,7 +8,7 @@ export function Logowanie() {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-czytelna flex-col justify-center px-6 py-16">
-      <h1 className="font-serif text-naglowek">Panel prowadzącego</h1>
+      <h1 className="text-naglowek font-extrabold tracking-tight">Panel prowadzącego</h1>
       <form action={akcja} className="mt-8 flex flex-col gap-3">
         <label htmlFor="haslo" className="text-male text-atrament-sciszony">
           Hasło
@@ -20,7 +20,7 @@ export function Logowanie() {
           autoComplete="current-password"
           required
           aria-describedby={blad ? "blad-hasla" : undefined}
-          className="min-h-11 rounded-lg border border-linia-mocna bg-papier px-4 text-tresc"
+          className="min-h-11 rounded-lg border border-linia-mocna bg-szklo px-4 text-tresc"
         />
         {blad ? (
           <p id="blad-hasla" role="alert" className="text-male text-uwaga">
@@ -30,7 +30,7 @@ export function Logowanie() {
         <button
           type="submit"
           disabled={wTrakcie}
-          className="przejscie mt-2 min-h-11 rounded-lg bg-akcent px-6 text-male font-medium text-white hover:bg-akcent-ciemny disabled:opacity-60"
+          className="przejscie mt-2 min-h-11 rounded-lg bg-akcent px-6 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny disabled:opacity-60"
         >
           {wTrakcie ? "Sprawdzam…" : "Wejdź"}
         </button>

@@ -17,7 +17,7 @@ describe("kontrast", () => {
 
   it("kolory z arkusza stylów zgadzają się z tymi, które sprawdzamy", () => {
     const css = readFileSync("app/globals.css", "utf8");
-    for (const kolor of ["#faf8f5", "#1c1917", "#57534e", "#6f675e", "#2f5d50", "#8a6a1f"]) {
+    for (const kolor of ["#0b0718", "#f3efff", "#c9bcf0", "#a395d4", "#a78bfa", "#f2c96b"]) {
       expect(css, kolor).toContain(kolor);
     }
   });

@@ -26,14 +26,14 @@ export default async function Strona({
   if (!otwarte.has(modul as KodModulu)) {
     return (
       <main className="mx-auto flex min-h-dvh max-w-czytelna flex-col justify-center px-6 py-16">
-        <h1 className="font-serif text-naglowek">Ta część jeszcze się nie otworzyła</h1>
+        <h1 className="text-naglowek font-extrabold tracking-tight">Ta część jeszcze się nie otworzyła</h1>
         <p className="proza mt-4 text-atrament-sciszony">
           Otworzy ją prowadzący na {SPOTKANIE_MODULU[modul as KodModulu]}. spotkaniu. Kolejność ma
           znaczenie: gdybyś wypełnił to teraz, wynik następnej części byłby mniej Twój.
         </p>
         <Link
           href={`/u/${kod}`}
-          className="przejscie mt-8 inline-flex min-h-11 w-fit items-center rounded-lg bg-akcent px-6 text-male font-medium text-white hover:bg-akcent-ciemny"
+          className="przejscie mt-8 inline-flex min-h-11 w-fit items-center rounded-lg bg-akcent px-6 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny"
         >
           Wróć do listy
         </Link>
@@ -46,13 +46,13 @@ export default async function Strona({
   if (stan.czesc === null || stan.definicja === null) {
     return (
       <main className="mx-auto flex min-h-dvh max-w-czytelna flex-col justify-center px-6 py-16">
-        <h1 className="font-serif text-naglowek">To już masz za sobą</h1>
+        <h1 className="text-naglowek font-extrabold tracking-tight">To już masz za sobą</h1>
         <p className="proza mt-4 text-atrament-sciszony">
           Ta część jest wypełniona. Wynik zobaczysz, kiedy prowadzący ją otworzy.
         </p>
         <Link
           href={`/u/${kod}`}
-          className="przejscie mt-8 inline-flex min-h-11 w-fit items-center rounded-lg bg-akcent px-6 text-male font-medium text-white hover:bg-akcent-ciemny"
+          className="przejscie mt-8 inline-flex min-h-11 w-fit items-center rounded-lg bg-akcent px-6 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny"
         >
           Wróć do listy
         </Link>

@@ -24,6 +24,9 @@ interface Zrzut {
 }
 
 const ZRZUTY: Zrzut[] = [
+  { nazwa: "nowy-1-przeglad", sciezka: "/u/3DEPKJBQW9", szerokosc: 1440, wysokosc: 1000 },
+  { nazwa: "nowy-2-moduly", sciezka: "/u/3DEPKJBQW9/moduly", szerokosc: 1440, wysokosc: 1200 },
+  { nazwa: "nowy-3-przeglad-telefon", sciezka: "/u/3DEPKJBQW9", szerokosc: 390, wysokosc: 1400 },
   { nazwa: "telefon-1-trzy-drogi", sciezka: "/u/3DEPKJBQW9/raport?otwarte=trzy_drogi", szerokosc: 390, wysokosc: 1500, przewinDo: "Trzy drogi" },
   { nazwa: "telefon-2-karta-zawodu", sciezka: "/u/KJR5D49GKS/zawod/pielegniarka", szerokosc: 390, wysokosc: 1400 },
   { nazwa: "telefon-3-raport-lista", sciezka: "/u/3DEPKJBQW9/raport", szerokosc: 390, wysokosc: 1200 },

@@ -3,42 +3,51 @@
 /**
  * System wizualny.
  *
- * Baza neutralna i ciepła, nie zimny szary. Jeden kolor akcentu, używany
- * oszczędnie. Kolory semantyczne osobne i wyraźnie stonowane: to są
- * informacje, nie błędy, więc nie mogą wyglądać jak alarm.
+ * Głęboki fiolet, szkło i poświata. Jedna rodzina kroju niesie wszystko,
+ * odręczny tylko na marginesy. Kolory semantyczne osobne i rozróżnialne
+ * także dla kogoś, kto ich nie odróżnia: nigdy sam kolor jako nośnik.
  *
- * Skala odstępów: 4 px, dziedziczona z Tailwinda, bez własnych wyjątków.
+ * Każda para tekst/tło poniżej ma co najmniej 4,5:1 i jest sprawdzana testem
+ * w tests/dostepnosc.test.ts. Ciemny motyw łatwo robi się nieczytelny, więc
+ * to nie jest kwestia gustu.
  */
 
 @theme {
   --font-sans: var(--font-bezszeryfowy), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-szeryfowy), ui-serif, Georgia, serif;
+  --font-odreczny: var(--font-odreczny), ui-serif, cursive;
 
-  /* Podłoże i tekst */
-  --color-tlo: #faf8f5;
-  --color-papier: #ffffff;
-  --color-atrament: #1c1917;
-  --color-atrament-sciszony: #57534e;
-  /* 5,25:1 na tle. Wymog kontrastu 4,5:1 dotyczy takze podpisow i etykiet. */
-  --color-atrament-slaby: #6f675e;
-  --color-linia: #e8e2d9;
-  --color-linia-mocna: #d6cec2;
-  --color-podklad: #f2eee8;
+  /* Podłoże: trzy poziomy głębi, nie dwa */
+  --color-tlo: #0b0718;
+  --color-panel: #150e2e;
+  --color-szklo: #1b1338;
+  --color-szklo-mocne: #241a47;
 
-  /* Jeden akcent, wyłącznie tam, gdzie coś jest ważne */
-  --color-akcent: #2f5d50;
-  --color-akcent-jasny: #e6efeb;
-  --color-akcent-ciemny: #234840;
+  /* Tekst */
+  --color-atrament: #f3efff;
+  --color-atrament-sciszony: #c9bcf0;
+  /* 7,4:1 na tle. Wymóg 4,5:1 dotyczy też podpisów i etykiet. */
+  --color-atrament-slaby: #a395d4;
 
-  /* Semantyka. Rozróżnialne, ale spokojne. Nigdy sam kolor jako nośnik. */
-  --color-uwaga: #8a6a1f;
-  --color-uwaga-tlo: #fbf4e2;
-  --color-trampolina: #3f5a6b;
-  --color-trampolina-tlo: #eef3f6;
-  --color-koszt: #7a5230;
-  --color-koszt-tlo: #f7f0e8;
-  --color-przyszlosc: #5f574d;
-  --color-przyszlosc-tlo: #f1eee9;
+  /* Linie: ledwie widoczne, ale obecne */
+  --color-linia: #2a1f52;
+  --color-linia-mocna: #3b2c6e;
+
+  /* Akcent: jeden fiolet, trzy natężenia */
+  --color-akcent: #a78bfa;
+  --color-akcent-jasny: #b79cff;
+  --color-akcent-ciemny: #7c5cf0;
+  --color-akcent-tlo: #1e1540;
+  --color-na-akcencie: #120a26;
+
+  /* Semantyka. Rozróżnialne, spokojne, nigdy jak alarm. */
+  --color-uwaga: #f2c96b;
+  --color-uwaga-tlo: #2a2010;
+  --color-trampolina: #7fd3ec;
+  --color-trampolina-tlo: #0f2530;
+  --color-koszt: #f0a87a;
+  --color-koszt-tlo: #2c1b12;
+  --color-przyszlosc: #c3b7e0;
+  --color-przyszlosc-tlo: #1c1730;
 
   /* Skala rozmiarów: wyraźne stopnie, nie pięć wielkości po dwa piksele */
   --text-drobne: 0.8125rem;
@@ -48,48 +57,86 @@
   --text-tresc: 1.0625rem;
   --text-tresc--line-height: 1.7;
   --text-tresc-duza: 1.1875rem;
-  --text-tresc-duza--line-height: 1.65;
+  --text-tresc-duza--line-height: 1.6;
   --text-naglowek-maly: 1.375rem;
-  --text-naglowek-maly--line-height: 1.35;
-  --text-naglowek: 1.75rem;
-  --text-naglowek--line-height: 1.25;
-  --text-naglowek-duzy: 2.375rem;
-  --text-naglowek-duzy--line-height: 1.15;
+  --text-naglowek-maly--line-height: 1.3;
+  --text-naglowek: 1.875rem;
+  --text-naglowek--line-height: 1.2;
+  --text-naglowek-duzy: 2.75rem;
+  --text-naglowek-duzy--line-height: 1.08;
+  --text-tytul: 3.75rem;
+  --text-tytul--line-height: 1.02;
 
   /* Szerokość kolumny czytelniczej: 60–72 znaki */
   --container-czytelna: 34rem;
-  --container-artykul: 42rem;
+  --container-artykul: 44rem;
+
+  --radius-karta: 1.25rem;
 }
 
 html {
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+  color-scheme: dark;
 }
 
 body {
   background: var(--color-tlo);
   color: var(--color-atrament);
-  font-feature-settings: "kern", "liga";
+  font-feature-settings: "kern", "liga", "ss01";
+}
+
+/**
+ * Zorza nad podłożem. Dwie plamy światła, nieruchome, bardzo rozmyte.
+ * Pod spodem, więc nigdy nie wchodzi w drogę treści.
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(58rem 40rem at 76% -6%, rgba(150, 106, 255, 0.42), transparent 60%),
+    radial-gradient(44rem 34rem at 6% 2%, rgba(104, 66, 220, 0.32), transparent 58%),
+    radial-gradient(72rem 52rem at 52% 112%, rgba(132, 96, 250, 0.24), transparent 64%),
+    linear-gradient(180deg, #0d0820 0%, #0b0718 55%, #08050f 100%);
+}
+
+/* Siatka: ledwie widoczna, daje głębię, nie rozprasza. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(rgba(167, 139, 250, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(167, 139, 250, 0.045) 1px, transparent 1px);
+  background-size: 4.5rem 4.5rem;
+  mask-image: radial-gradient(64rem 48rem at 60% 0%, #000 0%, transparent 72%);
 }
 
 /* Fokus zawsze widoczny. Nigdy usuwany dla estetyki. */
 :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--color-akcent);
+  outline: 2px solid var(--color-akcent-jasny);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 /* Skok do treści: pierwszy tab na każdej stronie. Widoczny tylko z klawiatury. */
 .przeskocz {
   position: absolute;
   left: 1rem;
-  top: -3rem;
-  z-index: 50;
+  top: -3.5rem;
+  z-index: 60;
   padding: 0.6rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   background: var(--color-akcent);
-  color: #fff;
+  color: var(--color-na-akcencie);
   font-size: var(--text-male);
+  font-weight: 600;
   transition: top 120ms ease;
 }
 
@@ -101,100 +148,210 @@ body {
 @media (prefers-reduced-motion: no-preference) {
   .przejscie {
     transition:
-      background-color 140ms ease,
-      border-color 140ms ease,
-      color 140ms ease,
-      transform 140ms ease;
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease,
+      box-shadow 160ms ease,
+      transform 160ms ease;
   }
+}
+
+/**
+ * Szkło. Półprzezroczysta płyta z jasną krawędzią u góry — światło pada
+ * z góry, więc górna krawędź jest jaśniejsza od dolnej.
+ */
+.szklo {
+  position: relative;
+  background: linear-gradient(
+    158deg,
+    color-mix(in oklab, var(--color-szklo) 78%, transparent),
+    color-mix(in oklab, var(--color-panel) 86%, transparent)
+  );
+  border: 1px solid var(--color-linia);
+  border-radius: var(--radius-karta);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    inset 0 1px 0 rgba(210, 188, 255, 0.2),
+    inset 0 -1px 0 rgba(8, 4, 22, 0.5),
+    0 22px 54px -26px rgba(6, 3, 18, 0.95);
+}
+
+.szklo-mocne {
+  background: linear-gradient(160deg, var(--color-szklo-mocne), var(--color-szklo));
+  border-color: var(--color-linia-mocna);
+}
+
+/** Karta wyróżniona: obwódka w akcencie i poświata, nigdy sam kolor. */
+.szklo-akcent {
+  border-color: color-mix(in oklab, var(--color-akcent) 45%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(196, 169, 255, 0.2),
+    0 0 0 1px color-mix(in oklab, var(--color-akcent) 18%, transparent),
+    0 24px 60px -28px rgba(124, 92, 240, 0.75);
+}
+
+/** Poświata pod przyciskiem głównym. */
+.poswiata {
+  box-shadow:
+    0 0 0 1px rgba(196, 169, 255, 0.35),
+    0 14px 40px -14px rgba(139, 92, 246, 0.8);
+}
+
+/** Nagłówek z gradientem: druga linia jaśnieje. */
+.gradient-tytul {
+  background: linear-gradient(104deg, #c7aeff 0%, #e6d8ff 48%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/** Odręczny dopisek na marginesie. Ozdoba, nigdy nośnik treści. */
+.odreczny {
+  font-family: var(--font-odreczny);
+  font-size: 1.35rem;
+  line-height: 1.25;
+  color: var(--color-atrament-sciszony);
+  transform: rotate(-4deg);
 }
 
 /* Tekst czytelniczy: karty zawodów i raport */
 .proza {
-  font-family: var(--font-serif);
   font-size: var(--text-tresc);
   line-height: 1.75;
-  color: var(--color-atrament);
+  color: var(--color-atrament-sciszony);
 }
 
 .proza p + p {
-  margin-top: 1.1em;
+  margin-top: 1.05em;
 }
 
 .proza strong {
+  color: var(--color-atrament);
   font-weight: 600;
 }
 
 /* Karta zawodu: układ czytelniczy, jak dobrze złożony artykuł. */
-.karta {
-  font-family: var(--font-serif);
-  font-size: var(--text-tresc);
-  line-height: 1.75;
+.karta h2 {
+  margin-top: 2.4rem;
+  margin-bottom: 0.85rem;
+  font-size: var(--text-naglowek-maly);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-atrament);
+}
+
+.karta h3 {
+  margin-top: 1.7rem;
+  margin-bottom: 0.5rem;
+  font-size: var(--text-tresc-duza);
+  font-weight: 600;
+  color: var(--color-atrament);
 }
 
 .karta p {
-  margin-block: 0.9em;
+  margin-bottom: 1.05em;
+  font-size: var(--text-tresc);
+  line-height: 1.75;
+  color: var(--color-atrament-sciszony);
 }
 
 .karta strong {
+  color: var(--color-atrament);
   font-weight: 600;
 }
 
 .karta ul,
 .karta ol {
-  margin-block: 0.9em;
-  padding-left: 1.1em;
-  list-style: disc;
+  margin-bottom: 1.05em;
+  padding-left: 1.3rem;
+  color: var(--color-atrament-sciszony);
 }
 
-.karta ol {
-  list-style: decimal;
+.karta ul {
+  list-style: none;
+  padding-left: 0;
 }
 
-.karta li {
-  margin-block: 0.35em;
+.karta ul li {
+  position: relative;
+  padding-left: 1.3rem;
+  margin-bottom: 0.4em;
+  line-height: 1.7;
 }
 
-.karta h3,
-.karta h4 {
-  margin-top: 1.4em;
-  font-size: var(--text-tresc-duza);
-  font-weight: 600;
+.karta ul li::before {
+  content: "";
+  position: absolute;
+  left: 0.15rem;
+  top: 0.72em;
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 999px;
+  background: var(--color-akcent);
 }
 
-/* Tabele muszą być czytelne na telefonie: przewijają się we własnym oknie. */
+.karta ol li {
+  margin-bottom: 0.4em;
+  line-height: 1.7;
+}
+
+.karta hr {
+  margin: 2.2rem 0;
+  border: 0;
+  border-top: 1px solid var(--color-linia);
+}
+
+/* Tabele w kartach: wąski ekran przewija je poziomo, strona stoi w miejscu. */
 .karta table {
   display: block;
-  overflow-x: auto;
   width: 100%;
-  margin-block: 1.2em;
+  overflow-x: auto;
+  margin-bottom: 1.4em;
   border-collapse: collapse;
-  font-family: var(--font-sans);
   font-size: var(--text-male);
-  line-height: 1.55;
 }
 
 .karta th,
 .karta td {
-  border-bottom: 1px solid var(--color-linia);
-  padding: 0.55em 0.9em 0.55em 0;
+  padding: 0.6rem 0.9rem;
   text-align: left;
-  vertical-align: top;
+  border-bottom: 1px solid var(--color-linia);
+  white-space: nowrap;
+  color: var(--color-atrament-sciszony);
 }
 
 .karta th {
-  color: var(--color-atrament-sciszony);
-  font-weight: 500;
+  color: var(--color-atrament-slaby);
+  font-weight: 600;
+  font-size: var(--text-drobne);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
-.karta blockquote {
-  margin-block: 1.1em;
-  border-left: 2px solid var(--color-linia-mocna);
-  padding-left: 1em;
-  color: var(--color-atrament-sciszony);
+/* Pola formularzy: szkło, nie biała kartka wycięta z innego świata. */
+.pole {
+  width: 100%;
+  background: color-mix(in oklab, var(--color-tlo) 70%, transparent);
+  border: 1px solid var(--color-linia-mocna);
+  border-radius: 0.85rem;
+  color: var(--color-atrament);
+  padding: 0.7rem 0.95rem;
 }
 
-.karta hr {
-  margin-block: 1.6em;
-  border: 0;
-  border-top: 1px solid var(--color-linia);
+.pole::placeholder {
+  color: var(--color-atrament-slaby);
+}
+
+/* Pole z ikoną po lewej: miejsce na ikonę, nie na literę pod ikoną. */
+.pole-z-ikona {
+  padding-left: 2.9rem;
+}
+
+/* Pasek postępu w nawigacji: kropki połączone linią. */
+.szyna {
+  background: linear-gradient(
+    90deg,
+    var(--color-akcent) var(--postep, 0%),
+    var(--color-linia) var(--postep, 0%)
+  );
 }

@@ -56,7 +56,7 @@ export function Pozycja(props: WlasciwosciPozycji) {
 // =====================================================================
 
 const KAFELEK =
-  "przejscie w-full min-h-[3rem] rounded-lg border bg-papier px-4 py-3 text-left text-tresc " +
+  "przejscie w-full min-h-[3rem] rounded-lg border bg-szklo px-4 py-3 text-left text-tresc " +
   "hover:border-linia-mocna active:scale-[0.995]";
 
 function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) {
@@ -93,13 +93,13 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
               onClick={() => stuknij(o.kod)}
               aria-pressed={Boolean(numer)}
               className={`${KAFELEK} flex items-start gap-3 ${
-                numer ? "border-akcent bg-akcent-jasny" : "border-linia"
+                numer ? "border-akcent bg-akcent-tlo" : "border-linia"
               }`}
             >
               <span
                 aria-hidden
                 className={`mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-drobne font-medium tabular-nums ${
-                  numer ? "bg-akcent text-white" : "border border-linia-mocna text-atrament-slaby"
+                  numer ? "bg-akcent text-na-akcencie" : "border border-linia-mocna text-atrament-slaby"
                 }`}
               >
                 {numer ?? ""}
@@ -134,7 +134,7 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) 
           onClick={() => wybierz(s.kod)}
           aria-pressed={wartosc === s.kod}
           className={`${KAFELEK} min-h-[5.5rem] sm:min-h-[8rem] ${
-            wartosc === s.kod ? "border-akcent bg-akcent-jasny" : "border-linia"
+            wartosc === s.kod ? "border-akcent bg-akcent-tlo" : "border-linia"
           }`}
         >
           <span className="leading-snug">{s.tekst}</span>
@@ -148,7 +148,7 @@ function Skala5({ pozycja, wartosc, naZmiane, pierwsza, ostatnia }: WlasciwosciP
   return (
     <div className={`${ostatnia ? "" : "border-b border-linia pb-5"}`}>
       {pozycja.tresc ? (
-        <p className="mb-2 font-serif text-tresc leading-snug">{pozycja.tresc}</p>
+        <p className="mb-2 text-tresc leading-snug">{pozycja.tresc}</p>
       ) : null}
       <SkalaPrzyciski
         wartosc={wartosc as number | undefined}
@@ -180,8 +180,8 @@ function SkalaPrzyciski({
             aria-pressed={wartosc === n}
             className={`przejscie h-11 flex-1 rounded-md border text-male tabular-nums ${
               wartosc === n
-                ? "border-akcent bg-akcent text-white"
-                : "border-linia bg-papier text-atrament-sciszony hover:border-linia-mocna"
+                ? "border-akcent bg-akcent text-na-akcencie"
+                : "border-linia bg-szklo text-atrament-sciszony hover:border-linia-mocna"
             }`}
           >
             {n}
@@ -202,7 +202,7 @@ function Kotwica({ pozycja, wartosc, naZmiane, pierwsza, ostatnia }: Wlasciwosci
   const w = (wartosc as { skala?: number; probowal?: boolean }) ?? {};
   return (
     <div className={`${ostatnia ? "" : "border-b border-linia pb-5"}`}>
-      <p className="mb-2 font-serif text-tresc leading-snug">{pozycja.tresc}</p>
+      <p className="mb-2 text-tresc leading-snug">{pozycja.tresc}</p>
       <SkalaPrzyciski
         wartosc={w.skala}
         naZmiane={(n) => naZmiane({ ...w, skala: n })}
@@ -235,8 +235,8 @@ function Trzystopniowa({ pozycja, wartosc, naZmiane, ostatnia }: WlasciwosciPozy
             aria-pressed={wartosc === o.kod}
             className={`przejscie h-11 min-w-[4.5rem] rounded-md border px-3 text-male ${
               wartosc === o.kod
-                ? "border-akcent bg-akcent text-white"
-                : "border-linia bg-papier text-atrament-sciszony hover:border-linia-mocna"
+                ? "border-akcent bg-akcent text-na-akcencie"
+                : "border-linia bg-szklo text-atrament-sciszony hover:border-linia-mocna"
             }`}
           >
             {o.etykieta}
@@ -264,7 +264,7 @@ function Pojedynczy({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
             onClick={() => naZmiane(o.kod)}
             aria-pressed={wartosc === o.kod}
             className={`${KAFELEK} flex items-center gap-3 ${
-              wartosc === o.kod ? "border-akcent bg-akcent-jasny" : "border-linia"
+              wartosc === o.kod ? "border-akcent bg-akcent-tlo" : "border-linia"
             }`}
           >
             <span
@@ -326,13 +326,13 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
               aria-pressed={zaznaczona}
               disabled={zablokowana}
               className={`${KAFELEK} flex items-center gap-3 ${
-                zaznaczona ? "border-akcent bg-akcent-jasny" : "border-linia"
+                zaznaczona ? "border-akcent bg-akcent-tlo" : "border-linia"
               } ${zablokowana ? "opacity-40" : ""}`}
             >
               <span
                 aria-hidden
                 className={`flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded border-2 ${
-                  zaznaczona ? "border-akcent bg-akcent text-white" : "border-linia-mocna"
+                  zaznaczona ? "border-akcent bg-akcent text-na-akcencie" : "border-linia-mocna"
                 }`}
               >
                 {zaznaczona ? (
@@ -397,7 +397,7 @@ function PoleTekstowe({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
         value={(wartosc as string) ?? ""}
         onChange={(e) => naZmiane(e.target.value)}
         rows={pozycja.duze ? 10 : 4}
-        className="w-full max-w-artykul rounded-lg border border-linia bg-papier p-3.5 font-serif text-tresc leading-relaxed placeholder:text-atrament-slaby"
+        className="w-full max-w-artykul szklo p-3.5 text-tresc leading-relaxed placeholder:text-atrament-slaby"
         placeholder="Pisz krótko, hasłami. Nie musi być pełnymi zdaniami."
       />
     </div>
@@ -411,7 +411,7 @@ function KilkaTekstow({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
     <div className="flex flex-col gap-5">
       {zdania.map((zdanie, i) => (
         <div key={zdanie}>
-          <label className="mb-1.5 block max-w-czytelna font-serif text-tresc" htmlFor={`${pozycja.id}-${i}`}>
+          <label className="mb-1.5 block max-w-czytelna text-tresc" htmlFor={`${pozycja.id}-${i}`}>
             {zdanie}
           </label>
           <textarea
@@ -424,7 +424,7 @@ function KilkaTekstow({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
               naZmiane(nowe);
             }}
             rows={2}
-            className="w-full max-w-artykul rounded-lg border border-linia bg-papier p-3 font-serif text-tresc leading-relaxed"
+            className="w-full max-w-artykul szklo p-3 text-tresc leading-relaxed"
           />
         </div>
       ))}

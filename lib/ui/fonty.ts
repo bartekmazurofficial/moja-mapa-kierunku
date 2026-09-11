@@ -1,25 +1,29 @@
-import { Source_Serif_4, Inter } from "next/font/google";
+import { Plus_Jakarta_Sans, Caveat } from "next/font/google";
 
 /**
- * Dwa kroje o wyraznie roznych rolach: szeryfowy do naglowkow i tresci
- * czytelniczej, bezszeryfowy do interfejsu. Oba maja pelny zestaw polskich
- * znakow (subset latin-ext), sprawdzony na tekstach z kart zawodow.
+ * Trzy role, dwa kroje.
  *
- * next/font pobiera je przy budowaniu i serwuje z wlasnego serwera - zadnego
- * zapytania do zewnetrznej uslugi w czasie dzialania aplikacji.
+ * Plus Jakarta Sans niesie wszystko: nagłówki w grubych odmianach, treść
+ * w regularnej. Geometryczny grotesk z pełnym latin-ext, więc polskie znaki
+ * są rysowane, nie podstawiane.
+ *
+ * Caveat tylko do odręcznych dopisków na marginesie. Nigdy do treści, nigdy
+ * do niczego, co uczestnik musi przeczytać, żeby zrozumieć ekran.
+ *
+ * next/font pobiera oba przy budowaniu i serwuje z własnego serwera — żadnego
+ * zapytania do zewnętrznej usługi w czasie działania aplikacji.
  */
 
-export const szeryfowy = Source_Serif_4({
+export const bezszeryfowy = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
-  weight: ["400", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-szeryfowy",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-bezszeryfowy",
   display: "swap",
 });
 
-export const bezszeryfowy = Inter({
+export const odreczny = Caveat({
   subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600"],
-  variable: "--font-bezszeryfowy",
+  weight: ["400", "600"],
+  variable: "--font-odreczny",
   display: "swap",
 });

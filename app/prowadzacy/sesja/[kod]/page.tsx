@@ -36,7 +36,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
       >
         ← Karta uczestnika
       </Link>
-      <h1 className="mt-3 font-serif text-naglowek-duzy leading-tight">Sesja · {karta.imie}</h1>
+      <h1 className="mt-3 text-naglowek-duzy font-extrabold tracking-tight leading-tight">Sesja · {karta.imie}</h1>
       <p className="mt-1 text-male text-atrament-slaby">
         Sześćdziesiąt minut. To jest spotkanie decyzyjne, nie kolejne spotkanie odkrywania siebie.
       </p>
@@ -46,16 +46,16 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         <div className="flex flex-col gap-4">
           <ol className="flex flex-col gap-3">
             {PRZEBIEG.map((e) => (
-              <li key={e.minuty} className="rounded-xl border border-linia bg-papier p-5">
+              <li key={e.minuty} className="szklo p-5">
                 <p className="text-drobne uppercase tracking-[0.08em] text-atrament-slaby">
                   {e.minuty} min
                 </p>
-                <h2 className="font-serif text-naglowek-maly leading-snug">{e.tytul}</h2>
+                <h2 className="text-naglowek-maly font-bold leading-snug">{e.tytul}</h2>
                 {e.cel ? <p className="mt-1 text-male text-atrament-sciszony">{e.cel}</p> : null}
                 {e.pytania.length > 0 ? (
                   <ul className="mt-3 flex flex-col gap-1.5">
                     {e.pytania.map((p, i) => (
-                      <li key={i} className="font-serif text-tresc leading-relaxed">
+                      <li key={i} className="text-tresc leading-relaxed">
                         „{p}”
                       </li>
                     ))}
@@ -72,7 +72,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
             ))}
           </ol>
 
-          <details className="rounded-xl border border-linia bg-papier p-5">
+          <details className="szklo p-5">
             <summary className="cursor-pointer text-drobne uppercase tracking-[0.08em] text-atrament-slaby">
               Sytuacje trudne, siedem skryptów
             </summary>
@@ -80,7 +80,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
               {SYTUACJE_TRUDNE.map((s) => (
                 <div key={s.sytuacja}>
                   <dt className="text-tresc-duza">{s.sytuacja}</dt>
-                  <dd className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
+                  <dd className="text-tresc leading-relaxed text-atrament-sciszony">
                     {s.skrypt}
                   </dd>
                 </div>
@@ -103,7 +103,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
       </div>
 
       {/* NA DOLE: podsumowanie, słowami uczestnika */}
-      <section className="mt-10 rounded-xl border border-linia bg-papier p-6">
+      <section className="mt-10 szklo p-6">
         <Naglowek>Podsumowanie rozmowy — sekcja 18 raportu</Naglowek>
         <p className="text-male text-atrament-sciszony">
           Pisane słowami uczestnika, nie Twoimi. Bez własnej oceny: raport jest jego własnością
@@ -133,7 +133,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
                 defaultValue={s?.kroki[i - 1] ?? ""}
                 aria-label={`Krok ${i}`}
                 placeholder={i === 1 ? "np. do 30 września napiszę do dwóch osób z trzema pytaniami" : ""}
-                className="min-h-11 rounded-lg border border-linia-mocna bg-papier px-3 text-male"
+                className="min-h-11 rounded-lg border border-linia-mocna bg-szklo px-3 text-male"
               />
             ))}
           </fieldset>
@@ -148,7 +148,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
 
           <button
             type="submit"
-            className="przejscie mt-1 min-h-11 w-fit rounded-lg bg-akcent px-6 text-male font-medium text-white hover:bg-akcent-ciemny"
+            className="przejscie mt-1 min-h-11 w-fit rounded-lg bg-akcent px-6 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny"
           >
             Zapisz podsumowanie
           </button>
@@ -184,7 +184,7 @@ function Pole({
         name={id}
         rows={duze ? 3 : 2}
         defaultValue={wartosc ?? ""}
-        className="rounded-lg border border-linia-mocna bg-papier px-3 py-2 text-male leading-relaxed"
+        className="rounded-lg border border-linia-mocna bg-szklo px-3 py-2 text-male leading-relaxed"
       />
     </div>
   );

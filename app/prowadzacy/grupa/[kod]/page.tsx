@@ -24,10 +24,10 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
       <Link href="/prowadzacy" className="przejscie text-male text-atrament-slaby hover:text-atrament">
         ← Grupy
       </Link>
-      <h1 className="mt-3 font-serif text-naglowek-duzy leading-tight">{grupa.nazwa}</h1>
+      <h1 className="mt-3 text-naglowek-duzy font-extrabold tracking-tight leading-tight">{grupa.nazwa}</h1>
 
       <section className="mt-8 grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-linia bg-papier p-5">
+        <div className="szklo p-5">
           <h2 className="text-drobne uppercase tracking-[0.08em] text-atrament-slaby">
             Moduły otwarte dla grupy
           </h2>
@@ -58,7 +58,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           </div>
         </div>
 
-        <div className="rounded-xl border border-linia bg-papier p-5">
+        <div className="szklo p-5">
           <h2 className="text-drobne uppercase tracking-[0.08em] text-atrament-slaby">
             Warstwy raportu
           </h2>
@@ -84,7 +84,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </div>
       </section>
 
-      <h2 className="mt-12 font-serif text-naglowek">Uczestnicy</h2>
+      <h2 className="mt-12 text-naglowek font-extrabold tracking-tight">Uczestnicy</h2>
       <p className="mt-1 text-male text-atrament-slaby">
         Kropki to moduły w kolejności {grupa.uczestnicy[0]?.moduly.map((m) => m.kod).join(" ")}.
         Obwódka oznacza czas na blok poniżej {Math.round(TEMPO.UDZIAL_MEDIANY * 100)}% mediany tej
