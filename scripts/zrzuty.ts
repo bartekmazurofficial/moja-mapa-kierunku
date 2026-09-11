@@ -32,6 +32,8 @@ const ZRZUTY: Zrzut[] = [
   { nazwa: "komputer-4-karta-zawodu", sciezka: "/u/KJR5D49GKS/zawod/pielegniarka", szerokosc: 1440, wysokosc: 1200 },
   { nazwa: "telefon-5-profil-plaski", sciezka: "/u/S4YBD2DEJH/raport?otwarte=obszary", szerokosc: 390, wysokosc: 1500, przewinDo: "Moje najmocniejsze obszary" },
   { nazwa: "komputer-5-profil-plaski", sciezka: "/u/S4YBD2DEJH/raport?otwarte=trzy_drogi", szerokosc: 1440, wysokosc: 1300, przewinDo: "Trzy drogi" },
+  { nazwa: "komputer-6-korekta-prowadzacego", sciezka: "/u/3DEPKJBQW9/raport?otwarte=zawody", szerokosc: 1440, wysokosc: 1200, przewinDo: "Dopisane podczas rozmowy" },
+  { nazwa: "telefon-6-moja-decyzja", sciezka: "/u/3DEPKJBQW9/raport?otwarte=moja_decyzja", szerokosc: 390, wysokosc: 1000, przewinDo: "Moja decyzja" },
   { nazwa: "panel-1-grupa", sciezka: "/prowadzacy/grupa/PRN2X3ZP", szerokosc: 1440, wysokosc: 1100, panel: true },
   { nazwa: "panel-2-uczestnik", sciezka: "/prowadzacy/uczestnik/3DEPKJBQW9", szerokosc: 1440, wysokosc: 1400, panel: true },
   { nazwa: "panel-3-sesja", sciezka: "/prowadzacy/sesja/3DEPKJBQW9", szerokosc: 1440, wysokosc: 1400, panel: true },
@@ -67,9 +69,10 @@ async function main() {
     await karta.goto(adres + z.sciezka, { waitUntil: "networkidle0" });
     if (z.przewinDo) {
       await karta.evaluate((szukany: string) => {
-        const naglowki = [...document.querySelectorAll("h2, h3")];
-        const cel = naglowki.find((h) => h.textContent?.includes(szukany));
-        cel?.scrollIntoView({ block: "start" });
+        const kandydaci = [...document.querySelectorAll("h2, h3, p, summary")];
+        const cel = kandydaci.find((h) => h.textContent?.includes(szukany));
+        if (!cel) throw new Error(`nie ma na stronie tekstu: ${szukany}`);
+        cel.scrollIntoView({ block: "start" });
       }, z.przewinDo);
     }
     await new Promise((r) => setTimeout(r, 600));
