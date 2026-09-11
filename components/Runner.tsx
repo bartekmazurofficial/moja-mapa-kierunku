@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Pozycja } from "./Pozycja";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
+import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import type { CzescModulu, Ekran } from "@/lib/moduly/typy";
 
 const MARKER_ZAKONCZENIA = "__zakonczono";
@@ -44,7 +45,45 @@ export function Runner({
   const [indeks, ustawIndeks] = useState(0);
   const [konczy, ustawKonczy] = useState(false);
   const wejscieNaEkran = useRef<number>(Date.now());
-  const kolejkaZapisu = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  /** Odroczenie zapisu pola tekstowego: nie wysyłamy przy każdej literze. */
+  const odroczone = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const [nieZapisane, ustawNieZapisane] = useState(0);
+  const [zablokowane, ustawZablokowane] = useState(false);
+
+  const kolejka = useRef<KolejkaZapisu | null>(null);
+  if (kolejka.current === null) {
+    kolejka.current = new KolejkaZapisu({
+      naZmiane: ustawNieZapisane,
+      wyslij: async ({ pozycja, tresc }) => {
+        const odpowiedz = await fetch("/api/odpowiedz", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            kod: kodUczestnika,
+            modul,
+            czesc: definicja.kod,
+            pozycja,
+            wartosc: tresc,
+            msSpent: Date.now() - wejscieNaEkran.current,
+            rozpoczeta: new Date(wejscieNaEkran.current).toISOString(),
+          }),
+        });
+        // Błąd sieci rzuca sam; 5xx trzeba zgłosić, bo fetch uznaje go za sukces.
+        if (!odpowiedz.ok && odpowiedz.status >= 500) throw new Error(String(odpowiedz.status));
+      },
+    });
+  }
+
+  // Powrót połączenia to najlepszy moment na dosłanie zaległych odpowiedzi.
+  useEffect(() => {
+    const ponow = () => void kolejka.current?.ponow();
+    window.addEventListener("online", ponow);
+    const co15s = setInterval(ponow, 15_000);
+    return () => {
+      window.removeEventListener("online", ponow);
+      clearInterval(co15s);
+    };
+  }, []);
 
   const widoczne = useMemo(
     () => definicja.ekrany.filter((e) => spelniaWarunek(e.warunek, odpowiedzi)),
@@ -69,28 +108,16 @@ export function Runner({
 
   const zapisz = useCallback(
     (pozycjaId: string, wartosc: unknown, natychmiast: boolean) => {
-      const istniejacy = kolejkaZapisu.current.get(pozycjaId);
+      const istniejacy = odroczone.current.get(pozycjaId);
       if (istniejacy) clearTimeout(istniejacy);
       const wyslij = () => {
-        kolejkaZapisu.current.delete(pozycjaId);
-        void fetch("/api/odpowiedz", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            kod: kodUczestnika,
-            modul,
-            czesc: definicja.kod,
-            pozycja: pozycjaId,
-            wartosc,
-            msSpent: Date.now() - wejscieNaEkran.current,
-            rozpoczeta: new Date(wejscieNaEkran.current).toISOString(),
-          }),
-        });
+        odroczone.current.delete(pozycjaId);
+        kolejka.current?.zapisz(pozycjaId, wartosc);
       };
       if (natychmiast) wyslij();
-      else kolejkaZapisu.current.set(pozycjaId, setTimeout(wyslij, 700));
+      else odroczone.current.set(pozycjaId, setTimeout(wyslij, 700));
     },
-    [definicja.kod, kodUczestnika, modul],
+    [],
   );
 
   const ekran = widoczne[indeks];
@@ -110,37 +137,31 @@ export function Runner({
       return;
     }
     ustawKonczy(true);
-    for (const [, timeout] of kolejkaZapisu.current) clearTimeout(timeout);
-    // Zapisujemy wszystko, co czekalo w kolejce, zanim zamkniemy czesc.
-    await Promise.all(
-      [...kolejkaZapisu.current.keys()].map((id) =>
-        fetch("/api/odpowiedz", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            kod: kodUczestnika,
-            modul,
-            czesc: definicja.kod,
-            pozycja: id,
-            wartosc: odpowiedzi[id],
-          }),
-        }),
-      ),
-    );
-    kolejkaZapisu.current.clear();
-    await fetch("/api/odpowiedz", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        kod: kodUczestnika,
-        modul,
-        czesc: definicja.kod,
-        pozycja: MARKER_ZAKONCZENIA,
-        wartosc: true,
-      }),
-    });
+    ustawZablokowane(false);
+    // Odroczone pola tekstowe wysyłamy od razu, bez czekania na 700 ms.
+    for (const [id, timeout] of odroczone.current) {
+      clearTimeout(timeout);
+      kolejka.current?.zapisz(id, odpowiedzi[id]);
+    }
+    odroczone.current.clear();
+
+    // Części nie wolno zamknąć, dopóki cokolwiek nie doszło. Zamknięta część
+    // znika z ekranu, więc uczestnik nie miałby jak wrócić po utraconą odpowiedź.
+    const wszystkoZapisane = await kolejka.current!.oproznij();
+    if (!wszystkoZapisane) {
+      ustawKonczy(false);
+      ustawZablokowane(true);
+      return;
+    }
+
+    kolejka.current!.zapisz(MARKER_ZAKONCZENIA, true);
+    if (!(await kolejka.current!.oproznij())) {
+      ustawKonczy(false);
+      ustawZablokowane(true);
+      return;
+    }
     router.refresh();
-  }, [definicja.kod, indeks, kodUczestnika, modul, odpowiedzi, router, widoczne.length]);
+  }, [indeks, odpowiedzi, router, widoczne.length]);
 
   if (!ekran) return null;
 
@@ -163,6 +184,19 @@ export function Runner({
               : ""}
         </p>
       </header>
+
+      {/* Uczestnik ma wiedzieć od razu, że coś nie doszło, a nie dopiero wtedy,
+          gdy wróci do modułu i zobaczy pustą pozycję. */}
+      {nieZapisane > 0 ? (
+        <p
+          role="status"
+          className="mb-5 rounded-lg bg-uwaga-tlo px-4 py-3 text-male text-uwaga"
+        >
+          {zablokowane
+            ? `Nie ma połączenia, więc ${nieZapisane === 1 ? "jedna odpowiedź" : `${nieZapisane} odpowiedzi`} jeszcze nie ${nieZapisane === 1 ? "doszła" : "doszły"}. Nie zamykam tej części, żeby nic nie przepadło. Zostań na tym ekranie — spróbuję ponownie, gdy sieć wróci.`
+            : `Brak połączenia. ${nieZapisane === 1 ? "Jedna odpowiedź czeka" : `${nieZapisane} odpowiedzi czeka`} na wysłanie i zapisze się, gdy sieć wróci. Możesz pisać dalej.`}
+        </p>
+      ) : null}
 
       <main className={`flex-1 ${jednaPozycja ? "flex flex-col justify-center pb-12" : ""}`}>
         {ekran.typ === "wstep" || ekran.typ === "przerwa" ? (

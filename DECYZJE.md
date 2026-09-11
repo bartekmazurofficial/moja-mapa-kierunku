@@ -891,3 +891,81 @@ i wszystkimi trzynastoma osiami — inaczej niż audyt T11–T14, który liczy t
 zainteresowania i kompetencje. 400 profili: **157/157 osiągalnych**,
 różnorodność TOP3 **0,902** (bez nowych pozycji 0,892), najczęstszy zawód
 w TOP10 w 13,5% profili. Stary audyt przechodzi bez zmian.
+
+---
+
+## Zamknięcie budowy
+
+### D46. Obszar bez ani jednego zawodu znika z rankingu
+
+Ostatnia zmiana w silniku. Asymetria między obszarem a zawodem zostaje
+świadomie: pojedyncze weto usuwa zawody, nie całą dziedzinę. Obszar
+„Medycyna i ratownictwo" to nie tylko lekarz, pielęgniarka i ratownik, ale
+także farmaceuta, technik radiolog i opiekun medyczny — role o zupełnie innym
+kontakcie ze śmiercią. Usunięcie całego obszaru powiedziałoby uczestnikowi
+„medycyna nie jest dla ciebie", co byłoby nieprawdą.
+
+Dopiero gdy **nie zostaje ani jeden zawód**, obszar znika: pusta obietnica nie
+ma czego pokazać. Ta sama reguła, która obowiązuje przy kierunkach.
+
+Zmierzone na profilu kontrolnym: weto na kontakcie ze śmiercią usuwa cztery
+z ośmiu zawodów obszaru i obszar zostaje. Trzy weta naraz (śmierć, studia,
+odpowiedzialność za czyjeś bezpieczeństwo) usuwają wszystkie osiem i obszar
+wypada — razem z przeliczeniem trzech dróg, które powstają wtedy z innych
+obszarów.
+
+Powód usunięcia zapisujemy jako `weto`, więc taki obszar trafia do sekcji
+rozjazdów w panelu: to jest dokładnie ta sprzeczność, o której prowadzący ma
+rozmawiać.
+
+### D47. Zapis odpowiedzi odporny na zerwane połączenie
+
+Jedyna rzecz z listy przed pilotażem, która wymagała kodu — i wymagała.
+
+Zapis szedł pojedynczym `fetch` bez ponowień i bez obsługi błędu.
+Uczestnik wypełniający moduł na telefonie w szkole tracił odpowiedzi po cichu
+i dowiadywał się o tym dopiero wtedy, gdy wracał do modułu.
+
+`lib/moduly/kolejka-zapisu.ts` ponawia trzy razy z rosnącym odstępem, odkłada
+to, czego nie udało się wysłać, i dosyła po powrocie połączenia — na zdarzenie
+`online` i co piętnaście sekund. Klasa nie zna Reacta ani `fetch`, więc jej
+zachowanie da się sprawdzić bez przeglądarki i bez czekania.
+
+Trzy zachowania widoczne dla uczestnika:
+
+1. **Przy działającej sieci nic się nie zmienia.** Żadnego komunikatu.
+2. **Przy zerwanej** pojawia się zdanie: ile odpowiedzi czeka i że zapiszą się,
+   gdy sieć wróci. Można pisać dalej.
+3. **Części nie da się zamknąć, dopóki cokolwiek nie doszło.** Zamknięta część
+   znika z ekranu, więc uczestnik nie miałby jak wrócić po utraconą odpowiedź.
+
+Sprawdzone na żywej aplikacji z wyłączoną siecią w przeglądarce: pięć
+odpowiedzi zaległo, komunikat się pokazał, zamknięcie części zostało
+wstrzymane, a po przywróceniu sieci wszystkie pięć trafiło do bazy
+z ostatnią wartością, nie z pierwszą.
+
+### Czego świadomie nie robimy
+
+**Dwunastu nieaktywnych kodów antyprofilu nie usuwamy z kart.** Zostają
+nieaktywne do redakcji kart po pilotażu.
+
+**Nierównego pokrycia wymiarów A3 w kartach nie wyrównujemy.** SAM 122
+wystąpienia, DEC 7 — to może być wada albo może odzwierciedlać rzeczywistość.
+Rozstrzygną to dane od prawdziwych uczestników.
+
+**Progów nie stroimy.** Wszystkie liczby decyzyjne zostają. Kalibracja ma sens
+wyłącznie na prawdziwych odpowiedziach.
+
+### Przed pilotażem, do zrobienia raz
+
+| # | Sprawdzenie | Stan |
+|---|---|---|
+| 1 | Pełna ścieżka na prawdziwym telefonie: Safari na iOS i Chrome na Androidzie | zostaje |
+| 2 | Zachowanie przy zerwanym połączeniu podczas zapisu | **zrobione, D47** |
+| 3 | Wydrukowany PDF: marginesy i podział stron na papierze A4 | zostaje |
+| 4 | Czytnik ekranu na jednym module i na raporcie | zostaje |
+
+Do tego rzeczy, które przychodzą ze strony programu przy redakcji kart:
+usunięcie dwunastu nieaktywnych kodów antyprofilu, ewentualne dopisanie NAP
+i RYT do kart, decyzja o nazwie siódmego bloku A5 i o progu
+`A5_WSKAZNIK_ZAMKNIECIA` po rozszerzeniu modułu do 43 pozycji.

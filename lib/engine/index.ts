@@ -7,7 +7,7 @@
  */
 
 import { WERSJA_SILNIKA } from "./config";
-import { ustawTekstyFiltrow, warstwa1 } from "./layer1-areas";
+import { trzyDrogi, ustawTekstyFiltrow, warstwa1 } from "./layer1-areas";
 import { warstwa2, zasobyZPunktuStartu } from "./layer2-professions";
 import { warstwa3 } from "./layer3-fields";
 import { zakonczenieWedlugEtapu } from "./layer0-start";
@@ -30,6 +30,58 @@ export function uruchomSilnik(w: WynikiModulow, baza: BazaReferencyjna): WynikSi
     punktStartu: w.punktStartu,
     usunieteObszary: w1.usuniete,
   });
+
+  // Obszar, z ktorego weto usunelo wszystkie zawody, jest pusta obietnica.
+  // Ta sama regula, ktora obowiazuje przy kierunkach: nie ma czego w nim
+  // pokazac, wiec znika z rankingu i z trzech drog.
+  //
+  // Uwaga na asymetrie, ktora jest tu celowa: pojedyncze weto usuwa zawody,
+  // nie caly obszar. Obszar szesnasty to nie tylko lekarz i ratownik, ale takze
+  // farmaceuta i technik radiolog, o zupelnie innym kontakcie ze smiercia.
+  // Dopiero gdy nie zostanie ani jeden zawod, obszar przestaje cokolwiek znaczyc.
+  const obszaryZZawodami = new Set(baza.zawody.map((z) => z.obszar));
+  const przetrwaly = new Set(w2.wszystkie.map((z) => z.obszar));
+  const wetaObszaru = new Map<number, string[]>();
+  for (const usuniety of w2.usunieteWetem) {
+    const zawod = baza.zawody.find((z) => z.kod === usuniety.kod);
+    if (zawod) wetaObszaru.set(zawod.obszar, usuniety.filtry);
+  }
+
+  const puste = w1.obszary.filter(
+    (o) => obszaryZZawodami.has(o.id) && !przetrwaly.has(o.id),
+  );
+  if (puste.length > 0) {
+    for (const o of puste) {
+      const filtry = wetaObszaru.get(o.id);
+      w1.usuniete.push({
+        id: o.id,
+        nazwa: o.nazwa,
+        powod: filtry ? "weto" : "brak_zawodow",
+        filtr: filtry?.[0],
+        ciagniecie: o.ciagniecie,
+      });
+    }
+    const puste_id = new Set(puste.map((o) => o.id));
+    w1.obszary = w1.obszary.filter((o) => !puste_id.has(o.id));
+    if (!w1.profilNieostry) {
+      const przeliczone = trzyDrogi(
+        w1.obszary.filter((o) => o.id !== 27),
+        baza.obszary,
+      );
+      w1.drogi = przeliczone.drogi;
+      w1.podobienstwa = przeliczone.podobienstwa;
+      // Flagi z pierwszego przebiegu dotyczyly innego zestawu drog, wiec te,
+      // ktore mowia o relacjach miedzy drogami, liczymy od nowa.
+      const oDrogach = new Set([
+        "droga_b_slabsza_od_a",
+        "ten_sam_swiat_a_b",
+        "nawet_alternatywa_blisko",
+        "droga_c_jako_inny_poziom",
+        "trzy_drogi_z_jednego_swiata",
+      ]);
+      w1.flagi = [...w1.flagi.filter((f) => !oDrogach.has(f)), ...przeliczone.flagi];
+    }
+  }
 
   // Kazda droga dostaje dwa do czterech konkretnych zawodow ze swojego obszaru.
   // Bez progu pokazania: droga bez ani jednego zawodu jest bezuzyteczna,

@@ -166,7 +166,7 @@ function podobienstwo(obszary: Obszar[], a: number, b: number): number {
   return o?.sasiedztwo[String(b)] ?? 0;
 }
 
-function trzyDrogi(
+export function trzyDrogi(
   ranking: WynikObszaru[],
   obszary: Obszar[],
 ): { drogi: Droga[]; podobienstwa: WynikWarstwy1["podobienstwa"]; flagi: string[] } {

@@ -475,3 +475,51 @@ describe("profil nieostry: druga reguła, licząca rozstęp czołówki", () => {
     expect(JSON.stringify(r)).not.toMatch(/nic nie pasuje|nie nadajesz się|brak dopasowania/i);
   });
 });
+
+describe("obszar, z którego weto usunęło wszystkie zawody", () => {
+  /** Weta do profilu kontrolnego, razem z odpowiedzią NIE na te pozycje. */
+  function zWetami(w: WynikiModulow, weta: string[]): WynikiModulow {
+    return { ...w, g: { ...w.g, ...Object.fromEntries(weta.map((f) => [f, 0])) }, weta };
+  }
+
+  function medycyna(w: WynikiModulow) {
+    const r = uruchomSilnik(w, baza);
+    const id = baza.obszary.find((o) => o.nazwa.startsWith("Medycyna"))!.id;
+    return {
+      zawodow: r.warstwa2.wszystkie.filter((z) => z.obszar === id).length,
+      wRankingu: r.warstwa1.obszary.some((o) => o.id === id),
+      usuniety: r.warstwa1.usuniete.find((o) => o.id === id),
+      drogi: r.warstwa1.drogi.map((d) => d.obszar),
+    };
+  }
+
+  it("pojedyncze weto usuwa zawody, ale zostawia obszar", () => {
+    // F34 to kontakt ze śmiercią. Odpada lekarz, pielęgniarka, ratownik,
+    // położna — zostaje farmaceuta, technik radiolog i opiekun medyczny.
+    const r = medycyna(zWetami(RZEMIESLNIK, ["F34"]));
+    expect(r.zawodow).toBeGreaterThan(0);
+    expect(r.zawodow).toBeLessThan(medycyna(RZEMIESLNIK).zawodow);
+    expect(r.wRankingu, "obszar zostaje: medycyna to nie tylko lekarz").toBe(true);
+  });
+
+  it("gdy nie zostaje ani jeden zawód, obszar znika z rankingu", () => {
+    const r = medycyna(zWetami(RZEMIESLNIK, ["F34", "F02", "F31"]));
+    expect(r.zawodow).toBe(0);
+    expect(r.wRankingu).toBe(false);
+    expect(r.usuniety?.powod).toBe("weto");
+    expect(r.usuniety?.ciagniecie).toBeGreaterThan(0);
+  });
+
+  it("pusty obszar nie zostaje żadną z trzech dróg", () => {
+    const id = baza.obszary.find((o) => o.nazwa.startsWith("Medycyna"))!.id;
+    const r = medycyna(zWetami(RZEMIESLNIK, ["F34", "F02", "F31"]));
+    expect(r.drogi).not.toContain(id);
+    // Trzy drogi nadal powstają, tylko z innych obszarów.
+    expect(r.drogi.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("bez wet nic nie znika", () => {
+    const r = uruchomSilnik(RZEMIESLNIK, baza);
+    expect(r.warstwa1.usuniete.filter((o) => o.powod === "brak_zawodow")).toEqual([]);
+  });
+});

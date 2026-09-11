@@ -133,7 +133,7 @@ export interface WynikObszaru {
 export interface UsunietyObszar {
   id: number;
   nazwa: string;
-  powod: "weto" | "brak_poziomu";
+  powod: "weto" | "brak_poziomu" | "brak_zawodow";
   filtr?: string;
   wymaganie?: number;
   /** Samo ciagniecie z A1, bez wykonalnosci. Do sekcji rozjazdow w panelu. */
