@@ -17,6 +17,7 @@ import {
   Wizja,
 } from "@/components/prowadzacy/Karta";
 import { Korekty } from "@/components/prowadzacy/Korekty";
+import { Bramy } from "@/components/pulpit/Bramy";
 
 export const dynamic = "force-dynamic";
 
@@ -29,25 +30,31 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   const s = karta.sesja;
 
   return (
-    <main className="mx-auto max-w-[86rem] px-5 py-8 sm:px-8">
-      <Link
-        href={`/prowadzacy/uczestnik/${karta.kodDostepu}`}
-        className="przejscie text-male text-atrament-slaby hover:text-atrament"
-      >
-        ← Karta uczestnika
-      </Link>
-      <h1 className="mt-3 text-naglowek-duzy font-extrabold tracking-tight leading-tight">Sesja · {karta.imie}</h1>
-      <p className="mt-1 text-male text-atrament-slaby">
-        Sześćdziesiąt minut. To jest spotkanie decyzyjne, nie kolejne spotkanie odkrywania siebie.
-      </p>
+    <main className="mx-auto flex max-w-[90rem] flex-col gap-6 px-5 py-8 sm:px-8">
+      <header className="szklo relative overflow-hidden p-7 lg:pr-[22rem]">
+        <Bramy klasa="pointer-events-none absolute -right-10 bottom-0 hidden h-[12rem] w-[19rem] opacity-60 lg:block" />
+        <Link
+          href={`/prowadzacy/uczestnik/${karta.kodDostepu}`}
+          className="przejscie inline-flex items-center gap-2 text-male text-atrament-slaby hover:text-atrament"
+        >
+          <span aria-hidden>←</span> Karta uczestnika
+        </Link>
+        <h1 className="mt-4 text-naglowek-duzy font-extrabold leading-tight tracking-tight">
+          Sesja <span aria-hidden className="text-atrament-slaby">·</span>{" "}
+          <span className="gradient-tytul">{karta.imie}</span>
+        </h1>
+        <p className="proza mt-3 max-w-czytelna">
+          Sześćdziesiąt minut. To jest spotkanie decyzyjne, nie kolejne spotkanie odkrywania siebie.
+        </p>
+      </header>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-start">
+      <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-start">
         {/* LEWA: przebieg z minutami, pytania, skrypty */}
         <div className="flex flex-col gap-4">
           <ol className="flex flex-col gap-3">
             {PRZEBIEG.map((e) => (
               <li key={e.minuty} className="szklo p-5">
-                <p className="text-drobne uppercase tracking-[0.08em] text-atrament-slaby">
+                <p className="inline-flex rounded-full border border-akcent/35 bg-akcent-tlo px-3 py-0.5 text-drobne font-semibold tracking-[0.08em] text-akcent-jasny">
                   {e.minuty} min
                 </p>
                 <h2 className="text-naglowek-maly font-bold leading-snug">{e.tytul}</h2>
@@ -103,7 +110,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
       </div>
 
       {/* NA DOLE: podsumowanie, słowami uczestnika */}
-      <section className="mt-10 szklo p-6">
+      <section className="szklo p-6 sm:p-8">
         <Naglowek>Podsumowanie rozmowy — sekcja 18 raportu</Naglowek>
         <p className="text-male text-atrament-sciszony">
           Pisane słowami uczestnika, nie Twoimi. Bez własnej oceny: raport jest jego własnością
@@ -133,7 +140,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
                 defaultValue={s?.kroki[i - 1] ?? ""}
                 aria-label={`Krok ${i}`}
                 placeholder={i === 1 ? "np. do 30 września napiszę do dwóch osób z trzema pytaniami" : ""}
-                className="min-h-11 rounded-lg border border-linia-mocna bg-szklo px-3 text-male"
+                className="pole min-h-12"
               />
             ))}
           </fieldset>
@@ -148,7 +155,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
 
           <button
             type="submit"
-            className="przejscie mt-1 min-h-11 w-fit rounded-lg bg-akcent px-6 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny"
+            className="przejscie poswiata mt-2 min-h-12 w-fit rounded-xl bg-gradient-to-r from-akcent-ciemny to-akcent px-7 text-male font-bold text-na-akcencie hover:brightness-110"
           >
             Zapisz podsumowanie
           </button>
@@ -184,7 +191,7 @@ function Pole({
         name={id}
         rows={duze ? 3 : 2}
         defaultValue={wartosc ?? ""}
-        className="rounded-lg border border-linia-mocna bg-szklo px-3 py-2 text-male leading-relaxed"
+        className="pole leading-relaxed"
       />
     </div>
   );

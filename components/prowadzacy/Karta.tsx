@@ -3,7 +3,7 @@ import type { KartaUczestnika } from "@/lib/prowadzacy/dane";
 
 export function Naglowek({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="mb-2 text-drobne uppercase tracking-[0.08em] text-atrament-slaby">{children}</h2>
+    <h2 className="mb-2.5 text-drobne uppercase tracking-[0.14em] text-atrament-slaby">{children}</h2>
   );
 }
 
@@ -70,7 +70,7 @@ export function TrzyDrogiPanel({ karta }: { karta: KartaUczestnika }) {
  */
 export function Rozjazdy({ rozjazdy }: { rozjazdy: Rozjazd[] }) {
   return (
-    <section className="szklo szklo-akcent p-5">
+    <section className="szklo szklo-akcent p-6">
       <Naglowek>Rozjazdy — po to jest ta sesja</Naglowek>
       {rozjazdy.length === 0 ? (
         <p className="text-tresc leading-relaxed">

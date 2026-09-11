@@ -60,7 +60,7 @@ export function Korekty({ karta }: { karta: KartaUczestnika }) {
         <select
           id="typ"
           name="typ"
-          className="min-h-11 rounded-lg border border-linia-mocna bg-szklo px-3 text-male"
+          className="pole min-h-12"
           defaultValue="dopisany_zawod"
         >
           <option value="dopisany_zawod">Dopisz zawód spoza wyniku</option>
@@ -77,7 +77,7 @@ export function Korekty({ karta }: { karta: KartaUczestnika }) {
           name="wartosc"
           list="zawody-lista"
           placeholder="kod zawodu albo BAC"
-          className="min-h-11 rounded-lg border border-linia-mocna bg-szklo px-3 text-male"
+          className="pole min-h-12"
         />
         <datalist id="zawody-lista">
           {karta.wszystkieZawody.map((z) => (
@@ -93,12 +93,12 @@ export function Korekty({ karta }: { karta: KartaUczestnika }) {
         <input
           id="uzasadnienie"
           name="uzasadnienie"
-          className="min-h-11 rounded-lg border border-linia-mocna bg-szklo px-3 text-male"
+          className="pole min-h-12"
         />
 
         <button
           type="submit"
-          className="przejscie mt-1 min-h-11 w-fit rounded-lg bg-akcent px-5 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny"
+          className="przejscie mt-2 min-h-12 w-fit rounded-xl border border-akcent/45 bg-akcent-tlo px-6 text-male font-bold text-akcent-jasny hover:border-akcent"
         >
           Zapisz korektę
         </button>

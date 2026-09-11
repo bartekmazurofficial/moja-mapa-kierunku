@@ -28,26 +28,38 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   if (!karta) notFound();
 
   return (
-    <main className="mx-auto max-w-artykul px-5 py-10 sm:px-8">
-      <Link
-        href={`/prowadzacy/grupa/${karta.grupa.kod}`}
-        className="przejscie text-male text-atrament-slaby hover:text-atrament"
-      >
-        ← {karta.grupa.nazwa}
-      </Link>
-
-      <div className="mt-3 flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="text-naglowek-duzy font-extrabold tracking-tight leading-tight">{karta.imie}</h1>
+    <main className="mx-auto flex max-w-[52rem] flex-col gap-5 px-5 py-8 sm:px-8">
+      <header className="szklo relative overflow-hidden p-7">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-akcent/20 blur-3xl"
+        />
         <Link
-          href={`/prowadzacy/sesja/${karta.kodDostepu}`}
-          className="przejscie min-h-11 rounded-lg bg-akcent px-5 py-2.5 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny"
+          href={`/prowadzacy/grupa/${karta.grupa.kod}`}
+          className="przejscie inline-flex items-center gap-2 text-male text-atrament-slaby hover:text-atrament"
         >
-          Ekran sesji
+          <span aria-hidden>←</span> {karta.grupa.nazwa}
         </Link>
-      </div>
-      {karta.etap ? <p className="mt-1 text-male text-atrament-slaby">{karta.etap}</p> : null}
 
-      <div className="mt-8 flex flex-col gap-4">
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h1 className="text-naglowek-duzy font-extrabold leading-tight tracking-tight">
+              <span className="gradient-tytul">{karta.imie}</span>
+            </h1>
+            {karta.etap ? (
+              <p className="mt-1.5 text-male text-atrament-slaby">{karta.etap}</p>
+            ) : null}
+          </div>
+          <Link
+            href={`/prowadzacy/sesja/${karta.kodDostepu}`}
+            className="przejscie poswiata min-h-12 rounded-xl bg-gradient-to-r from-akcent-ciemny to-akcent px-6 py-3 text-male font-bold text-na-akcencie hover:brightness-110"
+          >
+            Ekran sesji <span aria-hidden>→</span>
+          </Link>
+        </div>
+      </header>
+
+      <div className="flex flex-col gap-4">
         <KtoToJest karta={karta} />
         <TrzyDrogiPanel karta={karta} />
         <Rozjazdy rozjazdy={karta.rozjazdy} />
