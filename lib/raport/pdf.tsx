@@ -99,8 +99,15 @@ function Punkty({ pozycje }: { pozycje: string[] }) {
 function Sekcja({ id, children }: { id: string; children: React.ReactNode }) {
   const def = SEKCJE_PO_ID.get(id);
   return (
-    <View style={s.sekcja} wrap={false}>
-      <Text style={s.naglowekSekcji}>{def?.tytul ?? id}</Text>
+    // Sekcja musi moc sie lamac miedzy stronami. Wczesniej stalo tu
+    // `wrap={false}` i dokument przestawal sie renderowac w ogole, gdy sekcja
+    // urosla ponad wysokosc strony: „Node of type VIEW can't wrap between pages".
+    // Naglowek trzyma sie tresci przez minPresenceAhead, zeby nie zostawal sam
+    // na dole strony.
+    <View style={s.sekcja}>
+      <Text style={s.naglowekSekcji} minPresenceAhead={48}>
+        {def?.tytul ?? id}
+      </Text>
       {children}
     </View>
   );

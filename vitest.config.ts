@@ -12,4 +12,7 @@ export default defineConfig({
   resolve: {
     alias: { "@": fileURLToPath(new URL("./", import.meta.url)) },
   },
+  // tsconfig ma jsx: "preserve", bo JSX kompiluje Next. Vitest musi dostac
+  // wlasne ustawienie, zeby dalo sie testowac eksport PDF z lib/raport/pdf.tsx.
+  oxc: { jsx: { runtime: "automatic" } },
 });
