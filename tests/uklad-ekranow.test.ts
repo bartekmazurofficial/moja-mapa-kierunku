@@ -28,9 +28,10 @@ describe("filtry rzeczywistości", () => {
     expect(zPostepem[0].postep!.slowo).toBe("warunków");
   });
 
-  it("ekran warunku sam przechodzi dalej po odpowiedzi", () => {
+  it("na ekranie warunku jest jedna decyzja i nic poza nią", () => {
     for (const e of czesc.ekrany.filter((x) => x.typ === "pozycje")) {
-      expect(e.autoDalej, e.klucz).toBe(true);
+      expect(e.pozycje, e.klucz).toHaveLength(1);
+      expect(e.pozycje![0].typ, e.klucz).toBe("trzystopniowa");
     }
   });
 

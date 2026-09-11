@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Pozycja } from "./Pozycja";
+import { Baner } from "./Ikona";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import type { CzescModulu, Ekran } from "@/lib/moduly/typy";
@@ -111,6 +112,20 @@ export function Runner({
     wejscieNaEkran.current = Date.now();
   }, [indeks]);
 
+  // Enter przechodzi dalej. Przy sześćdziesięciu sześciu parach A3 jedno
+  // wciśnięcie klawisza zamiast sięgania po przycisk robi realną różnicę.
+  useEffect(() => {
+    const naKlawisz = (e: KeyboardEvent) => {
+      if (e.key !== "Enter" || e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return;
+      const cel = e.target as HTMLElement | null;
+      // W polu tekstowym Enter robi nowy wiersz, a na przycisku klika.
+      if (cel && ["TEXTAREA", "INPUT", "BUTTON", "A", "SUMMARY"].includes(cel.tagName)) return;
+      void dalejRef.current?.();
+    };
+    window.addEventListener("keydown", naKlawisz);
+    return () => window.removeEventListener("keydown", naKlawisz);
+  }, []);
+
   const zapisz = useCallback(
     (pozycjaId: string, wartosc: unknown, natychmiast: boolean) => {
       const istniejacy = odroczone.current.get(pozycjaId);
@@ -129,17 +144,6 @@ export function Runner({
   // Pusta strona wyglada jak zawieszenie aplikacji i nie da sie z niej wyjsc.
   const bezpiecznyIndeks = Math.min(indeks, Math.max(0, widoczne.length - 1));
   const ekran = widoczne[bezpiecznyIndeks];
-
-  /**
-   * Ostatnia odpowiedź na ekranie z automatycznym przejściem. Krótka pauza
-   * jest po to, żeby uczestnik zobaczył, że jego wybór się zapisał; dłuższa
-   * wygląda jak zawieszenie aplikacji.
-   */
-  const domknij = useCallback(() => {
-    ustawWychodzi(true);
-    setTimeout(() => void dalejRef.current?.(), 150);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const zmien = useCallback(
     (pozycjaId: string, wartosc: unknown, tekstowa: boolean) => {
@@ -201,8 +205,13 @@ export function Runner({
     widocznePozycje.length >= 6 &&
     widocznePozycje.every((p) => ["skala5", "kotwica", "dowody"].includes(p.typ));
   const ostatni = bezpiecznyIndeks === widoczne.length - 1;
-  // Ekran z jedna pozycja jest optycznie wysrodkowany: nic wiecej na nim nie ma.
-  const jednaPozycja = ekran.typ === "pozycje" && (ekran.pozycje?.length ?? 0) === 1 && Boolean(ekran.autoDalej);
+  // Ekran z jedna decyzja jest optycznie wysrodkowany: nic wiecej na nim nie ma.
+  // Lista wyborow (A0) tak nie dziala, bo tam naglowek jest pytaniem.
+  const JEDNA_DECYZJA = ["para", "trzystopniowa", "ranking4"];
+  const jednaPozycja =
+    ekran.typ === "pozycje" &&
+    widocznePozycje.length === 1 &&
+    JEDNA_DECYZJA.includes(widocznePozycje[0].typ);
 
   const postepCzesci = czescLacznie > 1 ? (czescNumer - 1) / czescLacznie : 0;
   const postepEkranu = ekran.postep
@@ -333,6 +342,12 @@ export function Runner({
                 {ekran.podpis}
               </p>
             ) : null}
+            {/* Ilustracja ekranu: jeden obraz na kategorię, nie na pozycję. */}
+            {ekran.ikona ? (
+              <div className="mx-auto mb-5 w-full max-w-lg">
+                <Baner klucz={ekran.ikona} wysokosc={172} aktywna />
+              </div>
+            ) : null}
 
             <div className={siatka ? "mt-1 grid gap-3 sm:grid-cols-2" : "mt-1 flex flex-col gap-6"}>
               {widocznePozycje.map((p, i, lista) => (
@@ -353,7 +368,6 @@ export function Runner({
                     wSiatce={siatka}
                     wartosc={odpowiedzi[p.id]}
                     naZmiane={(v) => zmien(p.id, v, p.typ === "tekst" || p.typ === "kilka_tekstow")}
-                    naDomkniecie={ekran.autoDalej && !ostatni ? () => domknij() : undefined}
                   />
                 </div>
               ))}
@@ -393,29 +407,23 @@ export function Runner({
           Wstecz
         </button>
 
-        {!ekran.autoDalej || ostatni ? (
-          <button
-            type="button"
-            onClick={() => void dalej()}
-            disabled={!kompletny || konczy}
-            className={`przejscie min-h-12 rounded-xl px-8 text-tresc font-bold ${
-              !kompletny || konczy
-                ? "border border-linia text-atrament-slaby"
-                : "poswiata bg-gradient-to-r from-akcent-ciemny to-akcent text-na-akcencie hover:brightness-110"
-            }`}
-          >
-            {konczy ? "Zapisuję…" : (ekran.przyciskDalej ?? "Dalej")}
-            {konczy ? null : (
-              <span aria-hidden className="ml-2">
-                →
-              </span>
-            )}
-          </button>
-        ) : (
-          <p className="text-drobne text-atrament-slaby">
-            {kompletny ? "Zapisano" : "Wybierz, żeby przejść dalej"}
-          </p>
-        )}
+        <button
+          type="button"
+          onClick={() => void dalej()}
+          disabled={!kompletny || konczy}
+          className={`przejscie min-h-12 rounded-xl px-8 text-tresc font-bold ${
+            !kompletny || konczy
+              ? "border border-linia text-atrament-slaby"
+              : "poswiata bg-gradient-to-r from-akcent-ciemny to-akcent text-na-akcencie hover:brightness-110"
+          }`}
+        >
+          {konczy ? "Zapisuję…" : (ekran.przyciskDalej ?? "Dalej")}
+          {konczy ? null : (
+            <span aria-hidden className="ml-2">
+              →
+            </span>
+          )}
+        </button>
       </footer>
     </div>
   );

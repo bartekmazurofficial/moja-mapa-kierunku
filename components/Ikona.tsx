@@ -1,5 +1,5 @@
 import { GLIFY, odcien, type KluczGlifu } from "@/lib/ui/glify";
-import { obrazKafla } from "@/lib/ui/obrazy";
+import { obrazDuzy, obrazKafla } from "@/lib/ui/obrazy";
 
 /**
  * Znak kategorii. Ilustracja, jeśli dla kategorii jest plik; w przeciwnym razie
@@ -69,6 +69,78 @@ export function Ikona({
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {sciezki.map((d, i) => (
+          <path key={i} d={d} />
+        ))}
+      </svg>
+    </span>
+  );
+}
+
+/**
+ * Ilustracja na całą szerokość kafla. Kwadratowy znaczek przy tekście gubi
+ * wszystko, co na obrazie jest: postać, światło, scenę. Na planszy wyników
+ * jest miejsce, żeby obraz był obrazem, a nie ikoną.
+ *
+ * Kategoria bez pliku dostaje ten sam pasek z rysowanym glifem, żeby siatka
+ * kafli nie rozjeżdżała się na dwa różne produkty.
+ */
+export function Baner({
+  klucz,
+  wysokosc = 132,
+  aktywna,
+}: {
+  klucz: KluczGlifu;
+  wysokosc?: number;
+  aktywna?: boolean;
+}) {
+  const h = odcien(klucz);
+  const obraz = obrazDuzy(klucz) ?? obrazKafla(klucz);
+
+  if (obraz) {
+    return (
+      <span
+        aria-hidden
+        className="przejscie relative block w-full overflow-hidden rounded-lg"
+        style={{ height: wysokosc }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={obraz}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover"
+          style={{ opacity: aktywna ? 1 : 0.78 }}
+        />
+      </span>
+    );
+  }
+
+  const sciezki = GLIFY[klucz];
+  if (!sciezki) return null;
+
+  return (
+    <span
+      aria-hidden
+      className="przejscie flex w-full items-center justify-center rounded-lg border"
+      style={{
+        height: wysokosc,
+        borderColor: `hsl(${h} 70% 72% / ${aktywna ? 0.45 : 0.18})`,
+        background: `linear-gradient(150deg, hsl(${h} 62% 62% / ${aktywna ? 0.24 : 0.12}), hsl(${h + 18} 58% 46% / 0.06))`,
+        color: `hsl(${h} 88% ${aktywna ? 86 : 78}%)`,
+      }}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width={wysokosc * 0.42}
+        height={wysokosc * 0.42}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
         strokeLinecap="round"
         strokeLinejoin="round"
       >

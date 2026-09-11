@@ -65,9 +65,10 @@ sekcja(
 );
 
 sekcja(
-  "A3 · 13 osi stylu działania",
+  "A3 · 13 osi stylu działania · DOSTARCZONE, są w aplikacji",
   "Oś ma dwa bieguny, ale grafika jest jedna na oś: ilustruje wymiar, nie stronę. " +
-    "Pokazywana na planszy wyników przy odpowiedzi uczestnika.",
+    "Jeden obraz pracuje na pięciu parach tej samej osi, nad zdaniami do wyboru, " +
+    "i wraca na planszy wyników.",
   WYMIARY_A3.map((x) => [
     `a3-${x.kod}`,
     `a3-${x.kod}.png`,
@@ -129,8 +130,13 @@ w("jedna grafika pracuje średnio na sześciu ekranach, a w jednym zestawie");
 w("cztery pozycje pochodzą z czterech różnych kategorii, więc żadne dwa kafle");
 w("obok siebie nie są takie same.");
 w();
-w("A1 jest już zrobione: dwadzieścia cztery obrazy siedzą w aplikacji.");
-w("Następne w kolejności zysku to **A2, trzydzieści kompetencji**: to drugi");
-w("najdłuższy moduł, 180 pozycji, i jedyny, który dalej wygląda na rysowany.");
+w("Zrobione: **A1** (24 obrazy) i **A3** (13 obrazów). Razem pracują");
+w("na 144 pozycjach zestawów i 65 parach stylu działania.");
+w();
+w("Następne w kolejności zysku: **A2, trzydzieści kompetencji**. To drugi");
+w("najdłuższy moduł, 180 pozycji, i po A1 jedyny, w którym uczestnik ogląda");
+w("kafle przez kwadrans z okładem. Potem **A4** (12 wartości) i **M1**");
+w("(7 obszarów wizji życia), a A5 i A0 na końcu, bo tam obraz jest dodatkiem,");
+w("nie treścią.");
 
 console.log(linie.join("\n"));

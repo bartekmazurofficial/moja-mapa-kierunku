@@ -13,7 +13,7 @@
 
 import { useId } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
-import { Ikona } from "@/components/Ikona";
+import { Baner, Ikona } from "@/components/Ikona";
 import { nadajNumer, wlascicieleNumerow } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
@@ -115,9 +115,9 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
                 numer ? "border-akcent bg-akcent-tlo" : "border-linia"
               }`}
             >
-              <div className="flex flex-1 items-center gap-3.5 sm:flex-col sm:items-center sm:text-center">
-                {o.ikona ? <Ikona klucz={o.ikona} rozmiar={64} aktywna={Boolean(numer)} /> : null}
-                <span className="flex-1 text-tresc leading-snug sm:mt-2.5 sm:flex-none">
+              <div className="flex flex-1 flex-col">
+                {o.ikona ? <Baner klucz={o.ikona} wysokosc={104} aktywna={Boolean(numer)} /> : null}
+                <span className="mt-2.5 flex-1 text-center text-tresc leading-snug">
                   {o.etykieta}
                 </span>
               </div>

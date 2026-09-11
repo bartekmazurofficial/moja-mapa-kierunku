@@ -136,7 +136,6 @@ function czescA1A(plan: PlanModulu): CzescModulu {
         },
       ],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "zestawów" },
-      autoDalej: true,
     });
   });
 
@@ -210,7 +209,6 @@ function czescA2A(plan: PlanModulu): CzescModulu {
         },
       ],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "zestawów" },
-      autoDalej: true,
     });
     // Przerwa obowiazkowa po 23 blokach: bez niej jakosc drugiej polowy spada.
     if (i === 22) {
@@ -267,11 +265,12 @@ function czescA3A(plan: PlanModulu): CzescModulu {
       klucz: `A3_${id}`,
       typ: "pozycje",
       polecenie: INSTRUKCJA_A3.polecenieBloku,
+      // Ilustracja osi, nie bieguna: jeden obraz na piec par tej samej osi.
+      ikona: `a3-${para.wymiar}`,
       pozycje: [
         { id, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b },
       ],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
-      autoDalej: true,
     });
   });
   return { kod: "A", nazwa: "Pary", ekrany };
@@ -324,7 +323,6 @@ function czescA4A(plan: PlanModulu): CzescModulu {
         { id: `para_${para.nr}`, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b },
       ],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
-      autoDalej: true,
     });
   });
   return { kod: "A", nazwa: "Pary wartości", ekrany };
@@ -423,7 +421,6 @@ function czescA5A(): CzescModulu {
         },
       ],
       postep: { nr: i + 1, z: FILTRY_A5.length, slowo: "warunków" },
-      autoDalej: true,
     });
   });
   return { kod: "A", nazwa: "Warunki pracy", ekrany };
@@ -504,7 +501,6 @@ function czescM1A(plan: PlanModulu): CzescModulu {
       polecenie: INSTRUKCJA_M1.polecenieBloku,
       pozycje: [{ id, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b }],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
-      autoDalej: true,
     });
   });
   return { kod: "A", nazwa: "Dwanaście kompromisów", ekrany };

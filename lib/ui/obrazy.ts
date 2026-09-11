@@ -15,9 +15,12 @@
  */
 
 /** Klucze, dla których leży plik. Ręczna lista: build ma nie chodzić po dysku. */
-const Z_OBRAZEM = new Set<string>(
-  Array.from({ length: 24 }, (_, i) => `a1-${i + 1}`),
-);
+const Z_OBRAZEM = new Set<string>([
+  ...Array.from({ length: 24 }, (_, i) => `a1-${i + 1}`),
+  ...["INI", "STR", "TEM", "SAM", "GLE", "RYZ", "DEC", "KON", "NOW", "NAP", "RYT", "OTO", "EFE"].map(
+    (kod) => `a3-${kod}`,
+  ),
+]);
 
 export function maObraz(klucz: string): boolean {
   return Z_OBRAZEM.has(klucz);
@@ -26,13 +29,13 @@ export function maObraz(klucz: string): boolean {
 /** Adres kafla (256 px). Null, gdy kategoria nie ma jeszcze ilustracji. */
 export function obrazKafla(klucz: string): string | null {
   if (!maObraz(klucz)) return null;
-  const [modul, numer] = klucz.split("-");
-  return `/grafika/${modul}/${numer}.jpg`;
+  const [modul, ...reszta] = klucz.split("-");
+  return `/grafika/${modul}/${reszta.join("-")}.jpg`;
 }
 
 /** Adres większej wersji (768 px), do nagłówków i kart obszaru. */
 export function obrazDuzy(klucz: string): string | null {
   if (!maObraz(klucz)) return null;
-  const [modul, numer] = klucz.split("-");
-  return `/grafika/${modul}/${numer}-duzy.jpg`;
+  const [modul, ...reszta] = klucz.split("-");
+  return `/grafika/${modul}/${reszta.join("-")}-duzy.jpg`;
 }

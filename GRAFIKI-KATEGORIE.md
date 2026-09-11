@@ -97,9 +97,9 @@ Pokazywane przy 180 pozycjach modułu „W czym mogę być dobry” i na planszy
 
 ---
 
-## A3 · 13 osi stylu działania
+## A3 · 13 osi stylu działania · DOSTARCZONE, są w aplikacji
 
-Oś ma dwa bieguny, ale grafika jest jedna na oś: ilustruje wymiar, nie stronę. Pokazywana na planszy wyników przy odpowiedzi uczestnika.
+Oś ma dwa bieguny, ale grafika jest jedna na oś: ilustruje wymiar, nie stronę. Jeden obraz pracuje na pięciu parach tej samej osi, nad zdaniami do wyboru, i wraca na planszy wyników.
 
 | Klucz | Plik | Ilustruje |
 |---|---|---|
@@ -195,6 +195,11 @@ jedna grafika pracuje średnio na sześciu ekranach, a w jednym zestawie
 cztery pozycje pochodzą z czterech różnych kategorii, więc żadne dwa kafle
 obok siebie nie są takie same.
 
-A1 jest już zrobione: dwadzieścia cztery obrazy siedzą w aplikacji.
-Następne w kolejności zysku to **A2, trzydzieści kompetencji**: to drugi
-najdłuższy moduł, 180 pozycji, i jedyny, który dalej wygląda na rysowany.
+Zrobione: **A1** (24 obrazy) i **A3** (13 obrazów). Razem pracują
+na 144 pozycjach zestawów i 65 parach stylu działania.
+
+Następne w kolejności zysku: **A2, trzydzieści kompetencji**. To drugi
+najdłuższy moduł, 180 pozycji, i po A1 jedyny, w którym uczestnik ogląda
+kafle przez kwadrans z okładem. Potem **A4** (12 wartości) i **M1**
+(7 obszarów wizji życia), a A5 i A0 na końcu, bo tam obraz jest dodatkiem,
+nie treścią.

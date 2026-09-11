@@ -1260,3 +1260,66 @@ były już w kodzie, używał ich raport; plansza ich nie wołała.
 Przy okazji poprawiona jednostka postępu. „3 z 36 zestaw” nie jest
 polszczyzną, po liczebniku z przyimkiem „z” idzie dopełniacz: „3 z 36
 zestawów”, „1 z 43 warunków”.
+
+### D66. Ilustracja jako obraz, nie jako ikonka
+
+Kwadracik 52 px przy tekście gubi wszystko, co na obrazie jest: postać,
+światło, scenę. Grafiki są malarskie i mają co pokazać, więc dostają miejsce.
+
+Trzy miejsca, trzy rozmiary. Kafel zestawu w A1 i A2: pasek 104 px na całą
+szerokość kafla, nad tekstem. Plansza wyników: pasek 132 px na górze kafla,
+wersja 768 px. Ekran pary w A3: 172 px nad dwoma zdaniami do wyboru, jeden
+obraz osi pracuje na pięciu parach.
+
+Kategoria bez pliku dostaje ten sam pasek z rysowanym glifem, żeby siatka
+kafli nie rozjeżdżała się na dwa różne produkty.
+
+### D67. Trzynaście ilustracji A3
+
+Osie stylu działania. Klucz to kod osi (`a3-INI`), nie numer, więc
+`scripts/grafiki.ts` przyjmuje teraz dowolny klucz, nie tylko liczbę.
+Przelicza tak samo: 256 px na kafel, 768 px na nagłówek, razem 2,5 MB
+zamiast 28 MB oryginałów.
+
+Obraz ilustruje **oś, nie biegun**. To jest świadome: gdyby każdy biegun miał
+własny obraz, uczestnik wybierałby ładniejszy obrazek zamiast bliższego zdania.
+
+### D68. Redakcja pozycji: z abstrakcji na obraz
+
+Zgłoszenie z przeglądu: „w zestawie jedna pozycja jest dobra, trzy słabe”.
+Po przejrzeniu wszystkich 324 pozycji A1 i A2 zgadzam się co do diagnozy,
+choć nie co do proporcji. Słabe były te, których nie da się zobaczyć oczami.
+
+Poprawionych **40 pozycji**: 32 w A1, 8 w A2. Przykłady:
+
+| Było | Jest |
+|---|---|
+| Dowiedzieć się, dlaczego zjawisko zachodzi właśnie tak | Dojść do tego, dlaczego coś dzieje się tak, a nie inaczej |
+| Zebrać ludzi i wyznaczyć kierunek działania | Zebrać ekipę i powiedzieć, w którą stronę idziemy |
+| Zadbać o to, żeby ktoś czuł się bezpiecznie | Sprawić, żeby ktoś przestał się bać |
+| Nadać nazwy i kategorie chaotycznemu zbiorowi | Ponazywać i pogrupować rzeczy, które leżą bez ładu |
+| Podjąć decyzję, mimo że brakuje pewnych informacji | Zdecydować, choć nie wiesz jeszcze wszystkiego |
+
+**Kody, obszary i rodziny nietknięte.** Zmieniona wyłącznie treść wyświetlana,
+więc macierze i silnik nie wiedzą o niczym.
+
+Test pilnuje czterech rzeczy, które w tej redakcji łatwo zepsuć: brak
+powtórzeń w całym programie, długość od 18 do 70 znaków (żadnych ogryzków
+i żadnych akapitów), bezokolicznik na początku i brak słów z urzędu
+(`zjawisko`, `przedsięwzięcie`, `realizować`, `aspekt`, `kwestia`).
+
+### D69. Koniec automatycznego przejścia
+
+Ekran przechodził sam, gdy odpowiedź była komplet. Uczestnik klikał czwarty
+numer i widok uciekał, zanim zdążył spojrzeć, co ustawił.
+
+Teraz każdy ekran czeka na **Dalej**. Pole `autoDalej` usunięte z modelu,
+nie tylko wyłączone, bo półśrodek wróciłby przy pierwszej okazji.
+
+**Koszt jest realny i podaję go wprost:** jedno kliknięcie więcej na ekran,
+czyli około 36 w A1, 45 w A2, 65 w A3 i 43 w A5. Dlatego **Enter też
+przechodzi dalej** — kto wypełnia z klawiatury, nie sięga po przycisk.
+
+Jeśli po pilotażu okaże się, że to za dużo, wracamy do automatu wyłącznie
+tam, gdzie ekran ma jedną decyzję (pary A3, warunki A5), a zestawy z numerami
+zostają na przycisku. Zapisuję to jako rzecz do obserwacji, nie do zmiany teraz.

@@ -6,8 +6,10 @@
  * kilkadziesiat megabajtow na telefonie w szkole. Do repozytorium trafiaja
  * dwie wersje: 256 px na kafel i 768 px na naglowek.
  *
- * Nazwy plikow zrodlowych: `<modul>-<numer>.png`. Podwojne rozszerzenie
- * (`a1-1.png.png`) tez przyjmujemy, bo tak potrafi zapisac przegladarka.
+ * Nazwy plikow zrodlowych: `<modul>-<klucz>.png`, gdzie klucz jest taki sam
+ * jak w aplikacji: numer w A1 i A2, kod osi w A3 (`a3-INI`), kod wartosci
+ * w A4. Podwojne rozszerzenie (`a1-1.png.png`) tez przyjmujemy, bo tak
+ * potrafi zapisac przegladarka.
  *
  * Uzycie:
  *   npx tsx scripts/grafiki.ts <katalog ze zrodlami> [modul]
@@ -39,19 +41,19 @@ function main() {
   let zrobione = 0;
 
   for (const plik of pliki) {
-    const m = plik.match(new RegExp(`^${modul}-(\\d+)\\.png`, "i"));
+    const m = plik.match(new RegExp(`^${modul}-([A-Za-z0-9_]+)\\.png`, "i"));
     if (!m) {
-      console.log(`pomijam ${plik}: nazwa nie pasuje do ${modul}-<numer>.png`);
+      console.log(`pomijam ${plik}: nazwa nie pasuje do ${modul}-<klucz>.png`);
       continue;
     }
-    const numer = Number(m[1]);
+    const klucz = m[1];
     for (const r of ROZMIARY) {
       execFileSync("sips", [
         "-Z", String(r.px),
         "-s", "format", "jpeg",
         "-s", "formatOptions", String(r.jakosc),
         path.join(zrodla, plik),
-        "--out", path.join(cel, `${numer}${r.przyrostek}.jpg`),
+        "--out", path.join(cel, `${klucz}${r.przyrostek}.jpg`),
       ], { stdio: "ignore" });
     }
     zrobione += 1;
@@ -61,7 +63,7 @@ function main() {
     .readdirSync(cel)
     .reduce((s, f) => s + fs.statSync(path.join(cel, f)).size, 0);
   console.log(`${zrobione} ilustracji modułu ${modul}, razem ${(waga / 1024 / 1024).toFixed(1)} MB`);
-  console.log(`kafle: ${cel}/<numer>.jpg, nagłówki: ${cel}/<numer>-duzy.jpg`);
+  console.log(`kafle: ${cel}/<klucz>.jpg, nagłówki: ${cel}/<klucz>-duzy.jpg`);
 }
 
 main();

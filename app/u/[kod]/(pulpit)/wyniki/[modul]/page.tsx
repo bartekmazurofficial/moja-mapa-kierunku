@@ -4,7 +4,7 @@ import { pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly } from "@/lib/moduly/otwarcie";
 import { planszaWynikow } from "@/lib/moduly/wyniki";
 import { NAZWY_MODULOW } from "@/lib/moduly/ekrany";
-import { Ikona } from "@/components/Ikona";
+import { Baner } from "@/components/Ikona";
 import { Bramy } from "@/components/pulpit/Bramy";
 import type { KodModulu } from "@/lib/moduly/typy";
 
@@ -76,24 +76,24 @@ export default async function Strona({
                 {sekcja.kafle.map((k) => (
                   <li
                     key={k.klucz}
-                    className={`flex items-center gap-3 rounded-xl border p-3.5 ${
+                    className={`flex flex-col gap-3 rounded-xl border p-3 ${
                       k.mocne
                         ? "border-akcent/40 bg-akcent-tlo/50"
                         : "border-linia bg-tlo/40"
                     }`}
                   >
-                    {k.ikona ? <Ikona klucz={k.ikona} rozmiar={52} aktywna={k.mocne} /> : null}
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-male font-semibold leading-snug">{k.tytul}</span>
+                    {k.ikona ? <Baner klucz={k.ikona} aktywna={k.mocne} /> : null}
+                    <span className="min-w-0 flex-1 px-1 pb-1">
+                      <span className="block text-tresc font-semibold leading-snug">{k.tytul}</span>
                       <span
-                        className={`block text-male leading-snug ${
+                        className={`mt-1 block text-male leading-snug ${
                           k.mocne ? "text-akcent-jasny" : "text-atrament-sciszony"
                         }`}
                       >
                         {k.odpowiedz}
                       </span>
                       {k.podpis ? (
-                        <span className="block text-drobne text-atrament-slaby">{k.podpis}</span>
+                        <span className="mt-0.5 block text-drobne text-atrament-slaby">{k.podpis}</span>
                       ) : null}
                     </span>
                   </li>

@@ -103,8 +103,6 @@ export interface Ekran {
   skupiskaCo?: number;
   /** "blok 12 z 36". Nigdy procent: procent wywoluje pospiech. */
   postep?: { nr: number; z: number; slowo: string };
-  /** Ekran z jedna pozycja rankingowa przechodzi dalej sam po 400 ms. */
-  autoDalej?: boolean;
   przyciskDalej?: string;
   /** Ekran pokazywany tylko przy okreslonej odpowiedzi na wczesniejsza pozycje. */
   warunek?: { pozycja: string; wartosci: string[] };
