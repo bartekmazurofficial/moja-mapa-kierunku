@@ -425,6 +425,27 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
 }
 
 /** Trzy zdania przy zawodzie: co Cie ciagnie, co masz, co moze przeszkadzac. */
+/**
+ * Silnik zwraca powody jako osobne frazy z przedrostkiem („ciagnie Cie: X").
+ * Zlozone w jedno zdanie powtarzalyby przedrostek, wiec powody o tym samym
+ * przedrostku laczymy w jedna liste.
+ */
+function scalPowody(powody: string[]): string {
+  const grupy: Array<{ przedrostek: string; pozycje: string[] }> = [];
+  for (const powod of powody) {
+    const i = powod.indexOf(": ");
+    const przedrostek = i === -1 ? "" : powod.slice(0, i);
+    const tresc = i === -1 ? powod : powod.slice(i + 2);
+    const ostatnia = grupy[grupy.length - 1];
+    if (ostatnia && ostatnia.przedrostek === przedrostek) ostatnia.pozycje.push(tresc);
+    else grupy.push({ przedrostek, pozycje: [tresc] });
+  }
+  const zdanie = grupy
+    .map((g) => (g.przedrostek ? `${g.przedrostek}: ${g.pozycje.join(", ")}` : g.pozycje.join(", ")))
+    .join("; ");
+  return `${zdanie.charAt(0).toUpperCase()}${zdanie.slice(1)}.`;
+}
+
 function uzasadnienieZawodu(
   z: { pokrycie: { a1: number; a2: number; a3: number }; obszar: number; ostrzezenia: Array<{ zdanie: string }> },
   silnik: ReturnType<typeof uruchomSilnik>,
@@ -434,7 +455,7 @@ function uzasadnienieZawodu(
   const obszar = silnik.warstwa1.obszary.find((o) => o.id === z.obszar);
   const zdania: string[] = [];
   if (obszar && obszar.dlaczegoPasuje.length > 0) {
-    zdania.push(obszar.dlaczegoPasuje.slice(0, 2).join("; "));
+    zdania.push(scalPowody(obszar.dlaczegoPasuje.slice(0, 2)));
   }
   if (z.pokrycie.a2 >= 0.5) zdania.push("Kompetencje, na których ten zawód stoi, masz już mocne.");
   else zdania.push("Część kompetencji, na których ten zawód stoi, dopiero zbudujesz — to normalne w Twoim wieku.");

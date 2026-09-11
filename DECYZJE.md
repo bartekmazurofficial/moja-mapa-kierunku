@@ -526,3 +526,27 @@ całym produkcie, gdzie pada porównanie z grupą.
 `SLOWA_ZAKAZANE` sprawdza zdania, które składa aplikacja. Nie obejmuje treści
 kart, bo słowo „diagnoza" pada tam w znaczeniu technicznym — diagnostyka
 usterek w zawodach warsztatowych — i wycięcie go zepsułoby karty.
+
+### L4. Baza referencyjna nie ma polskich znaków, a jej treść trafia na ekran
+
+`kierunki_baza.csv`, `drogi_bez_studiow.csv`, `klastry.csv` i opis obszarów są
+zapisane bez znaków diakrytycznych. W fazie pierwszej to nie było widać, bo
+dane szły do silnika. W fazie czwartej ta sama treść trafia do raportu
+uczestnika, więc na ekranie stoi „Szkola branzowa: slusarz i mechanik" oraz
+całe akapity w rodzaju „Duzo teorii organizacji, malo praktyki".
+
+Skala: 14 nazw obszarów na 27, wszystkie 75 nazw kierunków, 74 opisy „co się
+tam robi", wszystkie 56 nazw dróg bez studiów, wszystkie 26 nazw klastrów,
+pytań rozstrzygających i opisów różnicy. Karty zawodów mają pełną polszczyznę,
+więc nazwy zawodów udało się odtworzyć z ich tytułów; dla pozostałych tabel nie
+ma takiego źródła.
+
+To jest przywrócenie ortografii, nie zmiana treści, ale dotyczy tekstu
+programu, więc czeka na decyzję: poprawiam pliki źródłowe i przedstawiam
+do sprawdzenia, czy dostaję poprawione pliki.
+
+### U3. Powody dopasowania sklejały się w powtórzenie
+
+Silnik zwraca powody jako osobne frazy z przedrostkiem, więc dwa powody tego
+samego rodzaju dawały „ciągnie Cię: X; ciągnie Cię: Y". Powody o tym samym
+przedrostku są teraz łączone w jedną listę.
