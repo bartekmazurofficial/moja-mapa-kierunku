@@ -117,8 +117,24 @@ describe("zasady, których nie wolno złamać", () => {
   });
 
   it("nie ma porównania z grupą", () => {
+    // Tu sprawdzamy caly raport, takze teksty cytowane z dokumentacji: regula 2
+    // nie zna wyjatku dla autora. „Lepiej niz wiekszosci" przeszlo poprzednia
+    // wersje tej listy, bo lista byla za waska.
     const tekst = JSON.stringify(raport()).toLowerCase();
-    for (const fraza of ["niż inni w grupie", "na tle grupy", "percentyl", "średnia grupy", "twoja pozycja w grupie"]) {
+    const porownania = [
+      "niż inni",
+      "niż większość",
+      "niż większości",
+      "niż pozostali",
+      "niż reszta",
+      "przeciętn",
+      "percentyl",
+      "na tle grupy",
+      "średnia grupy",
+      "twoja pozycja w grupie",
+      "w porównaniu z innymi",
+    ];
+    for (const fraza of porownania) {
       expect(tekst, fraza).not.toContain(fraza);
     }
   });

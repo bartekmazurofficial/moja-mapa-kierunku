@@ -1,7 +1,7 @@
 {
  "kierunki": {
   "zarzadzanie": {
-   "nazwa": "Zarzadzanie",
+   "nazwa": "Zarządzanie",
    "typ": "uniwersytecki",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -27,8 +27,8 @@
    ],
    "odsetek": 35,
    "gdzie": "wszedzie",
-   "robi": "Podstawy ekonomii, finansow, marketingu i prawa gospodarczego. Duzo teorii organizacji, malo praktyki.",
-   "nie_daje": "Konkretnego zawodu. Otwiera wiele drzwi, zadnych na osciez. Bez praktyk i wlasnych projektow dyplom sam w sobie nie wystarcza.",
+   "robi": "Podstawy ekonomii, finansów, marketingu i prawa gospodarczego. Dużo teorii organizacji, mało praktyki.",
+   "nie_daje": "Konkretnego zawodu. Otwiera wiele drzwi, żadnych na oścież. Bez praktyk i własnych projektów dyplom sam w sobie nie wystarcza.",
    "alternatywa_bez_studiow": false
   },
   "ekonomia": {
@@ -56,12 +56,12 @@
    ],
    "odsetek": 40,
    "gdzie": "wszedzie",
-   "robi": "Mikro i makroekonomia, statystyka, ekonometria. Duzo matematyki, wiecej niz spodziewa sie wiekszosc kandydatow.",
-   "nie_daje": "Umiejetnosci praktycznych. Excel i modelowanie finansowe trzeba opanowac samodzielnie.",
+   "robi": "Mikro i makroekonomia, statystyka, ekonometria. Dużo matematyki, więcej niż spodziewa się większość kandydatów.",
+   "nie_daje": "Umiejętności praktycznych. Excel i modelowanie finansowe trzeba opanować samodzielnie.",
    "alternatywa_bez_studiow": false
   },
   "finanse_rach": {
-   "nazwa": "Finanse i rachunkowosc",
+   "nazwa": "Finanse i rachunkowość",
    "typ": "uniwersytecki",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -86,8 +86,8 @@
    ],
    "odsetek": 60,
    "gdzie": "wszedzie",
-   "robi": "Rachunkowosc, podatki, finanse przedsiebiorstw, sprawozdawczosc. Bardzo konkretny kierunek.",
-   "nie_daje": "Uprawnien. Do glownego ksiegowego i doradcy podatkowego prowadza osobne certyfikaty i egzaminy.",
+   "robi": "Rachunkowość, podatki, finanse przedsiębiorstw, sprawozdawczość. Bardzo konkretny kierunek.",
+   "nie_daje": "Uprawnień. Do głównego księgowego i doradcy podatkowego prowadzą osobne certyfikaty i egzaminy.",
    "alternatywa_bez_studiow": false
   },
   "marketing_kier": {
@@ -115,8 +115,8 @@
    ],
    "odsetek": 45,
    "gdzie": "wszedzie",
-   "robi": "Zachowania konsumenta, badania rynku, komunikacja, podstawy zarzadzania.",
-   "nie_daje": "Umiejetnosci technicznych. Reklama platna, analityka i narzedzia to nauka wlasna albo kursy.",
+   "robi": "Zachowania konsumenta, badania rynku, komunikacja, podstawy zarządzania.",
+   "nie_daje": "Umiejętności technicznych. Reklama płatna, analityka i narzędzia to nauka własna albo kursy.",
    "alternatywa_bez_studiow": false
   },
   "logistyka": {
@@ -142,12 +142,12 @@
    ],
    "odsetek": 55,
    "gdzie": "wszedzie",
-   "robi": "Lancuchy dostaw, transport, magazynowanie, planowanie produkcji.",
-   "nie_daje": "Znajomosci jezyka na poziomie negocjacji, ktora w spedycji decyduje o zarobkach.",
+   "robi": "Łańcuchy dostaw, transport, magazynowanie, planowanie produkcji.",
+   "nie_daje": "Znajomości jezyka na poziomie negocjacji, która w spedycji decyduje o zarobkach.",
    "alternatywa_bez_studiow": false
   },
   "zarz_zasob": {
-   "nazwa": "Zarzadzanie zasobami ludzkimi",
+   "nazwa": "Zarządzanie zasobami ludzkimi",
    "typ": "uniwersytecki",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -169,12 +169,12 @@
    ],
    "odsetek": 40,
    "gdzie": "duze_miasta",
-   "robi": "Prawo pracy, psychologia organizacji, rekrutacja, systemy wynagrodzen.",
-   "nie_daje": "Doswiadczenia, ktore w HR liczy sie bardziej niz dyplom.",
+   "robi": "Prawo pracy, psychologia organizacji, rekrutacja, systemy wynagrodzeń.",
+   "nie_daje": "Doświadczenia, które w HR liczy się bardziej niż dyplom.",
    "alternatywa_bez_studiow": false
   },
   "miedzynarodowe": {
-   "nazwa": "Stosunki miedzynarodowe",
+   "nazwa": "Stosunki międzynarodowe",
    "typ": "uniwersytecki",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -195,8 +195,8 @@
    ],
    "odsetek": 20,
    "gdzie": "duze_miasta",
-   "robi": "Prawo miedzynarodowe, ekonomia globalna, jezyki, historia dyplomacji.",
-   "nie_daje": "Konkretnego zawodu. Mniej niz co piaty absolwent pracuje w obszarze zwiazanym z kierunkiem.",
+   "robi": "Prawo międzynarodowe, ekonomia globalna, jezyki, historia dyplomacji.",
+   "nie_daje": "Konkretnego zawodu. Mniej niż co piąty absolwent pracuje w obszarze związanym z kierunkiem.",
    "alternatywa_bez_studiow": false
   },
   "administracja_kier": {
@@ -222,8 +222,8 @@
    ],
    "odsetek": 45,
    "gdzie": "wszedzie",
-   "robi": "Prawo administracyjne, postepowanie administracyjne, finanse publiczne.",
-   "nie_daje": "Przewagi w sektorze prywatnym. Kierunek jest silnie nastawiony na administracje publiczna.",
+   "robi": "Prawo administracyjne, postępowanie administracyjne, finanse publiczne.",
+   "nie_daje": "Przewagi w sektorze prywatnym. Kierunek jest silnie nastawiony na administrację publiczna.",
    "alternatywa_bez_studiow": false
   },
   "informatyka": {
@@ -255,8 +255,8 @@
    ],
    "odsetek": 75,
    "gdzie": "wszedzie",
-   "robi": "Algorytmy, struktury danych, matematyka dyskretna, systemy operacyjne, sieci. Duzo teorii przed praktyka.",
-   "nie_daje": "Umiejetnosci komercyjnych od reki. Pierwsza prace zdobywa sie portfolio, nie dyplomem.",
+   "robi": "Algorytmy, struktury danych, matematyka dyskretna, systemy operacyjne, sieci. Dużo teorii przed praktyka.",
+   "nie_daje": "Umiejętności komercyjnych od ręki. Pierwsza prace zdobywa się portfolio, nie dyplomem.",
    "alternatywa_bez_studiow": true
   },
   "informatyka_ekon": {
@@ -311,8 +311,8 @@
    ],
    "odsetek": 35,
    "gdzie": "duze_miasta",
-   "robi": "Analiza matematyczna, algebra, rachunek prawdopodobienstwa. Bardzo abstrakcyjny kierunek.",
-   "nie_daje": "Bezposredniej sciezki zawodowej. Otwiera analize i nauke, ale wymaga douczenia narzedzi.",
+   "robi": "Analiza matematyczna, algebra, rachunek prawdopodobieństwa. Bardzo abstrakcyjny kierunek.",
+   "nie_daje": "Bezpośredniej ścieżki zawodowej. Otwiera analizę i naukę, ale wymaga douczenia narzędzi.",
    "alternatywa_bez_studiow": false
   },
   "analityka_danych": {
@@ -338,7 +338,7 @@
    ],
    "odsetek": 65,
    "gdzie": "duze_miasta",
-   "robi": "SQL, Python, statystyka, wizualizacja, hurtownie danych. Kierunek mlody i praktyczny.",
+   "robi": "SQL, Python, statystyka, wizualizacja, hurtownie danych. Kierunek młody i praktyczny.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
@@ -364,12 +364,12 @@
    ],
    "odsetek": 45,
    "gdzie": "kilka_osrodkow",
-   "robi": "Wnioskowanie statystyczne, projektowanie badan, analiza danych.",
+   "robi": "Wnioskowanie statystyczne, projektowanie badań, analiza danych.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
   "ekonomia_mat": {
-   "nazwa": "Metody ilosciowe w ekonomii",
+   "nazwa": "Metody ilościowe w ekonomii",
    "typ": "uniwersytecki",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -395,7 +395,7 @@
    "alternatywa_bez_studiow": false
   },
   "cyberbezp_kier": {
-   "nazwa": "Cyberbezpieczenstwo",
+   "nazwa": "Cyberbezpieczeństwo",
    "typ": "techniczny",
    "poziom": "inz_mgr",
    "lata": 5,
@@ -418,7 +418,7 @@
    ],
    "odsetek": 70,
    "gdzie": "duze_miasta",
-   "robi": "Kryptografia, bezpieczenstwo sieci, analiza zlosliwego oprogramowania, prawo.",
+   "robi": "Kryptografia, bezpieczeństwo sieci, analiza złośliwego oprogramowania, prawo.",
    "nie_daje": null,
    "alternatywa_bez_studiow": true
   },
@@ -448,12 +448,12 @@
    ],
    "odsetek": 50,
    "gdzie": "wszedzie",
-   "robi": "Prawo cywilne, karne, administracyjne, konstytucyjne. Bardzo duzo pamieciowego przyswajania.",
-   "nie_daje": "Mozliwosci wykonywania zawodu. To aplikacja, czyli kolejne 3 do 4 lat i trudny egzamin wstepny.",
+   "robi": "Prawo cywilne, karne, administracyjne, konstytucyjne. Bardzo dużo pamięciowego przyswajania.",
+   "nie_daje": "Możliwości wykonywania zawodu. To aplikacja, czyli kolejne 3 do 4 lat i trudny egzamin wstępny.",
    "alternatywa_bez_studiow": false
   },
   "bezp_wewn": {
-   "nazwa": "Bezpieczenstwo wewnetrzne",
+   "nazwa": "Bezpieczeństwo wewnętrzne",
    "typ": "uniwersytecki",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -474,8 +474,8 @@
    ],
    "odsetek": 30,
    "gdzie": "wszedzie",
-   "robi": "Prawo karne, zarzadzanie kryzysowe, kryminologia, ochrona informacji.",
-   "nie_daje": "Przewagi przy naborze do sluzb. Do policji i wojska przyjmuja takze po innych kierunkach i bez studiow.",
+   "robi": "Prawo karne, zarządzanie kryzysowe, kryminologia, ochrona informacji.",
+   "nie_daje": "Przewagi przy naborze do służb. Do policji i wojska przyjmują także po innych kierunkach i bez studiów.",
    "alternatywa_bez_studiow": false
   },
   "kryminologia": {
@@ -499,8 +499,8 @@
    ],
    "odsetek": 25,
    "gdzie": "kilka_osrodkow",
-   "robi": "Przyczyny przestepczosci, psychologia kryminalna, wiktymologia.",
-   "nie_daje": "Konkretnego zawodu. Wiekszosc absolwentow pracuje poza obszarem kierunku.",
+   "robi": "Przyczyny przestępczości, psychologia kryminalna, wiktymologia.",
+   "nie_daje": "Konkretnego zawodu. Większość absolwentów pracuje poza obszarem kierunku.",
    "alternatywa_bez_studiow": false
   },
   "praca_socj_kier": {
@@ -527,8 +527,8 @@
    ],
    "odsetek": 60,
    "gdzie": "wszedzie",
-   "robi": "Metodyka pracy socjalnej, polityka spoleczna, psychologia, prawo pomocy spolecznej.",
-   "nie_daje": "Odpornosci psychicznej, ktora w tym zawodzie decyduje o przetrwaniu. Superwizji tez nie uczy.",
+   "robi": "Metodyka pracy socjalnej, polityka społeczna, psychologia, prawo pomocy społecznej.",
+   "nie_daje": "Odporności psychicznej, która w tym zawodzie decyduje o przetrwaniu. Superwizji też nie uczy.",
    "alternatywa_bez_studiow": false
   },
   "politologia": {
@@ -552,8 +552,8 @@
    ],
    "odsetek": 20,
    "gdzie": "wszedzie",
-   "robi": "Systemy polityczne, mysl polityczna, administracja publiczna.",
-   "nie_daje": "Konkretnego zawodu. Co piaty absolwent pracuje w obszarze zwiazanym z kierunkiem.",
+   "robi": "Systemy polityczne, myśl polityczna, administracja publiczna.",
+   "nie_daje": "Konkretnego zawodu. Co piąty absolwent pracuje w obszarze związanym z kierunkiem.",
    "alternatywa_bez_studiow": false
   },
   "automatyka": {
@@ -581,7 +581,7 @@
    ],
    "odsetek": 70,
    "gdzie": "kilka_osrodkow",
-   "robi": "Sterowanie, programowanie PLC, robotyka, napedy, elektronika.",
+   "robi": "Sterowanie, programowanie PLC, robotyka, napędy, elektronika.",
    "nie_daje": null,
    "alternatywa_bez_studiow": true
   },
@@ -609,7 +609,7 @@
    ],
    "odsetek": 65,
    "gdzie": "kilka_osrodkow",
-   "robi": "Wytrzymalosc materialow, konstrukcja maszyn, CAD, technologie wytwarzania.",
+   "robi": "Wytrzymałość materiałów, konstrukcja maszyn, CAD, technologie wytwarzania.",
    "nie_daje": null,
    "alternatywa_bez_studiow": true
   },
@@ -665,12 +665,12 @@
    ],
    "odsetek": 60,
    "gdzie": "kilka_osrodkow",
-   "robi": "Polaczenie mechaniki, elektroniki i informatyki. Systemy sterowania urzadzeniami.",
+   "robi": "Połączenie mechaniki, elektroniki i informatyki. Systemy sterowania urządzeniami.",
    "nie_daje": null,
    "alternatywa_bez_studiow": true
   },
   "inz_srodowiska": {
-   "nazwa": "Inzynieria srodowiska",
+   "nazwa": "Inżynieria środowiska",
    "typ": "techniczny",
    "poziom": "inz_mgr",
    "lata": 5,
@@ -693,7 +693,7 @@
    ],
    "odsetek": 50,
    "gdzie": "kilka_osrodkow",
-   "robi": "Instalacje sanitarne, wodociagi, ogrzewanie, wentylacja, gospodarka odpadami.",
+   "robi": "Instalacje sanitarne, wodociągi, ogrzewanie, wentylacja, gospodarka odpadami.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
@@ -720,7 +720,7 @@
    ],
    "odsetek": 65,
    "gdzie": "kilka_osrodkow",
-   "robi": "Zrodla energii, sieci, odnawialne zrodla, efektywnosc energetyczna.",
+   "robi": "Źródła energii, sieci, odnawialne źródła, efektywność energetyczna.",
    "nie_daje": null,
    "alternatywa_bez_studiow": true
   },
@@ -748,8 +748,8 @@
    ],
    "odsetek": 40,
    "gdzie": "duze_miasta",
-   "robi": "Biologia molekularna, mikrobiologia, inzynieria genetyczna, procesy biotechnologiczne.",
-   "nie_daje": "Latwej pracy. Rynek biotechnologiczny w Polsce jest waski, wielu absolwentow trafia do laboratoriow diagnostycznych.",
+   "robi": "Biologia molekularna, mikrobiologia, inżynieria genetyczna, procesy biotechnologiczne.",
+   "nie_daje": "Łatwej pracy. Rynek biotechnologiczny w Polsce jest wąski, wielu absolwentów trafia do laboratoriów diagnostycznych.",
    "alternatywa_bez_studiow": false
   },
   "chemia": {
@@ -778,7 +778,7 @@
    ],
    "odsetek": 45,
    "gdzie": "wszedzie",
-   "robi": "Chemia organiczna, nieorganiczna, analityczna, fizyczna. Bardzo duzo laboratorium.",
+   "robi": "Chemia organiczna, nieorganiczna, analityczna, fizyczna. Bardzo dużo laboratorium.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
@@ -806,11 +806,11 @@
    "odsetek": 30,
    "gdzie": "duze_miasta",
    "robi": "Mechanika, elektrodynamika, fizyka kwantowa, metody numeryczne.",
-   "nie_daje": "Bezposredniej sciezki zawodowej. Otwiera analize danych i nauke, ale wymaga douczenia.",
+   "nie_daje": "Bezpośredniej ścieżki zawodowej. Otwiera analizę danych i naukę, ale wymaga douczenia.",
    "alternatywa_bez_studiow": false
   },
   "inz_materialowa": {
-   "nazwa": "Inzynieria materialowa",
+   "nazwa": "Inżynieria materiałowa",
    "typ": "techniczny",
    "poziom": "inz_mgr",
    "lata": 5,
@@ -833,12 +833,12 @@
    ],
    "odsetek": 55,
    "gdzie": "kilka_osrodkow",
-   "robi": "Wlasciwosci materialow, badania nieniszczace, obrobka cieplna.",
+   "robi": "Właściwości materiałów, badania nieniszczące, obróbka cieplna.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
   "zarz_inz": {
-   "nazwa": "Zarzadzanie i inzynieria produkcji",
+   "nazwa": "Zarządzanie i inżynieria produkcji",
    "typ": "techniczny",
    "poziom": "inz_mgr",
    "lata": 5,
@@ -861,12 +861,12 @@
    ],
    "odsetek": 60,
    "gdzie": "kilka_osrodkow",
-   "robi": "Polaczenie techniki z zarzadzaniem. Organizacja produkcji, jakosc, logistyka wewnetrzna.",
+   "robi": "Połączenie techniki z zarządzaniem. Organizacja produkcji, jakość, logistyka wewnętrzna.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
   "inz_biomedyczna": {
-   "nazwa": "Inzynieria biomedyczna",
+   "nazwa": "Inżynieria biomedyczna",
    "typ": "techniczny",
    "poziom": "inz_mgr",
    "lata": 5,
@@ -889,7 +889,7 @@
    "odsetek": 40,
    "gdzie": "kilka_osrodkow",
    "robi": "Aparatura medyczna, sygnaly biomedyczne, obrazowanie.",
-   "nie_daje": "Duzego rynku pracy w Polsce. Czesc absolwentow trafia do serwisu aparatury i sprzedazy technicznej.",
+   "nie_daje": "Dużego rynku pracy w Polsce. Część absolwentów trafia do serwisu aparatury i sprzedaży technicznej.",
    "alternatywa_bez_studiow": false
   },
   "telekomunikacja": {
@@ -944,8 +944,8 @@
    ],
    "odsetek": 70,
    "gdzie": "wszedzie",
-   "robi": "Konstrukcje, materialy budowlane, technologia robot, geotechnika.",
-   "nie_daje": "Uprawnien budowlanych. To 1 do 3 lata praktyki po dyplomie i egzamin.",
+   "robi": "Konstrukcje, materiały budowlane, technologia robot, geotechnika.",
+   "nie_daje": "Uprawnień budowlanych. To 1 do 3 lata praktyki po dyplomie i egzamin.",
    "alternatywa_bez_studiow": true
   },
   "architektura": {
@@ -971,12 +971,12 @@
    ],
    "odsetek": 55,
    "gdzie": "kilka_osrodkow",
-   "robi": "Projektowanie, historia architektury, konstrukcje, urbanistyka. Bardzo duzo pracy wlasnej po nocach.",
-   "nie_daje": "Uprawnien projektowych. To kolejne 2 do 3 lata praktyki i egzamin. Do tego projektowanie tworcze to okolo 10% realnej pracy.",
+   "robi": "Projektowanie, historia architektury, konstrukcje, urbanistyka. Bardzo dużo pracy własnej po nocach.",
+   "nie_daje": "Uprawnień projektowych. To kolejne 2 do 3 lata praktyki i egzamin. Do tego projektowanie twórcze to około 10% realnej pracy.",
    "alternatywa_bez_studiow": false
   },
   "arch_wnetrz": {
-   "nazwa": "Architektura wnetrz",
+   "nazwa": "Architektura wnętrz",
    "typ": "artystyczny",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -997,8 +997,8 @@
    ],
    "odsetek": 50,
    "gdzie": "kilka_osrodkow",
-   "robi": "Projektowanie przestrzeni, materialy wykonczeniowe, rysunek, wizualizacje.",
-   "nie_daje": "Umiejetnosci prowadzenia realizacji, ktora decyduje o zarobkach. Wizualizacje to kilka procent pracy.",
+   "robi": "Projektowanie przestrzeni, materiały wykończeniowe, rysunek, wizualizacje.",
+   "nie_daje": "Umiejętności prowadzenia realizacji, która decyduje o zarobkach. Wizualizacje to kilka procent pracy.",
    "alternatywa_bez_studiow": false
   },
   "geodezja": {
@@ -1024,8 +1024,8 @@
    ],
    "odsetek": 70,
    "gdzie": "kilka_osrodkow",
-   "robi": "Pomiary, rachunek wyrownawczy, kataster, systemy informacji przestrzennej.",
-   "nie_daje": "Uprawnien zawodowych. Wymagaja 1 do 3 lat praktyki i egzaminu.",
+   "robi": "Pomiary, rachunek wyrównawczy, kataster, systemy informacji przestrzennej.",
+   "nie_daje": "Uprawnień zawodowych. Wymagają 1 do 3 lat praktyki i egzaminu.",
    "alternatywa_bez_studiow": true
   },
   "gosp_przestrzenna": {
@@ -1050,7 +1050,7 @@
    "odsetek": 35,
    "gdzie": "kilka_osrodkow",
    "robi": "Planowanie przestrzenne, urbanistyka, prawo planistyczne, GIS.",
-   "nie_daje": "Konkretnego zawodu. Absolwenci trafiaja najczesciej do administracji i biur projektowych.",
+   "nie_daje": "Konkretnego zawodu. Absolwenci trafiają najczęściej do administracji i biur projektowych.",
    "alternatywa_bez_studiow": false
   },
   "rolnictwo": {
@@ -1077,12 +1077,12 @@
    ],
    "odsetek": 55,
    "gdzie": "kilka_osrodkow",
-   "robi": "Produkcja roslinna i zwierzeca, gleboznawstwo, ochrona roslin, ekonomika.",
+   "robi": "Produkcja roślinna i zwierzęca, gleboznawstwo, ochrona roślin, ekonomika.",
    "nie_daje": null,
    "alternatywa_bez_studiow": true
   },
   "lesnictwo": {
-   "nazwa": "Lesnictwo",
+   "nazwa": "Leśnictwo",
    "typ": "uniwersytecki",
    "poziom": "inz_mgr",
    "lata": 5,
@@ -1104,8 +1104,8 @@
    ],
    "odsetek": 65,
    "gdzie": "kilka_osrodkow",
-   "robi": "Hodowla lasu, uzytkowanie, ochrona, urzadzanie lasu.",
-   "nie_daje": "Etatu. Konkurencja o miejsca w Lasach Panstwowych jest bardzo duza, a nabory ograniczone.",
+   "robi": "Hodowla lasu, użytkowanie, ochrona, urządzanie lasu.",
+   "nie_daje": "Etatu. Konkurencja o miejsca w Lasach Państwowych jest bardzo duża, a nabory ograniczone.",
    "alternatywa_bez_studiow": false
   },
   "ogrodnictwo": {
@@ -1129,7 +1129,7 @@
    ],
    "odsetek": 50,
    "gdzie": "kilka_osrodkow",
-   "robi": "Uprawa roslin ozdobnych i warzyw, projektowanie zieleni, szkolkarstwo.",
+   "robi": "Uprawa roślin ozdobnych i warzyw, projektowanie zieleni, szkółkarstwo.",
    "nie_daje": null,
    "alternatywa_bez_studiow": true
   },
@@ -1154,12 +1154,12 @@
    ],
    "odsetek": 80,
    "gdzie": "kilka_osrodkow",
-   "robi": "Anatomia, fizjologia, choroby zwierzat, chirurgia, farmakologia. Bardzo obciazajacy kierunek.",
-   "nie_daje": "Odpornosci psychicznej. Wskazniki wypalenia i problemow psychicznych w tym zawodzie naleza do najwyzszych wsrod zawodow medycznych.",
+   "robi": "Anatomia, fizjologia, choroby zwierząt, chirurgia, farmakologia. Bardzo obciążający kierunek.",
+   "nie_daje": "Odporności psychicznej. Wskaźniki wypalenia i problemów psychicznych w tym zawodzie należą do najwyższych wśród zawodów medycznych.",
    "alternatywa_bez_studiow": false
   },
   "technologia_zywnosci": {
-   "nazwa": "Technologia zywnosci",
+   "nazwa": "Technologia żywności",
    "typ": "techniczny",
    "poziom": "inz_mgr",
    "lata": 5,
@@ -1182,12 +1182,12 @@
    ],
    "odsetek": 55,
    "gdzie": "kilka_osrodkow",
-   "robi": "Procesy technologiczne, mikrobiologia zywnosci, bezpieczenstwo, jakosc.",
+   "robi": "Procesy technologiczne, mikrobiologia żywności, bezpieczeństwo, jakość.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
   "ochrona_srodowiska": {
-   "nazwa": "Ochrona srodowiska",
+   "nazwa": "Ochrona środowiska",
    "typ": "uniwersytecki",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -1210,8 +1210,8 @@
    ],
    "odsetek": 45,
    "gdzie": "wszedzie",
-   "robi": "Ekologia, monitoring, prawo ochrony srodowiska, gospodarka odpadami.",
-   "nie_daje": "Praktycznej znajomosci przepisow, ktora w tym zawodzie jest najwazniejsza i zmienia sie co roku.",
+   "robi": "Ekologia, monitoring, prawo ochrony środowiska, gospodarka odpadami.",
+   "nie_daje": "Praktycznej znajomości przepisów, która w tym zawodzie jest najważniejsza i zmienia się co roku.",
    "alternatywa_bez_studiow": false
   },
   "lekarski": {
@@ -1235,11 +1235,11 @@
    "odsetek": 90,
    "gdzie": "kilka_osrodkow",
    "robi": "Anatomia, fizjologia, patologia, przedmioty kliniczne. Sześć lat bardzo intensywnej nauki.",
-   "nie_daje": "Prawa do samodzielnej pracy. Po dyplomie sa staz i specjalizacja, razem 5 do 7 lat.",
+   "nie_daje": "Prawa do samodzielnej pracy. Po dyplomie są staż i specjalizacja, razem 5 do 7 lat.",
    "alternatywa_bez_studiow": false
   },
   "pielegniarstwo": {
-   "nazwa": "Pielegniarstwo",
+   "nazwa": "Pielęgniarstwo",
    "typ": "medyczny",
    "poziom": "lic_mgr",
    "lata": 3,
@@ -1260,12 +1260,12 @@
    ],
    "odsetek": 75,
    "gdzie": "wszedzie",
-   "robi": "Anatomia, farmakologia, pielegniarstwo kliniczne, bardzo duzo praktyk od pierwszego roku.",
-   "nie_daje": "Przygotowania na kontakt ze smiercia, ktory na wiekszosci oddzialow jest czescia miesiaca.",
+   "robi": "Anatomia, farmakologia, pielęgniarstwo kliniczne, bardzo dużo praktyk od pierwszego roku.",
+   "nie_daje": "Przygotowania na kontakt ze śmiercią, który na większości oddziałów jest częścią miesiąca.",
    "alternatywa_bez_studiow": false
   },
   "poloznictwo": {
-   "nazwa": "Poloznictwo",
+   "nazwa": "Położnictwo",
    "typ": "medyczny",
    "poziom": "lic_mgr",
    "lata": 3,
@@ -1285,8 +1285,8 @@
    ],
    "odsetek": 80,
    "gdzie": "kilka_osrodkow",
-   "robi": "Fizjologia ciazy i porodu, opieka nad noworodkiem, ginekologia, bardzo duzo praktyk.",
-   "nie_daje": "Przygotowania na porod zakonczony smiercia dziecka. Zdarza sie rzadko, ale zdarza.",
+   "robi": "Fizjologia ciąży i porodu, opieka nad noworodkiem, ginekologia, bardzo dużo praktyk.",
+   "nie_daje": "Przygotowania na poród zakończony śmiercią dziecka. Zdarza się rzadko, ale zdarza.",
    "alternatywa_bez_studiow": false
   },
   "ratownictwo_med": {
@@ -1312,8 +1312,8 @@
    ],
    "odsetek": 70,
    "gdzie": "kilka_osrodkow",
-   "robi": "Medyczne czynnosci ratunkowe, farmakologia, procedury, bardzo duzo praktyk w karetce.",
-   "nie_daje": "Wsparcia psychologicznego, ktore w tym zawodzie jest konieczne. Zespol stresu pourazowego jest tu udokumentowany.",
+   "robi": "Medyczne czynności ratunkowe, farmakologia, procedury, bardzo dużo praktyk w karetce.",
+   "nie_daje": "Wsparcia psychologicznego, które w tym zawodzie jest konieczne. Zespół stresu pourazowego jest tu udokumentowany.",
    "alternatywa_bez_studiow": false
   },
   "fizjoterapia": {
@@ -1340,7 +1340,7 @@
    "odsetek": 70,
    "gdzie": "wszedzie",
    "robi": "Anatomia funkcjonalna, kinezyterapia, terapia manualna, neurorehabilitacja.",
-   "nie_daje": "Poziomu, ktory decyduje o zarobkach. Ten daja platne kursy po dyplomie, po 3 do 12 tysiecy za kurs.",
+   "nie_daje": "Poziomu, który decyduje o zarobkach. Ten dają płatne kursy po dyplomie, po 3 do 12 tysięcy za kurs.",
    "alternatywa_bez_studiow": false
   },
   "farmacja": {
@@ -1365,7 +1365,7 @@
    "odsetek": 85,
    "gdzie": "kilka_osrodkow",
    "robi": "Chemia leku, farmakologia, technologia postaci leku, receptura.",
-   "nie_daje": "Przygotowania na presje sprzedazowa w aptekach sieciowych, ktora jest glowna przyczyna odejsc.",
+   "nie_daje": "Przygotowania na presję sprzedażowa w aptekach sieciowych, która jest główna przyczyną odejść.",
    "alternatywa_bez_studiow": false
   },
   "analityka_med": {
@@ -1413,8 +1413,8 @@
    ],
    "odsetek": 45,
    "gdzie": "wszedzie",
-   "robi": "Zywienie czlowieka, dietoterapia, biochemia, psychologia zywienia.",
-   "nie_daje": "Umiejetnosci prowadzenia gabinetu i pozyskiwania klientow, od ktorych zalezy caly dochod.",
+   "robi": "Żywienie człowieka, dietoterapia, biochemia, psychologia żywienia.",
+   "nie_daje": "Umiejętności prowadzenia gabinetu i pozyskiwania klientów, od których zależy cały dochód.",
    "alternatywa_bez_studiow": false
   },
   "elektroradiologia": {
@@ -1438,7 +1438,7 @@
    ],
    "odsetek": 80,
    "gdzie": "kilka_osrodkow",
-   "robi": "Fizyka promieniowania, anatomia radiologiczna, obsluga aparatury, ochrona radiologiczna.",
+   "robi": "Fizyka promieniowania, anatomia radiologiczna, obsługa aparatury, ochrona radiologiczna.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
@@ -1464,8 +1464,8 @@
    ],
    "odsetek": 60,
    "gdzie": "wszedzie",
-   "robi": "Dermatologia, chemia kosmetyczna, zabiegi pielegnacyjne i aparaturowe.",
-   "nie_daje": "Granicy z medycyna estetyczna, ktora jest przedmiotem sporow prawnych. Jej przekraczanie niesie ryzyko.",
+   "robi": "Dermatologia, chemia kosmetyczna, zabiegi pielęgnacyjne i aparaturowe.",
+   "nie_daje": "Granicy z medycyna estetyczna, która jest przedmiotem sporów prawnych. Jej przekraczanie niesie ryzyko.",
    "alternatywa_bez_studiow": true
   },
   "zdrowie_publiczne": {
@@ -1490,8 +1490,8 @@
    ],
    "odsetek": 35,
    "gdzie": "kilka_osrodkow",
-   "robi": "Epidemiologia, polityka zdrowotna, zarzadzanie w ochronie zdrowia.",
-   "nie_daje": "Konkretnego zawodu. Absolwenci trafiaja najczesciej do administracji i NFZ.",
+   "robi": "Epidemiologia, polityka zdrowotna, zarządzanie w ochronie zdrowia.",
+   "nie_daje": "Konkretnego zawodu. Absolwenci trafiają najczęściej do administracji i NFZ.",
    "alternatywa_bez_studiow": false
   },
   "psychologia": {
@@ -1522,8 +1522,8 @@
    ],
    "odsetek": 45,
    "gdzie": "wszedzie",
-   "robi": "Psychologia ogolna, rozwojowa, kliniczna, spoleczna, statystyka i metodologia badan.",
-   "nie_daje": "Uprawnien do prowadzenia terapii. To czteroletnia szkola po studiach i 60 do 120 tysiecy zlotych wlasnych srodkow.",
+   "robi": "Psychologia ogólna, rozwojowa, kliniczna, społeczna, statystyka i metodologia badań.",
+   "nie_daje": "Uprawnień do prowadzenia terapii. To czteroletnia szkoła po studiach i 60 do 120 tysięcy złotych własnych środków.",
    "alternatywa_bez_studiow": false
   },
   "pedagogika": {
@@ -1550,7 +1550,7 @@
    "odsetek": 50,
    "gdzie": "wszedzie",
    "robi": "Teoria wychowania, dydaktyka, psychologia rozwojowa, metodyka.",
-   "nie_daje": "Uprawnien do konkretnego stanowiska. Te daja specjalnosci i przygotowanie pedagogiczne.",
+   "nie_daje": "Uprawnień do konkretnego stanowiska. Te dają specjalności i przygotowanie pedagogiczne.",
    "alternatywa_bez_studiow": false
   },
   "pedagogika_przedszk": {
@@ -1574,7 +1574,7 @@
    ],
    "odsetek": 75,
    "gdzie": "wszedzie",
-   "robi": "Metodyka nauczania poczatkowego, psychologia dziecka, dydaktyka przedmiotowa.",
+   "robi": "Metodyka nauczania początkowego, psychologia dziecka, dydaktyka przedmiotowa.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
@@ -1599,7 +1599,7 @@
    ],
    "odsetek": 80,
    "gdzie": "wszedzie",
-   "robi": "Praca z niepelnosprawnoscia, spektrum autyzmu, komunikacja alternatywna, terapia.",
+   "robi": "Praca z niepełnosprawnością, spektrum autyzmu, komunikacja alternatywna, terapia.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
@@ -1627,8 +1627,8 @@
    ],
    "odsetek": 25,
    "gdzie": "wszedzie",
-   "robi": "Teorie spoleczne, metody badan, statystyka spoleczna.",
-   "nie_daje": "Konkretnego zawodu. Co czwarty absolwent pracuje w obszarze zwiazanym z kierunkiem.",
+   "robi": "Teorie społeczne, metody badań, statystyka społeczna.",
+   "nie_daje": "Konkretnego zawodu. Co czwarty absolwent pracuje w obszarze związanym z kierunkiem.",
    "alternatywa_bez_studiow": false
   },
   "filologia_ang": {
@@ -1654,12 +1654,12 @@
    ],
    "odsetek": 40,
    "gdzie": "wszedzie",
-   "robi": "Jezyk, literatura, jezykoznawstwo, przeklad. Duzo literatury, mniej praktycznego jezyka, niz sie spodziewasz.",
-   "nie_daje": "Przewagi na rynku. Znajomosc jezyka to dzis warunek, nie kwalifikacja. Potrzebna jest druga dziedzina.",
+   "robi": "Jezyk, literatura, językoznawstwo, przekład. Dużo literatury, mniej praktycznego jezyka, niż się spodziewasz.",
+   "nie_daje": "Przewagi na rynku. Znajomość jezyka to dziś warunek, nie kwalifikacja. Potrzebna jest druga dziedzina.",
    "alternatywa_bez_studiow": false
   },
   "filologia_pol": {
-   "nazwa": "Filologia polska",
+   "nazwa": "Filologia Polska",
    "typ": "uniwersytecki",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -1681,12 +1681,12 @@
    ],
    "odsetek": 40,
    "gdzie": "wszedzie",
-   "robi": "Literatura, jezykoznawstwo, gramatyka opisowa i historyczna.",
-   "nie_daje": "Umiejetnosci pisania uzytkowego. Copywriting i redakcja merytoryczna to nauka wlasna.",
+   "robi": "Literatura, językoznawstwo, gramatyka opisowa i historyczna.",
+   "nie_daje": "Umiejętności pisania użytkowego. Copywriting i redakcja merytoryczna to nauka własna.",
    "alternatywa_bez_studiow": false
   },
   "filologia_inne": {
-   "nazwa": "Filologia germanska, romanska, hiszpanska i inne",
+   "nazwa": "Filologia germańska, romanska, hiszpanska i inne",
    "typ": "uniwersytecki",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -1708,8 +1708,8 @@
    ],
    "odsetek": 40,
    "gdzie": "kilka_osrodkow",
-   "robi": "Jak filologia angielska, ale przy rzadszym jezyku przewaga na rynku pracy jest wieksza.",
-   "nie_daje": "Praktycznego jezyka na poziomie zawodowym bez wlasnej pracy poza uczelnia.",
+   "robi": "Jak filologia angielska, ale przy rzadszym jezyku przewaga na rynku pracy jest większa.",
+   "nie_daje": "Praktycznego jezyka na poziomie zawodowym bez własnej pracy poza uczelnia.",
    "alternatywa_bez_studiow": false
   },
   "teologia": {
@@ -1734,8 +1734,8 @@
    ],
    "odsetek": 55,
    "gdzie": "kilka_osrodkow",
-   "robi": "Pismo Swiete, dogmatyka, historia Kosciola, etyka, filozofia.",
-   "nie_daje": "Zabezpieczenia zawodowego. Liczba etatow katechetycznych maleje, warto zdobyc drugi przedmiot.",
+   "robi": "Pismo Święte, dogmatyka, historia Kościoła, etyka, filozofia.",
+   "nie_daje": "Zabezpieczenia zawodowego. Liczba etatow katechetycznych maleje, warto zdobyć drugi przedmiot.",
    "alternatywa_bez_studiow": false
   },
   "grafika": {
@@ -1762,11 +1762,11 @@
    "odsetek": 55,
    "gdzie": "kilka_osrodkow",
    "robi": "Rysunek, malarstwo, projektowanie graficzne, typografia, techniki druku.",
-   "nie_daje": "Umiejetnosci sprzedazy wlasnych uslug, od ktorej zalezy caly dochod przy pracy na swoim.",
+   "nie_daje": "Umiejętności sprzedaży własnych usług, od której zależy cały dochód przy pracy na swoim.",
    "alternatywa_bez_studiow": false
   },
   "wzornictwo": {
-   "nazwa": "Wzornictwo przemyslowe",
+   "nazwa": "Wzornictwo przemysłowe",
    "typ": "artystyczny",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -1788,12 +1788,12 @@
    ],
    "odsetek": 50,
    "gdzie": "kilka_osrodkow",
-   "robi": "Projektowanie form uzytkowych, modelowanie 3D, technologie wytwarzania, prototypowanie.",
-   "nie_daje": "Duzego rynku w Polsce. Malo firm projektuje wlasne produkty, licz sie z klientami zagranicznymi.",
+   "robi": "Projektowanie form użytkowych, modelowanie 3D, technologie wytwarzania, prototypowanie.",
+   "nie_daje": "Dużego rynku w Polsce. Mało firm projektuje własne produkty, licz się z klientami zagranicznymi.",
    "alternatywa_bez_studiow": false
   },
   "dziennikarstwo": {
-   "nazwa": "Dziennikarstwo i komunikacja spoleczna",
+   "nazwa": "Dziennikarstwo i komunikacja społeczna",
    "typ": "uniwersytecki",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -1817,7 +1817,7 @@
    "odsetek": 35,
    "gdzie": "duze_miasta",
    "robi": "Warsztat dziennikarski, prawo prasowe, media, komunikacja.",
-   "nie_daje": "Przewagi na rynku. Redakcje czesciej zatrudniaja specjalistow z dziedziny, o ktorej pisza, niz absolwentow dziennikarstwa.",
+   "nie_daje": "Przewagi na rynku. Redakcje częściej zatrudniają specjalistów z dziedziny, o której piszą, niż absolwentów dziennikarstwa.",
    "alternatywa_bez_studiow": false
   },
   "realizacja_obrazu": {
@@ -1841,8 +1841,8 @@
    ],
    "odsetek": 50,
    "gdzie": "jeden_osrodek",
-   "robi": "Zdjecia, swiatlo, montaz, technologia filmowa. Bardzo duzo praktyki warsztatowej.",
-   "nie_daje": "Dostepu do zlecen. Ten daje reputacja na planie, budowana od noszenia sprzetu.",
+   "robi": "Zdjęcia, światło, montaż, technologia filmowa. Bardzo dużo praktyki warsztatowej.",
+   "nie_daje": "Dostępu do zleceń. Ten daje reputacja na planie, budowana od noszenia sprzętu.",
    "alternatywa_bez_studiow": false
   },
   "produkcja_filmowa": {
@@ -1866,7 +1866,7 @@
    ],
    "odsetek": 45,
    "gdzie": "jeden_osrodek",
-   "robi": "Budzetowanie, harmonogramowanie, prawo autorskie, organizacja planu.",
+   "robi": "Budżetowanie, harmonogramowanie, prawo autorskie, organizacja planu.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
@@ -1891,7 +1891,7 @@
    "odsetek": 65,
    "gdzie": "kilka_osrodkow",
    "robi": "Gra na instrumencie, teoria muzyki, harmonia, gra zespolowa.",
-   "nie_daje": "Utrzymania z samego koncertowania. Wiekszosc muzykow w Polsce utrzymuje sie z nauczania.",
+   "nie_daje": "Utrzymania z samego koncertowania. Większość muzykow w Polsce utrzymuje się z nauczania.",
    "alternatywa_bez_studiow": false
   },
   "aktorstwo": {
@@ -1915,12 +1915,12 @@
    ],
    "odsetek": 55,
    "gdzie": "kilka_osrodkow",
-   "robi": "Warsztat aktorski, ruch sceniczny, emisja glosu, praca przed kamera.",
-   "nie_daje": "Etatu ani zlecen. Rekrutacja przyjmuje kilka procent kandydatow, a po dyplomie konkurencja jest jeszcze ostrzejsza.",
+   "robi": "Warsztat aktorski, ruch sceniczny, emisja głosu, praca przed kamera.",
+   "nie_daje": "Etatu ani zleceń. Rekrutacja przyjmuje kilka procent kandydatów, a po dyplomie konkurencja jest jeszcze ostrzejsza.",
    "alternatywa_bez_studiow": false
   },
   "realizacja_dzwieku": {
-   "nazwa": "Rezyseria dzwieku",
+   "nazwa": "Reżyseria dźwięku",
    "typ": "artystyczny",
    "poziom": "lic_mgr",
    "lata": 5,
@@ -1940,7 +1940,7 @@
    ],
    "odsetek": 60,
    "gdzie": "kilka_osrodkow",
-   "robi": "Akustyka, technika studyjna, miks, mastering, dzwiek w filmie.",
+   "robi": "Akustyka, technika studyjna, miks, mastering, dźwięk w filmie.",
    "nie_daje": null,
    "alternatywa_bez_studiow": true
   },
@@ -1966,12 +1966,12 @@
    ],
    "odsetek": 60,
    "gdzie": "kilka_osrodkow",
-   "robi": "Anatomia, fizjologia wysilku, metodyka wychowania fizycznego, teoria sportu.",
-   "nie_daje": "Uprawnien trenerskich w dyscyplinie. Te daja licencje zwiazkowe, zdobywane osobno.",
+   "robi": "Anatomia, fizjologia wysiłku, metodyka wychowania fizycznego, teoria sportu.",
+   "nie_daje": "Uprawnień trenerskich w dyscyplinie. Te dają licencje związkowe, zdobywane osobno.",
    "alternatywa_bez_studiow": false
   },
   "praca_socj_organiz": {
-   "nazwa": "Organizacja pomocy spolecznej",
+   "nazwa": "Organizacja pomocy społecznej",
    "typ": "uniwersytecki",
    "poziom": "mgr",
    "lata": 2,
@@ -1989,7 +1989,7 @@
    ],
    "odsetek": 65,
    "gdzie": "kilka_osrodkow",
-   "robi": "Zarzadzanie placowkami, prawo pomocy spolecznej, finanse jednostek.",
+   "robi": "Zarządzanie placówkami, prawo pomocy społecznej, finanse jednostek.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   },
@@ -2015,29 +2015,29 @@
    ],
    "odsetek": 55,
    "gdzie": "kilka_osrodkow",
-   "robi": "Metody diagnozy zawodowej, rynek pracy, poradnictwo, prowadzenie warsztatow.",
+   "robi": "Metody diagnozy zawodowej, rynek pracy, poradnictwo, prowadzenie warsztatów.",
    "nie_daje": null,
    "alternatywa_bez_studiow": false
   }
  },
  "drogi_bez_studiow": {
   "bs_elektryk": {
-   "nazwa": "Szkola branzowa: elektryk",
+   "nazwa": "Szkoła branżowa: elektryk",
    "typ": "branzowa",
    "czas": "3 lata",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "elektryk",
     "instalator_pv",
     "technik_serwisu"
    ],
-   "wymagania": "Po szkole podstawowej. Uprawnienia SEP po 18 roku zycia."
+   "wymagania": "Po szkole podstawowej. Uprawnienia SEP po 18 roku życia."
   },
   "bs_mechanik": {
-   "nazwa": "Szkola branzowa: mechanik pojazdow",
+   "nazwa": "Szkoła branżowa: mechanik pojazdów",
    "typ": "branzowa",
    "czas": "3 lata",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "mechanik",
     "technik_serwisu",
@@ -2046,10 +2046,10 @@
    "wymagania": "Po szkole podstawowej."
   },
   "bs_instalator": {
-   "nazwa": "Szkola branzowa: monter instalacji",
+   "nazwa": "Szkoła branżowa: monter instalacji",
    "typ": "branzowa",
    "czas": "3 lata",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "hydraulik",
     "instalator_pv",
@@ -2058,10 +2058,10 @@
    "wymagania": "Po szkole podstawowej. Uprawnienia gazowe i F-gazowe osobno."
   },
   "bs_stolarz": {
-   "nazwa": "Szkola branzowa: stolarz",
+   "nazwa": "Szkoła branżowa: stolarz",
    "typ": "branzowa",
    "czas": "3 lata",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "stolarz",
     "krawiec"
@@ -2069,10 +2069,10 @@
    "wymagania": "Po szkole podstawowej."
   },
   "bs_fryzjer": {
-   "nazwa": "Szkola branzowa: fryzjer",
+   "nazwa": "Szkoła branżowa: fryzjer",
    "typ": "branzowa",
    "czas": "3 lata",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "fryzjer",
     "kosmetolog"
@@ -2080,10 +2080,10 @@
    "wymagania": "Po szkole podstawowej."
   },
   "bs_kucharz": {
-   "nazwa": "Szkola branzowa: kucharz",
+   "nazwa": "Szkoła branżowa: kucharz",
    "typ": "branzowa",
    "czas": "3 lata",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "kucharz",
     "cukiernik",
@@ -2092,10 +2092,10 @@
    "wymagania": "Po szkole podstawowej."
   },
   "bs_slusarz": {
-   "nazwa": "Szkola branzowa: slusarz i mechanik",
+   "nazwa": "Szkoła branżowa: ślusarz i mechanik",
    "typ": "branzowa",
    "czas": "3 lata",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "spawacz",
     "operator_cnc",
@@ -2104,10 +2104,10 @@
    "wymagania": "Po szkole podstawowej. Uprawnienia spawalnicze osobno."
   },
   "bs_rolnik": {
-   "nazwa": "Szkola branzowa: rolnik i ogrodnik",
+   "nazwa": "Szkoła branżowa: rolnik i ogrodnik",
    "typ": "branzowa",
    "czas": "3 lata",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "ogrodnik",
     "agronom"
@@ -2118,7 +2118,7 @@
    "nazwa": "Technikum informatyczne",
    "typ": "technikum",
    "czas": "5 lat",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "programista",
     "tester",
@@ -2131,7 +2131,7 @@
    "nazwa": "Technikum elektroniczne i mechatroniczne",
    "typ": "technikum",
    "czas": "5 lat",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "technik_serwisu",
     "automatyk",
@@ -2144,19 +2144,19 @@
    "nazwa": "Technikum budowlane",
    "typ": "technikum",
    "czas": "5 lat",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "kosztorysant",
     "geodeta",
     "kierownik_budowy"
    ],
-   "wymagania": "Po szkole podstawowej. Uprawnienia wymagaja studiow."
+   "wymagania": "Po szkole podstawowej. Uprawnienia wymagają studiów."
   },
   "tech_ekonomiczne": {
    "nazwa": "Technikum ekonomiczne",
    "typ": "technikum",
    "czas": "5 lat",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "ksiegowy",
     "spec_plac",
@@ -2169,7 +2169,7 @@
    "nazwa": "Technikum gastronomiczne i hotelarskie",
    "typ": "technikum",
    "czas": "5 lat",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "kucharz",
     "cukiernik",
@@ -2183,74 +2183,74 @@
    "nazwa": "Technikum weterynaryjne",
    "typ": "technikum",
    "czas": "5 lat",
-   "koszt": "bezplatna",
+   "koszt": "bezpłatna",
    "zawody": [
     "technik_wet"
    ],
    "wymagania": "Po szkole podstawowej."
   },
   "sp_farmaceutyczny": {
-   "nazwa": "Szkola policealna: technik farmaceutyczny",
+   "nazwa": "Szkoła policealna: technik farmaceutyczny",
    "typ": "policealna",
    "czas": "2 lata",
-   "koszt": "bezplatna w publicznej",
+   "koszt": "bezpłatna w publicznej",
    "zawody": [
     "technik_farm"
    ],
-   "wymagania": "Po maturze albo po szkole sredniej."
+   "wymagania": "Po maturze albo po szkole średniej."
   },
   "sp_opiekun": {
-   "nazwa": "Szkola policealna: opiekun medyczny",
+   "nazwa": "Szkoła policealna: opiekun medyczny",
    "typ": "policealna",
    "czas": "1 do 1,5 roku",
-   "koszt": "bezplatna w publicznej",
+   "koszt": "bezpłatna w publicznej",
    "zawody": [
     "opiekun_med",
     "opiekun_starszej",
     "asystent_niepelno"
    ],
-   "wymagania": "Po szkole sredniej. Najszybsze wejscie do ochrony zdrowia."
+   "wymagania": "Po szkole średniej. Najszybsze wejście do ochrony zdrowia."
   },
   "sp_bhp": {
-   "nazwa": "Szkola policealna: technik BHP",
+   "nazwa": "Szkoła policealna: technik BHP",
    "typ": "policealna",
    "czas": "1,5 roku",
-   "koszt": "bezplatna w publicznej",
+   "koszt": "bezpłatna w publicznej",
    "zawody": [
     "spec_bhp"
    ],
-   "wymagania": "Po szkole sredniej."
+   "wymagania": "Po szkole średniej."
   },
   "sp_masaz": {
-   "nazwa": "Szkola policealna: technik masazysta",
+   "nazwa": "Szkoła policealna: technik masażysta",
    "typ": "policealna",
    "czas": "2 lata",
-   "koszt": "bezplatna w publicznej",
+   "koszt": "bezpłatna w publicznej",
    "zawody": [
     "masazysta"
    ],
-   "wymagania": "Po szkole sredniej."
+   "wymagania": "Po szkole średniej."
   },
   "sp_optyk": {
-   "nazwa": "Szkola policealna: technik optyk",
+   "nazwa": "Szkoła policealna: technik optyk",
    "typ": "policealna",
    "czas": "2 lata",
-   "koszt": "bezplatna w publicznej",
+   "koszt": "bezpłatna w publicznej",
    "zawody": [
     "optyk",
     "protetyk_sluchu"
    ],
-   "wymagania": "Po szkole sredniej."
+   "wymagania": "Po szkole średniej."
   },
   "sp_analityk": {
-   "nazwa": "Szkola policealna: technik analityki",
+   "nazwa": "Szkoła policealna: technik analityki",
    "typ": "policealna",
    "czas": "2 lata",
-   "koszt": "bezplatna w publicznej",
+   "koszt": "bezpłatna w publicznej",
    "zawody": [
     "technik_lab"
    ],
-   "wymagania": "Po szkole sredniej."
+   "wymagania": "Po szkole średniej."
   },
   "kurs_spawanie": {
    "nazwa": "Kurs spawania z uprawnieniami",
@@ -2260,7 +2260,7 @@
    "zawody": [
     "spawacz"
    ],
-   "wymagania": "Od 18 lat. Najkrotsza droga do zarobkow powyzej sredniej krajowej."
+   "wymagania": "Od 18 lat. Najkrótsza droga do zarobków powyżej średniej krajowej."
   },
   "kurs_pv": {
    "nazwa": "Kurs instalatora fotowoltaiki",
@@ -2270,27 +2270,27 @@
    "zawody": [
     "instalator_pv"
    ],
-   "wymagania": "Od 18 lat. Plus uprawnienia SEP i do pracy na wysokosci."
+   "wymagania": "Od 18 lat. Plus uprawnienia SEP i do pracy na wysokości."
   },
   "kurs_cnc": {
    "nazwa": "Kurs operatora CNC",
    "typ": "kurs",
-   "czas": "1 do 3 miesiecy",
+   "czas": "1 do 3 miesięcy",
    "koszt": "2000 do 5000 zl",
    "zawody": [
     "operator_cnc"
    ],
-   "wymagania": "Czesto finansowany przez pracodawce albo urzad pracy."
+   "wymagania": "Często finansowany przez pracodawcę albo urząd pracy."
   },
   "kurs_prawo_jazdy_c": {
-   "nazwa": "Prawo jazdy C, CE i kwalifikacja wstepna",
+   "nazwa": "Prawo jazdy C, CE i kwalifikacja wstępna",
    "typ": "kurs",
-   "czas": "3 do 6 miesiecy",
+   "czas": "3 do 6 miesięcy",
    "koszt": "11000 do 20000 zl",
    "zawody": [
     "kierowca"
    ],
-   "wymagania": "Od 18 lat, transport miedzynarodowy zwykle od 21. Czesto finansowany przez przewoznika."
+   "wymagania": "Od 18 lat, transport międzynarodowy zwykle od 21. Często finansowany przez przewoźnika."
   },
   "kurs_opiekun": {
    "nazwa": "Kurs opiekuna osoby starszej",
@@ -2301,43 +2301,43 @@
     "opiekun_starszej",
     "asystent_niepelno"
    ],
-   "wymagania": "Czesto bezplatny w programach urzedu pracy albo agencji."
+   "wymagania": "Często bezpłatny w programach urzędu pracy albo agencji."
   },
   "kurs_zlobek": {
-   "nazwa": "Kurs opiekuna w zlobku",
+   "nazwa": "Kurs opiekuna w żłobku",
    "typ": "kurs",
    "czas": "280 godzin",
    "koszt": "600 do 2500 zl",
    "zawody": [
     "opiekunka_dziecieca"
    ],
-   "wymagania": "Najszybsze wejscie do pracy z dziecmi."
+   "wymagania": "Najszybsze wejście do pracy z dziećmi."
   },
   "kurs_barber": {
    "nazwa": "Kurs fryzjerski i barberski",
    "typ": "kurs",
-   "czas": "3 do 12 miesiecy",
+   "czas": "3 do 12 miesięcy",
    "koszt": "3000 do 12000 zl",
    "zawody": [
     "fryzjer"
    ],
-   "wymagania": "Alternatywa dla szkoly branzowej dla osob po maturze."
+   "wymagania": "Alternatywa dla szkoły branżowej dla osób po maturze."
   },
   "kurs_ksiegowosc": {
-   "nazwa": "Kurs ksiegowosci od podstaw",
+   "nazwa": "Kurs księgowości od podstaw",
    "typ": "kurs",
-   "czas": "3 do 6 miesiecy",
+   "czas": "3 do 6 miesięcy",
    "koszt": "2500 do 7000 zl",
    "zawody": [
     "ksiegowy",
     "spec_plac"
    ],
-   "wymagania": "Realna droga takze dla osob zmieniajacych zawod."
+   "wymagania": "Realna droga także dla osób zmieniających zawód."
   },
   "kurs_kosztorys": {
    "nazwa": "Kurs kosztorysowania",
    "typ": "kurs",
-   "czas": "1 do 3 miesiecy",
+   "czas": "1 do 3 miesięcy",
    "koszt": "2000 do 6000 zl",
    "zawody": [
     "kosztorysant"
@@ -2356,9 +2356,9 @@
    "wymagania": "Od 18 lat."
   },
   "kurs_it": {
-   "nazwa": "Bootcamp albo nauka wlasna: programowanie i testowanie",
+   "nazwa": "Bootcamp albo nauka własna: programowanie i testowanie",
    "typ": "kurs",
-   "czas": "6 do 18 miesiecy",
+   "czas": "6 do 18 miesięcy",
    "koszt": "0 do 20000 zl",
    "zawody": [
     "programista",
@@ -2366,12 +2366,12 @@
     "wsparcie_tech",
     "administrator"
    ],
-   "wymagania": "Bez wymagan formalnych. Decyduje portfolio, nie certyfikat."
+   "wymagania": "Bez wymagań formalnych. Decyduje portfolio, nie certyfikat."
   },
   "kurs_marketing": {
-   "nazwa": "Nauka wlasna i kursy: marketing cyfrowy",
+   "nazwa": "Nauka własna i kursy: marketing cyfrowy",
    "typ": "kurs",
-   "czas": "6 do 12 miesiecy",
+   "czas": "6 do 12 miesięcy",
    "koszt": "0 do 6000 zl",
    "zawody": [
     "spec_marketingu",
@@ -2379,12 +2379,12 @@
     "social_media",
     "copywriter"
    ],
-   "wymagania": "Bez wymagan. Decyduje wlasny projekt z realnym odbiorca."
+   "wymagania": "Bez wymagań. Decyduje własny projekt z realnym odbiorca."
   },
   "kurs_grafika": {
-   "nazwa": "Nauka wlasna i kursy: projektowanie",
+   "nazwa": "Nauka własna i kursy: projektowanie",
    "typ": "kurs",
-   "czas": "6 do 18 miesiecy",
+   "czas": "6 do 18 miesięcy",
    "koszt": "0 do 15000 zl",
    "zawody": [
     "grafik",
@@ -2392,7 +2392,7 @@
     "ilustrator",
     "montazysta"
    ],
-   "wymagania": "Bez wymagan. Decyduje portfolio."
+   "wymagania": "Bez wymagań. Decyduje portfolio."
   },
   "pod_pedagogiczne": {
    "nazwa": "Studia podyplomowe: przygotowanie pedagogiczne",
@@ -2404,7 +2404,7 @@
     "katecheta",
     "nauczyciel_wf"
    ],
-   "wymagania": "Dla osob po dowolnych studiach kierunkowych."
+   "wymagania": "Dla osób po dowolnych studiach kierunkowych."
   },
   "pod_doradztwo": {
    "nazwa": "Studia podyplomowe: doradztwo zawodowe",
@@ -2414,7 +2414,7 @@
    "zawody": [
     "doradca_zawodowy"
    ],
-   "wymagania": "Najczestsza droga do tego zawodu."
+   "wymagania": "Najczęstsza droga do tego zawodu."
   },
   "pod_pedspec": {
    "nazwa": "Studia podyplomowe: pedagogika specjalna",
@@ -2425,7 +2425,7 @@
     "pedagog_specjalny",
     "terapeuta_zajeciowy"
    ],
-   "wymagania": "Dla nauczycieli innych przedmiotow. Droga coraz czestsza."
+   "wymagania": "Dla nauczycieli innych przedmiotów. Droga coraz częstsza."
   },
   "aplikacje": {
    "nazwa": "Aplikacja prawnicza",
@@ -2436,10 +2436,10 @@
     "radca_prawny",
     "notariusz"
    ],
-   "wymagania": "Po studiach prawniczych, po zdaniu egzaminu wstepnego."
+   "wymagania": "Po studiach prawniczych, po zdaniu egzaminu wstępnego."
   },
   "szkola_terapii": {
-   "nazwa": "Szkola psychoterapii",
+   "nazwa": "Szkoła psychoterapii",
    "typ": "szkolenie",
    "czas": "4 lata",
    "koszt": "35000 do 70000 zl",
@@ -2447,17 +2447,17 @@
     "psychoterapeuta",
     "interwent"
    ],
-   "wymagania": "Po studiach i po doswiadczeniu w ochronie zdrowia albo pomocy."
+   "wymagania": "Po studiach i po doświadczeniu w ochronie zdrowia albo pomocy."
   },
   "specjalizacja_med": {
    "nazwa": "Rezydentura i specjalizacja medyczna",
    "typ": "specjalizacja",
    "czas": "4 do 6 lat",
-   "koszt": "bezplatna, platna praca",
+   "koszt": "bezpłatna, płatna praca",
    "zawody": [
     "lekarz"
    ],
-   "wymagania": "Po studiach i stazu, po egzaminie LEK."
+   "wymagania": "Po studiach i stażu, po egzaminie LEK."
   },
   "uprawnienia_bud": {
    "nazwa": "Uprawnienia budowlane",
@@ -2473,34 +2473,34 @@
    "wymagania": "Po studiach technicznych."
   },
   "nabor_sluzby": {
-   "nazwa": "Nabor do sluzb mundurowych",
+   "nazwa": "Nabór do służb mundurowych",
    "typ": "nabor",
-   "czas": "6 do 12 miesiecy",
-   "koszt": "bezplatny",
+   "czas": "6 do 12 miesięcy",
+   "koszt": "bezpłatny",
    "zawody": [
     "policjant",
     "zolnierz",
     "funkcjonariusz_sw",
     "strazak"
    ],
-   "wymagania": "Matura, testy sprawnosciowe, psychologiczne i badania. Szkolenie w szkole sluzby, platne od pierwszego dnia."
+   "wymagania": "Matura, testy sprawnościowe, psychologiczne i badania. Szkolenie w szkole służby, płatne od pierwszego dnia."
   },
   "nabor_ratownictwo": {
    "nazwa": "Kursy ratownictwa gorskiego i wodnego",
    "typ": "kurs",
-   "czas": "6 do 24 miesiecy",
+   "czas": "6 do 24 miesięcy",
    "koszt": "2000 do 8000 zl",
    "zawody": [
     "ratownik_gorski",
     "strazak"
    ],
-   "wymagania": "Czlonkostwo w sluzbie ochotniczej, kursy stopniowe, bardzo dobra sprawnosc fizyczna."
+   "wymagania": "Członkostwo w służbie ochotniczej, kursy stopniowe, bardzo dobra sprawność fizyczna."
   },
   "praca_handel": {
-   "nazwa": "Wejscie przez pracodawce: sprzedaz i obsluga",
+   "nazwa": "Wejście przez pracodawcę: sprzedaż i obsługa",
    "typ": "pracodawca",
-   "czas": "0 do 3 miesiecy szkolenia",
-   "koszt": "bezplatne",
+   "czas": "0 do 3 miesięcy szkolenia",
+   "koszt": "bezpłatne",
    "zawody": [
     "handlowiec",
     "account_manager",
@@ -2509,25 +2509,25 @@
     "doradca_bank",
     "obsluga_klienta"
    ],
-   "wymagania": "Bez wymagan formalnych. Pracodawca szkoli, daje narzedzia, czesto samochod. Najtansze wejscie do dobrze platnego zawodu."
+   "wymagania": "Bez wymagań formalnych. Pracodawca szkoli, daje narzędzia, często samochod. Najtańsze wejście do dobrze płatnego zawodu."
   },
   "praca_transport": {
-   "nazwa": "Wejscie przez pracodawce: spedycja i dyspozytornia",
+   "nazwa": "Wejście przez pracodawcę: spedycja i dyspozytornia",
    "typ": "pracodawca",
-   "czas": "0 do 3 miesiecy szkolenia",
-   "koszt": "bezplatne",
+   "czas": "0 do 3 miesięcy szkolenia",
+   "koszt": "bezpłatne",
    "zawody": [
     "spedytor",
     "dyspozytor",
     "kierownik_magazynu"
    ],
-   "wymagania": "Bez wymagan formalnych. Jezyk obcy podnosi stawke bardziej niz dyplom."
+   "wymagania": "Bez wymagań formalnych. Jezyk obcy podnosi stawkę bardziej niż dyplom."
   },
   "praca_it_wejscie": {
-   "nazwa": "Wejscie przez pracodawce: wsparcie i wdrozenia IT",
+   "nazwa": "Wejście przez pracodawcę: wsparcie i wdrożenia IT",
    "typ": "pracodawca",
-   "czas": "1 do 3 miesiecy szkolenia",
-   "koszt": "bezplatne",
+   "czas": "1 do 3 miesięcy szkolenia",
+   "koszt": "bezpłatne",
    "zawody": [
     "wsparcie_tech",
     "spec_wdrozen",
@@ -2535,13 +2535,13 @@
     "administrator",
     "devops"
    ],
-   "wymagania": "Podstawy techniczne plus jezyk. Czesto brama do dalszych rol w IT."
+   "wymagania": "Podstawy techniczne plus jezyk. Często brama do dalszych ról w IT."
   },
   "praca_gastro": {
-   "nazwa": "Wejscie przez pracodawce: gastronomia i hotelarstwo",
+   "nazwa": "Wejście przez pracodawcę: gastronomia i hotelarstwo",
    "typ": "pracodawca",
    "czas": "od zaraz",
-   "koszt": "bezplatne",
+   "koszt": "bezpłatne",
    "zawody": [
     "kelner",
     "barista",
@@ -2549,13 +2549,13 @@
     "recepcjonista",
     "menedzer_restauracji"
    ],
-   "wymagania": "Bez zadnych wymagan wstepnych. Najlatwiejsze wejscie na rynek pracy w calej bazie."
+   "wymagania": "Bez żadnych wymagań wstępnych. Najłatwiejsze wejście na rynek pracy w całej bazie."
   },
   "awans_wewnetrzny": {
-   "nazwa": "Awans wewnetrzny po latach pracy",
+   "nazwa": "Awans wewnętrzny po latach pracy",
    "typ": "awans",
    "czas": "4 do 10 lat",
-   "koszt": "bezplatny",
+   "koszt": "bezpłatny",
    "zawody": [
     "kierownik_zespolu",
     "szef_kuchni",
@@ -2565,10 +2565,10 @@
     "kierownik_placowki",
     "glowny_ksiegowy"
    ],
-   "wymagania": "Droga przez lata pracy w tym samym obszarze. Bez doswiadczenia wykonawczego zespol nie uzna autorytetu."
+   "wymagania": "Droga przez lata pracy w tym samym obszarze. Bez doświadczenia wykonawczego zespół nie uzna autorytetu."
   },
   "wlasna_po_fachu": {
-   "nazwa": "Wlasna dzialalnosc po latach w fachu",
+   "nazwa": "Własna działalność po latach w fachu",
    "typ": "dzialalnosc",
    "czas": "3 do 8 lat fachu",
    "koszt": "20 do 500 tys. zl",
@@ -2579,29 +2579,29 @@
     "franczyzobiorca",
     "zalozyciel_tech"
    ],
-   "wymagania": "Najpierw fach albo branza, potem firma. Przedsiebiorczosc jest nadbudowa nad kompetencja, nie jej zamiennikiem."
+   "wymagania": "Najpierw fach albo branża, potem firma. Przedsiębiorczość jest nadbudowa nad kompetencja, nie jej zamiennikiem."
   },
   "kurs_fotografia": {
    "nazwa": "Kursy i asysta: fotografia i obraz",
    "typ": "kurs",
    "czas": "1 do 3 lata",
-   "koszt": "4000 do 50000 zl sprzetu",
+   "koszt": "4000 do 50000 zl sprzętu",
    "zawody": [
     "fotograf",
     "operator_kamery",
     "montazysta"
    ],
-   "wymagania": "Bez wymagan formalnych. Decyduje portfolio i asysta u doswiadczonego fotografa albo na planie."
+   "wymagania": "Bez wymagań formalnych. Decyduje portfolio i asysta u doświadczonego fotografa albo na planie."
   },
   "kurs_dzwiek": {
-   "nazwa": "Kursy i asysta: realizacja dzwieku",
+   "nazwa": "Kursy i asysta: realizacja dźwięku",
    "typ": "kurs",
    "czas": "1 do 3 lata",
    "koszt": "0 do 20000 zl",
    "zawody": [
     "realizator_dzwieku"
    ],
-   "wymagania": "Wejscie od noszenia sprzetu przy naglosnieniu wydarzen. Szkola pomaga, ale nie zastapi godzin przy konsolecie."
+   "wymagania": "Wejście od noszenia sprzętu przy nagłośnieniu wydarzeń. Szkoła pomaga, ale nie zastąpi godzin przy konsolecie."
   },
   "kurs_trenerski": {
    "nazwa": "Kursy trenerskie i licencje sportowe",
@@ -2614,23 +2614,23 @@
     "instruktor_rekreacji",
     "nauczyciel_wf"
    ],
-   "wymagania": "Licencje zwiazkowe zdobywane stopniowo. W wielu dyscyplinach znacza wiecej niz studia."
+   "wymagania": "Licencje związkowe zdobywane stopniowo. W wielu dyscyplinach znaczą więcej niż studia."
   },
   "kurs_coaching": {
-   "nazwa": "Szkola coachingu i szkolen",
+   "nazwa": "Szkoła coachingu i szkoleń",
    "typ": "kurs",
-   "czas": "6 do 18 miesiecy",
+   "czas": "6 do 18 miesięcy",
    "koszt": "8000 do 25000 zl",
    "zawody": [
     "coach",
     "trener_biznesu"
    ],
-   "wymagania": "Wymaga wczesniejszego doswiadczenia zawodowego. Bez niego nie ma czego uczyc."
+   "wymagania": "Wymaga wcześniejszego doświadczenia zawodowego. Bez niego nie ma czego uczyć."
   },
   "kurs_lektorski": {
    "nazwa": "Certyfikat jezykowy i kurs metodyczny",
    "typ": "kurs",
-   "czas": "6 do 18 miesiecy",
+   "czas": "6 do 18 miesięcy",
    "koszt": "2500 do 9000 zl",
    "zawody": [
     "lektor"
@@ -2640,8 +2640,8 @@
   "wolontariat_ngo": {
    "nazwa": "Wolontariat i praca w organizacji",
    "typ": "wolontariat",
-   "czas": "6 miesiecy do 2 lat",
-   "koszt": "bezplatny",
+   "czas": "6 miesięcy do 2 lat",
+   "koszt": "bezpłatny",
    "zawody": [
     "animator",
     "koordynator_ngo",
@@ -2649,29 +2649,29 @@
     "asystent_niepelno",
     "misjonarz"
    ],
-   "wymagania": "Najczestsza i najtansza droga do sektora pozarzadowego. Kierunek studiow ma tu mniejsze znaczenie niz doswiadczenie."
+   "wymagania": "Najczęstsza i najtańsza droga do sektora pozarządowego. Kierunek studiów ma tu mniejsze znaczenie niż doświadczenie."
   },
   "nauka_wlasna_media": {
-   "nazwa": "Nauka wlasna: tworzenie tresci",
+   "nazwa": "Nauka własna: tworzenie treści",
    "typ": "nauka_wlasna",
    "czas": "1 do 3 lata",
-   "koszt": "1000 do 8000 zl sprzetu",
+   "koszt": "1000 do 8000 zl sprzętu",
    "zawody": [
     "tworca_internetowy",
     "montazysta",
     "social_media"
    ],
-   "wymagania": "Brak formalnej drogi. Decyduje regularnosc publikowania przez lata. Realistycznie: rok do trzech bez dochodu."
+   "wymagania": "Brak formalnej drogi. Decyduje regularność publikowania przez lata. Realistycznie: rok do trzech bez dochodu."
   },
   "misje_formacja": {
    "nazwa": "Formacja misyjna",
    "typ": "formacja",
-   "czas": "6 do 24 miesiecy",
-   "koszt": "bezplatna albo symboliczna",
+   "czas": "6 do 24 miesięcy",
+   "koszt": "bezpłatna albo symboliczna",
    "zawody": [
     "misjonarz"
    ],
-   "wymagania": "Wymaga wczesniej zdobytego zawodu. Krotki wyjazd przed decyzja jest odpowiednikiem stazu."
+   "wymagania": "Wymaga wcześniej zdobytego zawodu. Krótki wyjazd przed decyzja jest odpowiednikiem stażu."
   }
  }
 }

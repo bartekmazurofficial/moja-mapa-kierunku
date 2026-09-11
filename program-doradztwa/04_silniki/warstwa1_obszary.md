@@ -196,7 +196,14 @@ Wymagania `F01`, `F02` i `F03` zapisane w bazie na poziomie obszaru są uśredni
 
 # 9. ETAP 6 — TRZY DROGI
 
-Model programu nazywa je poprawnie: **Droga A — najmocniejsze dopasowanie, Droga B — bardzo dobre dopasowanie, Droga C — alternatywa**. Silnik odtwarza dokładnie tę semantykę.
+Silnik wybiera je tak: **Droga A — najwyższy wynik, Droga B — druga co do wyniku, o ile nie odstaje, Droga C — najodleglejsza z sensownych**.
+
+> Nazwy pokazywane uczestnikowi zostały zmienione po fazie czwartej, bo poprzednie
+> („najmocniejsze dopasowanie", „bardzo dobre dopasowanie") niosły hierarchię
+> jakości, a zasada tego zabrania. Różnica punktowa między A i B bywa mniejsza
+> niż niepewność pomiaru. Obowiązują: **A — „Tu pasujesz najmocniej", B — „Tu też
+> pasujesz, ale to inna praca", C — „Coś zupełnie innego"**, przy czym Droga C ma
+> dołączone zdanie o swojej funkcji. Reguły wyboru bez zmian.
 
 ```
 A = obszar z najwyższym wynikiem

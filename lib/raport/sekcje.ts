@@ -122,4 +122,13 @@ export const SLOWA_ZAKAZANE = [
   "percentyl",
   "powołanie",
   "przeznaczenie",
+  // Regula 2: nigdy nie porownujemy uczestnika z innymi ludzmi. Frazy dobrane
+  // tak, zeby nie lapaly porownan miedzy drogami („mocniej niz pozostale").
+  "niż większość",
+  "niż inni",
+  "niż pozostali",
+  "niż reszta",
+  "przeciętn",
+  "na tle grupy",
+  "w porównaniu z innymi",
 ];

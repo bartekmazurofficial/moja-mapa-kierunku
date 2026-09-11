@@ -253,7 +253,7 @@
   ]
  },
  "kierownik_zespolu": {
-  "nazwa": "Kierownik zespolu",
+  "nazwa": "Kierownik zespołu",
   "obszar": 1,
   "poziom": "dlugi",
   "studia": "czesciowo",
@@ -876,7 +876,7 @@
   "dosw": []
  },
  "agent_nieruchomosci": {
-  "nazwa": "Agent nieruchomosci",
+  "nazwa": "Agent nieruchomości",
   "obszar": 3,
   "poziom": "szybki",
   "studia": "nie",
@@ -996,7 +996,7 @@
   "dosw": []
  },
  "wlasciciel_uslugowej": {
-  "nazwa": "Wlasciciel firmy uslugowej",
+  "nazwa": "Właściciel firmy uslugowej",
   "obszar": 27,
   "poziom": "sredni",
   "studia": "nie",
@@ -1061,7 +1061,7 @@
   ]
  },
  "wlasciciel_warsztatu": {
-  "nazwa": "Wlasciciel warsztatu lub zakladu",
+  "nazwa": "Właściciel warsztatu lub zakładu",
   "obszar": 27,
   "poziom": "sredni",
   "studia": "nie",
@@ -1126,7 +1126,7 @@
   ]
  },
  "wlasciciel_lokalu": {
-  "nazwa": "Wlasciciel lokalu gastronomicznego",
+  "nazwa": "Właściciel lokalu gastronomicznego",
   "obszar": 27,
   "poziom": "dlugi",
   "studia": "nie",
@@ -1189,7 +1189,7 @@
   ]
  },
  "zalozyciel_tech": {
-  "nazwa": "Zalozyciel firmy technologicznej",
+  "nazwa": "Założyciel firmy technologicznej",
   "obszar": 27,
   "poziom": "dlugi",
   "studia": "nie",
@@ -1316,7 +1316,7 @@
   "dosw": []
  },
  "ksiegowy": {
-  "nazwa": "Ksiegowy",
+  "nazwa": "Księgowy",
   "obszar": 4,
   "poziom": "sredni",
   "studia": "czesciowo",
@@ -1379,7 +1379,7 @@
   "dosw": []
  },
  "glowny_ksiegowy": {
-  "nazwa": "Glowny ksiegowy",
+  "nazwa": "Główny księgowy",
   "obszar": 4,
   "poziom": "dlugi",
   "studia": "tak",
@@ -1636,7 +1636,7 @@
   "dosw": []
  },
  "spec_plac": {
-  "nazwa": "Specjalista do spraw plac",
+  "nazwa": "Specjalista do spraw płac",
   "obszar": 4,
   "poziom": "sredni",
   "studia": "nie",
@@ -1933,7 +1933,7 @@
   ]
  },
  "urzednik": {
-  "nazwa": "Urzednik",
+  "nazwa": "Urzędnik",
   "obszar": 5,
   "poziom": "sredni",
   "studia": "czesciowo",
@@ -2380,7 +2380,7 @@
   "dosw": []
  },
  "prawnik_wewnetrzny": {
-  "nazwa": "Prawnik wewnetrzny",
+  "nazwa": "Prawnik wewnętrzny",
   "obszar": 7,
   "poziom": "bardzo_dlugi",
   "studia": "tak",
@@ -2441,7 +2441,7 @@
   "dosw": []
  },
  "spec_zgodnosci": {
-  "nazwa": "Specjalista do spraw zgodnosci",
+  "nazwa": "Specjalista do spraw zgodności",
   "obszar": 7,
   "poziom": "sredni",
   "studia": "tak",
@@ -2565,7 +2565,7 @@
   "dosw": []
  },
  "kurator_sadowy": {
-  "nazwa": "Kurator sadowy",
+  "nazwa": "Kurator sądowy",
   "obszar": 7,
   "poziom": "sredni",
   "studia": "tak",
@@ -2701,7 +2701,7 @@
   ]
  },
  "strazak": {
-  "nazwa": "Strazak",
+  "nazwa": "Strażak",
   "obszar": 8,
   "poziom": "sredni",
   "studia": "nie",
@@ -2770,7 +2770,7 @@
   ]
  },
  "zolnierz": {
-  "nazwa": "Zolnierz zawodowy",
+  "nazwa": "Żołnierz zawodowy",
   "obszar": 8,
   "poziom": "sredni",
   "studia": "nie",
@@ -2834,7 +2834,7 @@
   "dosw": []
  },
  "funkcjonariusz_sw": {
-  "nazwa": "Funkcjonariusz Sluzby Wieziennej",
+  "nazwa": "Funkcjonariusz Służby Więziennej",
   "obszar": 8,
   "poziom": "sredni",
   "studia": "nie",
@@ -3466,7 +3466,7 @@
   "dosw": []
  },
  "inzynier_danych": {
-  "nazwa": "Inzynier danych",
+  "nazwa": "Inżynier danych",
   "obszar": 9,
   "poziom": "dlugi",
   "studia": "czesciowo",
@@ -3528,7 +3528,7 @@
   ]
  },
  "inzynier_mechanik": {
-  "nazwa": "Inzynier mechanik",
+  "nazwa": "Inżynier mechanik",
   "obszar": 10,
   "poziom": "sredni",
   "studia": "tak",
@@ -3719,7 +3719,7 @@
   "dosw": []
  },
  "inzynier_jakosci": {
-  "nazwa": "Inzynier jakosci",
+  "nazwa": "Inżynier jakości",
   "obszar": 10,
   "poziom": "sredni",
   "studia": "tak",
@@ -4244,7 +4244,7 @@
   ]
  },
  "inzynier_budownictwa": {
-  "nazwa": "Inzynier budownictwa",
+  "nazwa": "Inżynier budownictwa",
   "obszar": 12,
   "poziom": "sredni",
   "studia": "tak",
@@ -5102,7 +5102,7 @@
   ]
  },
  "technik_serwisu": {
-  "nazwa": "Technik serwisu urzadzen",
+  "nazwa": "Technik serwisu urządzeń",
   "obszar": 13,
   "poziom": "szybki",
   "studia": "nie",
@@ -5748,7 +5748,7 @@
   ]
  },
  "lesnik": {
-  "nazwa": "Lesnik",
+  "nazwa": "Leśnik",
   "obszar": 15,
   "poziom": "sredni",
   "studia": "czesciowo",
@@ -5885,7 +5885,7 @@
   ]
  },
  "spec_srodowiska": {
-  "nazwa": "Specjalista ochrony srodowiska",
+  "nazwa": "Specjalista ochrony środowiska",
   "obszar": 15,
   "poziom": "sredni",
   "studia": "tak",
@@ -6021,7 +6021,7 @@
   ]
  },
  "pielegniarka": {
-  "nazwa": "Pielegniarka",
+  "nazwa": "Pielęgniarka",
   "obszar": 16,
   "poziom": "sredni",
   "studia": "tak",
@@ -6165,7 +6165,7 @@
   ]
  },
  "polozna": {
-  "nazwa": "Polozna",
+  "nazwa": "Położna",
   "obszar": 16,
   "poziom": "sredni",
   "studia": "tak",
@@ -6554,7 +6554,7 @@
   ]
  },
  "masazysta": {
-  "nazwa": "Masazysta",
+  "nazwa": "Masażysta",
   "obszar": 17,
   "poziom": "szybki",
   "studia": "nie",
@@ -7335,7 +7335,7 @@
   ]
  },
  "asystent_niepelno": {
-  "nazwa": "Asystent osoby z niepelnosprawnoscia",
+  "nazwa": "Asystent osoby z niepełnosprawnością",
   "obszar": 19,
   "poziom": "szybki",
   "studia": "nie",
@@ -8186,7 +8186,7 @@
   ]
  },
  "koordynator_ngo": {
-  "nazwa": "Koordynator projektow w NGO",
+  "nazwa": "Koordynator projektów w NGO",
   "obszar": 22,
   "poziom": "sredni",
   "studia": "czesciowo",
@@ -8510,7 +8510,7 @@
   ]
  },
  "misjonarz": {
-  "nazwa": "Misjonarz swiecki",
+  "nazwa": "Misjonarz świecki",
   "obszar": 22,
   "poziom": "sredni",
   "studia": "czesciowo",
@@ -8768,7 +8768,7 @@
   ]
  },
  "projektant_wnetrz": {
-  "nazwa": "Projektant wnetrz",
+  "nazwa": "Projektant wnętrz",
   "obszar": 23,
   "poziom": "sredni",
   "studia": "czesciowo",
@@ -8966,7 +8966,7 @@
   ]
  },
  "montazysta": {
-  "nazwa": "Montazysta wideo",
+  "nazwa": "Montażysta wideo",
   "obszar": 24,
   "poziom": "szybki",
   "studia": "nie",
@@ -9499,7 +9499,7 @@
   ]
  },
  "realizator_dzwieku": {
-  "nazwa": "Realizator dzwieku",
+  "nazwa": "Realizator dźwięku",
   "obszar": 25,
   "poziom": "szybki",
   "studia": "nie",
@@ -10101,7 +10101,7 @@
   "dosw": []
  },
  "menedzer_restauracji": {
-  "nazwa": "Menedzer restauracji",
+  "nazwa": "Menedżer restauracji",
   "obszar": 26,
   "poziom": "dlugi",
   "studia": "czesciowo",

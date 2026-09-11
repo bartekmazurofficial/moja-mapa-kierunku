@@ -238,9 +238,9 @@ export function WizjaZycia({ dane }: { dane: NonNullable<Raport["wizja_zycia"]> 
 
 export function TrzyDrogi({ dane }: { dane: NonNullable<Raport["trzy_drogi"]> }) {
   const ROLE: Record<string, string> = {
-    A: "Najmocniejsze dopasowanie",
-    B: "Bardzo dobre dopasowanie",
-    C: "Alternatywa, celowo najbardziej odmienna",
+    A: "Tu pasujesz najmocniej",
+    B: "Tu też pasujesz, ale to inna praca",
+    C: "Coś zupełnie innego",
   };
   return (
     <div className="flex flex-col gap-5">
@@ -276,6 +276,13 @@ export function TrzyDrogi({ dane }: { dane: NonNullable<Raport["trzy_drogi"]> })
                 <Naglowek>Do nauczenia się</Naglowek>
                 <p className="text-male">{d.umiejetnosci.join(" · ")}</p>
               </div>
+            ) : null}
+            {/* Bez tego zdania trzecia droga wyglada na nagrode pocieszenia. */}
+            {d.etykieta === "C" ? (
+              <p className="mt-4 text-male text-atrament-sciszony">
+                Jest tutaj celowo. Jeśli za dwa lata okaże się, że A i B były pomyłką, to jest
+                miejsce, od którego zaczniesz szukać ponownie.
+              </p>
             ) : null}
           </article>
         ))}

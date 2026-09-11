@@ -1,34 +1,34 @@
 {
  "marketing_tresc": {
-  "nazwa": "Marketing i tworzenie tresci",
+  "nazwa": "Marketing i tworzenie treści",
   "sklad": [
    "spec_marketingu",
    "copywriter"
   ],
-  "pytanie": "Chcesz odpowiadac za to, czy kampania zadziala, czy za to, jak brzmi tekst?",
-  "roznica": "Marketer prowadzi calosc i jest rozliczany z wyniku sprzedazowego. Copywriter odpowiada za slowo i pracuje zwykle na wlasny rachunek, dla wielu klientow.",
-  "uwaga": "Oba segmenty masowe sa mocno zagrozone. Marketer powinien celowac w analityke, copywriter w branzowosc."
+  "pytanie": "Chcesz odpowiadać za to, czy kampania zadziała, czy za to, jak brzmi tekst?",
+  "roznica": "Marketer prowadzi całość i jest rozliczany z wyniku sprzedażowego. Copywriter odpowiada za słowo i pracuje zwykle na własny rachunek, dla wielu klientów.",
+  "uwaga": "Oba segmenty masowe są mocno zagrożone. Marketer powinien celować w analitykę, copywriter w branżowość."
  },
  "sprzedaz_terenowa": {
-  "nazwa": "Sprzedaz w terenie",
+  "nazwa": "Sprzedaż w terenie",
   "sklad": [
    "handlowiec",
    "agent_nieruchomosci"
   ],
-  "pytanie": "Wolisz stala pensje z prowizja, czy dochod wylacznie prowizyjny przy znacznie wyzszym suficie?",
-  "roznica": "Przedstawiciel ma podstawe i samochod od pracodawcy. Agent nieruchomosci zarabia wylacznie od transakcji, a od pozyskania oferty do wyplaty mija 2 do 6 miesiecy.",
-  "uwaga": "Agent wymaga zabezpieczenia finansowego na 6 do 12 miesiecy. To warunek praktyczny, nie preferencja."
+  "pytanie": "Wolisz stała pensję z prowizja, czy dochód wyłącznie prowizyjny przy znacznie wyższym suficie?",
+  "roznica": "Przedstawiciel ma podstawę i samochod od pracodawcy. Agent nieruchomości zarabia wyłącznie od transakcji, a od pozyskania oferty do wypłaty mija 2 do 6 miesięcy.",
+  "uwaga": "Agent wymaga zabezpieczenia finansowego na 6 do 12 miesięcy. To warunek praktyczny, nie preferencja."
  },
  "ksiegowosc": {
-  "nazwa": "Ksiegowosc i rozliczenia",
+  "nazwa": "Księgowość i rozliczenia",
   "sklad": [
    "ksiegowy",
    "glowny_ksiegowy",
    "spec_plac"
   ],
-  "pytanie": "Chcesz odpowiadac za rozliczenia firmy, za calosc ksiag z podpisem wlasnym nazwiskiem, czy za wynagrodzenia konkretnych ludzi?",
-  "roznica": "Ksiegowy prowadzi. Glowny ksiegowy podpisuje sprawozdanie i odpowiada osobiscie, takze karnie. Specjalista plac liczy pensje, gdzie kazdy blad dotyczy czyichs pieniedzy i wychodzi tego samego dnia.",
-  "uwaga": "Do glownego ksiegowego nie ma szybkiej drogi. Wymaga 6 do 10 lat i certyfikatow."
+  "pytanie": "Chcesz odpowiadać za rozliczenia firmy, za całość ksiąg z podpisem własnym nazwiskiem, czy za wynagrodzenia konkretnych ludzi?",
+  "roznica": "Księgowy prowadzi. Główny księgowy podpisuje sprawozdanie i odpowiada osobiście, także karnie. Specjalista płac liczy pensję, gdzie każdy błąd dotyczy czyichś pieniędzy i wychodzi tego samego dnia.",
+  "uwaga": "Do głównego księgowego nie ma szybkiej drogi. Wymaga 6 do 10 lat i certyfikatów."
  },
  "analiza_fin": {
   "nazwa": "Analiza i kontrola finansowa",
@@ -36,19 +36,19 @@
    "analityk_finansowy",
    "kontroler_finansowy"
   ],
-  "pytanie": "Wolisz patrzec w przod i oceniac, czy to sie oplaci, czy pilnowac na biezaco, czy firma trzyma budzet?",
-  "roznica": "Analityk pracuje z modelami i prognozami, wiecej samotnie. Kontroler pracuje z ludzmi, ktorzy wydaja pieniadze, i musi im mowic, ze nie ma na cos srodkow.",
-  "uwaga": "Kontroler jest z definicji w opozycji do dzialow operacyjnych. To codzienne, nie okazjonalne."
+  "pytanie": "Wolisz patrzeć w przód i oceniać, czy to się opłaci, czy pilnować na bieżąco, czy firma trzyma budżet?",
+  "roznica": "Analityk pracuje z modelami i prognozami, więcej samotnie. Kontroler pracuje z ludźmi, którzy wydają pieniądze, i musi im mówić, ze nie ma na coś środków.",
+  "uwaga": "Kontroler jest z definicji w opozycji do działów operacyjnych. To codzienne, nie okazjonalne."
  },
  "admin_biuro": {
-  "nazwa": "Administracja i obsluga",
+  "nazwa": "Administracja i obsługa",
   "sklad": [
    "office_manager",
    "obsluga_klienta"
   ],
-  "pytanie": "Wolisz ogarniac wszystko, co dzieje sie w firmie, czy rozmawiac z klientami przez caly dzien?",
-  "roznica": "Office manager prowadzi kilkanascie spraw naraz, negocjuje z dostawcami i zarzadza budzetem biura. Obsluga klienta to kilkadziesiat rozmow dziennie, w wiekszosci z osobami niezadowolonymi.",
-  "uwaga": "Obsluga klienta jest jednym z najbardziej zagrozonych zawodow w bazie. Traktuj jako pierwsza prace, nie jako kariere."
+  "pytanie": "Wolisz ogarniać wszystko, co dzieje się w firmie, czy rozmawiać z klientami przez cały dzień?",
+  "roznica": "Office manager prowadzi kilkanaście spraw naraz, negocjuje z dostawcami i zarządza budżetem biura. Obsługa klienta to kilkadziesiąt rozmów dziennie, w większości z osobami niezadowolonymi.",
+  "uwaga": "Obsługa klienta jest jednym z najbardziej zagrożonych zawodów w bazie. Traktuj jako pierwsza prace, nie jako karierę."
  },
  "dane": {
   "nazwa": "Analiza danych",
@@ -56,9 +56,9 @@
    "analityk_danych",
    "data_scientist"
   ],
-  "pytanie": "Chcesz odpowiadac na pytania, ktore ktos zadaje, czy budowac modele przewidujace przyszlosc?",
-  "roznica": "Analityk pracuje z SQL i danymi historycznymi, wchodzi po studiach dowolnych albo bez nich. Data scientist buduje modele i wymaga matematyki na poziomie studiow scislych.",
-  "uwaga": "Matematyka jest tu twarda bariera. Jesli sprawia trudnosc, analityk danych jest realna droga, data scientist nie."
+  "pytanie": "Chcesz odpowiadać na pytania, które ktoś zadaje, czy budować modele przewidujące przyszłość?",
+  "roznica": "Analityk pracuje z SQL i danymi historycznymi, wchodzi po studiach dowolnych albo bez nich. Data scientist buduje modele i wymaga matematyki na poziomie studiów ścisłych.",
+  "uwaga": "Matematyka jest tu twarda bariera. Jeśli sprawia trudność, analityk danych jest realna droga, data scientist nie."
  },
  "prawnicy": {
   "nazwa": "Zawody prawnicze",
@@ -66,9 +66,9 @@
    "radca_prawny",
    "prawnik_wewnetrzny"
   ],
-  "pytanie": "Wielu klientow i rozliczenie z godzin, czy jedna firma i etat?",
-  "roznica": "Radca prowadzi wlasna praktyke, ma nieprzewidywalne godziny i wyzszy sufit. Prawnik wewnetrzny ma stala pensje, przewidywalny grafik i jednego klienta, ktorym jest jego pracodawca.",
-  "uwaga": "Obie drogi wymagaja aplikacji, czyli 8 do 9 lat od matury."
+  "pytanie": "Wielu klientów i rozliczenie z godzin, czy jedna firma i etat?",
+  "roznica": "Radca prowadzi własna praktykę, ma nieprzewidywalne godziny i wyższy sufit. Prawnik wewnętrzny ma stała pensję, przewidywalny grafik i jednego klienta, którym jest jego pracodawca.",
+  "uwaga": "Obie drogi wymagają aplikacji, czyli 8 do 9 lat od matury."
  },
  "prawo_urzad": {
   "nazwa": "Prawo w strukturze",
@@ -76,19 +76,19 @@
    "spec_zgodnosci",
    "notariusz"
   ],
-  "pytanie": "Chcesz pilnowac, zeby firma dzialala zgodnie z przepisami, czy nadawac dokumentom moc prawna?",
-  "roznica": "Specjalista zgodnosci pracuje w firmie i doradza. Notariusz prowadzi wlasna kancelarie, obsluguje klientow i odpowiada za czynnosci o skutkach majatkowych.",
-  "uwaga": "Notariat wymaga aplikacji i jest bardzo trudny do wejscia. Zgodnosc jest dostepna po studiach."
+  "pytanie": "Chcesz pilnować, żeby firma działała zgodnie z przepisami, czy nadawać dokumentom moc prawna?",
+  "roznica": "Specjalista zgodności pracuje w firmie i doradza. Notariusz prowadzi własna kancelarię, obsługuje klientów i odpowiada za czynności o skutkach majątkowych.",
+  "uwaga": "Notariat wymaga aplikacji i jest bardzo trudny do wejścia. Zgodność jest dostępna po studiach."
  },
  "mundurowe": {
-  "nazwa": "Sluzby mundurowe",
+  "nazwa": "Służby mundurowe",
   "sklad": [
    "policjant",
    "zolnierz"
   ],
-  "pytanie": "Chcesz pracowac w spoleczenstwie, czy w strukturze zamknietej?",
-  "roznica": "Policjant kontaktuje sie z obywatelami codziennie, czesto w konflikcie. Zolnierz pracuje wewnatrz jednostki, z wyjazdami i mozliwoscia przeniesienia sluzbowego.",
-  "uwaga": "Obie sluzby oznaczaja gotowosc do przeprowadzki na polecenie."
+  "pytanie": "Chcesz pracować w społeczeństwie, czy w strukturze zamkniętej?",
+  "roznica": "Policjant kontaktuje się z obywatelami codziennie, często w konflikcie. Żołnierz pracuje wewnątrz jednostki, z wyjazdami i możliwością przeniesienia służbowego.",
+  "uwaga": "Obie służby oznaczają gotowość do przeprowadzki na polecenie."
  },
  "ratownictwo_teren": {
   "nazwa": "Ratownictwo w terenie",
@@ -96,9 +96,9 @@
    "strazak",
    "ratownik_gorski"
   ],
-  "pytanie": "Chcesz stabilnego etatu w jednostce, czy pracy sezonowej i czesciowo ochotniczej?",
-  "roznica": "Strazak ma etat, dyzury i pelne zabezpieczenie socjalne. Ratownik gorski lub wodny czesto laczy to z inna praca, a zatrudnienie bywa sezonowe.",
-  "uwaga": "Oba wymagaja bardzo dobrej sprawnosci fizycznej utrzymywanej przez cala kariere."
+  "pytanie": "Chcesz stabilnego etatu w jednostce, czy pracy sezonowej i częściowo ochotniczej?",
+  "roznica": "Strażak ma etat, dyżury i pełne zabezpieczenie socjalne. Ratownik gorski lub wodny często łączy to z inna praca, a zatrudnienie bywa sezonowe.",
+  "uwaga": "Oba wymagają bardzo dobrej sprawności fizycznej utrzymywanej przez cała karierę."
  },
  "infra_it": {
   "nazwa": "Infrastruktura IT",
@@ -106,9 +106,9 @@
    "administrator",
    "devops"
   ],
-  "pytanie": "Chcesz utrzymywac systemy, ktore juz dzialaja, czy budowac sposob, w jaki oprogramowanie trafia na produkcje?",
-  "roznica": "Administrator dba o serwery i sprzet, czesto w jednej organizacji. DevOps automatyzuje procesy wdrozeniowe i pracuje blizej programistow. Sufit zarobkowy jest wyzszy.",
-  "uwaga": "Obie role oznaczaja dyzury i telefon w srodku nocy przy awarii."
+  "pytanie": "Chcesz utrzymywać systemy, które już działają, czy budować sposób, w jaki oprogramowanie trafia na produkcję?",
+  "roznica": "Administrator dba o serwery i sprzęt, często w jednej organizacji. DevOps automatyzuje procesy wdrożeniowe i pracuje bliżej programistów. Sufit zarobkowy jest wyższy.",
+  "uwaga": "Obie role oznaczają dyżury i telefon w środku nocy przy awarii."
  },
  "budowlanka_biuro": {
   "nazwa": "Budownictwo od strony biura",
@@ -117,9 +117,9 @@
    "kosztorysant",
    "projektant_instalacji"
   ],
-  "pytanie": "Chcesz liczyc, czy budynek sie utrzyma, ile bedzie kosztowal, czy jak doprowadzic do niego cieplo i wode?",
-  "roznica": "Konstruktor odpowiada za bezpieczenstwo i podpisuje sie imiennie. Kosztorysant liczy pieniadze i ma najnizszy poziom stresu z calej trojki. Projektant instalacji pracuje w obszarze, ktory rosnie najszybciej z powodu wymogow energetycznych.",
-  "uwaga": "Kosztorysant jest najlepsza droga dla kogos, kto pracowal fizycznie na budowie i musi przejsc do biura."
+  "pytanie": "Chcesz liczyć, czy budynek się utrzyma, ile będzie kosztował, czy jak doprowadzić do niego ciepło i wodę?",
+  "roznica": "Konstruktor odpowiada za bezpieczeństwo i podpisuje się imiennie. Kosztorysant liczy pieniądze i ma najniższy poziom stresu z całej trójki. Projektant instalacji pracuje w obszarze, który rosnie najszybciej z powodu wymogów energetycznych.",
+  "uwaga": "Kosztorysant jest najlepsza droga dla kogos, kto pracował fizycznie na budowie i musi przejść do biura."
  },
  "instalacje": {
   "nazwa": "Instalacje w budynkach",
@@ -128,18 +128,18 @@
    "hydraulik"
   ],
   "pytanie": "Prad czy woda?",
-  "roznica": "To jest ta sama logika pracy: diagnoza, montaz, wyjazdy do klienta, wlasna dzialalnosc po kilku latach. Elektryk czesciej pracuje w kurzu na budowie, hydraulik czesciej w kontakcie z kanalizacja i przy awariach o dowolnej porze.",
-  "uwaga": "Oba sa deficytowe w calej Polsce i oba korzystaja na transformacji energetycznej. Trudno tu o zly wybor."
+  "roznica": "To jest ta sama logika pracy: diagnoza, montaż, wyjazdy do klienta, własna działalność po kilku latach. Elektryk częściej pracuje w kurzu na budowie, hydraulik częściej w kontakcie z kanalizacja i przy awariach o dowolnej porze.",
+  "uwaga": "Oba są deficytowe w całej Polsce i oba korzystają na transformacji energetycznej. Trudno tu o zły wybór."
  },
  "rzemioslo_material": {
-  "nazwa": "Rzemioslo materialowe",
+  "nazwa": "Rzemiosło materiałowe",
   "sklad": [
    "stolarz",
    "krawiec"
   ],
   "pytanie": "Drewno czy tkanina?",
-  "roznica": "Poza materialem to bardzo podobna praca: pomiar u klienta, wykonanie w warsztacie, montaz albo przymiarka. Stolarstwo wymaga wiekszej sily i drozszego warsztatu, krawiectwo jest tansze w starcie i mniej obciazajace fizycznie.",
-  "uwaga": "W obu produkcja masowa jest zagrozona, a wyroby na wymiar nie."
+  "roznica": "Poza materiałem to bardzo podobna praca: pomiar u klienta, wykonanie w warsztacie, montaż albo przymiarka. Stolarstwo wymaga większej siły i droższego warsztatu, krawiectwo jest tańsze w starcie i mniej obciążające fizycznie.",
+  "uwaga": "W obu produkcja masowa jest zagrożona, a wyroby na wymiar nie."
  },
  "serwis_techniczny": {
   "nazwa": "Serwis i naprawa",
@@ -147,9 +147,9 @@
    "mechanik",
    "technik_serwisu"
   ],
-  "pytanie": "Pojazdy czy urzadzenia?",
-  "roznica": "Ta sama logika diagnozy. Mechanik pracuje w warsztacie, klient przyjezdza do niego. Technik serwisu jezdzi do urzadzen, wiec spedza jedna czwarta czasu w samochodzie.",
-  "uwaga": "U technika serwisu wybor specjalizacji zmienia dochod dwukrotnie. Serwis medyczny i przemyslowy placa najlepiej, AGD najgorzej."
+  "pytanie": "Pojazdy czy urządzenia?",
+  "roznica": "Ta sama logika diagnozy. Mechanik pracuje w warsztacie, klient przyjeżdża do niego. Technik serwisu jeździ do urządzeń, więc spędza jedna czwarta czasu w samochodzie.",
+  "uwaga": "U technika serwisu wybór specjalizacji zmienia dochód dwukrotnie. Serwis medyczny i przemysłowy płaca najlepiej, AGD najgorzej."
  },
  "transport_biuro": {
   "nazwa": "Transport od strony biura",
@@ -157,39 +157,39 @@
    "spedytor",
    "dyspozytor"
   ],
-  "pytanie": "Chcesz negocjowac z firmami transportowymi, czy zarzadzac wlasnymi kierowcami?",
-  "roznica": "Spedytor szuka przewoznikow na rynku i zarabia na marzy, czesto z prowizja. Dyspozytor zarzadza wlasna flota i przede wszystkim ludzmi, ktorzy sa zmeczeni po tygodniu w trasie.",
-  "uwaga": "Oba oznaczaja telefon dzwoniacy przez caly dzien i czesto po godzinach."
+  "pytanie": "Chcesz negocjować z firmami transportowymi, czy zarządzać własnymi kierowcami?",
+  "roznica": "Spedytor szuka przewoźników na rynku i zarabia na marży, często z prowizja. Dyspozytor zarządza własna flota i przede wszystkim ludźmi, którzy są zmęczeni po tygodniu w trasie.",
+  "uwaga": "Oba oznaczają telefon dzwoniący przez cały dzień i często po godzinach."
  },
  "pielegniarstwo": {
-  "nazwa": "Opieka pielegniarska i poloznictwo",
+  "nazwa": "Opieka pielęgniarska i położnictwo",
   "sklad": [
    "pielegniarka",
    "polozna"
   ],
-  "pytanie": "Odpowiedzialnosc za jedna osobe, czy za dwie naraz?",
-  "roznica": "Polozna prowadzi porod fizjologiczny samodzielnie, bez lekarza, i odpowiada jednoczesnie za matke i dziecko. Pielegniarka ma szerszy zakres miejsc pracy i wiecej sciezek: oddzial, przychodnia, blok operacyjny, opieka domowa.",
-  "uwaga": "U poloznej najciezszym doswiadczeniem jest porod zakonczony smiercia dziecka. Zdarza sie rzadko, ale zdarza."
+  "pytanie": "Odpowiedzialność za jedną osobę, czy za dwie naraz?",
+  "roznica": "Położna prowadzi poród fizjologiczny samodzielnie, bez lekarza, i odpowiada jednocześnie za matkę i dziecko. Pielęgniarka ma szerszy zakres miejsc pracy i więcej ścieżek: oddział, przychodnia, blok operacyjny, opieka domowa.",
+  "uwaga": "U położnej najcięższym doświadczeniem jest poród zakończony śmiercią dziecka. Zdarza się rzadko, ale zdarza."
  },
  "opieka_bezposrednia": {
-  "nazwa": "Opieka bezposrednia",
+  "nazwa": "Opieka bezpośrednia",
   "sklad": [
    "opiekun_med",
    "opiekun_starszej"
   ],
-  "pytanie": "Chcesz pracowac w placowce z zespolem, czy u jednej osoby, czesto samotnie?",
-  "roznica": "Opiekun medyczny pracuje w szpitalu albo zakladzie opiekunczym, ma zespol i wieksze uprawnienia. Opiekun osoby starszej czesto pracuje sam w domu podopiecznego, takze za granica w systemie rotacyjnym.",
-  "uwaga": "Praca za granica w opiece daje 2 do 3 razy wyzszy dochod, ale oznacza tygodnie albo miesiace poza domem."
+  "pytanie": "Chcesz pracować w placówce z zespołem, czy u jednej osoby, często samotnie?",
+  "roznica": "Opiekun medyczny pracuje w szpitalu albo zakładzie opiekuńczym, ma zespół i większe uprawnienia. Opiekun osoby starszej często pracuje sam w domu podopiecznego, także za granica w systemie rotacyjnym.",
+  "uwaga": "Praca za granica w opiece daje 2 do 3 razy wyższy dochód, ale oznacza tygodnie albo miesiące poza domem."
  },
  "cialo_terapia": {
-  "nazwa": "Praca z cialem",
+  "nazwa": "Praca z ciałem",
   "sklad": [
    "fizjoterapeuta",
    "masazysta"
   ],
-  "pytanie": "Piec lat studiow i pelne uprawnienia medyczne, czy rok kursu i szybkie wejscie?",
-  "roznica": "Fizjoterapeuta diagnozuje, prowadzi terapie i pracuje z pacjentami po urazach i operacjach. Masazysta wykonuje zabiegi, nie diagnozuje i nie moze prowadzic rehabilitacji.",
-  "uwaga": "Oba zawody zuzywaja rece. Masazysta szybciej, bo pracuje wylacznie manualnie."
+  "pytanie": "Pięć lat studiów i pełne uprawnienia medyczne, czy rok kursu i szybkie wejście?",
+  "roznica": "Fizjoterapeuta diagnozuje, prowadzi terapię i pracuje z pacjentami po urazach i operacjach. Masażysta wykonuje zabiegi, nie diagnozuje i nie może prowadzić rehabilitacji.",
+  "uwaga": "Oba zawody zużywają ręce. Masażysta szybciej, bo pracuje wyłącznie manualnie."
  },
  "pomoc_psych": {
   "nazwa": "Pomoc psychologiczna",
@@ -198,18 +198,18 @@
    "psychoterapeuta"
   ],
   "pytanie": "Diagnoza i ocena, czy prowadzenie jednej osoby przez lata?",
-  "roznica": "Psycholog bada, diagnozuje, wydaje opinie i pracuje w szkole, poradni, szpitalu albo firmie. Psychoterapeuta prowadzi terapie, co wymaga czteroletniej szkoly po studiach.",
-  "uwaga": "Droga do psychoterapii kosztuje 60 do 120 tysiecy zlotych wlasnych srodkow. Wiedz o tym przed wyborem studiow, a nie po nich."
+  "roznica": "Psycholog bada, diagnozuje, wydaje opinie i pracuje w szkole, poradni, szpitalu albo firmie. Psychoterapeuta prowadzi terapię, co wymaga czteroletniej szkoły po studiach.",
+  "uwaga": "Droga do psychoterapii kosztuje 60 do 120 tysięcy złotych własnych środków. Wiedz o tym przed wyborem studiów, a nie po nich."
  },
  "praca_z_rodzina": {
-  "nazwa": "Praca z rodzina w kryzysie",
+  "nazwa": "Praca z rodziną w kryzysie",
   "sklad": [
    "pracownik_socjalny",
    "asystent_rodziny"
   ],
-  "pytanie": "Chcesz miec narzedzia formalne i decydowac o swiadczeniach, czy budowac zaufanie bez funkcji kontrolnej?",
-  "roznica": "Pracownik socjalny przyznaje swiadczenia i prowadzi postepowania, wiec ma wladze i zwiazana z nia nieufnosc. Asystent rodziny pracuje intensywnie z kilkunastoma rodzinami, bez funkcji kontrolnej, i to jest jego najwieksza sila.",
-  "uwaga": "U obu superwizja jest warunkiem bezpiecznej pracy. Pytaj o nia na rozmowie o prace tak samo jak o wynagrodzenie."
+  "pytanie": "Chcesz mieć narzędzia formalne i decydować o świadczeniach, czy budować zaufanie bez funkcji kontrolnej?",
+  "roznica": "Pracownik socjalny przyznaje świadczenia i prowadzi postępowania, więc ma władzę i związaną z nią nieufność. Asystent rodziny pracuje intensywnie z kilkunastoma rodzinami, bez funkcji kontrolnej, i to jest jego największa siła.",
+  "uwaga": "U obu superwizja jest warunkiem bezpiecznej pracy. Pytaj o nią na rozmowie o pracę tak samo jak o wynagrodzenie."
  },
  "szkola": {
   "nazwa": "Nauczanie w szkole",
@@ -217,9 +217,9 @@
    "nauczyciel",
    "pedagog_specjalny"
   ],
-  "pytanie": "Chcesz uczyc przedmiotu cala klase, czy pracowac indywidualnie z uczniami, dla ktorych zwykla szkola jest za trudna?",
-  "roznica": "Nauczyciel prowadzi 30-osobowa grupe i realizuje program. Pedagog specjalny pracuje z pojedynczymi uczniami, dostosowuje material i widzi postepy mierzone w miesiacach.",
-  "uwaga": "Pedagog specjalny jest najszybciej rosnacym zawodem w calej edukacji i ma realna mozliwosc terapii prywatnej."
+  "pytanie": "Chcesz uczyć przedmiotu cała klasę, czy pracować indywidualnie z uczniami, dla których zwykła szkoła jest za trudna?",
+  "roznica": "Nauczyciel prowadzi 30-osobowa grupe i realizuje program. Pedagog specjalny pracuje z pojedynczymi uczniami, dostosowuje materiał i widzi postępy mierzone w miesiącach.",
+  "uwaga": "Pedagog specjalny jest najszybciej rosnącym zawodem w całej edukacji i ma realna możliwość terapii prywatnej."
  },
  "projektowanie_wiz": {
   "nazwa": "Projektowanie wizualne",
@@ -227,38 +227,38 @@
    "grafik",
    "projektant_ux"
   ],
-  "pytanie": "Chcesz decydowac, jak cos wyglada, czy jak sie tego uzywa?",
-  "roznica": "Grafik pracuje z forma i marka, czesto na wlasny rachunek. Projektant UX bada uzytkownikow, podejmuje decyzje o strukturze produktu i musi je uzasadniac danymi, nie gustem.",
-  "uwaga": "Grafika w warstwie wykonawczej jest mocno zagrozona. Rynek wejsciowy UX jest przesycony. Oba wymagaja bardzo dobrego portfolio."
+  "pytanie": "Chcesz decydować, jak coś wygląda, czy jak się tego używa?",
+  "roznica": "Grafik pracuje z forma i marka, często na własny rachunek. Projektant UX bada użytkowników, podejmuje decyzje o strukturze produktu i musi je uzasadniać danymi, nie gustem.",
+  "uwaga": "Grafika w warstwie wykonawczej jest mocno zagrożona. Rynek wejściowy UX jest przesycony. Oba wymagają bardzo dobrego portfolio."
  },
  "gastro_zarzadzanie": {
-  "nazwa": "Zarzadzanie w gastronomii",
+  "nazwa": "Zarządzanie w gastronomii",
   "sklad": [
    "szef_kuchni",
    "menedzer_restauracji"
   ],
-  "pytanie": "Odpowiadasz za kuchnie, czy za caly lokal?",
-  "roznica": "Szef kuchni odpowiada za menu, koszt surowca i zespol kuchni. Menedzer odpowiada za rentownosc calego lokalu, obsluge, opinie w internecie i formalnosci.",
-  "uwaga": "Do obu prowadzi tylko droga przez lata pracy w gastronomii. Bez tego zespol nie uzna autorytetu."
+  "pytanie": "Odpowiadasz za kuchnię, czy za cały lokal?",
+  "roznica": "Szef kuchni odpowiada za menu, koszt surowca i zespół kuchni. Menedżer odpowiada za rentowność całego lokalu, obsługę, opinie w internecie i formalności.",
+  "uwaga": "Do obu prowadzi tylko droga przez lata pracy w gastronomii. Bez tego zespół nie uzna autorytetu."
  },
  "uroda": {
-  "nazwa": "Uroda i pielegnacja",
+  "nazwa": "Uroda i pielęgnacja",
   "sklad": [
    "fryzjer",
    "kosmetolog"
   ],
-  "pytanie": "Wlosy czy skora?",
-  "roznica": "Fryzjerstwo ma nizszy prog wejscia i tanszy wlasny salon. Kosmetologia wymaga wiekszej wiedzy o skorze i drozszej aparatury, ale ma wyzszy sufit i wieksze mozliwosci specjalizacji.",
-  "uwaga": "Oba oznaczaja stanie przez caly dzien i kontakt z preparatami. Alergie kontaktowe sa czesta przyczyna odejscia z zawodu."
+  "pytanie": "Włosy czy skóra?",
+  "roznica": "Fryzjerstwo ma niższy próg wejścia i tańszy własny salon. Kosmetologia wymaga większej wiedzy o skórze i droższej aparatury, ale ma wyższy sufit i większe możliwości specjalizacji.",
+  "uwaga": "Oba oznaczają stanie przez cały dzień i kontakt z preparatami. Alergie kontaktowe są częsta przyczyną odejścia z zawodu."
  },
  "wlasna_firma": {
-  "nazwa": "Wlasna firma",
+  "nazwa": "Własna firma",
   "sklad": [
    "wlasciciel_uslugowej",
    "wlasciciel_lokalu"
   ],
-  "pytanie": "Chcesz sprzedawac usluge, ktora wykonujesz z ekipa, czy prowadzic miejsce, do ktorego ludzie przychodza?",
-  "roznica": "Firma uslugowa ma nizsze koszty stale i mozna ja zaczac malutko. Lokal gastronomiczny wymaga od 150 tysiecy zlotych i rezerwy na 12 miesiecy, a wiekszosc lokali nie osiaga trwalej rentownosci.",
-  "uwaga": "Obie drogi wymagaja najpierw fachu. Przedsiebiorczosc jest nadbudowa nad kompetencja, nie jej zamiennikiem."
+  "pytanie": "Chcesz sprzedawać usługę, która wykonujesz z ekipa, czy prowadzić miejsce, do którego ludzie przychodzą?",
+  "roznica": "Firma usługowa ma niższe koszty stale i można ja zacząć malutko. Lokal gastronomiczny wymaga od 150 tysięcy złotych i rezerwy na 12 miesięcy, a większość lokali nie osiaga trwalej rentowności.",
+  "uwaga": "Obie drogi wymagają najpierw fachu. Przedsiębiorczość jest nadbudowa nad kompetencja, nie jej zamiennikiem."
  }
 }

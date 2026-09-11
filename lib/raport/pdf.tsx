@@ -299,10 +299,10 @@ function Dokument({ raport, oceny }: DanePdf) {
               <View key={d.etykieta} style={s.karta}>
                 <Text style={s.pozycja}>
                   {d.etykieta === "A"
-                    ? "Najmocniejsze dopasowanie"
+                    ? "Tu pasujesz najmocniej"
                     : d.etykieta === "B"
-                      ? "Bardzo dobre dopasowanie"
-                      : "Alternatywa, celowo najbardziej odmienna"}
+                      ? "Tu też pasujesz, ale to inna praca"
+                      : "Coś zupełnie innego"}
                 </Text>
                 <Text style={s.akapit}>{d.obszar}</Text>
                 <Text style={s.drobne}>
@@ -316,6 +316,12 @@ function Dokument({ raport, oceny }: DanePdf) {
                 ) : null}
                 {d.umiejetnosci.length > 0 ? (
                   <Text style={s.drobne}>Do nauczenia się: {d.umiejetnosci.join(", ")}</Text>
+                ) : null}
+                {d.etykieta === "C" ? (
+                  <Text style={s.drobne}>
+                    Jest tutaj celowo. Jeśli za dwa lata okaże się, że A i B były pomyłką, to jest
+                    miejsce, od którego zaczniesz szukać ponownie.
+                  </Text>
                 ) : null}
               </View>
             ))}

@@ -65,7 +65,7 @@ export const CWIARTKI = [
     kod: "ukryty_atut",
     etykieta: "Ukryty atut",
     komunikat:
-      "Nie palisz się do tego, ale prawdopodobnie poszłoby Ci lepiej niż większości. Warto sprawdzić, zanim odrzucisz.",
+      "To jest coś, w czym prawdopodobnie poradziłbyś sobie dobrze, choć nigdy Cię do tego nie ciągnęło. Takie rzeczy łatwo przeoczyć, bo nie szuka się ich tam, gdzie się lubi zaglądać. Warto o tym wiedzieć, nawet jeśli nic z tym nie zrobisz.",
   },
   {
     kod: "do_zbudowania",
