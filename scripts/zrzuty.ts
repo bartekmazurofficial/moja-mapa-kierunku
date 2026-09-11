@@ -19,6 +19,8 @@ interface Zrzut {
   przewinDo?: string;
   /** Ekran panelu: trzeba najpierw zalogowac prowadzacego. */
   panel?: boolean;
+  /** Ile razy kliknac przycisk „dalej", zeby przejsc ekran wstepu. */
+  dalej?: number;
 }
 
 const ZRZUTY: Zrzut[] = [
@@ -30,6 +32,7 @@ const ZRZUTY: Zrzut[] = [
   { nazwa: "komputer-2-kierunki-bez-studiow", sciezka: "/u/3DEPKJBQW9/raport?otwarte=kierunki", szerokosc: 1440, wysokosc: 1300, przewinDo: "Kierunki i drogi" },
   { nazwa: "komputer-3-zawody", sciezka: "/u/KJR5D49GKS/raport?otwarte=zawody", szerokosc: 1440, wysokosc: 1300, przewinDo: "Konkretne zawody" },
   { nazwa: "komputer-4-karta-zawodu", sciezka: "/u/KJR5D49GKS/zawod/pielegniarka", szerokosc: 1440, wysokosc: 1200 },
+  { nazwa: "telefon-7-filtry-a5", sciezka: "/u/FGN8GB99JH/modul/A5", szerokosc: 390, wysokosc: 844, dalej: 1 },
   { nazwa: "telefon-5-profil-plaski", sciezka: "/u/S4YBD2DEJH/raport?otwarte=obszary", szerokosc: 390, wysokosc: 1500, przewinDo: "Moje najmocniejsze obszary" },
   { nazwa: "komputer-5-profil-plaski", sciezka: "/u/S4YBD2DEJH/raport?otwarte=trzy_drogi", szerokosc: 1440, wysokosc: 1300, przewinDo: "Trzy drogi" },
   { nazwa: "komputer-6-korekta-prowadzacego", sciezka: "/u/3DEPKJBQW9/raport?otwarte=zawody", szerokosc: 1440, wysokosc: 1200, przewinDo: "Dopisane podczas rozmowy" },
@@ -67,6 +70,14 @@ async function main() {
     const karta = await przegladarka.newPage();
     await karta.setViewport({ width: z.szerokosc, height: z.wysokosc, deviceScaleFactor: 2 });
     await karta.goto(adres + z.sciezka, { waitUntil: "networkidle0" });
+    for (let i = 0; i < (z.dalej ?? 0); i++) {
+      await karta.evaluate(() => {
+        const przyciski = [...document.querySelectorAll("button")];
+        const dalej = przyciski.find((b) => /Zaczynamy|Dalej|Przejdź/.test(b.textContent ?? ""));
+        dalej?.click();
+      });
+      await new Promise((r) => setTimeout(r, 500));
+    }
     if (z.przewinDo) {
       await karta.evaluate((szukany: string) => {
         const kandydaci = [...document.querySelectorAll("h2, h3, p, summary")];
