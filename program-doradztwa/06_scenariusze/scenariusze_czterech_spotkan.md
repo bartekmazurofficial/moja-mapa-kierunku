@@ -232,21 +232,9 @@ Instrukcja:
 
 > „Zobaczysz pary. Wybierasz to, co jest dla Ciebie ważniejsze. **Obie rzeczy zwykle będą ważne, dlatego to trudne.** Nie ma tu dobrych odpowiedzi."
 
-### 28–45 min · Assessment A5: filtry rzeczywistości
+### 28–36 min · Przerwa
 
-**17 minut, 32 pozycje TAK / MOŻE / NIE, plus weta.**
-
-Instrukcja z bardzo ważnym elementem:
-
-> „Teraz konkretne warunki pracy. Odpowiadasz TAK, MOŻE albo NIE. **Na koniec wybierzesz maksymalnie trzy rzeczy, które są dla Ciebie absolutnie wykluczone.** Tylko trzy, więc zastanów się, które naprawdę. Wykluczenie usuwa zawody całkowicie, nie przesuwa ich niżej."
-
-Tu też pada pytanie o wykonalność finansową, sformułowane bez wchodzenia w sytuację rodziny:
-
-> „Gdyby droga do zawodu wymagała opłacenia kursów albo sprzętu za kilkanaście tysięcy złotych, na ile realne jest to w Twojej sytuacji w ciągu najbliższych lat?"
-
-### 45–53 min · Przerwa
-
-### 53–98 min · Moja wizja życia
+### 36–81 min · Moja wizja życia
 
 **45 minut. Jedyny moduł, w którym uczestnik pisze własnymi słowami.**
 
@@ -260,7 +248,19 @@ Prowadzący uruchamia to trzema zdaniami i milknie:
 
 **Prowadzący nie zagląda w treść w trakcie.** Wizja życia jest widoczna dla niego dopiero przed sesją indywidualną i uczestnik ma o tym wiedzieć z góry.
 
-### 98–115 min · Krótkie podsumowanie
+### 81–103 min · Assessment A5: filtry rzeczywistości
+
+**22 minuty, 43 pozycje TAK / MOŻE / NIE, plus weta.**
+
+Instrukcja z bardzo ważnym elementem:
+
+> „Teraz konkretne warunki pracy. Odpowiadasz TAK, MOŻE albo NIE. **Na koniec wybierzesz maksymalnie trzy rzeczy, które są dla Ciebie absolutnie wykluczone.** Tylko trzy, więc zastanów się, które naprawdę. Wykluczenie usuwa zawody całkowicie, nie przesuwa ich niżej."
+
+Tu też pada pytanie o wykonalność finansową, sformułowane bez wchodzenia w sytuację rodziny:
+
+> „Gdyby droga do zawodu wymagała opłacenia kursów albo sprzętu za kilkanaście tysięcy złotych, na ile realne jest to w Twojej sytuacji w ciągu najbliższych lat?"
+
+### 103–115 min · Krótkie podsumowanie
 
 Bez odblokowywania wyników. Jedno pytanie do grupy:
 

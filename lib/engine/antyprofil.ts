@@ -16,8 +16,9 @@
  * trudniejsze" oparte na samoocenie siedemnastolatka bylo by dokladnie tym,
  * przed czym ostrzega caly modul A2.
  *
- * Kody NIEAKTYWNE nigdy nie trafiaja. Lista jest w raporcie z fazy 2 i czeka
- * na tabele uzupelniajaca od fundacji.
+ * Kody NIEAKTYWNE nigdy nie trafiaja. Po fazie piatej zostalo ich dwanascie:
+ * kazdy wymagalby pozycji, ktora brzmialaby jak test osobowosci albo jak
+ * samoocena, przed ktora ostrzega caly modul A2. Do usuniecia z kart.
  */
 
 import { PROGI_PROFILU } from "./config";
@@ -300,54 +301,116 @@ export const ANTYPROFIL: Record<string, RegulaAntyprofilu> = {
       przedmiotTrudny(w, "matematyka") || w.punktStartu?.matematyka === "najwiekszy_problem",
   },
 
-  // =====================================================================
-  // KODY NIEAKTYWNE
-  // Nie da sie ich wyprowadzic jednoznacznie z odpowiedzi uczestnika.
-  // Czekaja na tabele uzupelniajaca. Nieaktywny kod nigdy nie trafia.
-  // =====================================================================
 
-  agresja: { aktywna: false, powod: "brak pozycji w A5: moduł nie pyta o agresję ze strony innych" },
-  ciasnota_nie: { aktywna: false, powod: "brak pozycji w A5: moduł nie pyta o pracę w ciasnocie" },
-  goraco_nie: { aktywna: false, powod: "brak pozycji w A5: moduł nie pyta o pracę w wysokiej temperaturze" },
-  wieczory_nie: {
-    aktywna: false,
-    powod:
-      "brak pozycji w A5: F15 dotyczy nieregularnych godzin, nie pracy wieczorami, a to nie to samo",
-  },
-  wczesne_wstawanie: { aktywna: false, powod: "brak pozycji w A5: moduł nie pyta o godzinę rozpoczęcia pracy" },
+  // --- granice z jedenastu pozycji A5 dolozonych po fazie 5 ---
   umieranie: {
-    aktywna: false,
-    powod:
-      "brak pozycji w A5: F21 dotyczy widoku krwi i cierpienia, nie kontaktu ze śmiercią; to sąsiednie, nie te same rzeczy",
+    aktywna: true,
+    wZawodzie: "Kontakt ze śmiercią i z umieraniem jest tu regularną częścią pracy, nie wyjątkiem.",
+    zrodlo: "odpowiedziałeś NIE na pytanie o regularny kontakt ze śmiercią i z umieraniem",
+    sprawdz: (w) => odmowa(w, "F34"),
   },
-  dotyk: { aktywna: false, powod: "brak pozycji: żaden moduł nie pyta o komfort z dotykaniem obcych osób" },
-  konflikt_rodzic: { aktywna: false, powod: "brak pozycji: F23 pyta o pracę z dziećmi, nie o konflikt z rodzicami" },
-  dokumentacja_nie: { aktywna: false, powod: "brak pozycji: żaden moduł nie pyta o gotowość na pracę papierkową" },
-  bez_uzasadnienia: { aktywna: false, powod: "brak pozycji: żaden moduł nie mierzy gotowości do uzasadniania decyzji" },
-  bez_zawodu: { aktywna: false, powod: "wymaga oceny, czy uczestnik ma wyuczony fach; A0 zbiera etap, nie kwalifikacje" },
+  agresja: {
+    aktywna: true,
+    wZawodzie: "Zdarzają się tu sytuacje, w których ktoś jest wobec Ciebie agresywny słownie albo fizycznie.",
+    zrodlo: "odpowiedziałeś NIE na pytanie o sytuacje z cudzą agresją",
+    sprawdz: (w) => odmowa(w, "F35"),
+  },
+  ciasnota_nie: {
+    aktywna: true,
+    wZawodzie: "Część pracy odbywa się w ciasnych przestrzeniach: pod podłogą, w szachcie, w wąskim przejściu.",
+    zrodlo: "odpowiedziałeś NIE na pytanie o pracę w ciasnych przestrzeniach",
+    sprawdz: (w) => odmowa(w, "F36"),
+  },
+  wieczory_nie: {
+    aktywna: true,
+    wZawodzie: "Ta praca zaczyna się wtedy, gdy inni kończą. Wieczory są tu regułą, nie wyjątkiem.",
+    zrodlo: "odpowiedziałeś NIE na pytanie o pracę wieczorami",
+    sprawdz: (w) => odmowa(w, "F39"),
+  },
+  sprzedaz_nie: {
+    aktywna: true,
+    wZawodzie: "Tu trzeba samemu zdobywać klientów i sprzedawać własną usługę. Bez tego nie ma dochodu.",
+    zrodlo: "odpowiedziałeś NIE na pytanie o samodzielne zdobywanie klientów",
+    sprawdz: (w) => odmowa(w, "F40"),
+  },
+  dokumentacja_nie: {
+    aktywna: true,
+    wZawodzie: "Dokumenty, sprawozdania i praca papierkowa zajmują tu znaczną część dnia.",
+    zrodlo: "odpowiedziałeś NIE na pytanie o dużą ilość dokumentów i sprawozdań",
+    sprawdz: (w) => odmowa(w, "F41"),
+  },
+  odmowa_do_siebie: {
+    aktywna: true,
+    wZawodzie: "Odmowa jest tu codziennością: kilkadziesiąt razy w miesiącu, przez całą karierę.",
+    zrodlo: "odpowiedziałeś NIE na pytanie o regularne słyszenie odmowy",
+    sprawdz: (w) => odmowa(w, "F42"),
+  },
+  nietykalnosc_pracy: {
+    aktywna: true,
+    wZawodzie: "Własną pracę poprawia się tu na cudze polecenie, także po raz czwarty.",
+    zrodlo: "odpowiedziałeś NIE na pytanie o poprawianie własnej pracy na cudze polecenie",
+    sprawdz: (w) => odmowa(w, "F43"),
+  },
+
+  // --- efekt pracy: os EFE, dolozona do A3 po fazie 5 ---
   efekt_szybki: {
-    aktywna: false,
-    powod:
-      "potrzeba szybkiego efektu nie ma odpowiednika w A3; TEM dotyczy tempa własnej pracy, nie czasu do rezultatu",
+    aktywna: true,
+    wZawodzie: "Efekt tej pracy przychodzi późno: miesiące albo lata od momentu, w którym się ją robi.",
+    zrodlo: "wskazałeś szybko widoczny wynik pracy jako warunek kluczowy",
+    sprawdz: (w) => warunekKluczowy(w, "EFE", "A"),
   },
   efekt_widoczny: {
-    aktywna: false,
-    powod: "potrzeba widocznego efektu nie jest wymiarem A3; kod istnieje tylko po stronie kart",
+    aktywna: true,
+    // Ten sam predykat co `efekt_szybki`, ale inne zdanie o zawodzie: tam efekt
+    // przychodzi pozno, tu nie widac, kto go zrobil. Zadna karta nie ma obu
+    // kodow naraz, wiec uczestnik nigdy nie dostanie dwoch zdan o tej samej rzeczy.
+    wZawodzie: "Efektu tej pracy nie widać na zewnątrz i trudno powiedzieć, że to Twoja zasługa.",
+    zrodlo: "wskazałeś wyraźnie widoczny wynik pracy jako warunek kluczowy",
+    sprawdz: (w) => warunekKluczowy(w, "EFE", "A"),
   },
   kontrola_efektu: {
-    aktywna: false,
-    powod: "potrzeba kontroli nad rezultatem sąsiaduje z DEC, ale DEC dotyczy decydowania, nie sprawczości",
+    aktywna: true,
+    wZawodzie: "Wynik tej pracy zależy od rzeczy, na które nie masz wpływu: od klienta, pogody albo od drugiego człowieka.",
+    zrodlo: "wskazałeś jednocześnie widoczny efekt i realny wpływ na decyzje jako warunki kluczowe",
+    sprawdz: (w) => warunekKluczowy(w, "EFE", "A") && warunekKluczowy(w, "DEC", "A"),
   },
-  nietykalnosc_pracy: { aktywna: false, powod: "brak pozycji: żaden moduł nie mierzy reakcji na poprawianie własnej pracy" },
+
+  // --- warunki kluczowe A3, ktore mialy zrodlo od poczatku ---
+  waska_wiedza: {
+    aktywna: true,
+    wZawodzie: "Ta droga zawęża: po kilku latach jest się specjalistą od jednej wąskiej rzeczy.",
+    zrodlo: "wskazałeś różnorodność zadań jako warunek kluczowy",
+    sprawdz: (w) => warunekKluczowy(w, "GLE", "B"),
+  },
+  potrzeba_jakosci: {
+    aktywna: true,
+    wZawodzie: "Tu rzadko da się dopracować rzecz do końca: termin zamyka pracę wcześniej niż jakość.",
+    zrodlo: "wskazałeś czas na porządne dopracowanie jako warunek kluczowy",
+    sprawdz: (w) => warunekKluczowy(w, "TEM", "B"),
+  },
+  konflikt_rodzic: {
+    aktywna: true,
+    wZawodzie: "Konflikt z rodzicami albo z rodziną podopiecznego jest tu stałym elementem pracy.",
+    zrodlo: "wskazałeś atmosferę bez napięć jako warunek kluczowy",
+    sprawdz: (w) => warunekKluczowy(w, "KON", "B"),
+  },
+
+  // =====================================================================
+  // KODY NIEAKTYWNE
+  // Nie da sie ich wyprowadzic z niczego, co uczestnik deklaruje.
+  // Jedynym zrodlem bylaby samoocena albo zainteresowania A1, a z zadnego
+  // z tych dwoch antyprofilu nie budujemy. Nieaktywny kod nigdy nie trafia.
+  // =====================================================================
+
+  goraco_nie: { aktywna: false, powod: "brak pozycji w A5: moduł nie pyta o pracę w wysokiej temperaturze" },
+  wczesne_wstawanie: { aktywna: false, powod: "brak pozycji w A5: moduł nie pyta o godzinę rozpoczęcia pracy" },
+  dotyk: { aktywna: false, powod: "brak pozycji: żaden moduł nie pyta o komfort z dotykaniem obcych osób" },
+  bez_uzasadnienia: { aktywna: false, powod: "brak pozycji: żaden moduł nie mierzy gotowości do uzasadniania decyzji" },
+  bez_zawodu: { aktywna: false, powod: "wymaga oceny, czy uczestnik ma wyuczony fach; A0 zbiera etap, nie kwalifikacje" },
   krytyka_osobista: {
     aktywna: false,
     powod:
       "dałoby się wyprowadzić z niskiej samooceny odporności (A2/30), ale antyprofil nie jest budowany z samooceny kompetencji",
-  },
-  odmowa_do_siebie: {
-    aktywna: false,
-    powod:
-      "jak wyżej: jedynym źródłem byłaby samoocena odporności na odmowę, a ta jest w tym wieku najmniej wiarygodna",
   },
   rece_slabe: {
     aktywna: false,
@@ -356,13 +419,7 @@ export const ANTYPROFIL: Record<string, RegulaAntyprofilu> = {
   potrzeba_tworzenia: { aktywna: false, powod: "wynikałoby z zainteresowań A1, a antyprofil nie jest budowany z A1" },
   potrzeba_gotowania: { aktywna: false, powod: "jak wyżej: to zainteresowanie, nie granica" },
   potrzeba_doradzania: { aktywna: false, powod: "brak pozycji: żaden moduł nie pyta o potrzebę udzielania rad" },
-  potrzeba_jakosci: { aktywna: false, powod: "brak pozycji: potrzeba dopracowania efektu nie jest mierzona" },
-  sprzedaz_nie: {
-    aktywna: false,
-    powod: "wynikałoby z niskiego wyniku A1 w obszarze 17; antyprofil nie jest budowany z zainteresowań",
-  },
   tworczosc_od_razu: { aktywna: false, powod: "brak pozycji: oczekiwanie twórczości od pierwszego dnia nie jest mierzone" },
-  waska_wiedza: { aktywna: false, powod: "brak pozycji: GLE dotyczy stylu pracy, nie obawy przed zawężeniem specjalizacji" },
   wizualizacje_tylko: { aktywna: false, powod: "brak pozycji: dotyczy wyobrażenia o zawodzie, nie cechy uczestnika" },
 };
 

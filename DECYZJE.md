@@ -817,3 +817,77 @@ Czasy odpowiedzi stron przy tej samej bazie: raport uczestnika 11 ms, ekran
 grupy 12 ms, karta uczestnika 14 ms, ekran sesji 14 ms. Ekran grupy robi jedno
 zapytanie zbiorcze na czasy i jedno na weta, więc nie rośnie liniowo z liczbą
 uczestników.
+
+---
+
+## Dostawa po fazie 5: rozszerzenie A5 i A3
+
+### D42. Moduł A5: 32 → 43 pozycje
+
+Jedenaście nowych pozycji wstawionych w istniejące bloki tematyczne, nie na
+koniec listy: F33–F38 do „Warunków fizycznych", F39 do „Czasu", F35 i F42 do
+„Ludzi", F40 do „Pieniędzy i ryzyka", F41 i F43 do „Odpowiedzialności".
+Limit trzech wet bez zmian.
+
+**Blok siódmy warto nazwać inaczej.** Nazywa się „Odpowiedzialność", a trzyma
+teraz cztery pozycje, których wspólnym mianownikiem jest raczej **sposób
+rozliczania pracy**: odpowiedzialność za czyjeś bezpieczeństwo, presja wyniku,
+praca papierkowa i poprawianie własnej pracy na polecenie. Nie zmieniałem
+nazwy, bo to treść programu. Do rozstrzygnięcia.
+
+**Siedem kodów z kart dostało źródło:** `halas`, `umieranie`, `agresja`,
+`ciasnota`, `wysokosc`, `chemikalia`, `wieczory`. Bez źródła zostały dwa:
+`goraco` (6 zawodów) i `powtarzalnosc` (8). `zimno` jest w tabeli
+odwzorowania, ale nie występuje w żadnej karcie.
+
+**Do rozstrzygnięcia: `A5_WSKAZNIK_ZAMKNIECIA` zostało na 20.** To liczba
+odpowiedzi NIE, powyżej której silnik wyłącza filtry całkowicie. Przy 32
+pozycjach oznaczała 62% modułu, przy 43 oznacza 46%. Nie ruszałem jej, bo to
+jedna z liczb decyzyjnych. Utrzymanie proporcji dałoby 27.
+
+### D43. Moduł A3: 12 → 13 osi
+
+Oś EFE, pięć par i kotwica, treść z dostawy bez zmian. Krótkie etykiety
+biegunów („Efekt szybki", „Efekt odroczony") i warunki środowiskowe napisane
+tak, jak pozostałych dwanaście, bo trafiają do sekcji o środowisku w raporcie.
+
+`efekt_widoczny` z kart odwzorowuje się teraz na EFE:A, `efekt_odroczony` na
+EFE:B. `rzeczy` zostaje niemapowane: to przedmiot pracy, nie styl działania.
+
+### D44. Kolejność modułów na spotkaniu trzecim
+
+Nowe minuty z dostawy (filtry 81–103, podsumowanie 103–115) układają się
+tylko w kolejności **wartości → przerwa → wizja życia → filtry**. Scenariusz
+miał dotąd A4, A5, przerwę i M1, a aplikacja M1, A4, A5 — obie wersje były
+niezgodne z instrukcją samego A5, która zaczyna się od zdania „Przed chwilą
+opisałeś, jak chcesz żyć".
+
+Poprawione w obu miejscach na A4, M1, A5. Czasy modułów: A3 z 18 na 21 minut,
+A5 z 15 na 22 minuty.
+
+### D45. Antyprofil: 34 → 48 reguł aktywnych
+
+Klasyfikacja dwudziestu sześciu kodów według reguły trzech kategorii jest
+w `ODPOWIEDZ_antyprofil_i_A3.md`. Skrótowo: **14 uaktywnionych** (102 ze 125
+trafień), **0 scalonych**, **12 do usunięcia z kart** (23 trafienia).
+
+Trzy z uaktywnionych — `waska_wiedza`, `potrzeba_jakosci`, `konflikt_rodzic` —
+miały źródło od początku w warunkach kluczowych A3. W fazie drugiej oceniłem
+je zbyt surowo i to rozstrzygnięcie wycofuję.
+
+`efekt_szybki` i `efekt_widoczny` mają ten sam predykat, ale różne zdanie
+o zawodzie i żadna karta nie ma obu naraz. Nie scaliłem; czeka na decyzję.
+
+### L7. Nowe filtry działają na poziomie zawodu, nie obszaru
+
+Baza 27 obszarów wymienia wyłącznie F01–F32. Wykluczenie jednej z jedenastu
+nowych pozycji usuwa konkretne zawody, ale nigdy całego obszaru. Asymetria
+wobec starych filtrów, do rozstrzygnięcia przy redakcji bazy obszarów.
+
+### Audyt po zmianach
+
+`scripts/audyt-pelny.ts` puszcza pełny silnik na losowych profilach, z wetami
+i wszystkimi trzynastoma osiami — inaczej niż audyt T11–T14, który liczy tylko
+zainteresowania i kompetencje. 400 profili: **157/157 osiągalnych**,
+różnorodność TOP3 **0,902** (bez nowych pozycji 0,892), najczęstszy zawód
+w TOP10 w 13,5% profili. Stary audyt przechodzi bez zmian.

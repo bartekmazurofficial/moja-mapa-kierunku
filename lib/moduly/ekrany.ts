@@ -45,14 +45,19 @@ export const CZASY_MODULOW: Record<KodModulu, string> = {
   A0: "8 minut",
   A1: "20 minut",
   A2: "27 minut",
-  A3: "18 minut",
+  A3: "21 minut",
   A4: "12 minut",
-  A5: "15 minut",
+  A5: "22 minuty",
   M1: "45 minut",
 };
 
-/** Kolejnosc modulow zgodna ze scenariuszami czterech spotkan. */
-export const KOLEJNOSC_MODULOW: KodModulu[] = ["A0", "A1", "A3", "A2", "M1", "A4", "A5"];
+/**
+ * Kolejnosc modulow zgodna ze scenariuszami czterech spotkan.
+ * Na spotkaniu trzecim: wartosci, przerwa, wizja zycia, filtry. A5 musi isc
+ * po M1, bo jego wlasna instrukcja zaczyna sie od „Przed chwila opisales,
+ * jak chcesz zyc".
+ */
+export const KOLEJNOSC_MODULOW: KodModulu[] = ["A0", "A1", "A3", "A2", "A4", "M1", "A5"];
 
 function wstep(
   modul: KodModulu,

@@ -80,8 +80,9 @@ describe("plany bloków są zbilansowane", () => {
     }
   });
 
-  it("A3: 60 par, po pięć na każdy z dwunastu wymiarów", () => {
-    expect(PARY_A3).toHaveLength(60);
+  it("A3: 65 par, po pięć na każdy z trzynastu wymiarów", () => {
+    expect(WYMIARY_A3).toHaveLength(13);
+    expect(PARY_A3).toHaveLength(65);
     for (const w of WYMIARY_A3) {
       expect(PARY_A3.filter((p) => p.wymiar === w.kod), w.kod).toHaveLength(5);
     }
@@ -173,7 +174,7 @@ describe("A3: algorytm liczenia", () => {
       expect(w.wyrazistosc[wym.kod]).toBe(100);
       expect(w.sila[wym.kod]).toBeCloseTo(100, 9);
     }
-    expect(w.warunkiKluczowe).toHaveLength(12);
+    expect(w.warunkiKluczowe).toHaveLength(WYMIARY_A3.length);
   });
 
   it("wyraźny, ale obojętny nie daje warunku kluczowego", () => {
@@ -292,7 +293,7 @@ describe("złożenie wyników w wejście silnika", () => {
     });
     expect(Object.keys(wyniki.z)).toHaveLength(24);
     expect(Object.keys(wyniki.k)).toHaveLength(30);
-    expect(Object.keys(wyniki.a3Pozycje)).toHaveLength(12);
+    expect(Object.keys(wyniki.a3Pozycje)).toHaveLength(WYMIARY_A3.length);
     expect(wyniki.a4Top5).toHaveLength(5);
     expect(wyniki.weta).toEqual(["F21"]);
     expect(Object.values(wyniki.shape).every((v) => v === 100)).toBe(true);

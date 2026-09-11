@@ -140,6 +140,10 @@ export const WYMIARY_A3: WymiarA3[] = [
   { kod: "NAP", biegunA: "Napęd własny", biegunB: "Napęd z zewnątrz", warunekA: "brak kontroli nad głową", warunekB: "zewnętrzne terminy i przypomnienia" },
   { kod: "RYT", biegunA: "Równe tempo", biegunB: "Praca zrywami", warunekA: "równomierne obciążenie", warunekB: "praca projektowa, zrywami" },
   { kod: "OTO", biegunA: "Cisza i porządek", biegunB: "Ruch i bodźce", warunekA: "ciche, uporządkowane miejsce", warunekB: "żywe, ruchliwe otoczenie" },
+  // Os trzynasta, dolozona po fazie 5. Mierzy, jak szybko czlowiek potrzebuje
+  // widziec wynik swojej pracy. Elektryk widzi efekt tego samego dnia,
+  // architekt po kilku latach, nauczyciel nigdy w sposob policzalny.
+  { kod: "EFE", biegunA: "Efekt szybki", biegunB: "Efekt odroczony", warunekA: "szybko widoczny wynik pracy", warunekB: "wynik widoczny dopiero po czasie" },
 ];
 
 // =====================================================================
@@ -194,23 +198,34 @@ export const FILTRY_A5: FiltrA5[] = [
   { kod: "F13", blok: 3, nazwaBloku: "Czas", tekst: "dyżury i bycie pod telefonem" },
   { kod: "F14", blok: 3, nazwaBloku: "Czas", tekst: "nadgodziny w gorących okresach" },
   { kod: "F15", blok: 3, nazwaBloku: "Czas", tekst: "nieregularne, zmienne godziny" },
+  { kod: "F39", blok: 3, nazwaBloku: "Czas", tekst: "pracę wieczorami, gdy inni kończą" },
   { kod: "F16", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "pracę fizyczną, wymagającą siły i wysiłku" },
   { kod: "F17", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "pracę na dworze w każdą pogodę" },
   { kod: "F18", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "stanie lub chodzenie przez większość dnia" },
   { kod: "F19", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "siedzenie przy komputerze przez większość dnia" },
   { kod: "F20", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "kontakt z brudem, zapachami, nieprzyjemnymi warunkami" },
   { kod: "F21", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "widok krwi, ran i ludzkiego cierpienia" },
+  { kod: "F34", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "regularny kontakt ze śmiercią i z umieraniem" },
+  { kod: "F33", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "pracę w hałasie, przy którym trzeba nosić ochronniki słuchu" },
+  { kod: "F36", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "pracę w ciasnych przestrzeniach, na przykład pod podłogą albo w szachcie" },
+  { kod: "F37", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "pracę na wysokości, na przykład na dachu albo na rusztowaniu" },
+  { kod: "F38", blok: 4, nazwaBloku: "Warunki fizyczne", tekst: "codzienny kontakt z chemikaliami i preparatami" },
   { kod: "F22", blok: 5, nazwaBloku: "Ludzie", tekst: "ciągły kontakt z ludźmi przez cały dzień" },
   { kod: "F23", blok: 5, nazwaBloku: "Ludzie", tekst: "pracę z małymi dziećmi" },
   { kod: "F24", blok: 5, nazwaBloku: "Ludzie", tekst: "pracę z osobami chorymi lub starszymi" },
   { kod: "F25", blok: 5, nazwaBloku: "Ludzie", tekst: "obsługiwanie niezadowolonych i roszczeniowych ludzi" },
   { kod: "F26", blok: 5, nazwaBloku: "Ludzie", tekst: "częste wystąpienia przed grupą" },
   { kod: "F27", blok: 5, nazwaBloku: "Ludzie", tekst: "pracę w dużej samotności, bez zespołu" },
+  { kod: "F35", blok: 5, nazwaBloku: "Ludzie", tekst: "sytuacje, w których ktoś może być wobec Ciebie agresywny słownie albo fizycznie" },
+  { kod: "F42", blok: 5, nazwaBloku: "Ludzie", tekst: "regularne słyszenie odmowy, także kilkadziesiąt razy w miesiącu" },
   { kod: "F28", blok: 6, nazwaBloku: "Pieniądze i ryzyko", tekst: "niepewny, zmienny dochód" },
   { kod: "F29", blok: 6, nazwaBloku: "Pieniądze i ryzyko", tekst: "prowadzenie własnej działalności" },
   { kod: "F30", blok: 6, nazwaBloku: "Pieniądze i ryzyko", tekst: "niskie zarobki przez pierwsze lata" },
+  { kod: "F40", blok: 6, nazwaBloku: "Pieniądze i ryzyko", tekst: "samodzielne zdobywanie klientów i sprzedawanie własnych usług" },
   { kod: "F31", blok: 7, nazwaBloku: "Odpowiedzialność", tekst: "odpowiedzialność za czyjeś zdrowie lub bezpieczeństwo" },
   { kod: "F32", blok: 7, nazwaBloku: "Odpowiedzialność", tekst: "pracę pod stałą presją czasu i wyniku" },
+  { kod: "F41", blok: 7, nazwaBloku: "Odpowiedzialność", tekst: "dużą ilość dokumentów, sprawozdań i pracy papierkowej" },
+  { kod: "F43", blok: 7, nazwaBloku: "Odpowiedzialność", tekst: "poprawianie własnej pracy na cudze polecenie, także po raz czwarty" },
 ];
 
 // =====================================================================

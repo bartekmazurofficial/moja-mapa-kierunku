@@ -104,7 +104,7 @@ describe("plan losowy", () => {
   });
 
   it("A3, A4 i M1 losują stronę wyświetlania każdej pary", () => {
-    for (const [modul, ile] of [["A3", 60], ["A4", 36], ["M1", 48]] as const) {
+    for (const [modul, ile] of [["A3", 65], ["A4", 36], ["M1", 48]] as const) {
       const plan = zbudujPlan(modul);
       expect(plan.kolejnosc, modul).toHaveLength(ile);
       expect(Object.keys(plan.odwrocone), modul).toHaveLength(ile);

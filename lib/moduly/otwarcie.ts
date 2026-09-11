@@ -21,7 +21,7 @@ import type { KodModulu } from "./typy";
 export const MODULY_SPOTKANIA: Record<number, KodModulu[]> = {
   1: ["A0", "A1", "A3"],
   2: ["A2"],
-  3: ["M1", "A4", "A5"],
+  3: ["A4", "M1", "A5"],
 };
 
 export const SPOTKANIE_MODULU: Record<KodModulu, number> = {

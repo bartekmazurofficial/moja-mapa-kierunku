@@ -115,9 +115,11 @@ export const A3_KARTA_NA_MODUL: Record<string, string | null> = {
   gotowe: "DEC:B",
   zmiennosc: "NOW:A",
   powtarzalnosc: "NOW:B",
+  efekt_widoczny: "EFE:A",
+  efekt_odroczony: "EFE:B",
+  // `rzeczy` nie jest stylem dzialania, tylko przedmiotem pracy. Osi dla niego
+  // nie ma i nie powinno byc: to nalezy do zainteresowan A1, nie do A3.
   rzeczy: null,
-  efekt_widoczny: null,
-  efekt_odroczony: null,
 };
 
 /**
@@ -189,16 +191,18 @@ export const A5_KARTA_NA_MODUL: Record<string, string | null> = {
   ryzyko_finansowe: "F30",
   odpowiedzialnosc: "F31",
   presja: "F32",
-  // Bez pozycji w module A5:
-  agresja: null,
-  chemikalia: null,
-  ciasnota: null,
+  // Dolozone po fazie 5 razem z jedenastoma nowymi pozycjami modulu.
+  halas: "F33",
+  umieranie: "F34",
+  agresja: "F35",
+  ciasnota: "F36",
+  wysokosc: "F37",
+  chemikalia: "F38",
+  wieczory: "F39",
+  // Bez pozycji w module A5. `zimno` nie wystepuje w zadnej karcie, wiec
+  // zostawiamy wpis tylko po to, zeby import nie milczal, gdy sie pojawi.
   goraco: null,
-  halas: null,
   powtarzalnosc: null,
-  umieranie: null,
-  wieczory: null,
-  wysokosc: null,
   zimno: null,
 };
 
