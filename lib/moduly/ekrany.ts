@@ -130,7 +130,9 @@ function czescA1A(plan: PlanModulu): CzescModulu {
     const opcje = kolejnoscOpcji
       .map((id) => blok.pozycje.find((p) => p.id === id))
       .filter((p): p is (typeof blok.pozycje)[number] => Boolean(p))
-      .map((p) => ({ kod: p.id, etykieta: p.tekst }));
+      // Znak bierze sie z obszaru, nie z pozycji: 24 znaki na 144 pozycje,
+      // a w jednym zestawie cztery pozycje to cztery rozne obszary.
+      .map((p) => ({ kod: p.id, etykieta: p.tekst, ikona: `a1-${p.obszar}` }));
     ekrany.push({
       klucz: `A1_blok_${blok.index}`,
       typ: "pozycje",
@@ -197,7 +199,7 @@ function czescA2A(plan: PlanModulu): CzescModulu {
     const opcje = kolejnoscOpcji
       .map((id) => blok.pozycje.find((p) => p.id === id))
       .filter((p): p is (typeof blok.pozycje)[number] => Boolean(p))
-      .map((p) => ({ kod: p.id, etykieta: p.tekst }));
+      .map((p) => ({ kod: p.id, etykieta: p.tekst, ikona: `a2-${p.kompetencja}` }));
     ekrany.push({
       klucz: `A2_blok_${blok.index}`,
       typ: "pozycje",
@@ -340,7 +342,11 @@ function czescA4B(): CzescModulu {
             tresc: INSTRUKCJA_A4.nieodzownePolecenie,
             maksWyborow: 3,
             opcjonalna: true,
-            opcje: WARTOSCI_A4.map((w) => ({ kod: w.kod, etykieta: `${w.nazwa} — ${w.znaczenie.toLowerCase()}` })),
+            opcje: WARTOSCI_A4.map((w) => ({
+              kod: w.kod,
+              etykieta: `${w.nazwa} — ${w.znaczenie.toLowerCase()}`,
+              ikona: `a4-${w.kod}`,
+            })),
           },
         ],
         przyciskDalej: "Dalej",

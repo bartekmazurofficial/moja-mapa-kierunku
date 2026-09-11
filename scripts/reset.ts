@@ -8,7 +8,7 @@
  *
  * Uzycie:
  *   npx tsx scripts/reset.ts                    wszystkie grupy, stan pierwszego dnia
- *   npx tsx scripts/reset.ts --moduly           dodatkowo otwiera wszystkie moduły
+ *   npx tsx scripts/reset.ts --spotkanie1       otwiera tylko pierwsze spotkanie
  *   npx tsx scripts/reset.ts --warstwy          dodatkowo odsłania wszystkie warstwy
  *   npx tsx scripts/reset.ts <kod grupy> ...    tylko ta grupa
  *
@@ -24,7 +24,7 @@ import { WARSTWY, type KodWarstwy } from "../lib/raport/sekcje";
 
 async function main() {
   const argumenty = process.argv.slice(2);
-  const wszystkieModuly = argumenty.includes("--moduly");
+  const tylkoSpotkanie1 = argumenty.includes("--spotkanie1");
   const wszystkieWarstwy = argumenty.includes("--warstwy");
   const kodGrupy = argumenty.find((a) => !a.startsWith("--"));
 
@@ -65,8 +65,11 @@ async function main() {
     for (const m of KOLEJNOSC_MODULOW) await zamknijModul(grupa.id, m);
     for (const w of WARSTWY) await zamknijWarstwe(grupa.id, w.kod);
 
-    if (wszystkieModuly) for (const m of KOLEJNOSC_MODULOW) await otworzModul(grupa.id, m);
-    else await otworzSpotkanie(grupa.id, 1);
+    // Domyslnie otwarte wszystkie moduly: uczestnik ma miec dostep do kazdego
+    // testu od startu. `--spotkanie1` wraca do stanu, w ktorym prowadzacy
+    // otwiera je po kolei.
+    if (tylkoSpotkanie1) await otworzSpotkanie(grupa.id, 1);
+    else for (const m of KOLEJNOSC_MODULOW) await otworzModul(grupa.id, m);
 
     if (wszystkieWarstwy) {
       for (const w of WARSTWY.filter((x) => x.kod !== "ZAWSZE")) {

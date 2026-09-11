@@ -30,6 +30,8 @@ export type TypPozycji =
 export interface OpcjaWyboru {
   kod: string;
   etykieta: string;
+  /** Klucz znaku kategorii, np. "a1-7". Ilustrujemy kategorie, nie pozycje. */
+  ikona?: string;
   /** Opcja wykluczajaca sie z pozostalymi, np. "nic z tego". */
   wylaczna?: boolean;
 }
@@ -68,6 +70,8 @@ export interface Pozycja {
 
 export interface Ekran {
   klucz: string;
+  /** Znak kategorii dla całego ekranu, np. osi A3 albo obszaru wizji życia. */
+  ikona?: string;
   typ: "wstep" | "pozycje" | "przerwa" | "koniec";
   naglowek?: string;
   akapity?: string[];

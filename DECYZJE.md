@@ -1035,3 +1035,44 @@ stronę: reset nie psuje testów, a testy nie zaśmiecają grupy pilotażowej.
 na stan pierwszego dnia: otwarte spotkanie pierwsze, żadna warstwa raportu.
 Kody dostępu zostają — inaczej trzeba by je rozdawać od nowa. Grupa testów
 automatycznych jest kasowana w całości, bo testy odtwarzają ją same.
+
+### D53. Ilustrujemy kategorie, nie pozycje
+
+Pierwsza sesja była ścianą identycznych kafli: 144 pozycje A1, każda wyglądała
+tak samo. Ilustrowanie każdej z osobna oznaczałoby **ponad czterysta obrazków**
+we wszystkich modułach, których nigdy nie dałoby się utrzymać na równym
+poziomie.
+
+Zamiast tego znak bierze się z **kategorii**: 24 obszary zainteresowań na 144
+pozycje, 30 kompetencji na 180, 7 bloków warunków na 43. Jedna grafika pracuje
+średnio na sześciu ekranach. Kluczowe jest to, że **w jednym zestawie cztery
+pozycje pochodzą z czterech różnych kategorii** — pilnuje tego test — więc
+żadne dwa kafle obok siebie nie są takie same.
+
+99 znaków rysowanych konturem w `lib/ui/glify.ts`, z odcieniem przypisanym na
+stałe kluczowi. Zakres 250°–320°, czyli fiolet, indygo i róż: wyjście poza
+niego rozbiłoby paletę, a chodzi tylko o rozróżnialność sąsiadów.
+
+Spis do dosłania prawdziwych grafik jest w `GRAFIKI-KATEGORIE.md`, generowany
+skryptem z danych, więc nie rozjedzie się z aplikacją. Podmiana to zamiana
+mapy kluczy na mapę adresów — klucze zostają.
+
+### D54. Plansza wyników modułu
+
+Uczestnik widzi własne odpowiedzi od razu po ukończeniu części, na jednej
+planszy, po trzy kategorie w rzędzie. **To nie jest raport**: raport mówi,
+co z odpowiedzi wynika dla zawodów, i otwiera się warstwami po spotkaniach.
+Plansza pokazuje wyłącznie to, co uczestnik sam wybrał, i nie zawiera ani
+jednej liczby dopasowania — miejsce na skali opisane jest słowem.
+
+Dostępna z listy części, przyciskiem przy ukończonym module. A0 jej nie ma:
+metryczka nie ma kategorii wynikowych.
+
+### D55. Wszystkie moduły otwarte na starcie
+
+`scripts/reset.ts` otwiera domyślnie wszystkie siedem, żeby dało się wejść
+w każdy test od razu. `--spotkanie1` wraca do stanu, w którym prowadzący
+otwiera je po kolei — tak jak będzie w pilotażu.
+
+Kafel uczestnika na ekranie wyboru prowadzi w trybie testowym prosto na pulpit
+pierwszej osoby, bez wybierania konta i bez kodu.

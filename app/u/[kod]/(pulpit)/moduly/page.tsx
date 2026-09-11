@@ -85,19 +85,30 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
               );
 
               return (
-                <li key={m}>
+                <li key={m} className="flex flex-col gap-2">
                   {s === "zamkniety" ? (
                     <div className="szklo h-full p-5 opacity-60">{tresc}</div>
                   ) : (
                     <Link
                       href={`/u/${kod}/modul/${m}`}
-                      className={`przejscie group block h-full p-5 ${
+                      className={`przejscie group block flex-1 p-5 ${
                         s === "wtrakcie" ? "szklo szklo-akcent" : "szklo hover:border-akcent/40"
                       }`}
                     >
                       {tresc}
                     </Link>
                   )}
+                  {/* Wyniki są dostępne od razu po wypełnieniu, niezależnie od
+                      warstw raportu: to własne odpowiedzi uczestnika, nie wynik
+                      dopasowania. */}
+                  {s === "gotowy" && m !== "A0" ? (
+                    <Link
+                      href={`/u/${kod}/wyniki/${m}`}
+                      className="przejscie inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-linia px-4 text-male font-semibold text-atrament-sciszony hover:border-akcent/45 hover:text-akcent-jasny"
+                    >
+                      Zobacz swoje odpowiedzi <span aria-hidden>→</span>
+                    </Link>
+                  ) : null}
                 </li>
               );
             })}

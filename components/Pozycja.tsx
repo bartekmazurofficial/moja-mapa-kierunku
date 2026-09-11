@@ -13,6 +13,7 @@
 
 import { useId } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
+import { Ikona } from "@/components/Ikona";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
 export interface WlasciwosciPozycji {
@@ -92,19 +93,20 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
               type="button"
               onClick={() => stuknij(o.kod)}
               aria-pressed={Boolean(numer)}
-              className={`${KAFELEK} flex items-start gap-3 ${
+              className={`${KAFELEK} flex items-center gap-3.5 ${
                 numer ? "border-akcent bg-akcent-tlo" : "border-linia"
               }`}
             >
+              {o.ikona ? <Ikona klucz={o.ikona} aktywna={Boolean(numer)} /> : null}
+              <span className="flex-1 leading-snug">{o.etykieta}</span>
               <span
                 aria-hidden
-                className={`mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-drobne font-medium tabular-nums ${
+                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-drobne font-bold tabular-nums ${
                   numer ? "bg-akcent text-na-akcencie" : "border border-linia-mocna text-atrament-slaby"
                 }`}
               >
                 {numer ?? ""}
               </span>
-              <span className="leading-snug">{o.etykieta}</span>
               {numer ? <span className="sr-only">pozycja {numer}</span> : null}
             </button>
           </li>

@@ -1,8 +1,30 @@
 import Link from "next/link";
 import { Bramy } from "@/components/pulpit/Bramy";
 import { Znak } from "@/components/pulpit/Znak";
+import { prisma } from "@/lib/db/klient";
+import { trybTestowy } from "@/lib/tryb";
 
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Moja mapa kierunku" };
+
+/**
+ * W trybie testowym kafel uczestnika prowadzi prosto na pulpit pierwszej osoby
+ * z listy, zeby nie trzeba bylo wybierac konta ani wpisywac kodu.
+ */
+async function wejscieUczestnika(): Promise<{ href: string; opis: string }> {
+  if (!trybTestowy()) {
+    return {
+      href: "/wejscie",
+      opis: "Twoje moduły, raport i karty zawodów. Wchodzisz kodem od prowadzącego — bez konta i bez hasła.",
+    };
+  }
+  const pierwszy = await prisma.uczestnik.findFirst({ orderBy: { imie: "asc" } });
+  if (!pierwszy) return { href: "/wejscie", opis: "Nie ma jeszcze żadnego uczestnika." };
+  return {
+    href: `/u/${pierwszy.kodDostepu}`,
+    opis: `Tryb testowy: wchodzisz od razu, bez kodu, jako ${pierwszy.imie}. Innego uczestnika wybierzesz w „Wejdź kodem".`,
+  };
+}
 
 /**
  * Wejście do programu: dwie drogi, uczestnika i prowadzącego.
@@ -10,7 +32,8 @@ export const metadata = { title: "Moja mapa kierunku" };
  * Uczestnik wchodzi kodem, bez rejestracji i bez hasła. Prowadzący ma jedno
  * konto na cały program.
  */
-export default function Strona() {
+export default async function Strona() {
+  const uczestnik = await wejscieUczestnika();
   return (
     <main className="mx-auto flex min-h-dvh max-w-[76rem] flex-col justify-center px-5 py-10 sm:px-8">
       <header className="relative">
@@ -38,11 +61,11 @@ export default function Strona() {
 
       <div className="mt-12 grid gap-4 md:grid-cols-2">
         <Kafel
-          href="/wejscie"
+          href={uczestnik.href}
           nadtytul="Wchodzę jako"
           tytul="Uczestnik"
-          opis="Twoje moduły, raport i karty zawodów. Wchodzisz kodem od prowadzącego — bez konta i bez hasła."
-          akcja="Wejdź kodem"
+          opis={uczestnik.opis}
+          akcja={uczestnik.href === "/wejscie" ? "Wejdź kodem" : "Wejdź od razu"}
           glowny
           ikona={
             <>
@@ -69,6 +92,15 @@ export default function Strona() {
 
       <p className="mt-10 text-drobne text-atrament-slaby">
         Nie ma tu rejestracji ani zakładania konta. Uczestnik dostaje kod od prowadzącego.
+        {uczestnik.href === "/wejscie" ? null : (
+          <>
+            {" "}
+            <Link href="/wejscie" className="przejscie underline underline-offset-4 hover:text-akcent-jasny">
+              Wejdź kodem albo wybierz innego uczestnika
+            </Link>
+            .
+          </>
+        )}
       </p>
     </main>
   );

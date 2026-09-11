@@ -177,7 +177,7 @@ export function Runner({
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-artykul flex-col px-5 pb-10 pt-5 sm:px-8 sm:pt-8">
-      <header className="mb-6">
+      <header className="szklo mb-5 px-5 py-4">
         <div className="flex items-center justify-between gap-4">
           <Link
             href={`/u/${kodUczestnika}/moduly`}
@@ -186,29 +186,47 @@ export function Runner({
             <span aria-hidden>←</span>
             <span className="truncate">{nazwaModulu}</span>
           </Link>
-          <p className="shrink-0 text-drobne tabular-nums text-atrament-slaby">
-            {ekran.postep
-              ? `${ekran.postep.slowo} ${ekran.postep.nr} z ${ekran.postep.z}`
-              : czescLacznie > 1
-                ? `część ${czescNumer} z ${czescLacznie}`
-                : ""}
+
+          {/* Liczby, nie procent: procent wywołuje pośpiech, a „krok 7 z 36”
+              mówi dokładnie tyle, ile trzeba. */}
+          <p className="shrink-0 text-male font-semibold tabular-nums">
+            {ekran.postep ? (
+              <>
+                <span className="text-akcent-jasny">{ekran.postep.nr}</span>
+                <span className="text-atrament-slaby"> z {ekran.postep.z}</span>
+                <span className="ml-1.5 text-drobne font-normal text-atrament-slaby">
+                  {ekran.postep.slowo}
+                </span>
+              </>
+            ) : czescLacznie > 1 ? (
+              <>
+                <span className="text-akcent-jasny">{czescNumer}</span>
+                <span className="text-atrament-slaby"> z {czescLacznie}</span>
+                <span className="ml-1.5 text-drobne font-normal text-atrament-slaby">część</span>
+              </>
+            ) : null}
           </p>
         </div>
 
-        {/* Szyna postępu. Nigdy procent liczbą: procent wywołuje pośpiech. */}
         <div
           role="progressbar"
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={postep}
           aria-label="Postęp w tej części"
-          className="mt-3 h-1 overflow-hidden rounded-full bg-linia"
+          className="mt-3 h-1.5 overflow-hidden rounded-full bg-linia"
         >
           <div
             className="przejscie h-full rounded-full bg-gradient-to-r from-akcent-ciemny to-akcent-jasny"
-            style={{ width: `${Math.min(100, Math.max(4, postep))}%` }}
+            style={{ width: `${Math.min(100, Math.max(3, postep))}%` }}
           />
         </div>
+
+        {czescLacznie > 1 && ekran.postep ? (
+          <p className="mt-2 text-drobne text-atrament-slaby">
+            część {czescNumer} z {czescLacznie}
+          </p>
+        ) : null}
       </header>
 
       {/* Uczestnik ma wiedzieć od razu, że coś nie doszło, a nie dopiero wtedy,
