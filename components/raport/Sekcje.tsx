@@ -29,10 +29,13 @@ export function Lista({ pozycje }: { pozycje: string[] }) {
   );
 }
 
-export function Pasmo({ pasmo, opis }: { pasmo: string; opis: string }) {
+export function Pasmo({ opis }: { pasmo?: string; opis: string }) {
+  // Pasmo bez opisu nie ma czego pokazac. Wczesniej wypadal tu kod techniczny
+  // („ponizej_progu", „antydopasowanie") i trafial wprost na ekran uczestnika.
+  if (!opis) return null;
   return (
     <span className="inline-flex items-center rounded-full bg-akcent-jasny px-2.5 py-0.5 text-drobne text-akcent">
-      {opis || pasmo}
+      {opis}
     </span>
   );
 }
@@ -245,15 +248,16 @@ export function TrzyDrogi({ dane }: { dane: NonNullable<Raport["trzy_drogi"]> })
   return (
     <div className="flex flex-col gap-5">
       <p className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
-        Trzy drogi, nie jedna rekomendacja. Dwie wyszły z Twoich odpowiedzi najmocniej, trzecia jest
-        tu po to, żeby była od nich naprawdę inna i żebyś miał je z czym porównać.
+        {dane.drogi.some((d) => d.tenSamObszar)
+          ? "Trzy drogi, nie jedna rekomendacja. Dwie pierwsze wyszły z Twoich odpowiedzi najmocniej, trzecia prowadzi do tej samej dziedziny innym, krótszym wejściem."
+          : "Trzy drogi, nie jedna rekomendacja. Dwie wyszły z Twoich odpowiedzi najmocniej, trzecia jest tu po to, żeby była od nich naprawdę inna i żebyś miał je z czym porównać."}
       </p>
       {/* Trzy rowne kolumny, identyczne pod kazdym wzgledem poza trescia. */}
       <div className="grid gap-4 lg:grid-cols-3">
         {dane.drogi.map((d) => (
           <article key={d.etykieta} className="flex flex-col rounded-xl border border-linia bg-papier p-5">
             <p className="text-drobne uppercase tracking-[0.08em] text-atrament-slaby">
-              {ROLE[d.etykieta]}
+              {d.tenSamObszar ? "Ta sama dziedzina, inne wejście" : ROLE[d.etykieta]}
             </p>
             <h3 className="mt-1.5 font-serif text-naglowek-maly leading-snug">{d.obszar}</h3>
             <p className="mt-2 text-male text-atrament-sciszony">
@@ -280,8 +284,9 @@ export function TrzyDrogi({ dane }: { dane: NonNullable<Raport["trzy_drogi"]> })
             {/* Bez tego zdania trzecia droga wyglada na nagrode pocieszenia. */}
             {d.etykieta === "C" ? (
               <p className="mt-4 text-male text-atrament-sciszony">
-                Jest tutaj celowo. Jeśli za dwa lata okaże się, że A i B były pomyłką, to jest
-                miejsce, od którego zaczniesz szukać ponownie.
+                {d.tenSamObszar
+                  ? "Te same drzwi, inny próg. Zaczynasz szybciej i sprawdzasz w praktyce, czy ta dziedzina jest Twoja, zanim zainwestujesz w dłuższą drogę."
+                  : "Jest tutaj celowo. Jeśli za dwa lata okaże się, że A i B były pomyłką, to jest miejsce, od którego zaczniesz szukać ponownie."}
               </p>
             ) : null}
           </article>
@@ -293,6 +298,12 @@ export function TrzyDrogi({ dane }: { dane: NonNullable<Raport["trzy_drogi"]> })
         <Naglowek>Pierwszy krok, przy każdej z tych dróg</Naglowek>
         <p className="text-male">{dane.pierwszyKrok}</p>
       </div>
+      {dane.kolejnoscOdProwadzacego ? (
+        <p className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
+          Kolejność tych trzech dróg zmienił prowadzący po Waszej rozmowie. To nie jest wynik
+          kwestionariusza, tylko wniosek z tego, co powiedziałeś.
+        </p>
+      ) : null}
       {dane.flagi.map((f, i) => (
         <p key={i} className="font-serif text-tresc leading-relaxed text-atrament-sciszony">
           {f}
@@ -535,6 +546,27 @@ export function Zawody({
           </li>
         ))}
       </ol>
+
+      {/* Korekta prowadzacego stoi osobno i jest podpisana: uczestnik ma
+          wiedziec, co powiedzial mu algorytm, a co czlowiek. */}
+      {dane.odProwadzacego.length > 0 ? (
+        <section className="rounded-xl border border-akcent/40 bg-akcent-jasny p-5">
+          <Naglowek>Dopisane podczas rozmowy</Naglowek>
+          <p className="font-serif text-tresc leading-relaxed">
+            To nie wyszło z kwestionariusza. Wskazał to prowadzący podczas Waszej rozmowy.
+          </p>
+          <ul className="mt-3 flex flex-col gap-2">
+            {dane.odProwadzacego.map((z) => (
+              <li key={z.kod}>
+                <p className="text-tresc-duza">{z.nazwa}</p>
+                {z.uzasadnienie ? (
+                  <p className="text-male text-atrament-sciszony">{z.uzasadnienie}</p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 }

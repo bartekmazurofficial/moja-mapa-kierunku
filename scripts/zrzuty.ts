@@ -17,6 +17,8 @@ interface Zrzut {
   pelnaStrona?: boolean;
   /** Tekst naglowka, do ktorego przewijamy przed zrzutem. */
   przewinDo?: string;
+  /** Ekran panelu: trzeba najpierw zalogowac prowadzacego. */
+  panel?: boolean;
 }
 
 const ZRZUTY: Zrzut[] = [
@@ -28,6 +30,11 @@ const ZRZUTY: Zrzut[] = [
   { nazwa: "komputer-2-kierunki-bez-studiow", sciezka: "/u/3DEPKJBQW9/raport?otwarte=kierunki", szerokosc: 1440, wysokosc: 1300, przewinDo: "Kierunki i drogi" },
   { nazwa: "komputer-3-zawody", sciezka: "/u/KJR5D49GKS/raport?otwarte=zawody", szerokosc: 1440, wysokosc: 1300, przewinDo: "Konkretne zawody" },
   { nazwa: "komputer-4-karta-zawodu", sciezka: "/u/KJR5D49GKS/zawod/pielegniarka", szerokosc: 1440, wysokosc: 1200 },
+  { nazwa: "telefon-5-profil-plaski", sciezka: "/u/S4YBD2DEJH/raport?otwarte=obszary", szerokosc: 390, wysokosc: 1500, przewinDo: "Moje najmocniejsze obszary" },
+  { nazwa: "komputer-5-profil-plaski", sciezka: "/u/S4YBD2DEJH/raport?otwarte=trzy_drogi", szerokosc: 1440, wysokosc: 1300, przewinDo: "Trzy drogi" },
+  { nazwa: "panel-1-grupa", sciezka: "/prowadzacy/grupa/PRN2X3ZP", szerokosc: 1440, wysokosc: 1100, panel: true },
+  { nazwa: "panel-2-uczestnik", sciezka: "/prowadzacy/uczestnik/3DEPKJBQW9", szerokosc: 1440, wysokosc: 1400, panel: true },
+  { nazwa: "panel-3-sesja", sciezka: "/prowadzacy/sesja/3DEPKJBQW9", szerokosc: 1440, wysokosc: 1400, panel: true },
 ];
 
 async function main() {
@@ -40,6 +47,19 @@ async function main() {
     headless: true,
     args: ["--no-sandbox", "--hide-scrollbars"],
   });
+
+  // Panel wymaga sesji prowadzacego. Logujemy sie raz, ciasteczko zyje w profilu.
+  const logowanie = await przegladarka.newPage();
+  await logowanie.goto(adres + "/prowadzacy", { waitUntil: "networkidle0" });
+  const pole = await logowanie.$("#haslo");
+  if (pole) {
+    await pole.type(process.env.PROWADZACY_HASLO ?? "zmien-to-przed-pilotazem");
+    await Promise.all([
+      logowanie.waitForNavigation({ waitUntil: "networkidle0" }),
+      logowanie.click("button[type=submit]"),
+    ]);
+  }
+  await logowanie.close();
 
   for (const z of ZRZUTY) {
     const karta = await przegladarka.newPage();

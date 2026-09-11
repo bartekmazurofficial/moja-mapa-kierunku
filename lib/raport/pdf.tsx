@@ -233,7 +233,7 @@ function Dokument({ raport, oceny }: DanePdf) {
             {raport.obszary.pozycje.map((o) => (
               <View key={o.nazwa} style={s.karta}>
                 <Text style={s.pozycja}>
-                  {o.nazwa} — {o.pasmoOpis}
+                  {o.pasmoOpis ? `${o.nazwa} — ${o.pasmoOpis}` : o.nazwa}
                 </Text>
                 <Text style={s.drobne}>
                   Wejście: {o.przyklad} · {o.czas}
@@ -249,7 +249,7 @@ function Dokument({ raport, oceny }: DanePdf) {
             {raport.zawody.pozycje.map((p) => (
               <View key={p.kod} style={s.karta}>
                 <Text style={s.pozycja}>
-                  {p.nazwa} — {p.pasmoOpis}
+                  {p.pasmoOpis ? `${p.nazwa} — ${p.pasmoOpis}` : p.nazwa}
                 </Text>
                 {p.pytanieRozstrzygajace ? (
                   <Text style={s.drobne}>Pytanie rozstrzygające: {p.pytanieRozstrzygajace}</Text>
@@ -298,11 +298,13 @@ function Dokument({ raport, oceny }: DanePdf) {
             {raport.trzy_drogi.drogi.map((d) => (
               <View key={d.etykieta} style={s.karta}>
                 <Text style={s.pozycja}>
-                  {d.etykieta === "A"
-                    ? "Tu pasujesz najmocniej"
-                    : d.etykieta === "B"
-                      ? "Tu też pasujesz, ale to inna praca"
-                      : "Coś zupełnie innego"}
+                  {d.tenSamObszar
+                    ? "Ta sama dziedzina, inne wejście"
+                    : d.etykieta === "A"
+                      ? "Tu pasujesz najmocniej"
+                      : d.etykieta === "B"
+                        ? "Tu też pasujesz, ale to inna praca"
+                        : "Coś zupełnie innego"}
                 </Text>
                 <Text style={s.akapit}>{d.obszar}</Text>
                 <Text style={s.drobne}>

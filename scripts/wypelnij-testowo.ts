@@ -21,37 +21,45 @@ import { OBSZARY_M1 } from "../lib/content/m1";
 import { OBSZARY_A1, KOMPETENCJE_A2 } from "../lib/domain/slowniki";
 import { MARKER_ZAKONCZENIA, type KodModulu } from "../lib/moduly/typy";
 
-type Profil = "rzemieslniczy" | "spoleczny" | "analityczny";
+type Profil = "rzemieslniczy" | "spoleczny" | "analityczny" | "plaski";
 
 /** Obszary zainteresowan i kompetencje preferowane przez dany profil. */
 const PREFERENCJE: Record<Profil, { a1: number[]; a2: number[]; a3A: string[] }> = {
   rzemieslniczy: { a1: [1, 2, 22, 4], a2: [26, 27, 1, 22], a3A: ["SAM", "OTO", "GLE", "NAP"] },
   spoleczny: { a1: [13, 14, 15, 16], a2: [17, 16, 12, 19], a3A: ["STR", "RYT", "KON"] },
   analityczny: { a1: [8, 5, 6, 22], a2: [2, 4, 1, 6], a3A: ["GLE", "OTO", "SAM", "DEC"] },
+  // Profil plaski: brak preferencji w ogole. Sluzy do sprawdzenia, jak wyglada
+  // raport osoby, u ktorej zaden obszar nie odstaje - najtrudniejszy przypadek
+  // dla reguly „nigdy nie mow, ze nic nie pasuje".
+  plaski: { a1: [], a2: [], a3A: [] },
 };
 
 const A5_ODPOWIEDZI: Record<Profil, Record<string, "tak" | "moze" | "nie">> = {
   rzemieslniczy: { F01: "nie", F02: "nie", F16: "tak", F17: "tak", F18: "tak", F19: "nie", F20: "tak", F26: "nie", F29: "tak" },
   spoleczny: { F01: "moze", F02: "tak", F21: "nie", F22: "tak", F23: "tak", F24: "tak", F12: "moze", F16: "moze", F28: "nie" },
   analityczny: { F01: "tak", F02: "tak", F04: "tak", F19: "tak", F16: "nie", F17: "nie", F11: "nie", F12: "nie", F27: "tak" },
+  plaski: { F01: "moze", F02: "moze", F04: "moze", F16: "moze", F19: "moze", F22: "moze" },
 };
 
 const WETA: Record<Profil, string[]> = {
   rzemieslniczy: ["F26"],
   spoleczny: ["F21"],
   analityczny: [],
+  plaski: [],
 };
 
 const A4_TOP: Record<Profil, string[]> = {
   rzemieslniczy: ["WOL", "MIS", "STA", "PIE", "CZA"],
   spoleczny: ["SEN", "REL", "ZAS", "CZA", "STA"],
   analityczny: ["ROZ", "MIS", "PIE", "WOL", "STA"],
+  plaski: [],
 };
 
 const M1_BIEGUNY: Record<Profil, Record<string, "A" | "B">> = {
   rzemieslniczy: { CEN: "B", GRA: "B", GOD: "A", TEMP: "B", MIE: "A", ORG: "B", KOR: "A", INW: "A", POZ: "B", LUD: "B", WID: "B", ROD: "A" },
   spoleczny: { CEN: "B", GRA: "B", GOD: "B", TEMP: "B", MIE: "A", ORG: "B", KOR: "A", INW: "B", POZ: "B", LUD: "B", WID: "B", ROD: "A" },
   analityczny: { CEN: "A", GRA: "A", GOD: "A", TEMP: "A", MIE: "B", ORG: "A", KOR: "B", INW: "B", POZ: "A", LUD: "B", WID: "B", ROD: "B" },
+  plaski: {},
 };
 
 const A0: Record<Profil, Record<string, unknown>> = {
@@ -94,6 +102,19 @@ const A0: Record<Profil, Record<string, unknown>> = {
     mobilnosc: "tak_daleko",
     dojazd: "blisko",
     zasoby: "realne",
+    ograniczenia: ["brak"],
+  },
+  plaski: {
+    etap: "liceum_1_2",
+    przedmioty_mocne: ["polski", "historia", "wf"],
+    przedmioty_trudne: ["matematyka", "fizyka", "chemia"],
+    matematyka: "radze_sobie",
+    doswiadczenie: ["brak"],
+    doswiadczenie_opis: null,
+    miejsce: "male_miasto",
+    mobilnosc: "tak_region",
+    dojazd: "godzina",
+    zasoby: "raty",
     ograniczenia: ["brak"],
   },
 };
@@ -145,12 +166,23 @@ async function main() {
 
   // --- A1 ---
   await utrwalPlan(id, "A1");
+  // Profil plaski wymaga wyrownanych sum rang. Losowanie ich nie daje: szum na
+  // szesciu blokach potrafi rozciagnac wyniki o czterdziesci punktow, a wtedy
+  // przypadek, ktory chcemy zobaczyc, w ogole nie powstaje.
+  const sumyA1 = new Map<number, number>();
   for (const blok of BLOKI_A1) {
     const oceny = blok.pozycje.map((p) => ({
       id: p.id,
+      obszar: p.obszar,
       waga: pref.a1.includes(p.obszar) ? 10 - pref.a1.indexOf(p.obszar) : Math.random(),
     }));
-    oceny.sort((a, b) => b.waga - a.waga);
+    if (profil === "plaski") {
+      // Najwyzsza ranga dla obszaru, ktory ma dotad najnizsza sume.
+      oceny.sort((a, b) => (sumyA1.get(a.obszar) ?? 0) - (sumyA1.get(b.obszar) ?? 0));
+      oceny.forEach((o, i) => sumyA1.set(o.obszar, (sumyA1.get(o.obszar) ?? 0) + (4 - i)));
+    } else {
+      oceny.sort((a, b) => b.waga - a.waga);
+    }
     await zapisz(
       id, "A1", "A", `blok_${blok.index}`,
       Object.fromEntries(oceny.map((o, i) => [o.id, i + 1])), czas(),
@@ -159,18 +191,26 @@ async function main() {
   await zapisz(id, "A1", "A", MARKER_ZAKONCZENIA, true, 0);
   for (const o of OBSZARY_A1) {
     const wysoki = pref.a1.includes(o.id);
-    await zapisz(id, "A1", "B", `kotwica_${o.id}`, { skala: wysoki ? 5 : o.id % 3 === 0 ? 3 : 2, probowal: wysoki }, 3000);
+    const skala = profil === "plaski" ? 3 : wysoki ? 5 : o.id % 3 === 0 ? 3 : 2;
+    await zapisz(id, "A1", "B", `kotwica_${o.id}`, { skala, probowal: wysoki }, 3000);
   }
   await zapisz(id, "A1", "B", MARKER_ZAKONCZENIA, true, 0);
 
   // --- A2 ---
   await utrwalPlan(id, "A2");
+  const sumyA2 = new Map<number, number>();
   for (const blok of BLOKI_A2) {
     const oceny = blok.pozycje.map((p) => ({
       id: p.id,
+      kompetencja: p.kompetencja,
       waga: pref.a2.includes(p.kompetencja) ? 10 - pref.a2.indexOf(p.kompetencja) : Math.random(),
     }));
-    oceny.sort((a, b) => b.waga - a.waga);
+    if (profil === "plaski") {
+      oceny.sort((a, b) => (sumyA2.get(a.kompetencja) ?? 0) - (sumyA2.get(b.kompetencja) ?? 0));
+      oceny.forEach((o, i) => sumyA2.set(o.kompetencja, (sumyA2.get(o.kompetencja) ?? 0) + (4 - i)));
+    } else {
+      oceny.sort((a, b) => b.waga - a.waga);
+    }
     await zapisz(
       id, "A2", "A", `blok_${blok.index}`,
       Object.fromEntries(oceny.map((o, i) => [o.id, i + 1])), czas(),
@@ -223,8 +263,11 @@ async function main() {
 
   // --- M1 ---
   await utrwalPlan(id, "M1");
-  for (const para of PARY_M1) {
-    await zapisz(id, "M1", "A", para.id, M1_BIEGUNY[profil][para.wymiar] ?? "A", czas() / 4);
+  for (const [i, para] of PARY_M1.entries()) {
+    // Profil plaski nie ma zadeklarowanych biegunow: odpowiedzi na przemian,
+    // zeby wizja zycia tez wyszla nieostra, a nie sztucznie zdecydowana.
+    const domyslny = profil === "plaski" ? (i % 2 === 0 ? "A" : "B") : "A";
+    await zapisz(id, "M1", "A", para.id, M1_BIEGUNY[profil][para.wymiar] ?? domyslny, czas() / 4);
   }
   await zapisz(id, "M1", "A", MARKER_ZAKONCZENIA, true, 0);
   for (const obszar of OBSZARY_M1) {

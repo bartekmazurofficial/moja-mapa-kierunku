@@ -73,10 +73,28 @@ body {
 }
 
 /* Fokus zawsze widoczny. Nigdy usuwany dla estetyki. */
-:where(a, button, input, textarea, [tabindex]):focus-visible {
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
   outline: 2px solid var(--color-akcent);
   outline-offset: 3px;
   border-radius: 2px;
+}
+
+/* Skok do treści: pierwszy tab na każdej stronie. Widoczny tylko z klawiatury. */
+.przeskocz {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 50;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--color-akcent);
+  color: #fff;
+  font-size: var(--text-male);
+  transition: top 120ms ease;
+}
+
+.przeskocz:focus {
+  top: 1rem;
 }
 
 /* Nic w tym produkcie nie jest na tyle pilne, żeby trwało dłużej niż 200 ms. */

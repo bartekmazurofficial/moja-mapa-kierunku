@@ -136,6 +136,8 @@ export interface UsunietyObszar {
   powod: "weto" | "brak_poziomu";
   filtr?: string;
   wymaganie?: number;
+  /** Samo ciagniecie z A1, bez wykonalnosci. Do sekcji rozjazdow w panelu. */
+  ciagniecie: number;
 }
 
 export interface Droga {

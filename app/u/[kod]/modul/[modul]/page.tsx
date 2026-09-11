@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Runner } from "@/components/Runner";
 import { pobierzStanModulu, pobierzUczestnika } from "@/lib/moduly/serwer";
+import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
 import { NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import type { KodModulu } from "@/lib/moduly/typy";
 
@@ -19,6 +20,26 @@ export default async function Strona({
 
   const uczestnik = await pobierzUczestnika(kod);
   if (!uczestnik) notFound();
+
+  // Modul nieotwarty nie renderuje sie nawet pod bezposrednim adresem.
+  const otwarte = await otwarteModuly(uczestnik.grupaId);
+  if (!otwarte.has(modul as KodModulu)) {
+    return (
+      <main className="mx-auto flex min-h-dvh max-w-czytelna flex-col justify-center px-6 py-16">
+        <h1 className="font-serif text-naglowek">Ta część jeszcze się nie otworzyła</h1>
+        <p className="proza mt-4 text-atrament-sciszony">
+          Otworzy ją prowadzący na {SPOTKANIE_MODULU[modul as KodModulu]}. spotkaniu. Kolejność ma
+          znaczenie: gdybyś wypełnił to teraz, wynik następnej części byłby mniej Twój.
+        </p>
+        <Link
+          href={`/u/${kod}`}
+          className="przejscie mt-8 inline-flex min-h-11 w-fit items-center rounded-lg bg-akcent px-6 text-male font-medium text-white hover:bg-akcent-ciemny"
+        >
+          Wróć do listy
+        </Link>
+      </main>
+    );
+  }
 
   const stan = await pobierzStanModulu(uczestnik.id, modul as KodModulu);
 

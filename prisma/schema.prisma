@@ -201,6 +201,7 @@ model Grupa {
 
   uczestnicy Uczestnik[]
   odslony    Odslona[]
+  otwarcia   OtwarcieModulu[]
 }
 
 model Uczestnik {
@@ -220,6 +221,8 @@ model Uczestnik {
   wyniki      Wynik[]
   oceny       OcenaZawodu[]
   pytanie     PytanieUczestnika?
+  korekty     Korekta[]
+  sesja       Sesja?
 
   @@index([grupaId])
 }
@@ -358,4 +361,57 @@ model Odslona {
   odblokowana DateTime?
 
   @@unique([grupaId, warstwa])
+}
+
+/// Otwieranie modulow przez prowadzacego, dla calej grupy. Ta sama zasada co
+/// przy warstwach raportu: modul nieotwarty jest niedostepny takze pod
+/// bezposrednim adresem. Otwarte zostaje otwarte, zeby dalo sie dokonczyc
+/// przerwany modul.
+model OtwarcieModulu {
+  id      String @id @default(cuid())
+  grupaId String
+  grupa   Grupa  @relation(fields: [grupaId], references: [id], onDelete: Cascade)
+
+  /// A0 | A1 | A2 | A3 | A4 | A5 | M1
+  modul   String
+  otwarty DateTime @default(now())
+
+  @@unique([grupaId, modul])
+}
+
+/// Korekta wprowadzona przez prowadzacego podczas sesji 1:1.
+/// Zapisywana osobno od wyniku silnika, zeby raport mogl powiedziec wprost,
+/// co pochodzi od czlowieka, a co od algorytmu.
+model Korekta {
+  id          String    @id @default(cuid())
+  uczestnikId String
+  uczestnik   Uczestnik @relation(fields: [uczestnikId], references: [id], onDelete: Cascade)
+
+  /// dopisany_zawod | usuniety_zawod | kolejnosc_drog | do_przeliczenia
+  typ          String
+  /// Kod zawodu przy dopisaniu i usunieciu; "BAC" przy zmianie kolejnosci drog.
+  wartosc      String?
+  uzasadnienie String?
+  utworzona    DateTime @default(now())
+
+  @@index([uczestnikId])
+}
+
+/// Podsumowanie sesji indywidualnej, sekcja 18-20 raportu.
+/// Decyzja i pierwszy krok sa zapisywane slowami uczestnika.
+model Sesja {
+  uczestnikId String    @id
+  uczestnik   Uczestnik @relation(fields: [uczestnikId], references: [id], onDelete: Cascade)
+
+  odbyta       DateTime?
+  decyzja      String?
+  coPrzekonalo String?
+  coSprawdzic  String?
+  /// JSON [] kroki: data, liczba, czasownik.
+  kroki        String?
+  wrocicZa     String?
+  /// Notatka prowadzacego. Trafia do raportu jako sekcja 20.
+  notatka      String?
+
+  zaktualizowana DateTime @updatedAt
 }

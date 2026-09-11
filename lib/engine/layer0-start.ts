@@ -147,7 +147,7 @@ export interface SekcjaPunktStartu {
   oCzymWartoWiedziec: string[];
 }
 
-const OPIS_ETAPU: Record<EtapEdukacji, string> = {
+export const OPIS_ETAPU: Record<EtapEdukacji, string> = {
   podstawowka: "ostatnia klasa szkoły podstawowej",
   liceum_1_2: "liceum lub technikum, klasa pierwsza albo druga",
   liceum_maturalna: "liceum lub technikum, klasa przedmaturalna albo maturalna",

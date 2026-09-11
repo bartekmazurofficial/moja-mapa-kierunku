@@ -46,6 +46,8 @@ export interface DaneRaportu {
   /** Sekcje, ktore wolno zbudowac. Reszta nie powstaje w ogole. */
   dostepne: Set<string>;
   decyzja?: { tresc: string | null; kroki: string[]; notatka: string | null };
+  /** Korekty wprowadzone przez prowadzacego podczas sesji indywidualnej. */
+  korekty?: Array<{ typ: string; wartosc: string | null; uzasadnienie: string | null }>;
 }
 
 export function zbudujRaport(dane: DaneRaportu): Raport {
@@ -266,7 +268,11 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
       pozycje: silnik.warstwa1.obszary.slice(0, 5).map((o) => ({
         nazwa: o.nazwa,
         pasmo: o.pasmo,
-        pasmoOpis: pasmoOpisObszaru(o.pasmo),
+        // Regula 3: nigdy nie mowimy, ze nic nie pasuje. Obszar, ktory u tego
+        // uczestnika wyszedl najwyzej, nie moze byc podpisany „antydopasowanie"
+        // tylko dlatego, ze caly profil siedzi nisko. Wtedy pasma nie ma wcale,
+        // a wyjasnienie niesie komunikat o nieostrym profilu.
+        pasmoOpis: o.pasmo === "antydopasowanie" ? "" : pasmoOpisObszaru(o.pasmo),
         poziom: o.poziomWejscia.etykieta,
         przyklad: o.poziomWejscia.przyklad,
         czas: o.poziomWejscia.czas,
@@ -282,12 +288,33 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
     };
   }
 
+  // --- KOREKTY PROWADZACEGO ---
+  // Uczestnik ma wiedziec, co powiedzial mu algorytm, a co czlowiek, wiec
+  // korekty nie mieszaja sie z wynikiem: usuniecia znikaja, dopiski stoja
+  // osobno i podpisane.
+  const korekty = dane.korekty ?? [];
+  const usunieteRecznie = new Set(
+    korekty.filter((k) => k.typ === "usuniety_zawod" && k.wartosc).map((k) => k.wartosc as string),
+  );
+  const kolejnoscDrog = korekty.filter((k) => k.typ === "kolejnosc_drog" && k.wartosc).at(-1)?.wartosc ?? null;
+
   // --- KONKRETNE ZAWODY ---
   if (wolno("zawody")) {
     const nazwaObszaru = new Map(baza.obszary.map((o) => [o.id, o.nazwa]));
+    const nazwyWszystkich = new Map(baza.zawody.map((z) => [z.kod, z.nazwaWyswietlana]));
     raport.zawody = {
       wynikiWstepne: silnik.warstwa2.wynikiWstepne,
-      pozycje: silnik.warstwa2.pozycje.map((p) => ({
+      odProwadzacego: korekty
+        .filter((k) => k.typ === "dopisany_zawod" && k.wartosc)
+        .map((k) => ({
+          kod: k.wartosc as string,
+          nazwa: nazwyWszystkich.get(k.wartosc as string) ?? (k.wartosc as string),
+          uzasadnienie: k.uzasadnienie,
+        })),
+      pozycje: silnik.warstwa2.pozycje
+        .map((p) => ({ ...p, zawody: p.zawody.filter((z) => !usunieteRecznie.has(z.kod)) }))
+        .filter((p) => p.zawody.length > 0)
+        .map((p) => ({
         typ: p.typ,
         kod: p.kod,
         nazwa: p.nazwa,
@@ -388,12 +415,24 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
         .slice(0, 2)
         .map((id) => A2_PO_ID.get(id)?.nazwa ?? String(id));
     };
+    // Prowadzacy moze zmienic kolejnosc drog, jesli rozmowa to uzasadnia.
+    const kolejnosc = kolejnoscDrog && /^[ABC]{1,3}$/.test(kolejnoscDrog) ? kolejnoscDrog : null;
+    const drogiWKolejnosci = kolejnosc
+      ? [...silnik.warstwa1.drogi].sort(
+          (a, b) => kolejnosc.indexOf(a.etykieta) - kolejnosc.indexOf(b.etykieta),
+        )
+      : silnik.warstwa1.drogi;
+
     raport.trzy_drogi = {
       flagi: silnik.warstwa1.flagi.map((f) => komunikatFlagi(f)).filter((x): x is string => Boolean(x)),
       pierwszyKrok: silnik.zakonczenie?.pierwszyKrok ?? "Ustal to na rozmowie indywidualnej.",
-      drogi: silnik.warstwa1.drogi.map((d) => ({
+      kolejnoscOdProwadzacego: kolejnosc !== null,
+      drogi: drogiWKolejnosci.map((d) => ({
         etykieta: d.etykieta,
         obszar: d.nazwaObszaru,
+        tenSamObszar:
+          d.etykieta === "C" &&
+          silnik.warstwa1.drogi.some((x) => x.etykieta !== "C" && x.obszar === d.obszar),
         poziom: d.poziom.etykieta,
         przyklad: d.poziom.przyklad,
         czas: d.poziom.czas,

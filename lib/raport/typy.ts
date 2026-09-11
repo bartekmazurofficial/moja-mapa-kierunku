@@ -53,6 +53,11 @@ export interface DrogaWRaporcie {
   kierunki: string[];
   /** Kompetencje wymagane przez ten obszar, w ktorych uczestnik ma najnizej. */
   umiejetnosci: string[];
+  /**
+   * Droga C zbudowana jako inny poziom wejscia w obszarze A albo B.
+   * Wtedy „cos zupelnie innego" byloby nieprawda.
+   */
+  tenSamObszar?: boolean;
 }
 
 export interface Raport {
@@ -129,7 +134,15 @@ export interface Raport {
 
   profil_w_jednym_ekranie?: { zdania: string[] };
 
-  zawody?: { pozycje: PozycjaZawodowa[]; wynikiWstepne: boolean };
+  zawody?: {
+    pozycje: PozycjaZawodowa[];
+    wynikiWstepne: boolean;
+    /**
+     * Zawody dopisane przez prowadzacego podczas sesji. Osobna lista, zeby
+     * uczestnik wiedzial, co powiedzial mu algorytm, a co czlowiek.
+     */
+    odProwadzacego: Array<{ kod: string; nazwa: string; uzasadnienie: string | null }>;
+  };
 
   kierunki?: {
     sensStudiow: SensStudiow;
@@ -160,7 +173,13 @@ export interface Raport {
   umiejetnosci?: { pozycje: PozycjaOpisowa[] };
 
   /** `pierwszyKrok` wynika z etapu edukacji, nie z drogi - stad raz na sekcje. */
-  trzy_drogi?: { drogi: DrogaWRaporcie[]; flagi: string[]; pierwszyKrok: string };
+  trzy_drogi?: {
+    drogi: DrogaWRaporcie[];
+    flagi: string[];
+    pierwszyKrok: string;
+    /** Prowadzacy zmienil kolejnosc drog po rozmowie. */
+    kolejnoscOdProwadzacego: boolean;
+  };
 
   czego_unikac?: { pozycje: Array<{ nazwa: string; komunikat: string }> };
 

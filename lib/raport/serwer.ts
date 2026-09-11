@@ -22,7 +22,7 @@ export interface WidokRaportu {
 export async function pobierzRaport(kodDostepu: string): Promise<WidokRaportu | null> {
   const uczestnik = await prisma.uczestnik.findUnique({
     where: { kodDostepu },
-    include: { grupa: true, oceny: true, pytanie: true },
+    include: { grupa: true, oceny: true, pytanie: true, korekty: true, sesja: true },
   });
   if (!uczestnik) return null;
 
@@ -39,6 +39,18 @@ export async function pobierzRaport(kodDostepu: string): Promise<WidokRaportu | 
     baza,
     karty: new Map(karty.map((k) => [k.kod, { pelna: k.pelna }])),
     dostepne: dostep.dostepne,
+    decyzja: uczestnik.sesja
+      ? {
+          tresc: uczestnik.sesja.decyzja,
+          kroki: uczestnik.sesja.kroki ? (JSON.parse(uczestnik.sesja.kroki) as string[]) : [],
+          notatka: uczestnik.sesja.notatka,
+        }
+      : undefined,
+    korekty: uczestnik.korekty.map((k) => ({
+      typ: k.typ,
+      wartosc: k.wartosc,
+      uzasadnienie: k.uzasadnienie,
+    })),
   });
 
   const zamkniete = WARSTWY.filter((w) => w.kod !== "ZAWSZE" && dostep.warstwy.get(w.kod) === null).map(

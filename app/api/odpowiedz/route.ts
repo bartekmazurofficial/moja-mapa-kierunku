@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/klient";
+import { otwarteModuly } from "@/lib/moduly/otwarcie";
+import type { KodModulu } from "@/lib/moduly/typy";
 
 /**
  * Zapis odpowiedzi na biezaco. Bez przycisku "zapisz".
@@ -33,10 +35,17 @@ export async function POST(request: Request) {
 
   const uczestnik = await prisma.uczestnik.findUnique({
     where: { kodDostepu: dane.kod },
-    select: { id: true },
+    select: { id: true, grupaId: true },
   });
   if (!uczestnik) {
     return NextResponse.json({ blad: "nieznany kod dostępu" }, { status: 404 });
+  }
+
+  // Modul nieotwarty przez prowadzacego nie przyjmuje odpowiedzi, nawet gdy
+  // ktos wysle zadanie z pominieciem interfejsu.
+  const otwarte = await otwarteModuly(uczestnik.grupaId);
+  if (!otwarte.has(dane.modul as KodModulu)) {
+    return NextResponse.json({ blad: "moduł nie jest jeszcze otwarty" }, { status: 403 });
   }
 
   const teraz = new Date();

@@ -1,0 +1,297 @@
+/**
+ * Dane dla panelu prowadzacego.
+ *
+ * Regula z rozdzialu 6 specyfikacji sesji: prowadzacy ma pietnascie minut na
+ * przygotowanie i nie moze ich stracic na klikanie. Ekran uczestnika powstaje
+ * jednym zapytaniem i zawiera wszystko, co potrzebne do rozmowy.
+ */
+
+import "server-only";
+import { prisma } from "../db/klient";
+import { pobierzBazeReferencyjna } from "../db/repozytorium";
+import { zbierzOdpowiedzi } from "../moduly/zbieranie";
+import { zlozWynikiModulow } from "../engine/moduly";
+import { uruchomSilnik } from "../engine";
+import { policzRozjazdy, type Rozjazd } from "../panel/rozjazdy";
+import { otwarteModuly } from "../moduly/otwarcie";
+import { stanDostepu } from "../raport/dostep";
+import { OPIS_ETAPU } from "../engine/layer0-start";
+import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "../moduly/ekrany";
+import { OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_A3, FILTRY_A5 } from "../domain/slowniki";
+import { OBSZARY_M1 } from "../content/m1";
+import { MARKER_ZAKONCZENIA, type KodModulu } from "../moduly/typy";
+import type { KodWarstwy } from "../raport/sekcje";
+
+/**
+ * Czas, ponizej ktorego wypelnienie modulu uznajemy za pobiezne.
+ * Polowa czasu przewidzianego w scenariuszu. Prog jest sygnalem do rozmowy,
+ * nie ocena: „ktos przeklikal trzydziesci blokow w cztery minuty".
+ */
+const PROG_POBIEZNOSCI = 0.5;
+
+const MINUTY_MODULU: Record<KodModulu, number> = {
+  A0: 8, A1: 20, A2: 27, A3: 18, A4: 12, A5: 15, M1: 45,
+};
+
+export type StanModulu = "zamkniety" | "pusty" | "wtrakcie" | "gotowy";
+
+export interface WierszGrupy {
+  kodDostepu: string;
+  imie: string;
+  moduly: Array<{ kod: KodModulu; stan: StanModulu; pobiezny: boolean }>;
+  brakiDanych: string[];
+  liczbaWet: number;
+  sesja: "przed" | "po";
+}
+
+export interface WidokGrupy {
+  id: string;
+  kod: string;
+  nazwa: string;
+  uczestnicy: WierszGrupy[];
+  otwarteModuly: KodModulu[];
+  otwarteWarstwy: KodWarstwy[];
+}
+
+export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null> {
+  const grupa = await prisma.grupa.findUnique({
+    where: { kod: kodGrupy },
+    include: {
+      uczestnicy: { orderBy: { imie: "asc" }, include: { postepy: true, sesja: true } },
+      odslony: true,
+    },
+  });
+  if (!grupa) return null;
+
+  const otwarte = await otwarteModuly(grupa.id);
+  const idUczestnikow = grupa.uczestnicy.map((u) => u.id);
+
+  // Czas i liczba odpowiedzi na modul, jednym zapytaniem dla calej grupy.
+  const czasy = await prisma.odpowiedz.groupBy({
+    by: ["uczestnikId", "modul"],
+    where: { uczestnikId: { in: idUczestnikow } },
+    _sum: { msSpent: true },
+  });
+  const czasPo = new Map(czasy.map((c) => [`${c.uczestnikId}|${c.modul}`, c._sum.msSpent ?? 0]));
+
+  const zakonczenia = await prisma.odpowiedz.findMany({
+    where: { uczestnikId: { in: idUczestnikow }, pozycja: MARKER_ZAKONCZENIA },
+    select: { uczestnikId: true, modul: true, czesc: true },
+  });
+  const zamkniete = new Map<string, Set<string>>();
+  for (const z of zakonczenia) {
+    const klucz = `${z.uczestnikId}|${z.modul}`;
+    if (!zamkniete.has(klucz)) zamkniete.set(klucz, new Set());
+    zamkniete.get(klucz)!.add(z.czesc);
+  }
+
+  const uczestnicy: WierszGrupy[] = grupa.uczestnicy.map((u) => {
+    const moduly = KOLEJNOSC_MODULOW.map((m) => {
+      const klucz = `${u.id}|${m}`;
+      const gotowe = zamkniete.get(klucz)?.size ?? 0;
+      const wszystkie = CZESCI_MODULOW[m].length;
+      const zaczety = (u.postepy.find((p) => p.kod === m)?.rozpoczety ?? null) !== null;
+      const stan: StanModulu = !otwarte.has(m)
+        ? "zamkniety"
+        : gotowe >= wszystkie
+          ? "gotowy"
+          : zaczety
+            ? "wtrakcie"
+            : "pusty";
+      // Bez zmierzonego czasu nie ma podstawy do ostrzezenia. Zero milisekund
+      // przy stu odpowiedziach znaczy „nie zmierzono", nie „przeklikal".
+      const ms = czasPo.get(klucz) ?? 0;
+      const zmierzony = ms > 0;
+      const minuty = ms / 60000;
+      return {
+        kod: m,
+        stan,
+        pobiezny: stan === "gotowy" && zmierzony && minuty < MINUTY_MODULU[m] * PROG_POBIEZNOSCI,
+      };
+    });
+
+    const brakiDanych: string[] = [];
+    for (const m of moduly) {
+      if (m.stan === "wtrakcie") brakiDanych.push(`${m.kod} przerwany`);
+    }
+    const bezCzasu = moduly.filter(
+      (m) => m.stan === "gotowy" && (czasPo.get(`${u.id}|${m.kod}`) ?? 0) === 0,
+    );
+    if (bezCzasu.length > 0) brakiDanych.push(`bez pomiaru czasu: ${bezCzasu.map((m) => m.kod).join(", ")}`);
+
+    return {
+      kodDostepu: u.kodDostepu,
+      imie: u.imie,
+      moduly,
+      brakiDanych,
+      liczbaWet: 0,
+      sesja: u.sesja?.odbyta ? "po" : "przed",
+    };
+  });
+
+  // Weto to pozycja wskazana w czesci B modulu A5, nie kazda odpowiedz NIE.
+  // Uczestnik odpowiada NIE wielokrotnie, a weta stawia najwyzej trzy.
+  const wetaWierszy = await prisma.odpowiedz.findMany({
+    where: { uczestnikId: { in: idUczestnikow }, modul: "A5", czesc: "B" },
+    select: { uczestnikId: true, wartosc: true },
+  });
+  const weta = new Map<string, number>();
+  for (const w of wetaWierszy) {
+    const wartosc = JSON.parse(w.wartosc) as unknown;
+    const ile = Array.isArray(wartosc) ? wartosc.length : wartosc ? 1 : 0;
+    weta.set(w.uczestnikId, (weta.get(w.uczestnikId) ?? 0) + ile);
+  }
+  for (const [i, u] of grupa.uczestnicy.entries()) {
+    uczestnicy[i].liczbaWet = weta.get(u.id) ?? 0;
+  }
+
+  return {
+    id: grupa.id,
+    kod: grupa.kod,
+    nazwa: grupa.nazwa,
+    uczestnicy,
+    otwarteModuly: KOLEJNOSC_MODULOW.filter((m) => otwarte.has(m)),
+    otwarteWarstwy: grupa.odslony.filter((o) => o.odblokowana).map((o) => o.warstwa as KodWarstwy),
+  };
+}
+
+export interface KartaUczestnika {
+  kodDostepu: string;
+  imie: string;
+  grupa: { kod: string; nazwa: string };
+  etap: string | null;
+  wiek: string | null;
+  coGoCiagnie: string[];
+  wCzymMozeBycDobry: string[];
+  jakDziala: string[];
+  coJestWazne: string[];
+  czegoNieChce: string[];
+  drogi: Array<{ etykieta: string; obszar: string; poziom: string; zawody: string[] }>;
+  rozjazdy: Rozjazd[];
+  ostrzezenia: Array<{ zawod: string; droga: string; zdania: string[] }>;
+  pytanie: string | null;
+  wizja: Array<{ tytul: string; tresc: string }>;
+  usunieteWetem: Array<{ nazwa: string; filtry: string[] }>;
+  korekty: Array<{ id: string; typ: string; wartosc: string | null; uzasadnienie: string | null }>;
+  sesja: {
+    decyzja: string | null;
+    coPrzekonalo: string | null;
+    coSprawdzic: string | null;
+    kroki: string[];
+    wrocicZa: string | null;
+    notatka: string | null;
+    odbyta: Date | null;
+  } | null;
+  /** Zawody do dopisania recznie: cala baza, posortowana. */
+  wszystkieZawody: Array<{ kod: string; nazwa: string }>;
+}
+
+export async function pobierzKarteUczestnika(kodDostepu: string): Promise<KartaUczestnika | null> {
+  const uczestnik = await prisma.uczestnik.findUnique({
+    where: { kodDostepu },
+    include: { grupa: true, oceny: true, pytanie: true, korekty: true, sesja: true },
+  });
+  if (!uczestnik) return null;
+
+  const [odpowiedzi, baza] = await Promise.all([
+    zbierzOdpowiedzi(uczestnik.id),
+    pobierzBazeReferencyjna(),
+  ]);
+
+  const moduly = zlozWynikiModulow(odpowiedzi);
+  const silnik = uruchomSilnik(moduly, baza);
+  const oceny = Object.fromEntries(uczestnik.oceny.map((o) => [o.zawodKod, o.ocena]));
+  const rozjazdy = policzRozjazdy({ silnik, moduly, baza, oceny });
+
+  const nazwaZawodu = new Map(baza.zawody.map((z) => [z.kod, z.nazwaWyswietlana]));
+  const najA1 = [...OBSZARY_A1]
+    .sort((a, b) => (moduly.z[b.id] ?? 0) - (moduly.z[a.id] ?? 0))
+    .slice(0, 5)
+    .map((o) => o.etykieta);
+  const najA2 = [...KOMPETENCJE_A2]
+    .sort((a, b) => (moduly.k[b.id] ?? 0) - (moduly.k[a.id] ?? 0))
+    .slice(0, 5)
+    .map((k) => k.nazwa);
+  const jakDziala = WYMIARY_A3.filter((w) => (moduly.a3Sila[w.kod] ?? 0) >= 65)
+    .slice(0, 3)
+    .map((w) => ((moduly.a3Pozycje[w.kod] ?? 50) >= 50 ? w.biegunA : w.biegunB));
+  const nazwaWartosci = new Map(WARTOSCI_A4.map((w) => [w.kod, w.nazwa]));
+  const nazwaFiltru = new Map(FILTRY_A5.map((f) => [f.kod, f.tekst]));
+
+  const ostrzezenia = silnik.warstwa2.pozycje
+    .flatMap((p) => p.zawody)
+    .filter((z) => z.ostrzezenia.length > 0)
+    .map((z) => ({
+      zawod: z.nazwa,
+      droga: silnik.warstwa1.drogi.find((d) => d.obszar === z.obszar)?.etykieta ?? "—",
+      zdania: z.ostrzezenia.map((o) => o.zdanie),
+    }));
+
+  const wizja: Array<{ tytul: string; tresc: string }> = [];
+  for (const obszar of OBSZARY_M1) {
+    const tresc = odpowiedzi.m1.czescB?.[obszar.nr];
+    if (typeof tresc === "string" && tresc.trim().length > 0) {
+      wizja.push({ tytul: obszar.tytul, tresc: tresc.trim() });
+    } else if (Array.isArray(tresc) && tresc.length > 0) {
+      wizja.push({ tytul: obszar.tytul, tresc: tresc.filter(Boolean).join(" · ") });
+    }
+  }
+
+  return {
+    kodDostepu: uczestnik.kodDostepu,
+    imie: uczestnik.imie,
+    grupa: { kod: uczestnik.grupa.kod, nazwa: uczestnik.grupa.nazwa },
+    // A0 zyje w tabeli odpowiedzi, nie w tabeli PunktStartu: ta jest pusta.
+    etap: moduly.punktStartu ? OPIS_ETAPU[moduly.punktStartu.etap] : null,
+    wiek: null,
+    coGoCiagnie: najA1,
+    wCzymMozeBycDobry: najA2,
+    jakDziala,
+    coJestWazne: moduly.a4Top5.map((k) => nazwaWartosci.get(k) ?? k),
+    czegoNieChce: moduly.weta.map((k) => nazwaFiltru.get(k) ?? k),
+    drogi: silnik.warstwa1.drogi.map((d) => ({
+      etykieta: d.etykieta,
+      obszar: d.nazwaObszaru,
+      poziom: `${d.poziom.przyklad} · ${d.poziom.czas}`,
+      zawody: d.zawody.map((k) => nazwaZawodu.get(k) ?? k),
+    })),
+    rozjazdy,
+    ostrzezenia,
+    pytanie: uczestnik.pytanie?.tresc ?? null,
+    wizja,
+    usunieteWetem: silnik.warstwa2.usunieteWetem.map((z) => ({
+      nazwa: z.nazwa,
+      filtry: z.filtry.map((f) => nazwaFiltru.get(f) ?? f),
+    })),
+    korekty: uczestnik.korekty.map((k) => ({
+      id: k.id,
+      typ: k.typ,
+      wartosc: k.wartosc,
+      uzasadnienie: k.uzasadnienie,
+    })),
+    sesja: uczestnik.sesja
+      ? {
+          decyzja: uczestnik.sesja.decyzja,
+          coPrzekonalo: uczestnik.sesja.coPrzekonalo,
+          coSprawdzic: uczestnik.sesja.coSprawdzic,
+          kroki: uczestnik.sesja.kroki ? (JSON.parse(uczestnik.sesja.kroki) as string[]) : [],
+          wrocicZa: uczestnik.sesja.wrocicZa,
+          notatka: uczestnik.sesja.notatka,
+          odbyta: uczestnik.sesja.odbyta,
+        }
+      : null,
+    wszystkieZawody: baza.zawody
+      .map((z) => ({ kod: z.kod, nazwa: z.nazwaWyswietlana }))
+      .sort((a, b) => a.nazwa.localeCompare(b.nazwa, "pl")),
+  };
+}
+
+export async function listaGrup() {
+  const grupy = await prisma.grupa.findMany({
+    orderBy: { utworzona: "desc" },
+    include: { _count: { select: { uczestnicy: true } } },
+  });
+  return grupy.map((g) => ({ kod: g.kod, nazwa: g.nazwa, uczestnikow: g._count.uczestnicy }));
+}
+
+export { NAZWY_MODULOW, KOLEJNOSC_MODULOW, stanDostepu };

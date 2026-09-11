@@ -16,7 +16,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl" className={`${bezszeryfowy.variable} ${szeryfowy.variable}`}>
-      <body className="min-h-dvh bg-tlo font-sans text-atrament antialiased">{children}</body>
+      <body className="min-h-dvh bg-tlo font-sans text-atrament antialiased">
+        <a href="#tresc" className="przeskocz">
+          Przejdź do treści
+        </a>
+        <div id="tresc">{children}</div>
+      </body>
     </html>
   );
 }

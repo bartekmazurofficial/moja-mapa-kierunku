@@ -34,11 +34,14 @@ export function uruchomSilnik(w: WynikiModulow, baza: BazaReferencyjna): WynikSi
   // Kazda droga dostaje dwa do czterech konkretnych zawodow ze swojego obszaru.
   // Bez progu pokazania: droga bez ani jednego zawodu jest bezuzyteczna,
   // a pasmo opisowe i tak mowi uczciwie, jak mocne jest dopasowanie.
+  //
+  // Filtrujemy po poziomie wejscia drogi. Bez tego Droga C zbudowana jako inny
+  // poziom w obszarze A dostawala te same cztery zawody co A i obie karty
+  // wygladaly identycznie, mimo ze cala ich roznica to wlasnie poziom wejscia.
   for (const droga of w1.drogi) {
-    droga.zawody = w2.wszystkie
-      .filter((z) => z.obszar === droga.obszar)
-      .slice(0, 4)
-      .map((z) => z.kod);
+    const zObszaru = w2.wszystkie.filter((z) => z.obszar === droga.obszar);
+    const zPoziomu = zObszaru.filter((z) => z.poziom === droga.poziom.poziom);
+    droga.zawody = (zPoziomu.length > 0 ? zPoziomu : zObszaru).slice(0, 4).map((z) => z.kod);
   }
 
   const w3 = warstwa3(w2, baza.zawody, baza.kierunki, baza.drogiBezStudiow, {

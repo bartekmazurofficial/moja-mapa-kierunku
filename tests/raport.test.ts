@@ -37,6 +37,10 @@ function raport(dostepne: Set<string> = WSZYSTKIE) {
   return zbudujRaport({ imie: "Ania", odpowiedzi, baza, karty, dostepne });
 }
 
+function raportZKorektami(korekty: Array<{ typ: string; wartosc: string | null; uzasadnienie: string | null }>) {
+  return zbudujRaport({ imie: "Ania", odpowiedzi, baza, karty, dostepne: WSZYSTKIE, korekty });
+}
+
 describe("struktura raportu", () => {
   it("dwadzieścia sekcji plus punkt startu, w pięciu warstwach", () => {
     expect(SEKCJE).toHaveLength(22);
@@ -114,6 +118,78 @@ describe("zasady, których nie wolno złamać", () => {
     for (const slowo of SLOWA_ZAKAZANE) {
       expect(generowane, slowo).not.toContain(slowo.toLowerCase());
     }
+  });
+
+  it("żaden kod techniczny pasma nie trafia do raportu jako opis", () => {
+    // „antydopasowanie" i „ponizej_progu" to kody wewnetrzne. Uczestnik widzi
+    // opis albo nic; kod na ekranie znaczy, ze cos przecieklo.
+    const r = raport();
+    const opisy = [
+      ...(r.obszary?.pozycje ?? []).map((p) => p.pasmoOpis),
+      ...(r.zawody?.pozycje ?? []).flatMap((p) => [
+        p.pasmoOpis,
+        ...p.zawody.map((z) => z.pasmoOpis),
+      ]),
+    ];
+    for (const opis of opisy) {
+      expect(opis).not.toMatch(/^[a-z_]+$/);
+      expect(opis).not.toContain("antydopasowanie");
+    }
+  });
+
+  it("obszar z czołówki nie jest podpisany antydopasowaniem", () => {
+    // Regula 3: nigdy nie mowimy, ze nic nie pasuje. Nawet gdy caly profil
+    // siedzi ponizej progu, najmocniejsze obszary nie moga dostac tej etykiety.
+    for (const p of raport().obszary?.pozycje ?? []) {
+      if (p.pasmo === "antydopasowanie") expect(p.pasmoOpis).toBe("");
+    }
+  });
+
+  it("droga C w tym samym obszarze nie jest podpisana jako coś innego", () => {
+    // Gdy nie ma sensownej trzeciej dziedziny, silnik buduje C jako inny poziom
+    // wejscia w obszarze A albo B. Etykieta „coś zupełnie innego" byłaby wtedy
+    // nieprawdą, a obie karty i tak stoją obok siebie.
+    const drogi = raport().trzy_drogi?.drogi ?? [];
+    const c = drogi.find((d) => d.etykieta === "C");
+    if (!c) return;
+    const powtorzony = drogi.some((d) => d.etykieta !== "C" && d.obszar === c.obszar);
+    expect(c.tenSamObszar ?? false).toBe(powtorzony);
+  });
+
+  it("zawód dopisany przez prowadzącego stoi osobno i jest podpisany", () => {
+    const r = raportZKorektami([
+      { typ: "dopisany_zawod", wartosc: "pielegniarka", uzasadnienie: "Wskazane podczas rozmowy." },
+    ]);
+    expect(r.zawody?.odProwadzacego).toHaveLength(1);
+    expect(r.zawody?.odProwadzacego[0].nazwa).toBe("Pielęgniarka");
+    // Nie miesza sie z wynikiem silnika.
+    const wSilniku = (r.zawody?.pozycje ?? []).flatMap((p) => p.zawody.map((z) => z.kod));
+    expect(wSilniku.filter((k) => k === "pielegniarka").length).toBeLessThanOrEqual(1);
+  });
+
+  it("zawód usunięty przez prowadzącego znika z listy", () => {
+    const przed = (raport().zawody?.pozycje ?? []).flatMap((p) => p.zawody.map((z) => z.kod));
+    expect(przed.length).toBeGreaterThan(0);
+    const usuwany = przed[0];
+    const po = (
+      raportZKorektami([{ typ: "usuniety_zawod", wartosc: usuwany, uzasadnienie: null }]).zawody
+        ?.pozycje ?? []
+    ).flatMap((p) => p.zawody.map((z) => z.kod));
+    expect(po).not.toContain(usuwany);
+  });
+
+  it("zmiana kolejności dróg jest widoczna i oznaczona", () => {
+    const domyslne = (raport().trzy_drogi?.drogi ?? []).map((d) => d.etykieta);
+    expect(domyslne).toEqual(["A", "B", "C"]);
+    const r = raportZKorektami([{ typ: "kolejnosc_drog", wartosc: "BAC", uzasadnienie: null }]);
+    expect((r.trzy_drogi?.drogi ?? []).map((d) => d.etykieta)).toEqual(["B", "A", "C"]);
+    expect(r.trzy_drogi?.kolejnoscOdProwadzacego).toBe(true);
+  });
+
+  it("bez korekt raport nie twierdzi, że prowadzący coś zmienił", () => {
+    const r = raport();
+    expect(r.zawody?.odProwadzacego).toEqual([]);
+    expect(r.trzy_drogi?.kolejnoscOdProwadzacego).toBe(false);
   });
 
   it("nie ma porównania z grupą", () => {

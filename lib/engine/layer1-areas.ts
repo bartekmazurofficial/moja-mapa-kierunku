@@ -338,6 +338,19 @@ export function warstwa1(
   const karyFiltrowe = new Map<number, number>();
 
   for (const obszar of obszary) {
+    // --- ETAP 1: CIAGNIECIE. To jest cala os. ---
+    // Liczone przed wetem, zeby panel prowadzacego mogl pokazac, do czego
+    // uczestnika ciagnie mimo tego, ze obszar wypadl. Sam wynik sie nie zmienia:
+    // ciagniecie nie zalezy od wykonalnosci.
+    const sumaZaint = Object.values(obszar.zainteresowania).reduce((s, v) => s + v, 0);
+    const ciagniecie =
+      sumaZaint > 0
+        ? Object.entries(obszar.zainteresowania).reduce(
+            (s, [id, waga]) => s + waga * (w.z[Number(id)] ?? 45),
+            0,
+          ) / sumaZaint
+        : 0;
+
     // --- ETAP 0: WYKONALNOSC ---
     let wykonalnosc = 1;
     if (!wskazniki.filtryWylaczone) {
@@ -349,6 +362,7 @@ export function warstwa1(
           powod: "weto",
           filtr: weto,
           wymaganie: obszar.filtry[weto],
+          ciagniecie,
         });
         continue;
       }
@@ -365,16 +379,6 @@ export function warstwa1(
       karyFiltrowe.set(obszar.id, kara);
       wykonalnosc = 1 - DZIEDZICZONE.SUFIT_KARY_FILTROWEJ * kara;
     }
-
-    // --- ETAP 1: CIAGNIECIE. To jest cala os. ---
-    const sumaZaint = Object.values(obszar.zainteresowania).reduce((s, v) => s + v, 0);
-    const ciagniecie =
-      sumaZaint > 0
-        ? Object.entries(obszar.zainteresowania).reduce(
-            (s, [id, waga]) => s + waga * (w.z[Number(id)] ?? 45),
-            0,
-          ) / sumaZaint
-        : 0;
 
     // --- ETAP 2: WZMOCNIENIE, TYLKO W GORE ---
     const sumaKomp = Object.values(obszar.kompetencje).reduce((s, v) => s + v, 0);
@@ -435,7 +439,7 @@ export function warstwa1(
     const dostepne = poziomyDostepne(obszar, w);
     const poziomWejscia = wybierzPoziom(dostepne, w.shape["INW"] ?? null);
     if (poziomWejscia === null) {
-      usuniete.push({ id: obszar.id, nazwa: obszar.nazwa, powod: "brak_poziomu" });
+      usuniete.push({ id: obszar.id, nazwa: obszar.nazwa, powod: "brak_poziomu", ciagniecie });
       continue;
     }
 
