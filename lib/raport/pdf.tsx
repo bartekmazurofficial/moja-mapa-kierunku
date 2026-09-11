@@ -66,9 +66,9 @@ const s = StyleSheet.create({
   etykieta: { fontFamily: "Sans", fontSize: 8, letterSpacing: 1, color: "#6f675e", marginBottom: 4, marginTop: 8 },
   pozycja: { fontFamily: "Sans", fontSize: 11, color: "#1c1917", marginBottom: 2 },
   punkt: { flexDirection: "row", marginBottom: 3 },
-  kropka: { fontFamily: "Sans", fontSize: 10, color: "#8a827a", width: 12 },
+  kropka: { fontFamily: "Sans", fontSize: 10, color: "#6f675e", width: 12 },
   karta: { borderLeftWidth: 2, borderLeftColor: "#d6cec2", paddingLeft: 12, marginBottom: 14 },
-  stopka: { position: "absolute", bottom: 28, left: 56, right: 56, fontFamily: "Sans", fontSize: 7.5, lineHeight: 1.5, color: "#8a827a" },
+  stopka: { position: "absolute", bottom: 28, left: 56, right: 56, fontFamily: "Sans", fontSize: 7.5, lineHeight: 1.5, color: "#6f675e" },
 });
 
 function Akapity({ teksty }: { teksty: string[] }) {
