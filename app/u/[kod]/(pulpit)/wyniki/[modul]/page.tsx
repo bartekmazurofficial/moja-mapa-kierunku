@@ -52,14 +52,14 @@ export default async function Strona({
         </h1>
         <p className="proza mt-3 max-w-czytelna">
           {plansza.gotowy
-            ? "Wszystko, co wybrałeś w tej części, na jednym ekranie. Możesz wrócić i zmienić, co chcesz — nic nie jest zamknięte na klucz."
+            ? "Wszystko, co wybrałeś w tej części, na jednym ekranie. Nic nie jest zamknięte na klucz: tę część można wypełnić jeszcze raz."
             : "Ta część nie jest jeszcze wypełniona. Wyniki pojawią się tu od razu po jej ukończeniu."}
         </p>
         <Link
-          href={`/u/${kod}/modul/${modul}`}
+          href={plansza.gotowy ? `/u/${kod}/modul/${modul}/od-nowa` : `/u/${kod}/modul/${modul}`}
           className="przejscie mt-6 inline-flex min-h-12 items-center gap-2 rounded-xl border border-linia-mocna bg-szklo px-6 text-male font-semibold hover:border-akcent/50 hover:text-akcent-jasny"
         >
-          {plansza.gotowy ? "Wróć do części i popraw" : "Wypełnij tę część"}
+          {plansza.gotowy ? "Wypełnij tę część od nowa" : "Wypełnij tę część"}
           <span aria-hidden>→</span>
         </Link>
       </header>

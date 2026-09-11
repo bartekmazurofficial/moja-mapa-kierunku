@@ -1076,3 +1076,30 @@ otwiera je po kolei — tak jak będzie w pilotażu.
 
 Kafel uczestnika na ekranie wyboru prowadzi w trybie testowym prosto na pulpit
 pierwszej osoby, bez wybierania konta i bez kodu.
+
+### D56. Część wypełniana od nowa, nie poprawiana po jednej odpowiedzi
+
+Moduły liczą się z całości: rankingi w blokach, pary wymuszonego wyboru,
+limit trzech wykluczeń w A5. Podmiana pojedynczej odpowiedzi po policzeniu
+wyniku dałaby stan, którego nikt nie umie zinterpretować, więc jej nie ma.
+
+Zamiast tego uczestnik może **wypełnić całą część od nowa**. Kasujemy dwie
+rzeczy: odpowiedzi modułu i `PostepModulu`. Postęp trzyma wylosowaną kolejność
+bloków — gdyby został, drugi przebieg szedłby w tej samej kolejności, a
+kontrola efektu pozycji polega na tym, że kolejność losuje się na nowo.
+
+**Czego nie kasujemy:** korekt prowadzącego i podsumowania sesji. To jest praca
+człowieka, nie dane uczestnika. Kasowanie jej po cichu byłoby gorsze niż
+niespójność, którą prowadzący widzi w panelu i może ocenić sam.
+
+**Osobny ekran potwierdzenia** (`/u/<kod>/modul/<moduł>/od-nowa`), nie przycisk
+na liście. Kasowanie jest nieodwracalne, a M1 zawiera tekst pisany własnymi
+słowami. Ekran podaje liczbę odpowiedzi, które znikną.
+
+Wejście od nowa jest możliwe dla każdego modułu z choć jedną zapisaną
+odpowiedzią, także przerwanego w połowie pierwszej części. Przy okazji
+poprawiona etykieta: moduł z odpowiedziami, ale bez domkniętej części,
+pokazywał „do zrobienia"; pokazuje „zaczęte".
+
+Moduł zamknięty przez prowadzącego nie daje się ani wypełnić, ani wyczyścić —
+inaczej uczestnik skasowałby odpowiedzi i został z niczym.

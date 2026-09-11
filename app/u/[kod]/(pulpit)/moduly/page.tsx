@@ -23,16 +23,21 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   const uczestnik = await pobierzUczestnika(kod);
   if (!uczestnik) notFound();
 
-  const [{ zakonczone }, otwarte] = await Promise.all([
+  const [{ zakonczone, odpowiedziWModule }, otwarte] = await Promise.all([
     pobierzPostepModulow(uczestnik.id),
     otwarteModuly(uczestnik.grupaId),
   ]);
+
+  /** Ile odpowiedzi uczestnik ma już zapisanych w module. */
+  const zapisane = (m: (typeof KOLEJNOSC_MODULOW)[number]) => odpowiedziWModule.get(m) ?? 0;
 
   const stan = (m: (typeof KOLEJNOSC_MODULOW)[number]) => {
     const gotowe = zakonczone.get(m)?.size ?? 0;
     if (!otwarte.has(m)) return "zamkniety" as const;
     if (gotowe >= CZESCI_MODULOW[m].length) return "gotowy" as const;
-    return gotowe > 0 ? "wtrakcie" : "przed";
+    // Zaczęte to także moduł przerwany w połowie pierwszej części: liczy się
+    // pierwsza zapisana odpowiedź, nie domknięcie całej części.
+    return gotowe > 0 || zapisane(m) > 0 ? "wtrakcie" : "przed";
   };
 
   return (
@@ -101,13 +106,28 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
                   {/* Wyniki są dostępne od razu po wypełnieniu, niezależnie od
                       warstw raportu: to własne odpowiedzi uczestnika, nie wynik
                       dopasowania. */}
-                  {s === "gotowy" && m !== "A0" ? (
-                    <Link
-                      href={`/u/${kod}/wyniki/${m}`}
-                      className="przejscie inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-linia px-4 text-male font-semibold text-atrament-sciszony hover:border-akcent/45 hover:text-akcent-jasny"
-                    >
-                      Zobacz swoje odpowiedzi <span aria-hidden>→</span>
-                    </Link>
+                  {/* Od nowa da się wypełnić wszystko, co ma choć jedną
+                      zapisaną odpowiedź — także moduł przerwany w połowie. */}
+                  {s !== "zamkniety" && zapisane(m) > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {s === "gotowy" && m !== "A0" ? (
+                        <Link
+                          href={`/u/${kod}/wyniki/${m}`}
+                          className="przejscie inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-linia px-4 text-male font-semibold text-atrament-sciszony hover:border-akcent/45 hover:text-akcent-jasny"
+                        >
+                          Zobacz swoje odpowiedzi <span aria-hidden>→</span>
+                        </Link>
+                      ) : null}
+                      {/* Pojedynczej odpowiedzi nie da się podmienić: moduły liczą
+                          się z całości. Kto chce coś zmienić, wypełnia część od
+                          nowa — przez ekran potwierdzenia, bo to kasuje dane. */}
+                      <Link
+                        href={`/u/${kod}/modul/${m}/od-nowa`}
+                        className="przejscie inline-flex min-h-10 items-center justify-center rounded-xl border border-linia px-4 text-male font-semibold text-atrament-slaby hover:border-uwaga/45 hover:text-uwaga"
+                      >
+                        Wypełnij od nowa
+                      </Link>
+                    </div>
                   ) : null}
                 </li>
               );

@@ -13,6 +13,8 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const DOMYSLNE = [
   "/u/3DEPKJBQW9/raport",
   "/u/3DEPKJBQW9/modul/A4",
+  "/u/3DEPKJBQW9/moduly",
+  "/u/3DEPKJBQW9/modul/A1/od-nowa",
   "/u/KJR5D49GKS/zawod/pielegniarka",
   "/prowadzacy/grupa/PRN2X3ZP",
   "/prowadzacy/sesja/3DEPKJBQW9",

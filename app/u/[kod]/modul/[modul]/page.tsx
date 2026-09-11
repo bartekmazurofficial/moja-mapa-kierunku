@@ -48,14 +48,31 @@ export default async function Strona({
       <main className="mx-auto flex min-h-dvh max-w-czytelna flex-col justify-center px-6 py-16">
         <h1 className="text-naglowek font-extrabold tracking-tight">To już masz za sobą</h1>
         <p className="proza mt-4 text-atrament-sciszony">
-          Ta część jest wypełniona. Wynik zobaczysz, kiedy prowadzący ją otworzy.
+          Ta część jest wypełniona. Możesz zobaczyć swoje odpowiedzi albo wypełnić ją jeszcze raz —
+          wtedy poprzednie odpowiedzi znikają i zaczynasz od pierwszego ekranu.
         </p>
-        <Link
-          href={`/u/${kod}`}
-          className="przejscie mt-8 inline-flex min-h-11 w-fit items-center rounded-lg bg-akcent px-6 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny"
-        >
-          Wróć do listy
-        </Link>
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          {modul !== "A0" ? (
+            <Link
+              href={`/u/${kod}/wyniki/${modul}`}
+              className="przejscie inline-flex min-h-11 items-center rounded-lg bg-akcent px-6 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny"
+            >
+              Zobacz swoje odpowiedzi
+            </Link>
+          ) : null}
+          <Link
+            href={`/u/${kod}/modul/${modul}/od-nowa`}
+            className="przejscie inline-flex min-h-11 items-center rounded-lg border border-linia-mocna px-6 text-male font-semibold text-atrament-sciszony hover:border-akcent/45 hover:text-akcent-jasny"
+          >
+            Wypełnij od nowa
+          </Link>
+          <Link
+            href={`/u/${kod}/moduly`}
+            className="przejscie inline-flex min-h-11 items-center px-2 text-male text-atrament-slaby hover:text-atrament"
+          >
+            Wróć do listy
+          </Link>
+        </div>
       </main>
     );
   }
