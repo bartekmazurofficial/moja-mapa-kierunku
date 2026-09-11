@@ -786,3 +786,34 @@ Jeśli którakolwiek przekroczy jedną trzecią grupy, problem jest w progach,
 nie w ludziach. Wtedy wracamy do czterech liczb decyzyjnych każdej warstwy,
 zmieniając po jednej naraz i sprawdzając, co się dzieje z trzema profilami
 kontrolnymi.
+
+---
+
+## Pomiar obciążenia, wykonany
+
+`scripts/obciazenie.ts` zakłada własną grupę, dwunastu wirtualnych uczestników
+pisze przez prawdziwe API, na koniec grupa jest kasowana. Nie dotyka danych
+pilotażowych.
+
+**Pięć minut, dwunastu piszących jednocześnie:**
+
+| Co | Ile |
+|---|---|
+| Wysłanych zapisów | 11 618 |
+| Potwierdzonych | 11 618 |
+| Odrzuconych i błędów sieci | 0 |
+| Opóźnienie, mediana | 8 ms |
+| Opóźnienie, p95 | 26 ms |
+| Opóźnienie, maksimum | 104 ms |
+| Wierszy w bazie po pomiarze | 11 618 |
+
+**Żaden zapis nie przepadł.** SQLite z jednym zapisem naraz wystarcza.
+
+Obciążenie w pomiarze jest kilkadziesiąt razy wyższe niż realne: każdy
+wirtualny uczestnik zapisuje trzy razy na sekundę, a prawdziwy odpowiada raz
+na kilkanaście sekund. To jest margines, nie wynik na styk.
+
+Czasy odpowiedzi stron przy tej samej bazie: raport uczestnika 11 ms, ekran
+grupy 12 ms, karta uczestnika 14 ms, ekran sesji 14 ms. Ekran grupy robi jedno
+zapytanie zbiorcze na czasy i jedno na weta, więc nie rośnie liniowo z liczbą
+uczestników.
