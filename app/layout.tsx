@@ -3,7 +3,7 @@ import { bezszeryfowy, boksowy, odreczny } from "@/lib/ui/fonty";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Moja mapa kierunku",
+  title: "DreamWork",
   description: "Program warsztatów rozwojowo-zawodowych 16–24",
   // Raport uczestnika zawiera wizję życia, zdrowie i sytuację finansową.
   // Nic z tego nie ma prawa trafić do wyszukiwarki ani do jej pamięci.

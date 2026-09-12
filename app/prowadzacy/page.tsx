@@ -22,7 +22,7 @@ export default async function Strona() {
           <div className="flex items-center gap-3">
             <Znak rozmiar={40} />
             <span>
-              <span className="block text-tresc-duza font-extrabold tracking-tight">Kierunek</span>
+              <span className="block text-tresc-duza font-extrabold tracking-tight">DreamWork</span>
               <span className="block text-drobne uppercase tracking-[0.14em] text-atrament-slaby">
                 panel prowadzącego
               </span>

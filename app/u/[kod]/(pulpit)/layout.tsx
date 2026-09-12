@@ -70,7 +70,7 @@ export default async function Uklad({
             <Znak />
             <span className="min-w-0">
               <span className="block truncate text-tresc-duza font-extrabold tracking-tight">
-                Kierunek
+                DreamWork
               </span>
               <span className="block text-drobne uppercase tracking-[0.14em] text-atrament-slaby">
                 więcej niż zawód

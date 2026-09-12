@@ -5,7 +5,7 @@ import { prisma } from "@/lib/db/klient";
 import { trybTestowy } from "@/lib/tryb";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Moja mapa kierunku" };
+export const metadata = { title: "DreamWork" };
 
 /**
  * W trybie testowym kafel uczestnika prowadzi prosto na pulpit pierwszej osoby
@@ -41,7 +41,7 @@ export default async function Strona() {
         <div className="relative flex items-center gap-3">
           <Znak rozmiar={44} />
           <span>
-            <span className="block text-tresc-duza font-extrabold tracking-tight">Kierunek</span>
+            <span className="block text-tresc-duza font-extrabold tracking-tight">DreamWork</span>
             <span className="block text-drobne uppercase tracking-[0.14em] text-atrament-slaby">
               Fundacja Służąc Życiu
             </span>
