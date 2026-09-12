@@ -1572,3 +1572,31 @@ cokolwiek znaczyć. Do czasu decyzji nie zmieniam nic.
 
 Raport na ekranie działa w każdym przypadku. Pada wyłącznie eksport do PDF
 i wyłącznie przy profilu płaskim albo pustym.
+
+### D85. Nazwa programu: DreamWork
+
+Znak słowny podmieniony w pięciu miejscach: ekran wyboru roli, wejście kodem,
+pulpit uczestnika, panel prowadzącego i logowanie. Tytuł w karcie przeglądarki
+też.
+
+**Nazwa raportu „Moja mapa kierunku" zostaje.** To tytuł dokumentu, który
+uczestnik dostaje, a nie nazwa programu; zmiana treści raportu nie była
+przedmiotem tej prośby. Do zmiany jedną linijką, jeśli ma się nazywać inaczej.
+
+Typ domenowy `Kierunek` i wszystkie zdania o kierunkach studiów nietknięte:
+to jest pospolity rzeczownik z bazy, nie marka.
+
+### D86. Wdrożenie testowe: jeden uczestnik, wejście bez kodu
+
+Na wyraźną prośbę, na czas oglądania platformy. `TRYB_TESTOWY=1` na produkcji,
+w bazie jeden uczestnik zamiast dwunastu.
+
+**Co to znaczy dla bezpieczeństwa.** Kto ma adres, ten jest w środku: kafel
+uczestnika prowadzi prosto na pulpit, bez kodu. Dziś nie ma to znaczenia, bo
+dane są zmyślone, a wyszukiwarki mają zakaz indeksowania. **Zanim wejdzie
+pierwszy prawdziwy uczestnik, tryb testowy musi zniknąć**, inaczej raport
+z wizją życia, zdrowiem i sytuacją finansową stoi otworem pod publicznym
+adresem.
+
+Wyłączenie to jedna komenda i ponowne wdrożenie. Wpis dopisany do listy
+sprawdzeń przed pilotażem, która i tak już zawierała punkt o tym trybie.
