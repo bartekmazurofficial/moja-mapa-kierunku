@@ -5,20 +5,10 @@ import { pobierzPostepModulow, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, MODULY_SPOTKANIA, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
 import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { Bramy } from "@/components/pulpit/Bramy";
+import { PO_CO } from "@/lib/moduly/opisy";
 import { KOLORY_MODULOW } from "@/lib/ui/kolory";
 
 export const dynamic = "force-dynamic";
-
-/** Po co jest każda część. Jedno zdanie, językiem uczestnika. */
-const PO_CO: Record<string, string> = {
-  A0: "Kilka podstawowych informacji o Twojej sytuacji: gdzie jesteś, co Ci idzie, na co masz przestrzeń.",
-  A1: "Co Cię realnie ciągnie. Nie deklaracje, tylko wybory między konkretnymi zajęciami.",
-  A3: "Jak naturalnie działasz: sam czy z ludźmi, z planem czy w biegu, cisza czy ruch.",
-  A2: "W czym możesz być dobry. Osobno od tego, co lubisz, bo to nie zawsze to samo.",
-  A4: "Czego potrzebujesz od pracy, żeby miała dla Ciebie sens.",
-  M1: "Jakiego życia chcesz. Jedyna część, w której piszesz własnymi słowami.",
-  A5: "Warunki pracy, które są nie do pogodzenia z tym, jak chcesz żyć.",
-};
 
 export default async function Strona({ params }: { params: Promise<{ kod: string }> }) {
   const { kod } = await params;
@@ -51,7 +41,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         />
         <Bramy klasa="pointer-events-none absolute -right-6 bottom-0 hidden h-[15rem] w-[24rem] opacity-80 lg:block" />
         <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Siedem części</p>
-        <h1 className="mt-3 text-naglowek-duzy font-extrabold tracking-tight">
+        <h1 className="mt-3 text-naglowek font-extrabold tracking-tight sm:text-naglowek-duzy">
           Małe wybory.
           <br />
           <span className="gradient-tytul">Wielkie możliwości.</span>

@@ -72,18 +72,34 @@ export default async function Uklad({
               <span className="block truncate text-tresc-duza font-extrabold tracking-tight">
                 DreamWork
               </span>
-              <span className="block text-drobne uppercase tracking-[0.14em] text-atrament-slaby">
-                więcej niż zawód
+              <span className="block text-drobne text-atrament-slaby">
+                Lepsze decyzje. Pełniejsze życie.
               </span>
             </span>
           </div>
 
-          <div className="mt-5 rounded-xl border border-linia bg-tlo/50 p-4">
-            <p className="text-drobne uppercase tracking-[0.1em] text-atrament-slaby">
-              {uczestnik.grupa.nazwa}
-            </p>
-            <p className="mt-1 text-tresc-duza font-bold">{uczestnik.imie}</p>
-            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-linia">
+          {/* Kto tu jest. Zamiast zdjęcia inicjał: nie mamy fotografii
+              uczestników i nie zamierzamy ich zbierać. */}
+          <div className="mt-5 flex items-center gap-3 rounded-xl border border-linia bg-tlo/50 p-4">
+            <span
+              aria-hidden
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-akcent-jasny to-akcent text-naglowek-maly font-extrabold text-na-akcencie"
+            >
+              {uczestnik.imie.trim().charAt(0).toUpperCase()}
+            </span>
+            <span className="min-w-0">
+              <span className="block text-drobne text-atrament-slaby">Cześć,</span>
+              <span className="block truncate text-tresc-duza font-bold leading-tight">
+                {uczestnik.imie}
+              </span>
+              <span className="block truncate text-drobne text-atrament-slaby">
+                {uczestnik.grupa.nazwa}
+              </span>
+            </span>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-linia bg-tlo/50 p-4">
+            <div className="h-1.5 overflow-hidden rounded-full bg-linia">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-akcent-ciemny to-akcent-jasny"
                 style={{ width: `${doZrobienia.length > 0 ? (ukonczone / doZrobienia.length) * 100 : 0}%` }}
@@ -100,7 +116,13 @@ export default async function Uklad({
             <Nawigacja pozycje={pozycje} />
           </div>
 
-          <p className="odreczny mt-6 pl-1">Poznaj siebie.<br />Zobacz więcej.</p>
+          <div className="mt-6 rounded-xl border border-akcent/20 bg-akcent-tlo/50 p-4">
+            <p className="odreczny">
+              Małe wybory.
+              <br />
+              Wielkie możliwości.
+            </p>
+          </div>
         </div>
       </aside>
 

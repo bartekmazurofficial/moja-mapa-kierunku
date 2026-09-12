@@ -51,7 +51,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">
           {wszystkie.length} kart do przeczytania
         </p>
-        <h1 className="mt-3 text-naglowek-duzy font-extrabold tracking-tight">
+        <h1 className="mt-3 text-naglowek font-extrabold tracking-tight sm:text-naglowek-duzy">
           Jak wygląda życie
           <br />
           <span className="gradient-tytul">człowieka, który to robi.</span>

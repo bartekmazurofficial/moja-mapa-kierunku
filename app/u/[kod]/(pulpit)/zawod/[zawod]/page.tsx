@@ -68,7 +68,7 @@ export default async function Strona({
         ) : null}
 
         <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Zawód</p>
-        <h1 className="mt-3 text-naglowek-duzy font-extrabold leading-tight tracking-tight">
+        <h1 className="mt-3 text-naglowek font-extrabold leading-tight tracking-tight sm:text-naglowek-duzy">
           <span className="gradient-tytul">{karta.tytul}</span>
         </h1>
 
