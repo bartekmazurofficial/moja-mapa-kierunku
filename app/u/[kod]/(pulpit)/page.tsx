@@ -70,20 +70,20 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr] lg:items-center">
           <div>
             <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Twój program</p>
-            <h1 className="mt-2 text-naglowek font-extrabold leading-[1.1] tracking-tight sm:text-naglowek-duzy">
+            <h1 className="mt-2 text-naglowek-maly font-extrabold leading-[1.1] tracking-tight sm:text-naglowek 2xl:text-naglowek-duzy">
               Cześć, {uczestnik.imie}.
               <br />
               <span className="gradient-tytul">
                 {dalej ? `Dziś odkrywasz, ${DZIS_ODKRYWASZ[dalej] ?? "co Cię ciągnie."}` : "Masz to za sobą."}
               </span>
             </h1>
-            <p className="mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
+            <p className="mt-2 max-w-czytelna text-male leading-relaxed text-atrament-sciszony">
               Krok po kroku poznajesz siebie, swoje mocne strony i realne możliwości.
             </p>
             {dalej ? (
               <Link
                 href={`/u/${kod}/modul/${dalej}`}
-                className="przejscie przycisk-gradient mt-5 inline-flex min-h-12 items-center gap-3 rounded-xl px-6 text-tresc font-bold"
+                className="przejscie przycisk-gradient mt-4 inline-flex min-h-11 items-center gap-3 rounded-xl px-5 text-male font-bold"
               >
                 {stan(dalej) === "wtrakcie" ? "Dokończ" : "Zacznij"}: {NAZWY_MODULOW[dalej]}
                 <span aria-hidden>→</span>
@@ -178,7 +178,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           {otwarteWarstwy.length > 0 ? (
             <>
               <ul className="mt-3 flex flex-col gap-1.5">
-                {otwarteWarstwy.slice(0, 4).map((w) => (
+                {otwarteWarstwy.slice(0, 3).map((w) => (
                   <li key={w.kod} className="flex items-start gap-3">
                     <Ptaszek />
                     <span className="text-male leading-relaxed text-atrament-sciszony">{w.nazwa}</span>
@@ -209,7 +209,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           </h2>
           {zamknieteWarstwy.length > 0 ? (
             <ul className="mt-3 flex flex-col gap-2">
-              {zamknieteWarstwy.slice(0, 4).map((w) => (
+              {zamknieteWarstwy.slice(0, 3).map((w) => (
                 <li key={w.kod} className="flex items-start gap-3 opacity-70">
                   <span aria-hidden className="mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border border-linia-mocna" />
                   <span className="min-w-0">
@@ -280,7 +280,7 @@ function KafelekModulu({
       <span className="mt-2 block text-male font-bold leading-snug text-atrament">
         {NAZWY_MODULOW[modul as keyof typeof NAZWY_MODULOW]}
       </span>
-      <span className="mt-1 block text-drobne leading-relaxed text-atrament-slaby">
+      <span className="mt-1 hidden text-drobne leading-snug text-atrament-slaby xl:block">
         {KROTKO[modul]}
       </span>
     </>

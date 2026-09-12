@@ -63,8 +63,8 @@ export default async function Uklad({
   ];
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[106rem] flex-col gap-5 px-4 py-4 lg:flex-row lg:gap-6 lg:px-6 lg:py-5 2xl:px-8">
-      <aside className="lg:sticky lg:top-5 lg:h-fit lg:w-[17.5rem] lg:shrink-0">
+    <div className="mx-auto flex min-h-dvh w-full max-w-[106rem] flex-col gap-5 px-4 py-4 lg:flex-row lg:gap-6 lg:px-6 lg:py-4 2xl:px-8">
+      <aside className="lg:sticky lg:top-4 lg:h-fit lg:w-[17.5rem] lg:shrink-0">
         <div className="szklo p-5">
           <Marka href={`/u/${kod}`} />
 
@@ -116,7 +116,7 @@ export default async function Uklad({
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1 pb-10">{children}</main>
+      <main className="min-w-0 flex-1 pb-6">{children}</main>
     </div>
   );
 }
