@@ -58,99 +58,93 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   );
 
   return (
-    <div className="flex flex-col gap-5">
-      {/* NAGŁÓWEK */}
-      <header className="szklo relative overflow-hidden p-7 sm:p-9 lg:pr-[24rem]">
+    <div className="flex flex-col gap-3">
+      {/* NAGŁÓWEK: powitanie z lewej, postęp i zdanie na dziś z prawej.
+          Jeden rząd zamiast dwóch, żeby całość mieściła się na ekranie
+          komputera bez przewijania. */}
+      <header className="szklo relative overflow-hidden p-5 sm:p-6">
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full bg-akcent/25 blur-3xl"
+          className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full bg-akcent/20 blur-3xl"
         />
-        <Bramy klasa="pointer-events-none absolute -right-4 bottom-0 hidden h-[16rem] w-[25rem] opacity-80 lg:block" />
-        <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Twój program</p>
-        <h1 className="mt-3 text-naglowek font-extrabold leading-tight tracking-tight sm:text-naglowek-duzy">
-          Cześć, {uczestnik.imie}.
-          <br />
-          <span className="gradient-tytul">
-            {dalej ? `Dziś odkrywasz, ${DZIS_ODKRYWASZ[dalej] ?? "co Cię ciągnie."}` : "Masz to za sobą."}
-          </span>
-        </h1>
-        <p className="proza mt-4 max-w-czytelna">
-          Krok po kroku poznajesz siebie, swoje mocne strony i realne możliwości. Wszystko po to,
-          żeby świadomie zaplanować, co dalej.
-        </p>
-
-        {dalej ? (
-          <Link
-            href={`/u/${kod}/modul/${dalej}`}
-            className="przejscie poswiata mt-7 inline-flex min-h-12 items-center gap-3 rounded-xl bg-gradient-to-r from-akcent-ciemny to-akcent px-6 text-tresc font-bold text-na-akcencie hover:brightness-110"
-          >
-            {stan(dalej) === "wtrakcie" ? "Dokończ" : "Zacznij"}: {NAZWY_MODULOW[dalej]}
-            <span aria-hidden>→</span>
-          </Link>
-        ) : (
-          <p className="mt-7 inline-flex rounded-xl border border-linia bg-szklo px-5 py-3 text-male text-atrament-sciszony">
-            Masz wypełnione wszystko, co jest teraz otwarte.
-          </p>
-        )}
-      </header>
-
-      {/* POSTĘP I ZDANIE NA DZIŚ */}
-      <div className="grid gap-5 lg:grid-cols-[1.6fr_1fr]">
-        <section className="szklo p-6">
-          <p className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">Twój postęp</p>
-          <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <p className="text-tytul font-extrabold leading-none tabular-nums">
-              {ukonczone}
-              <span className="text-naglowek text-atrament-slaby"> z {KOLEJNOSC_MODULOW.length}</span>
-            </p>
-            <p className="text-male text-atrament-sciszony">
-              części ukończonych
-              <span className="mt-0.5 block text-drobne text-atrament-slaby">
-                {procent}% programu za Tobą
+        <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr] lg:items-center">
+          <div>
+            <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Twój program</p>
+            <h1 className="mt-2 text-naglowek font-extrabold leading-[1.1] tracking-tight sm:text-naglowek-duzy">
+              Cześć, {uczestnik.imie}.
+              <br />
+              <span className="gradient-tytul">
+                {dalej ? `Dziś odkrywasz, ${DZIS_ODKRYWASZ[dalej] ?? "co Cię ciągnie."}` : "Masz to za sobą."}
               </span>
+            </h1>
+            <p className="mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
+              Krok po kroku poznajesz siebie, swoje mocne strony i realne możliwości.
             </p>
+            {dalej ? (
+              <Link
+                href={`/u/${kod}/modul/${dalej}`}
+                className="przejscie przycisk-gradient mt-5 inline-flex min-h-12 items-center gap-3 rounded-xl px-6 text-tresc font-bold"
+              >
+                {stan(dalej) === "wtrakcie" ? "Dokończ" : "Zacznij"}: {NAZWY_MODULOW[dalej]}
+                <span aria-hidden>→</span>
+              </Link>
+            ) : (
+              <p className="mt-5 inline-flex rounded-xl border border-linia bg-szklo px-5 py-3 text-male text-atrament-sciszony">
+                Masz wypełnione wszystko, co jest teraz otwarte.
+              </p>
+            )}
           </div>
 
-          {/* Siedem przystanków zamiast paska: widać, ile zostało, a nie ułamek. */}
-          <ol className="mt-5 flex items-center gap-1.5">
-            {KOLEJNOSC_MODULOW.map((m) => {
-              const s = stan(m);
-              return (
-                <li key={m} className="flex-1">
-                  <span className="sr-only">
-                    {NAZWY_MODULOW[m]}: {OPIS_STANU[s]}
-                  </span>
-                  <span
-                    aria-hidden
-                    className={`block h-2 rounded-full ${
-                      s === "gotowy"
-                        ? "bg-gradient-to-r from-akcent-ciemny to-akcent"
-                        : s === "wtrakcie"
-                          ? "bg-akcent/45"
-                          : "bg-linia"
-                    }`}
-                  />
-                </li>
-              );
-            })}
-          </ol>
-        </section>
-
-        <section className="szklo relative overflow-hidden p-6">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-akcent/15 blur-3xl"
-          />
-          <p aria-hidden className="text-naglowek font-extrabold leading-none text-akcent/35">„</p>
-          <p className="text-tresc-duza font-semibold leading-snug text-atrament">
-            Nie musisz znać całej drogi. Wystarczy, że zrobisz kolejny krok.
-          </p>
-        </section>
-      </div>
+          <div className="relative flex flex-col gap-3">
+            <div className="rounded-2xl border border-linia bg-panel/80 p-4">
+              <p className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">Twój postęp</p>
+              <div className="mt-1.5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                <p className="text-naglowek-duzy font-extrabold leading-none tabular-nums">
+                  {ukonczone}
+                  <span className="text-naglowek-maly text-atrament-slaby"> z {KOLEJNOSC_MODULOW.length}</span>
+                </p>
+                <p className="text-male text-atrament-sciszony">
+                  części ukończonych
+                  <span className="ml-2 text-drobne text-atrament-slaby">{procent}% programu</span>
+                </p>
+              </div>
+              {/* Siedem przystanków zamiast paska: widać, ile zostało, a nie ułamek. */}
+              <ol className="mt-3 flex items-center gap-1.5">
+                {KOLEJNOSC_MODULOW.map((m) => {
+                  const s = stan(m);
+                  return (
+                    <li key={m} className="flex-1">
+                      <span className="sr-only">
+                        {NAZWY_MODULOW[m]}: {OPIS_STANU[s]}
+                      </span>
+                      <span
+                        aria-hidden
+                        className={`block h-2 rounded-full ${
+                          s === "gotowy"
+                            ? "bg-gradient-to-r from-akcent-ciemny to-akcent"
+                            : s === "wtrakcie"
+                              ? "bg-akcent/45"
+                              : "bg-linia"
+                        }`}
+                      />
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+            <div className="flex items-start gap-3 rounded-2xl border border-akcent/20 bg-akcent-tlo/60 px-4 py-3">
+              <span aria-hidden className="text-naglowek font-extrabold leading-none text-akcent/40">„</span>
+              <p className="text-tresc font-semibold leading-snug text-atrament">
+                Nie musisz znać całej drogi. Wystarczy, że zrobisz kolejny krok.
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
 
       {/* SIEDEM CZĘŚCI */}
       <section>
-        <div className="mb-3 flex items-end justify-between gap-4 px-1">
+        <div className="mb-2 flex items-end justify-between gap-4 px-1">
           <h2 className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
             Siedem części Twojej podróży
           </h2>
@@ -162,7 +156,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           </Link>
         </div>
 
-        <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+        <ol className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7">
           {KOLEJNOSC_MODULOW.map((m, i) => (
             <li key={m}>
               <KafelekModulu
@@ -178,13 +172,13 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
       </section>
 
       {/* CO JUŻ WIDAĆ, CO JESZCZE NIE */}
-      <div className="grid gap-5 lg:grid-cols-[1fr_1fr_0.8fr]">
-        <section className="szklo p-6">
+      <div className="grid gap-3 lg:grid-cols-[1fr_1fr_0.8fr]">
+        <section className="szklo p-5">
           <h2 className="text-naglowek-maly font-bold">Co już o sobie wiesz</h2>
           {otwarteWarstwy.length > 0 ? (
             <>
-              <ul className="mt-4 flex flex-col gap-2">
-                {otwarteWarstwy.map((w) => (
+              <ul className="mt-3 flex flex-col gap-1.5">
+                {otwarteWarstwy.slice(0, 4).map((w) => (
                   <li key={w.kod} className="flex items-start gap-3">
                     <Ptaszek />
                     <span className="text-male leading-relaxed text-atrament-sciszony">{w.nazwa}</span>
@@ -193,9 +187,10 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
               </ul>
               <Link
                 href={`/u/${kod}/raport`}
-                className="przejscie mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-linia-mocna bg-szklo px-5 text-male font-semibold hover:border-akcent/50 hover:text-akcent-jasny"
+                className="przejscie przycisk-pigulka mt-4 inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-male font-semibold"
               >
-                Otwórz raport <span aria-hidden>→</span>
+                {otwarteWarstwy.length > 4 ? `Otwórz raport, ${otwarteWarstwy.length} części` : "Otwórz raport"}{" "}
+                <span aria-hidden>→</span>
               </Link>
             </>
           ) : (
@@ -207,14 +202,14 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           )}
         </section>
 
-        <section className="szklo p-6">
+        <section className="szklo p-5">
           <h2 className="flex items-center gap-2.5 text-naglowek-maly font-bold">
             <Klodka />
             Co jeszcze odkryjesz
           </h2>
           {zamknieteWarstwy.length > 0 ? (
-            <ul className="mt-4 flex flex-col gap-2.5">
-              {zamknieteWarstwy.map((w) => (
+            <ul className="mt-3 flex flex-col gap-2">
+              {zamknieteWarstwy.slice(0, 4).map((w) => (
                 <li key={w.kod} className="flex items-start gap-3 opacity-70">
                   <span aria-hidden className="mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border border-linia-mocna" />
                   <span className="min-w-0">
@@ -229,7 +224,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           )}
         </section>
 
-        <section className="szklo relative overflow-hidden p-6">
+        <section className="szklo relative overflow-hidden p-5">
           <Szczyt klasa="pointer-events-none absolute -bottom-2 -right-4 h-32 w-52 opacity-90" />
           <h2 className="text-naglowek-maly font-bold leading-tight">
             Ta podróż
@@ -278,11 +273,11 @@ function KafelekModulu({
         <Odznaka stan={stan} spotkanie={spotkanie} />
       </div>
       <span
-        className={`mt-4 block ${stan === "zamkniety" ? "text-atrament-slaby" : "text-akcent-jasny"}`}
+        className={`mt-3 block ${stan === "zamkniety" ? "text-atrament-slaby" : "text-akcent-jasny"}`}
       >
-        <ZnakModulu modul={modul} rozmiar={28} />
+        <ZnakModulu modul={modul} rozmiar={26} />
       </span>
-      <span className="mt-3 block text-male font-bold leading-snug text-atrament">
+      <span className="mt-2 block text-male font-bold leading-snug text-atrament">
         {NAZWY_MODULOW[modul as keyof typeof NAZWY_MODULOW]}
       </span>
       <span className="mt-1 block text-drobne leading-relaxed text-atrament-slaby">
@@ -292,13 +287,13 @@ function KafelekModulu({
   );
 
   if (stan === "zamkniety") {
-    return <div className="szklo h-full p-4 opacity-60">{tresc}</div>;
+    return <div className="szklo h-full p-3.5 opacity-60">{tresc}</div>;
   }
 
   return (
     <Link
       href={`/u/${kod}/modul/${modul}`}
-      className={`przejscie block h-full rounded-karta border-2 bg-szklo p-4 ${
+      className={`przejscie block h-full rounded-karta border-2 bg-szklo p-3.5 ${
         stan === "wtrakcie"
           ? "border-akcent poswiata"
           : "border-linia hover:border-akcent/45"

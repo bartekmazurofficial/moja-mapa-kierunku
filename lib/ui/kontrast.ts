@@ -54,4 +54,10 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
   { nazwa: "biały na pełnym zielonym", tekst: "#ffffff", tlo: "#067a45" },
   { nazwa: "biały na pełnym turkusowym", tekst: "#ffffff", tlo: "#056b78" },
   { nazwa: "biały na pełnym fioletowym", tekst: "#ffffff", tlo: "#5b21b6" },
+
+  // Przycisk gradientowy: bialy napis na kazdym z czterech przystankow.
+  { nazwa: "biały na gradiencie, granat", tekst: "#ffffff", tlo: "#0730a8" },
+  { nazwa: "biały na gradiencie, niebieski", tekst: "#ffffff", tlo: "#1d5bff" },
+  { nazwa: "biały na gradiencie, fiolet", tekst: "#ffffff", tlo: "#6d3df5" },
+  { nazwa: "biały na gradiencie, róż", tekst: "#ffffff", tlo: "#c2185b" },
 ];

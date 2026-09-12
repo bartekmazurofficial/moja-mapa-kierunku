@@ -31,6 +31,9 @@ export interface ZawodWRaporcie {
   znakObszaru: string | null;
   poziom: string;
   studia: string;
+  /** Slownikowe wartosci z bazy zawodow: koszt wejscia i zagrozenie w przyszlosci. */
+  koszt: string;
+  zagrozenie: string;
   /** Litera drogi z warstwy pierwszej, przypisana przez obszar zawodu. */
   droga: "A" | "B" | "C" | null;
   /** Czy uczestnik ma juz karte tego zawodu w klastrze z innym zawodem. */

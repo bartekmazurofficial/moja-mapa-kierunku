@@ -307,6 +307,7 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
     // samych numerach. Znak bierze sie z mostu w danych, nie z numeru.
     const znakObszaruPoId = new Map(baza.obszary.map((o) => [o.id, znakObszaru(o.zainteresowania)]));
     const klasterZawodu = new Map(baza.zawody.map((z) => [z.kod, z.klaster ?? null]));
+    const slownikZawodu = new Map(baza.zawody.map((z) => [z.kod, { koszt: z.koszt, zagr: z.zagr }]));
     // Litere drogi dostaje kazdy zawod z obszaru drogi, a nie tylko te dwa,
     // trzy, ktore weszly na jej liste. Bez tego filtr „Droga A" pokazuje
     // cztery kafle zamiast calego obszaru.
@@ -344,6 +345,8 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
           znakObszaru: znakObszaruPoId.get(z.obszar) ?? null,
           poziom: z.poziom,
           studia: z.studia,
+          koszt: slownikZawodu.get(z.kod)?.koszt ?? "",
+          zagrozenie: slownikZawodu.get(z.kod)?.zagr ?? "",
           droga: drogaObszaru.get(z.obszar) ?? null,
           klasterKod: klasterZawodu.get(z.kod) ?? null,
           uzasadnienie: uzasadnienieZawodu(z, silnik, a1, a2),

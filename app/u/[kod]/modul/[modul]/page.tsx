@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Runner } from "@/components/Runner";
 import { pobierzStanModulu, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
-import { NAZWY_MODULOW } from "@/lib/moduly/ekrany";
+import { KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { ZAMKNIECIE } from "@/lib/content/wspolne";
 import type { KodModulu } from "@/lib/moduly/typy";
 
@@ -107,6 +107,8 @@ export default async function Strona({
       definicja={stan.definicja}
       zapisane={stan.zapisane}
       nazwaModulu={NAZWY_MODULOW[modul as KodModulu]}
+      numerModulu={KOLEJNOSC_MODULOW.indexOf(modul as KodModulu) + 1}
+      liczbaModulow={KOLEJNOSC_MODULOW.length}
     />
   );
 }

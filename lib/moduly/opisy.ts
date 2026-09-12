@@ -38,3 +38,43 @@ export const DZIS_ODKRYWASZ: Record<string, string> = {
   M1: "jakiego życia chcesz.",
   A5: "na co się zgadzasz, a na co nie.",
 };
+
+/**
+ * Dopisek na marginesie ekranu pytania. Ozdoba, nigdy nośnik treści: obok
+ * zawsze stoi pełne pytanie. Bez ocen i bez „świetnie Ci idzie".
+ */
+export const DOPISEK: Record<string, string> = {
+  A0: "Od tego zaczynamy.",
+  A1: "Pierwszy odruch\nzwykle ma rację.",
+  A3: "Twój styl\nma moc.",
+  A2: "Bez oceniania.\nTylko szczerze.",
+  A4: "Wybierz,\nnie oceniaj.",
+  M1: "To Twoje życie.",
+  A5: "Szczerość\nsię opłaca.",
+};
+
+/**
+ * Jedno zdanie pod pytaniem: przypomnienie zasady tego typu ekranu.
+ * Stwierdzenie, nie zachęta.
+ */
+export const WSKAZOWKA: Record<string, string> = {
+  ranking4: "Numerujesz trzy, czwarty dopisze się sam. Jeden numer możesz przypisać tylko raz.",
+  para: "Jedno pytanie naraz. Wybieraj intuicyjnie, nie ma dobrych ani złych odpowiedzi.",
+  pojedynczy: "Wybierz jedną odpowiedź, tę najbliższą prawdy o Tobie dzisiaj.",
+  wielokrotny: "Możesz zaznaczyć kilka. Liczy się to, co jest prawdą, nie to, co dobrze brzmi.",
+  trzystopniowa: "„Zależy” jest pełnoprawną odpowiedzią, nie unikiem.",
+};
+
+/**
+ * Zdanie pod pytaniem na ekranie wyboru. Powtarza zasadę modułu z instrukcji,
+ * bo instrukcję czyta się raz, a pytań jest trzydzieści sześć.
+ */
+export const PODTYTUL: Record<string, string> = {
+  A0: "Kilka informacji o Twojej sytuacji. Bez oceniania.",
+  A1: "Nie pytamy, czy Ci to wyjdzie. Pytamy, czy chciałbyś to robić.",
+  A3: "Nie ma dobrych ani złych odpowiedzi. Liczy się to, co jest najbliżej Ciebie.",
+  A2: "Nie pytamy, czy to lubisz. Pytamy, co poszłoby Ci najlepiej.",
+  A4: "Obie odpowiedzi są dobre. Wybierz tę, która bardziej do Ciebie pasuje.",
+  M1: "Nie o pracy, tylko o życiu. Pytamy o to, czego chcesz.",
+  A5: "Nie pytamy, czy to wytrzymasz. Pytamy, jak byś to zniósł.",
+};

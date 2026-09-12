@@ -8,9 +8,9 @@
  */
 
 export const ODPOWIEDZI_A5 = [
-  { kod: "tak", etykieta: "Dam radę", wartosc: 1 },
-  { kod: "moze", etykieta: "Zależy", wartosc: 0.5 },
-  { kod: "nie", etykieta: "To nie dla mnie", wartosc: 0 },
+  { kod: "tak", etykieta: "Dam radę", podpis: "To dla mnie w porządku.", wartosc: 1 },
+  { kod: "moze", etykieta: "Zależy", podpis: "Od szczegółów i od okresu.", wartosc: 0.5 },
+  { kod: "nie", etykieta: "To nie dla mnie", podpis: "Na dłuższą metę nie.", wartosc: 0 },
 ] as const;
 
 export const MAKS_WET = 3;

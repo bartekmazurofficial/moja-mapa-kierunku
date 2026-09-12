@@ -272,6 +272,89 @@ body::after {
   }
 }
 
+/**
+ * Przycisk główny: gradient od granatu przez niebieski i fiolet do głębokiego
+ * różu. Cztery przystanki dobrane tak, żeby biały napis miał na każdym z nich
+ * co najmniej 4,5:1 (sprawdzane w tests/dostepnosc.test.ts). Jaśniejszy róż
+ * i pomarańcz z makiet tego nie przechodzą, więc tu ich nie ma.
+ */
+.przycisk-gradient {
+  background: linear-gradient(100deg, #0730a8 0%, #1d5bff 38%, #6d3df5 70%, #c2185b 100%);
+  color: var(--color-na-akcencie);
+  box-shadow:
+    0 0 0 1px rgba(29, 91, 255, 0.25),
+    0 16px 36px -16px rgba(109, 61, 245, 0.65);
+}
+
+.przycisk-gradient:hover {
+  filter: brightness(1.08);
+}
+
+/** Przycisk drugi: biała pastylka z krawędzią. */
+.przycisk-pigulka {
+  background: var(--color-panel);
+  border: 1px solid var(--color-linia-mocna);
+  color: var(--color-atrament-sciszony);
+}
+
+.przycisk-pigulka:hover {
+  border-color: color-mix(in oklab, var(--color-akcent) 45%, transparent);
+  color: var(--color-akcent-jasny);
+}
+
+/**
+ * Karta wybrana z obwódką gradientową. Obwódka jest w tle, a nie w ramce,
+ * bo ramka nie przyjmuje gradientu. Grubość jest stała w obu stanach, więc
+ * zaznaczenie nie przesuwa układu.
+ */
+.obwodka-gradient {
+  border-color: transparent !important;
+  background:
+    linear-gradient(var(--tinta, #ffffff), var(--tinta, #ffffff)) padding-box,
+    linear-gradient(120deg, #1d5bff, #8b5cf6 55%, #ff2d55) border-box;
+  box-shadow: 0 18px 40px -22px rgba(109, 61, 245, 0.55);
+}
+
+/** Cienki pasek postępu: tło z linii, wypełnienie gradientem. */
+.pasek-cienki {
+  height: 0.375rem;
+  border-radius: 999px;
+  background: var(--color-linia);
+  overflow: hidden;
+}
+
+.pasek-cienki > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #1d5bff, #8b5cf6);
+}
+
+/** Wskazówka pod pytaniem: jedno zdanie, znak z lewej, nic więcej. */
+.wskazowka {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  border: 1px solid var(--color-linia);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 0.8rem 1rem;
+  font-size: var(--text-male);
+  line-height: 1.55;
+  color: var(--color-atrament-sciszony);
+}
+
+/** Ikona sekcji: kwadrat z zaokrągleniem na jasnym tle koloru. */
+.znak-sekcji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.9rem;
+  flex-shrink: 0;
+}
+
 /** Nagłówek z gradientem: druga linia jaśnieje. */
 .gradient-tytul {
   background: linear-gradient(104deg, #1d5bff 0%, #8b5cf6 42%, #ff2d55 78%, #ffc400 100%);

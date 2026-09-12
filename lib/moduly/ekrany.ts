@@ -451,7 +451,7 @@ function czescA5A(): CzescModulu {
           id: f.kod,
           typ: "trzystopniowa",
           tresc: f.tekst,
-          opcje: ODPOWIEDZI_A5.map((o) => ({ kod: o.kod, etykieta: o.etykieta })),
+          opcje: ODPOWIEDZI_A5.map((o) => ({ kod: o.kod, etykieta: o.etykieta, podpis: o.podpis })),
         },
       ],
       postep: { nr: i + 1, z: FILTRY_A5.length, slowo: "warunków" },

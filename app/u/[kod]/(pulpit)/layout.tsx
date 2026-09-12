@@ -4,7 +4,7 @@ import { otwarteModuly } from "@/lib/moduly/otwarcie";
 import { stanDostepu } from "@/lib/raport/dostep";
 import { CZESCI_MODULOW, KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
 import { Nawigacja, type PozycjaNawigacji } from "@/components/pulpit/Nawigacja";
-import { Znak } from "@/components/pulpit/Znak";
+import { Marka } from "@/components/pulpit/Marka";
 
 export const dynamic = "force-dynamic";
 
@@ -63,20 +63,10 @@ export default async function Uklad({
   ];
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[86rem] flex-col gap-6 px-4 py-5 lg:flex-row lg:gap-8 lg:px-8 lg:py-8">
-      <aside className="lg:sticky lg:top-8 lg:h-fit lg:w-[19rem] lg:shrink-0">
+    <div className="mx-auto flex min-h-dvh w-full max-w-[106rem] flex-col gap-5 px-4 py-4 lg:flex-row lg:gap-6 lg:px-6 lg:py-5 2xl:px-8">
+      <aside className="lg:sticky lg:top-5 lg:h-fit lg:w-[17.5rem] lg:shrink-0">
         <div className="szklo p-5">
-          <div className="flex items-center gap-3">
-            <Znak />
-            <span className="min-w-0">
-              <span className="block truncate text-tresc-duza font-extrabold tracking-tight">
-                DreamWork
-              </span>
-              <span className="block text-drobne text-atrament-slaby">
-                Lepsze decyzje. Pełniejsze życie.
-              </span>
-            </span>
-          </div>
+          <Marka href={`/u/${kod}`} />
 
           {/* Kto tu jest. Zamiast zdjęcia inicjał: nie mamy fotografii
               uczestników i nie zamierzamy ich zbierać. */}
@@ -92,7 +82,7 @@ export default async function Uklad({
               <span className="block truncate text-tresc-duza font-bold leading-tight">
                 {uczestnik.imie}
               </span>
-              <span className="block truncate text-drobne text-atrament-slaby">
+              <span className="block text-drobne leading-snug text-atrament-slaby">
                 {uczestnik.grupa.nazwa}
               </span>
             </span>
@@ -108,7 +98,7 @@ export default async function Uklad({
             <p className="mt-2 text-drobne text-atrament-slaby">
               {doZrobienia.length === 0
                 ? "Pierwsza część otworzy się na spotkaniu."
-                : `Wypełnione ${ukonczone} z ${doZrobienia.length} otwartych części`}
+                : `${ukonczone} z ${doZrobienia.length} otwartych części`}
             </p>
           </div>
 

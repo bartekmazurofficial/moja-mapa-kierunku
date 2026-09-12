@@ -476,7 +476,7 @@ function PodzialCzasu({ udzialy }: { udzialy: UdzialCzasu[] }) {
  */
 function SkalaZawodu({ liczby }: { liczby: LiczbaSkali[] }) {
   return (
-    <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <ul className="grid gap-3 sm:grid-cols-2">
       {liczby.map((l, i) => {
         const dopasowanie = l.wartosc.match(
           /^(≈\s*[\d\s ]+(?:do\s+[\d\s ]+)?(?:tys\.|mln|%|lata|lat|roku|rok)?)(.*)$/,

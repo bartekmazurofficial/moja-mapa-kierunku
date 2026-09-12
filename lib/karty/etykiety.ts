@@ -35,3 +35,34 @@ export const ZAGROZENIE: Record<string, string> = {
   wysokie: "zagrożenie wysokie",
   bardzo_wysokie: "zagrożenie bardzo wysokie",
 };
+
+/** Te same wartości bez przedrostka, do małych pól, gdzie nagłówek mówi, o co chodzi. */
+export const KOSZT_KROTKO: Record<string, string> = {
+  zerowy: "zerowy",
+  bardzo_niski: "bardzo niski",
+  niski: "niski",
+  sredni: "średni",
+  wysoki: "wysoki",
+  bardzo_wysoki: "bardzo wysoki",
+};
+
+export const ZAGROZENIE_KROTKO: Record<string, string> = {
+  bardzo_niskie: "bardzo niskie",
+  niskie: "niskie",
+  umiarkowane: "umiarkowane",
+  wysokie: "wysokie",
+  bardzo_wysokie: "bardzo wysokie",
+};
+
+export const POZIOM_KROTKO: Record<string, string> = {
+  szybki: "szybkie",
+  sredni: "średnie",
+  dlugi: "długie",
+  bardzo_dlugi: "bardzo długie",
+};
+
+export const STUDIA_KROTKO: Record<string, string> = {
+  tak: "wymagane",
+  nie: "niepotrzebne",
+  czesciowo: "częściowo",
+};

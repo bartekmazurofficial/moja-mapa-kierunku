@@ -138,50 +138,54 @@ export default async function Strona({
         </aside>
       ) : null}
 
-      <Karta blok={w("czym_jest")} tytul="Czym ta praca jest naprawdę" />
+      {/* Siatka: dwanaście kolumn, płyty różnej szerokości. Duża sekcja
+          dostaje więcej miejsca, mała mniej, i nic nie stoi w jednej długiej
+          kolumnie. Brakująca płyta po prostu się nie renderuje. */}
+      <div className="grid gap-5 lg:grid-cols-12">
+        <Karta blok={w("czym_jest")} tytul="Czym ta praca jest naprawdę" slot="czym_jest" szer="lg:col-span-7" />
+        <Karta blok={w("skala")} tytul="Skala zawodu" slot="skala" szer="lg:col-span-5" />
 
-      <Para
-        lewa={<Karta blok={w("dzien")} tytul="Jak wygląda zwykły dzień?" plaska />}
-        prawa={<Karta blok={w("czas")} tytul="Na co naprawdę idzie czas?" plaska />}
-      />
+        <Karta blok={w("dzien")} tytul="Jak wygląda zwykły dzień?" slot="dzien" szer="lg:col-span-6" />
+        <Karta blok={w("czas")} tytul="Na co naprawdę idzie czas?" slot="czas" szer="lg:col-span-6" />
 
-      <Karta blok={w("obciazenie")} tytul="Sześć wymiarów obciążenia" />
-      <Karta blok={w("skala")} tytul="Skala zawodu" />
+        <Karta blok={w("obciazenie")} tytul="Sześć wymiarów obciążenia" slot="obciazenie" szer="lg:col-span-12" />
 
-      <Para
-        lewa={<Karta blok={w("rok")} tytul="Jak wygląda zwykły rok?" plaska />}
-        prawa={
-          <Karta
-            blok={w("koszt")}
-            tytul="Koszt wejścia"
-            plaska
-            nad={
-              <p className="mb-3 inline-block rounded-full border border-koszt/30 bg-koszt-tlo px-3.5 py-1.5 text-male font-semibold text-koszt">
-                {KOSZT[karta.koszt] ?? karta.koszt}
-              </p>
-            }
-          />
-        }
-      />
+        <Karta blok={w("miekkie")} tytul="Jakie umiejętności są potrzebne?" slot="miekkie" szer="lg:col-span-7" />
+        <Karta
+          blok={w("koszt")}
+          tytul="Koszt wejścia"
+          slot="koszt"
+          szer="lg:col-span-5"
+          nad={
+            <p className="mb-3 inline-block rounded-full border border-koszt/30 bg-koszt-tlo px-3.5 py-1.5 text-male font-semibold text-koszt">
+              {KOSZT[karta.koszt] ?? karta.koszt}
+            </p>
+          }
+        />
 
-      <Karta blok={w("miekkie")} tytul="Jakie umiejętności są potrzebne?" />
-      <Karta blok={w("twarde")} tytul="Co trzeba umieć" />
-      <Karta blok={w("narzedzia")} tytul="Narzędzia i programy, wyjaśnione" />
-      <Karta blok={w("pieniadze")} tytul="Realne zarobki na etapach" />
-      <Karta blok={w("droga")} tytul="Droga dojścia" />
-      <Karta blok={w("zagrozenie")} tytul="Czy ten zawód jest zagrożony" stopien={ZAGROZENIE[karta.zagrozenie]} />
+        <Karta blok={w("twarde")} tytul="Co trzeba umieć" slot="twarde" szer="lg:col-span-6" />
+        <Karta blok={w("narzedzia")} tytul="Narzędzia i programy, wyjaśnione" slot="narzedzia" szer="lg:col-span-6" />
 
-      <Para
-        lewa={<Karta blok={w("czlowiek")} tytul="Co ta praca robi z człowiekiem" plaska />}
-        prawa={<Karta blok={w("kto")} tytul="Kto może się tu nie odnaleźć?" plaska />}
-      />
+        <Karta blok={w("pieniadze")} tytul="Realne zarobki na etapach" slot="pieniadze" szer="lg:col-span-12" />
 
-      <Karta blok={w("mity")} tytul="Trzy mity" />
+        <Karta blok={w("droga")} tytul="Droga dojścia" slot="droga" szer="lg:col-span-7" />
+        <Karta
+          blok={w("zagrozenie")}
+          tytul="Czy ten zawód jest zagrożony"
+          slot="zagrozenie"
+          szer="lg:col-span-5"
+          stopien={ZAGROZENIE[karta.zagrozenie]}
+        />
 
-      <Para
-        lewa={<Karta blok={w("dalej")} tytul="Co dalej z tego zawodu" plaska />}
-        prawa={<Karta blok={w("pokrewne")} tytul="Zawody pokrewne" plaska />}
-      />
+        <Karta blok={w("czlowiek")} tytul="Co ta praca robi z człowiekiem" slot="czlowiek" szer="lg:col-span-6" />
+        <Karta blok={w("kto")} tytul="Kto może się tu nie odnaleźć?" slot="kto" szer="lg:col-span-6" />
+
+        <Karta blok={w("mity")} tytul="Trzy mity" slot="mity" szer="lg:col-span-7" />
+        <Karta blok={w("rok")} tytul="Jak wygląda zwykły rok?" slot="rok" szer="lg:col-span-5" />
+
+        <Karta blok={w("dalej")} tytul="Co dalej z tego zawodu" slot="dalej" szer="lg:col-span-6" />
+        <Karta blok={w("pokrewne")} tytul="Zawody pokrewne" slot="pokrewne" szer="lg:col-span-6" />
+      </div>
 
       {reszta.length > 0 ? (
         <div className="szklo flex flex-col gap-8 p-6 sm:p-8">
@@ -209,39 +213,73 @@ export default async function Strona({
   );
 }
 
-/** Jedna sekcja w swojej szklanej płycie. Bez bloku nie renderuje się nic. */
-function Karta({
-  blok,
-  tytul,
-  stopien,
-  nad,
-  plaska,
-}: {
-  blok: Blok | null;
-  tytul: string;
-  stopien?: string;
-  /** Treść nad blokiem, na przykład znacznik słownikowy z bazy zawodów. */
-  nad?: React.ReactNode;
-  /** Płyta w parze kolumn: ma się rozciągać na całą wysokość rzędu. */
-  plaska?: boolean;
-}) {
-  if (!blok) return null;
+/**
+ * Znaki sekcji: jeden na slot, w kolorze, który mówi, o jakim rodzaju rzeczy
+ * mowa (czas i dzień turkusowe, pieniądze żółte, ostrzeżenia fioletowe).
+ * Kolor niesie nastrój, nie informację, bo obok zawsze stoi tytuł.
+ */
+const ZNAKI_SLOTOW: Record<string, { sciezki: string[]; tlo: string; atrament: string }> = {
+  czym_jest: { sciezki: ["M4 6h16v12H4z", "M8 10h8M8 14h5"], tlo: "#e9f0ff", atrament: "#0a3ac9" },
+  skala: { sciezki: ["M4 19h16", "M7 19V11", "M12 19V6", "M17 19v-5"], tlo: "#f2ecff", atrament: "#5b21b6" },
+  dzien: { sciezki: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M12 7v5l3 2"], tlo: "#e2f8fb", atrament: "#056b78" },
+  czas: { sciezki: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M12 12V5", "M12 12h6"], tlo: "#e9f0ff", atrament: "#0a3ac9" },
+  obciazenie: { sciezki: ["M5 20V11", "M12 20V5", "M19 20v-6"], tlo: "#fff6dc", atrament: "#8a5a00" },
+  miekkie: { sciezki: ["m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"], tlo: "#f2ecff", atrament: "#5b21b6" },
+  koszt: { sciezki: ["M4 8c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3Z", "M4 8v8c0 1.7 3.6 3 8 3s8-1.3 8-3V8"], tlo: "#fff6dc", atrament: "#8a5a00" },
+  twarde: { sciezki: ["M12 3 4 7l8 4 8-4-8-4Z", "M4 12l8 4 8-4", "M4 17l8 4 8-4"], tlo: "#e3faed", atrament: "#067a45" },
+  narzedzia: { sciezki: ["M14 6a4 4 0 0 0 4 4l-8 8-3-3 8-8a4 4 0 0 0-1-1Z", "M5 19l2-2"], tlo: "#e2f8fb", atrament: "#056b78" },
+  pieniadze: { sciezki: ["M4 7h16v10H4z", "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"], tlo: "#fff6dc", atrament: "#8a5a00" },
+  droga: { sciezki: ["M6 20c0-6 12-6 12-12", "M6 20v-3", "M18 8V5"], tlo: "#e9f0ff", atrament: "#0a3ac9" },
+  zagrozenie: { sciezki: ["M12 4 3 19h18L12 4Z", "M12 10v4", "M12 17h.01"], tlo: "#f0eefa", atrament: "#4a4a6a" },
+  czlowiek: { sciezki: ["M12 20S4 14.6 4 9.4A4.4 4.4 0 0 1 12 6.8 4.4 4.4 0 0 1 20 9.4C20 14.6 12 20 12 20Z"], tlo: "#ffe9ee", atrament: "#c00030" },
+  kto: { sciezki: ["M9 8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", "M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6", "M16 4.2a2.5 2.5 0 0 1 0 4.6", "M17.5 14.4c2.1.8 3.5 2.8 3.5 5.1"], tlo: "#fff4dc", atrament: "#a15c00" },
+  mity: { sciezki: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 3.5", "M12 17h.01"], tlo: "#f2ecff", atrament: "#5b21b6" },
+  rok: { sciezki: ["M4 6h16v14H4z", "M4 10h16", "M8 4v4M16 4v4"], tlo: "#e2f8fb", atrament: "#056b78" },
+  dalej: { sciezki: ["M5 12h14", "m13 6 6 6-6 6"], tlo: "#e3faed", atrament: "#067a45" },
+  pokrewne: { sciezki: ["M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z", "M16 20a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z", "m11 11 2 2"], tlo: "#e9f0ff", atrament: "#0a3ac9" },
+};
+
+function ZnakSekcji({ slot }: { slot: string }) {
+  const z = ZNAKI_SLOTOW[slot];
+  if (!z) return null;
   return (
-    <div className={`szklo p-6 sm:p-7 ${plaska ? "h-full" : ""}`}>
-      {nad}
-      <BlokKarty blok={blok} tytul={tytul} stopienZagrozenia={stopien} />
-    </div>
+    <span aria-hidden className="znak-sekcji" style={{ background: z.tlo, color: z.atrament }}>
+      <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        {z.sciezki.map((d, i) => (
+          <path key={i} d={d} />
+        ))}
+      </svg>
+    </span>
   );
 }
 
-/** Dwie płyty obok siebie. Gdy jest tylko jedna, zajmuje całą szerokość. */
-function Para({ lewa, prawa }: { lewa: React.ReactNode; prawa: React.ReactNode }) {
-  if (!lewa && !prawa) return null;
-  if (!lewa || !prawa) return <>{lewa}{prawa}</>;
+/** Jedna sekcja w swojej szklanej płycie, ze znakiem. Bez bloku nie renderuje się nic. */
+function Karta({
+  blok,
+  tytul,
+  slot,
+  szer,
+  stopien,
+  nad,
+}: {
+  blok: Blok | null;
+  tytul: string;
+  slot: string;
+  /** Szerokość w siatce dwunastu kolumn. */
+  szer: string;
+  stopien?: string;
+  /** Treść nad blokiem, na przykład znacznik słownikowy z bazy zawodów. */
+  nad?: React.ReactNode;
+}) {
+  if (!blok) return null;
   return (
-    <div className="grid items-start gap-5 lg:grid-cols-2">
-      {lewa}
-      {prawa}
+    <div className={`szklo min-w-0 p-5 sm:p-6 ${szer}`}>
+      <div className="mb-4 flex items-center gap-3">
+        <ZnakSekcji slot={slot} />
+        <h2 className="text-naglowek-maly font-bold leading-tight text-atrament">{tytul}</h2>
+      </div>
+      {nad}
+      <BlokKarty blok={blok} stopienZagrozenia={stopien} bezTytulu />
     </div>
   );
 }

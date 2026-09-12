@@ -16,6 +16,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Pozycja } from "./Pozycja";
 import { Plansza } from "./Ikona";
+import { Marka } from "./pulpit/Marka";
+import { Bramy } from "./pulpit/Bramy";
+import { DOPISEK, PODTYTUL, WSKAZOWKA } from "@/lib/moduly/opisy";
+import { maObraz } from "@/lib/ui/obrazy";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import { ZAPIS_SAM } from "@/lib/content/wspolne";
@@ -38,6 +42,9 @@ interface Wlasciwosci {
   definicja: CzescModulu;
   zapisane: Record<string, unknown>;
   nazwaModulu: string;
+  /** Który to moduł z siedmiu. Pasek u góry pokazuje to, a nie postęp w ekranach. */
+  numerModulu: number;
+  liczbaModulow: number;
 }
 
 export function Runner({
@@ -46,6 +53,8 @@ export function Runner({
   definicja,
   zapisane,
   nazwaModulu,
+  numerModulu,
+  liczbaModulow,
 }: Wlasciwosci) {
   const router = useRouter();
   const [odpowiedzi, ustawOdpowiedzi] = useState<Record<string, unknown>>(zapisane);
@@ -272,30 +281,55 @@ export function Runner({
     widocznePozycje.length === 1 &&
     JEDNA_DECYZJA.includes(widocznePozycje[0].typ);
 
-  return (
-    <div className="mx-auto flex min-h-dvh max-w-artykul flex-col px-5 pb-6 pt-4 sm:px-8 sm:pt-6">
-      {/*
-        Nagłówek jest cichy z rozmysłem. Pasek wypełniający się procentowo każe
-        liczyć, ile zostało, zamiast myśleć o pytaniu, a trzy wskaźniki postępu
-        naraz to o dwa za dużo. Zostaje sam licznik sztuk, mały i szary.
-        Nazwa modułu schodzi z ekranów z jedną decyzją: uczestnik wie, co robi,
-        a to miejsce należy się pytaniu.
-      */}
-      <header className="mb-5 flex items-center justify-between gap-4 px-1">
-        <Link
-          href={`/u/${kodUczestnika}/moduly`}
-          aria-label="Wróć do listy modułów"
-          className="przejscie -ml-1 flex min-h-11 min-w-0 items-center gap-2.5 rounded-lg px-1 text-drobne uppercase tracking-[0.14em] text-atrament-slaby hover:text-atrament"
-        >
-          <span aria-hidden>←</span>
-          {jednaPozycja ? null : <span className="truncate">{nazwaModulu}</span>}
-        </Link>
+  const typPozycji = widocznePozycje[0]?.typ;
+  const ekranWyboru =
+    ekran.typ === "pozycje" &&
+    (jednaPozycja ||
+      (widocznePozycje.length === 1 && ["pojedynczy", "wielokrotny"].includes(typPozycji ?? "")));
+  const wskazowka = typPozycji ? WSKAZOWKA[typPozycji] : undefined;
+  // Ekran z jednym pytaniem wielokrotnego albo pojedynczego wyboru (A0):
+  // pytanie idzie do nagłówka, nazwa bloku zostaje nad nim jako etykieta.
+  const pojedynczePytanie = ekranWyboru && !jednaPozycja && widocznePozycje.length === 1;
+  const tytulEkranu = jednaPozycja
+    ? (ekran.polecenie ?? ekran.naglowek ?? "")
+    : pojedynczePytanie
+      ? (widocznePozycje[0].tresc ?? ekran.naglowek ?? "")
+      : (ekran.naglowek ?? ekran.polecenie ?? "");
+  const etykietaNadTytulem = pojedynczePytanie && ekran.naglowek ? ekran.naglowek : nazwaModulu;
+  const podtytul = jednaPozycja
+    ? (ekran.podpis ?? PODTYTUL[modul])
+    : pojedynczePytanie
+      ? (widocznePozycje[0].podpis ?? ekran.podpis ?? ekran.polecenie)
+      : undefined;
+  // Plansza tylko wtedy, gdy kategoria ma prawdziwa ilustracje. Sam glif na
+  // pustym pasie wyglada jak brak obrazu, a nie jak obraz.
+  const kluczPlanszy = ekran.ikona ?? ekran.kolor;
+  const zPlansza = jednaPozycja && kluczPlanszy ? maObraz(kluczPlanszy) : false;
+  const postepModulu = Math.round((Math.max(0, numerModulu - 1) / Math.max(1, liczbaModulow)) * 100);
 
-        {ekran.postep ? (
-          <p className="shrink-0 text-drobne tabular-nums text-atrament-slaby">
-            {ekran.postep.nr} z {ekran.postep.z}
+  return (
+    <div className="mx-auto flex min-h-dvh w-full max-w-[54rem] flex-col px-4 pb-6 pt-4 sm:px-8 sm:pt-5">
+      {/*
+        Nagłówek: znak programu, numer modułu z siedmiu i licznik ekranów.
+        Pasek pokazuje, który to moduł, a nie ile ekranów zostało: pasek rosnący
+        o ułamek przy każdym pytaniu każe liczyć, ile jeszcze, zamiast myśleć.
+      */}
+      <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+        <Marka href={`/u/${kodUczestnika}/moduly`} />
+        <div className="flex flex-col items-end gap-1.5 pt-1">
+          <p className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
+            Moduł {numerModulu} z {liczbaModulow}
+            {ekran.postep ? (
+              <span className="normal-case tracking-normal tabular-nums">
+                <span aria-hidden className="mx-2">·</span>
+                {ekran.postep.nr} z {ekran.postep.z}
+              </span>
+            ) : null}
           </p>
-        ) : null}
+          <div className="pasek-cienki w-40 sm:w-56" aria-hidden>
+            <span style={{ width: `${Math.max(4, postepModulu)}%` }} />
+          </div>
+        </div>
       </header>
 
       {/* Uczestnik ma wiedzieć od razu, że coś nie doszło, a nie dopiero wtedy,
@@ -303,7 +337,7 @@ export function Runner({
       {nieZapisane > 0 ? (
         <p
           role="status"
-          className="mb-5 rounded-xl border border-uwaga/35 bg-uwaga-tlo px-4 py-3 text-male text-uwaga"
+          className="mt-4 rounded-xl border border-uwaga/35 bg-uwaga-tlo px-4 py-3 text-male text-uwaga"
         >
           {zablokowane
             ? `Nie ma połączenia, więc ${nieZapisane === 1 ? "jedna odpowiedź" : `${nieZapisane} odpowiedzi`} jeszcze nie ${nieZapisane === 1 ? "doszła" : "doszły"}. Nie zamykam tej części, żeby nic nie przepadło. Zostań na tym ekranie. Spróbuję ponownie, gdy sieć wróci.`
@@ -313,23 +347,25 @@ export function Runner({
 
       <main
         key={ekran.klucz ?? bezpiecznyIndeks}
-        className={`szklo flex-1 p-5 sm:p-7 ${jednaPozycja ? "flex flex-col justify-center" : ""} ${
-          wychodzi ? "wyjscie-ekranu" : "wejscie-ekranu"
-        }`}
+        className={`relative mt-6 flex-1 sm:mt-8 ${wychodzi ? "wyjscie-ekranu" : "wejscie-ekranu"}`}
       >
         {ekran.typ === "wstep" || ekran.typ === "przerwa" ? (
-          <div className="max-w-czytelna">
+          <div className="szklo relative overflow-hidden p-6 sm:p-9">
+            <Bramy klasa="pointer-events-none absolute -right-10 -top-6 hidden h-[13rem] w-[20rem] opacity-60 sm:block" />
+            <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">{nazwaModulu}</p>
             {ekran.naglowek ? (
-              <h1 className="text-naglowek font-extrabold tracking-tight text-atrament">{ekran.naglowek}</h1>
+              <h1 className="mt-3 max-w-czytelna text-naglowek font-extrabold leading-tight tracking-tight sm:text-naglowek-duzy">
+                <DwaTony tekst={ekran.naglowek} />
+              </h1>
             ) : null}
-            <div className="proza mt-5">
+            <div className="proza mt-5 max-w-czytelna">
               {(ekran.akapity ?? []).map((a, i) => (
                 <p key={i}>{a}</p>
               ))}
             </div>
             {ekran.typ === "wstep" ? (
-              <p className="mt-5 flex items-start gap-2.5 rounded-xl border border-linia bg-panel px-4 py-3 text-male text-atrament-sciszony">
-                <span aria-hidden className="text-akcent">✓</span>
+              <p className="wskazowka mt-6 max-w-czytelna">
+                <span aria-hidden className="mt-0.5 text-akcent">✓</span>
                 <span>{ZAPIS_SAM}</span>
               </p>
             ) : null}
@@ -348,42 +384,49 @@ export function Runner({
           </div>
         ) : (
           <>
-            {/* Na ekranie z jedną decyzją pytanie jest największym tekstem.
-                Wcześniej było najmniejszym i najbledszym, przez co wyglądało
-                na podpis pod odpowiedziami. */}
-            {jednaPozycja ? (
-              <h1 className="mx-auto mb-6 max-w-czytelna text-balance text-center text-naglowek-maly font-bold leading-snug text-atrament">
-                {ekran.polecenie ?? ekran.naglowek}
-              </h1>
-            ) : (
-              <>
-                {ekran.naglowek ? (
-                  <h1 className="mb-1 text-naglowek-maly font-bold text-atrament">
-                    {ekran.naglowek}
-                  </h1>
-                ) : null}
-                {ekran.polecenie ? (
-                  <p className="mb-4 max-w-czytelna text-tresc text-atrament-sciszony">
-                    {ekran.polecenie}
-                  </p>
-                ) : null}
-              </>
-            )}
-            {ekran.podpis ? (
-              <p className="mb-6 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
-                {ekran.podpis}
+            {/* Pytanie jest największym tekstem na ekranie, a ostatnie słowo
+                dostaje gradient. Pod nim jedno zdanie z zasadą tego modułu. */}
+            <div className="relative">
+              <p aria-hidden className="odreczny absolute right-0 top-0 hidden max-w-[11rem] whitespace-pre-line text-right sm:block">
+                {DOPISEK[modul]}
               </p>
-            ) : null}
+              <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">{etykietaNadTytulem}</p>
+              <h1 className="mt-2 max-w-[34rem] text-naglowek font-extrabold leading-[1.08] tracking-tight text-atrament sm:text-naglowek-duzy">
+                <DwaTony tekst={tytulEkranu} />
+              </h1>
+              {podtytul ? (
+                <p className="mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">{podtytul}</p>
+              ) : null}
+              {!jednaPozycja && !pojedynczePytanie ? (
+                <>
+                  {ekran.naglowek && ekran.polecenie ? (
+                    <p className="mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
+                      {ekran.polecenie}
+                    </p>
+                  ) : null}
+                  {ekran.podpis ? (
+                    <p className="mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
+                      {ekran.podpis}
+                    </p>
+                  ) : null}
+                </>
+              ) : null}
+            </div>
+
             {/* Plansza pytania: pas na całej szerokości bloków odpowiedzi.
                 Tylko przy pytaniach z jedną decyzją; ekrany z siatką pozycji
                 mają znak przy każdej pozycji z osobna. */}
-            {jednaPozycja && (ekran.ikona ?? ekran.kolor) ? (
-              <div className="mb-5">
-                <Plansza klucz={(ekran.ikona ?? ekran.kolor) as string} wybor />
+            {zPlansza ? (
+              <div className="mt-6">
+                <Plansza klucz={kluczPlanszy as string} wybor wysokosc={150} />
               </div>
             ) : null}
 
-            <div className={siatka ? "mt-1 grid gap-3 sm:grid-cols-2" : "mt-1 flex flex-col gap-6"}>
+            <div
+              className={`${siatka ? "grid gap-3 sm:grid-cols-2" : "flex flex-col gap-6"} ${
+                ekranWyboru ? "mt-6" : "szklo mt-6 p-5 sm:p-7"
+              }`}
+            >
               {widocznePozycje.map((p, i, lista) => (
                 <div
                   key={p.id}
@@ -396,7 +439,7 @@ export function Runner({
                   }
                 >
                   <Pozycja
-                    pozycja={p}
+                    pozycja={pojedynczePytanie ? { ...p, tresc: undefined, podpis: undefined } : p}
                     pierwsza={i === 0}
                     ostatnia={i === lista.length - 1}
                     wSiatce={siatka}
@@ -408,6 +451,13 @@ export function Runner({
                 </div>
               ))}
             </div>
+
+            {ekranWyboru && wskazowka ? (
+              <p className="wskazowka mt-5">
+                <Zarowka />
+                <span>{wskazowka}</span>
+              </p>
+            ) : null}
 
             {/* To samo pytanie od drugiej strony. Łatwiej powiedzieć, czego
                 się nie chce, niż czego się chce. */}
@@ -444,7 +494,7 @@ export function Runner({
             ref={przyciskCofniecia}
             type="button"
             onClick={cofnij}
-            className="przejscie wejscie-ekranu inline-flex min-h-11 items-center gap-2 rounded-full border border-linia-mocna bg-panel px-4 text-male font-semibold text-atrament-sciszony hover:border-akcent/45 hover:text-akcent-jasny"
+            className="przejscie wejscie-ekranu przycisk-pigulka inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-male font-semibold"
           >
             <span aria-hidden>↩</span>
             Cofnij ostatnią odpowiedź
@@ -452,7 +502,7 @@ export function Runner({
         </div>
       ) : null}
 
-      <footer className="mt-5 flex items-center justify-between gap-4">
+      <footer className="mt-6 flex items-center justify-between gap-4">
         <button
           type="button"
           onClick={() => {
@@ -461,7 +511,7 @@ export function Runner({
             if (window.scrollY > 8) window.scrollTo({ top: 0, behavior: "auto" });
           }}
           disabled={bezpiecznyIndeks === 0}
-          className="przejscie min-h-12 rounded-xl border border-linia px-5 text-male font-semibold text-atrament-sciszony hover:border-linia-mocna hover:text-atrament disabled:invisible"
+          className="przejscie przycisk-pigulka min-h-12 rounded-2xl px-5 text-male font-semibold disabled:invisible"
         >
           <span aria-hidden className="mr-2">←</span>
           Wstecz
@@ -471,10 +521,8 @@ export function Runner({
           type="button"
           onClick={() => void dalej()}
           disabled={!kompletny || konczy}
-          className={`przejscie min-h-12 rounded-xl px-8 text-tresc font-bold ${
-            !kompletny || konczy
-              ? "border border-linia text-atrament-slaby"
-              : "poswiata bg-gradient-to-r from-akcent-ciemny to-akcent text-na-akcencie hover:brightness-110"
+          className={`przejscie min-h-12 rounded-2xl px-8 text-tresc font-bold sm:min-w-[14rem] ${
+            !kompletny || konczy ? "border border-linia bg-panel/60 text-atrament-slaby" : "przycisk-gradient"
           }`}
         >
           {konczy ? "Zapisuję…" : (ekran.przyciskDalej ?? "Dalej")}
@@ -486,6 +534,31 @@ export function Runner({
         </button>
       </footer>
     </div>
+  );
+}
+
+/** Ostatnie słowo pytania w gradiencie. Rozbicie po spacji, znaki interpunkcyjne zostają przy słowie. */
+function DwaTony({ tekst }: { tekst: string }) {
+  const slowa = tekst.trim().split(/\s+/);
+  if (slowa.length < 2) return <span className="gradient-tytul">{tekst}</span>;
+  // Przy dłuższym pytaniu gradient dostają dwa ostatnie słowa, żeby był widoczny.
+  const ile = slowa.length >= 6 ? 2 : 1;
+  const poczatek = slowa.slice(0, -ile).join(" ");
+  const koniec = slowa.slice(-ile).join(" ");
+  return (
+    <>
+      {poczatek} <span className="gradient-tytul">{koniec}</span>
+    </>
+  );
+}
+
+function Zarowka() {
+  return (
+    <span aria-hidden className="mt-0.5 shrink-0 text-akcent">
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 18h6M10 21h4M12 3a6 6 0 0 1 3.5 10.9c-.6.5-1 1.2-1 2.1h-5c0-.9-.4-1.6-1-2.1A6 6 0 0 1 12 3Z" />
+      </svg>
+    </span>
   );
 }
 

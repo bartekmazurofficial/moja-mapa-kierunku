@@ -151,7 +151,9 @@ export const TRYB_KOLORU_WYBORU: TrybKoloruWyboru = "pozycja";
  * kto nie odroznia czerwieni od zieleni, bo kolor nigdy nie jest tu jedynym
  * nosnikiem: obok stoi pelny tekst i numer.
  */
-const MIEJSCA: KodKoloru[] = ["niebieski", "zolty", "zielony", "fiolet", "turkus", "czerwony"];
+// Bez czerwieni: na liscie dziewieciu odpowiedzi czerwona karta czyta sie jak
+// ostrzezenie, a zadna odpowiedz nie jest zla.
+const MIEJSCA: KodKoloru[] = ["niebieski", "zolty", "zielony", "fiolet", "turkus"];
 
 /**
  * Kolor pozycji na ekranie wyboru.
