@@ -14,7 +14,7 @@
 import { useId } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
 import { Ikona, Obraz } from "@/components/Ikona";
-import { kolorKategorii } from "@/lib/ui/kolory";
+import { kolorKategorii, paraKolorow } from "@/lib/ui/kolory";
 import { nadajNumer, wlascicieleNumerow } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
@@ -63,12 +63,19 @@ export function Pozycja(props: WlasciwosciPozycji) {
 // =====================================================================
 
 /**
- * Obramowanie pozycji. W jednej kolumnie wystarcza kreska u dolu; w siatce
- * kolumn kreska nie wiadomo czego dotyczy, wiec pozycja dostaje wlasna ramke.
+ * Obramowanie pozycji. W siatce kolumn kreska u dolu nie wiadomo czego dotyczy,
+ * wiec pozycja dostaje wlasna ramke w kolorze swojej kategorii.
  */
 function ramka(wSiatce: boolean | undefined, ostatnia: boolean | undefined): string {
-  if (wSiatce) return "h-full rounded-xl border border-linia bg-tlo/35 p-4";
+  if (wSiatce) return "h-full rounded-xl border-2 p-4";
   return ostatnia ? "" : "border-b border-linia pb-5";
+}
+
+/** Styl bloku w kolorze kategorii. Tylko w siatce: w liscie kolor przeszkadza. */
+function stylBloku(klucz: string | undefined, wSiatce: boolean | undefined) {
+  if (!wSiatce || !klucz) return undefined;
+  const k = kolorKategorii(klucz);
+  return { borderColor: k.obwod, background: k.tlo };
 }
 
 /**
@@ -99,9 +106,22 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
   return (
     <div>
       {pozycja.krance ? (
-        <p className="mb-3 flex flex-wrap justify-center gap-x-5 gap-y-1 text-center text-drobne text-atrament-slaby">
-          <span>{pozycja.krance[0]}</span>
-          <span>{pozycja.krance[1]}</span>
+        <p className="mb-3 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-drobne text-atrament-sciszony">
+          {pozycja.krance.map((k, i) => {
+            // „1 najchętniej" rozbite na cyfrę w kółku i słowo obok.
+            const spacja = k.indexOf(" ");
+            const cyfra = spacja > 0 ? k.slice(0, spacja) : k;
+            const slowo = spacja > 0 ? k.slice(spacja + 1) : "";
+            return (
+              <span key={k} className="inline-flex items-center gap-1.5">
+                {i > 0 ? <span aria-hidden className="mr-1 text-atrament-slaby">·</span> : null}
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-linia-mocna bg-panel font-bold tabular-nums">
+                  {cyfra}
+                </span>
+                {slowo}
+              </span>
+            );
+          })}
         </p>
       ) : null}
 
@@ -182,7 +202,8 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
     kod: string;
     tekst: string;
   }>;
-  const kolor = kluczKoloru ? kolorKategorii(kluczKoloru) : null;
+  // Dwie strony pary dostają dwa różne kolory: kolor ma pomagać je rozróżnić.
+  const kolory = kluczKoloru ? paraKolorow(kluczKoloru) : null;
 
   function wybierz(kod: string) {
     naZmiane(kod);
@@ -193,6 +214,7 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
     <div className="grid gap-2.5 sm:grid-cols-2">
       {strony.map((s, i) => {
         const wybrana = wartosc === s.kod;
+        const kolor = kolory ? kolory[i] : null;
         return (
           <button
             key={`${s.kod}-${i}`}
@@ -222,9 +244,12 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
 
 function Skala5({ pozycja, wartosc, naZmiane, pierwsza, ostatnia, wSiatce }: WlasciwosciPozycji) {
   return (
-    <div className={ramka(wSiatce, ostatnia)}>
+    <div className={ramka(wSiatce, ostatnia)} style={stylBloku(pozycja.ikona, wSiatce)}>
       {pozycja.tresc ? (
-        <p className="mb-2 text-tresc leading-snug">{pozycja.tresc}</p>
+        <p className="mb-2 flex items-start gap-2.5 text-tresc leading-snug">
+          {pozycja.ikona && wSiatce ? <Ikona klucz={pozycja.ikona} rozmiar={36} /> : null}
+          <span className="flex-1">{pozycja.tresc}</span>
+        </p>
       ) : null}
       <SkalaPrzyciski
         wartosc={wartosc as number | undefined}
@@ -277,8 +302,11 @@ function SkalaPrzyciski({
 function Kotwica({ pozycja, wartosc, naZmiane, pierwsza, ostatnia, wSiatce }: WlasciwosciPozycji) {
   const w = (wartosc as { skala?: number; probowal?: boolean }) ?? {};
   return (
-    <div className={ramka(wSiatce, ostatnia)}>
-      <p className="mb-2 text-tresc leading-snug">{pozycja.tresc}</p>
+    <div className={ramka(wSiatce, ostatnia)} style={stylBloku(pozycja.ikona, wSiatce)}>
+      <p className="mb-2 flex items-start gap-2.5 text-tresc leading-snug">
+        {pozycja.ikona && wSiatce ? <Ikona klucz={pozycja.ikona} rozmiar={36} /> : null}
+        <span className="flex-1">{pozycja.tresc}</span>
+      </p>
       <SkalaPrzyciski
         wartosc={w.skala}
         naZmiane={(n) => naZmiane({ ...w, skala: n })}
@@ -356,7 +384,8 @@ function Trzystopniowa({
   );
 }
 
-function Pojedynczy({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
+function Pojedynczy({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPozycji) {
+  const kolor = kluczKoloru ? kolorKategorii(kluczKoloru) : null;
   return (
     <fieldset>
       {pozycja.tresc ? (
@@ -373,14 +402,28 @@ function Pojedynczy({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
             onClick={() => naZmiane(o.kod)}
             aria-pressed={wartosc === o.kod}
             className={`${KAFELEK} flex items-center gap-3 ${
-              wartosc === o.kod ? "border-akcent bg-akcent-tlo" : "border-linia"
+              kolor ? "border-2" : wartosc === o.kod ? "border-akcent bg-akcent-tlo" : "border-linia"
             }`}
+            style={
+              kolor
+                ? {
+                    borderColor: wartosc === o.kod ? kolor.neon : kolor.obwod,
+                    background: kolor.tlo,
+                    boxShadow: wartosc === o.kod ? `0 10px 24px -16px ${kolor.neon}` : undefined,
+                  }
+                : undefined
+            }
           >
             <span
               aria-hidden
               className={`h-4 w-4 shrink-0 rounded-full border-2 ${
-                wartosc === o.kod ? "border-akcent bg-akcent" : "border-linia-mocna"
+                wartosc === o.kod && !kolor ? "border-akcent bg-akcent" : "border-linia-mocna"
               }`}
+              style={
+                kolor && wartosc === o.kod
+                  ? { borderColor: kolor.neon, background: kolor.neon }
+                  : undefined
+              }
             />
             <span className="min-w-0 flex-1 leading-snug">
               {o.etykieta}
@@ -484,8 +527,11 @@ function Dowody({ pozycja, wartosc, naZmiane, ostatnia, wSiatce }: WlasciwosciPo
   const zaznaczone = (wartosc as boolean[]) ?? [false, false, false];
   const id = useId();
   return (
-    <div className={ramka(wSiatce, ostatnia)}>
-      <p className="text-tresc font-medium">{pozycja.tresc}</p>
+    <div className={ramka(wSiatce, ostatnia)} style={stylBloku(pozycja.ikona, wSiatce)}>
+      <p className="flex items-start gap-2.5 text-tresc font-medium">
+        {pozycja.ikona && wSiatce ? <Ikona klucz={pozycja.ikona} rozmiar={36} /> : null}
+        <span className="flex-1">{pozycja.tresc}</span>
+      </p>
       <p className="mt-0.5 max-w-czytelna text-male text-atrament-sciszony">{pozycja.podpis}</p>
       <div className="mt-2.5 flex flex-col gap-1">
         {(pozycja.pola ?? []).map((pole, i) => (

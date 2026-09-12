@@ -97,6 +97,7 @@ function czescA0(): CzescModulu {
         klucz: `A0_${pytanie.id}`,
         typ: "pozycje",
         naglowek: pytanie.nazwaBloku,
+        kolor: `a0-${blok}`,
         pozycje: [pozycja],
         warunek: pozycja.warunek,
       });
@@ -157,6 +158,7 @@ function czescA1B(plan: PlanModulu): CzescModulu {
     .filter((o): o is (typeof OBSZARY_A1)[number] => Boolean(o))
     .map((o) => ({
       id: `kotwica_${o.id}`,
+      ikona: `a1-${o.id}`,
       typ: "kotwica",
       tresc: o.kotwica,
       krance: [INSTRUKCJA_A1.kotwiceSkala[0], INSTRUKCJA_A1.kotwiceSkala[4]],
@@ -234,6 +236,7 @@ function czescA2B(): CzescModulu {
       podpis: strona === 0 ? INSTRUKCJA_A2.dowodyPodtytul : undefined,
       pozycje: kompetencje.map((k) => ({
         id: `dowody_${k.id}`,
+        ikona: `a2-${k.id}`,
         typ: "dowody",
         tresc: k.nazwa,
         podpis: k.opis,
@@ -280,6 +283,7 @@ function czescA3B(kontekst: KontekstModulu): CzescModulu {
   const bieguny = kontekst.a3Bieguny ?? {};
   const pozycje: Pozycja[] = KOTWICE_A3.map((k) => ({
     id: `kotwica_${k.wymiar}`,
+    ikona: `a3-${k.wymiar}`,
     typ: "skala5",
     tresc: `${INSTRUKCJA_A3.kotwicePrefiks} ${bieguny[k.wymiar] === "B" ? k.tekstB : k.tekstA}`,
     krance: [INSTRUKCJA_A3.kotwiceSkala[0], INSTRUKCJA_A3.kotwiceSkala[4]],
@@ -319,6 +323,7 @@ function czescA4A(plan: PlanModulu): CzescModulu {
       klucz: `A4_para_${para.nr}`,
       typ: "pozycje",
       polecenie: INSTRUKCJA_A4.polecenieBloku,
+      kolor: `a4-${para.lewa}`,
       pozycje: [
         { id: `para_${para.nr}`, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b },
       ],
@@ -500,6 +505,7 @@ function czescM1A(plan: PlanModulu): CzescModulu {
       klucz: `M1_${id}`,
       typ: "pozycje",
       polecenie: INSTRUKCJA_M1.polecenieBloku,
+      kolor: `m1w-${para.wymiar}`,
       pozycje: [{ id, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b }],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
     });
@@ -549,6 +555,7 @@ function czescM1B(kontekst: KontekstModulu): CzescModulu {
       klucz: `M1_obszar_${obszar.nr}`,
       typ: "pozycje",
       naglowek: obszar.tytul,
+      kolor: `m1-${obszar.nr}`,
       notatka: szkic,
       notatkaZPola:
         obszar.typ === "lista_i_tekst"

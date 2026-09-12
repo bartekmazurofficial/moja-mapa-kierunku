@@ -37,10 +37,10 @@ export const INSTRUKCJA_A1 = {
   ],
   rozwiniecie: [
     "Nie zastanawiaj się, czy to dobry zawód, czy dużo się na tym zarabia i czy ktoś byłby z Ciebie dumny. Pytamy tylko o samą czynność.",
-    "W każdym zestawie numerujesz wszystkie cztery, nawet jeśli żadna Ci się nie podoba albo podobają Ci się wszystkie. Chodzi o kolejność, nie o ocenę. Nie ma dobrych i złych odpowiedzi.",
+    "W każdym zestawie numerujesz wszystkie cztery, a jeden numer możesz przypisać tylko raz. Robisz to nawet wtedy, gdy żadna Ci się nie podoba albo podobają Ci się wszystkie. Chodzi o kolejność, nie o ocenę. Nie ma dobrych i złych odpowiedzi.",
   ],
-  polecenieBloku: "Nadaj numery od 1 do 4. Jeden numer możesz przypisać tylko raz.",
-  krancePozycji: ["1 to ta, którą najchętniej byś robił", "4 to ta, którą najmniej"],
+  polecenieBloku: "Co najchętniej byś robił?",
+  krancePozycji: ["1 najchętniej", "4 najmniej chętnie"],
   przejscie: "Najtrudniejsze za Tobą. Została jeszcze jedna krótka część.",
   kotwiceNaglowek: "Jak bardzo chciałbyś się tym zajmować?",
   kotwiceSkala: ["w ogóle", "", "", "", "bardzo"],

@@ -41,6 +41,8 @@ export interface OpcjaWyboru {
 export interface Pozycja {
   /** Klucz zapisu w tabeli odpowiedzi. */
   id: string;
+  /** Klucz kategorii pozycji: stad bierze sie jej znak i kolor bloku. */
+  ikona?: string;
   typ: TypPozycji;
   /** Tresc pytania albo pozycji. */
   tresc?: string;

@@ -22,7 +22,11 @@ export interface OpcjeKolejki {
   odstepy?: number[];
   /** Czekanie. Wstrzykiwane, żeby testy nie stały. */
   poczekaj?: (ms: number) => Promise<void>;
-  /** Wywoływane przy każdej zmianie liczby niezapisanych pozycji. */
+  /**
+   * Wywolywane przy kazdej zmianie liczby pozycji, ktore **nie doszly**.
+   * Liczy sie tylko to, co juz raz nie przeszlo: pozycja w locie nie jest
+   * jeszcze zadnym problemem i nie ma prawa zapalac ostrzezenia na ekranie.
+   */
   naZmiane?: (nieZapisane: number) => void;
 }
 
@@ -34,8 +38,17 @@ export class KolejkaZapisu {
   private readonly poczekaj: (ms: number) => Promise<void>;
   private readonly naZmiane?: (n: number) => void;
 
-  /** Pozycje, których nie udało się zapisać. Klucz to identyfikator pozycji. */
+  /** Pozycje bez potwierdzenia: w locie albo po nieudanej próbie. */
   private zalegle = new Map<string, unknown>();
+  /**
+   * Pozycje, przy ktorych wysylka juz raz sie nie udala. To one, i tylko one,
+   * sa "niezapisane" dla uczestnika.
+   *
+   * Bez tego rozroznienia zolty pasek "brak polaczenia" mrugal przy **kazdej**
+   * odpowiedzi: zapis trwa kilkanascie milisekund, ale przez te kilkanascie
+   * milisekund pozycja byla zalegla, pasek sie pojawial i spychal tresc w dol.
+   */
+  private nieudane = new Set<string>();
   /** Zadania w locie, żeby `oproznij` wiedział, na co czeka. */
   private wLocie = new Set<Promise<void>>();
 
@@ -47,6 +60,11 @@ export class KolejkaZapisu {
   }
 
   get nieZapisane(): number {
+    return this.nieudane.size;
+  }
+
+  /** Wszystko bez potwierdzenia, razem z tym, co jest w locie. */
+  get bezPotwierdzenia(): number {
     return this.zalegle.size;
   }
 
@@ -59,7 +77,6 @@ export class KolejkaZapisu {
     // Nowsza odpowiedź na tę samą pozycję zastępuje starszą: zapisujemy stan,
     // nie historię klikania.
     this.zalegle.set(pozycja, tresc);
-    this.zglos();
     const zadanie = this.probuj(pozycja, tresc).finally(() => this.wLocie.delete(zadanie));
     this.wLocie.add(zadanie);
   }
@@ -72,10 +89,16 @@ export class KolejkaZapisu {
         await this.wyslij({ pozycja, tresc });
         if (this.zalegle.get(pozycja) === tresc) {
           this.zalegle.delete(pozycja);
+          this.nieudane.delete(pozycja);
           this.zglos();
         }
         return;
       } catch {
+        // Pierwsza nieudana proba: dopiero teraz uczestnik ma o tym wiedziec.
+        if (!this.nieudane.has(pozycja)) {
+          this.nieudane.add(pozycja);
+          this.zglos();
+        }
         if (proba < this.odstepy.length) await this.poczekaj(this.odstepy[proba]);
       }
     }
@@ -99,6 +122,6 @@ export class KolejkaZapisu {
   }
 
   private zglos(): void {
-    this.naZmiane?.(this.zalegle.size);
+    this.naZmiane?.(this.nieudane.size);
   }
 }

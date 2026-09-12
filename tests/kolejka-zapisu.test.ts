@@ -89,6 +89,24 @@ describe("kolejka zapisu", () => {
     expect(k.nieZapisane).toBe(0);
   });
 
+  it("udany zapis nie melduje ani razu, że coś nie doszło", async () => {
+    // Ostrzeżenie „brak połączenia" mrugało przy każdej odpowiedzi, bo
+    // pozycja w locie liczyła się jako zaległa. Zapis, który się udał,
+    // nie ma prawa zapalić niczego na ekranie.
+    const s = siec();
+    const zmiany: number[] = [];
+    const k = new KolejkaZapisu({
+      wyslij: s.wyslij,
+      poczekaj: bezCzekania,
+      naZmiane: (n) => zmiany.push(n),
+    });
+    k.zapisz("blok_1", { a: 1 });
+    k.zapisz("blok_2", { a: 2 });
+    await k.oproznij();
+    expect(zmiany.filter((n) => n > 0)).toEqual([]);
+    expect(k.nieZapisane).toBe(0);
+  });
+
   it("melduje o zmianie liczby niezapisanych pozycji", async () => {
     const s = siec();
     s.wylacz();

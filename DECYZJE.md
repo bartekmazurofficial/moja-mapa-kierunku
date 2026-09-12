@@ -1377,3 +1377,47 @@ ile części ma spotkanie: trzy, jedna, trzy. Na telefonie jedna pod drugą,
 bo trzy kolumny nie mieszczą tytułu.
 
 Każda część ma swój kolor, różny w obrębie spotkania.
+
+### D74. Ostrzeżenie o braku połączenia mrugało przy każdej odpowiedzi
+
+Kolejka zapisu liczyła jako „zaległą" każdą pozycję od momentu kliknięcia do
+potwierdzenia z serwera. Zapis trwa kilkanaście milisekund, ale przez te
+kilkanaście milisekund żółty pasek „brak połączenia" **pojawiał się i znikał
+przy każdej odpowiedzi**, spychając treść w dół i wracając. Uczestnik widział
+ścięcie i mignięcie ostrzeżenia, którego nie zdążył przeczytać.
+
+Poprawka jest w semantyce, nie w opóźnieniu: kolejka rozróżnia teraz **bez
+potwierdzenia** (w locie, normalny stan) i **nieudane** (wysyłka już raz nie
+przeszła). Na ekran idzie tylko to drugie.
+
+Zmierzone: cztery odpowiedzi pod rząd, zero pojawień paska. Przy wyłączonej
+sieci pasek pojawia się tak samo jak wcześniej, więc zabezpieczenie działa.
+Test pilnuje obu stron: udany zapis nie melduje ani razu, nieudany melduje.
+
+### D75. Polecenie zestawu to pytanie, nie instrukcja obsługi
+
+Było: „Nadaj numery od 1 do 4. Jeden numer możesz przypisać tylko raz".
+Uczestnik czytał instrukcję obsługi zamiast pytania, na które ma odpowiedzieć.
+
+Jest: **„Co najchętniej byś robił?"** w A1 i **„Co poszłoby Ci najlepiej?"**
+w A2, a pod spodem legenda z cyframi w kółkach: ① najchętniej · ④ najmniej
+chętnie. Zasada jednego numeru przeniesiona do rozwinięcia „Więcej o tym
+ćwiczeniu", bo w interfejsie widać ją bez czytania: numer zajęty jest
+przygaszony.
+
+### D76. Kolor w każdym module, nie tylko w zestawach
+
+Bloki kolorów miały A1 i A2, a pary A3, A4 i M1 zostały białe. Pozycja niesie
+teraz własny klucz kategorii (`Pozycja.ikona`), a ekran własny klucz koloru
+(`Ekran.kolor`), więc kolor dostają:
+
+- kotwice A1 i osie A3: blok w kolorze obszaru albo osi, ze znakiem,
+- dowody A2: blok w kolorze kompetencji,
+- pary A3, A4 i M1: **dwa różne kolory na dwie strony wyboru**, bo para to
+  dwie strony, nie jedna kategoria, a kolor ma pomagać je rozróżnić,
+- warunki A5: kolor grupy tematycznej,
+- pytania A0: kolor bloku metryczki,
+- wartości A4 w wyborze trzech nieodzownych: kolor wartości.
+
+Drugi kolor pary jest zawsze o trzy pozycje dalej w kole sześciu, więc nigdy
+nie wypadnie taki sam jak pierwszy.

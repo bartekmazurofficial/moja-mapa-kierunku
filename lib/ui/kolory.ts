@@ -109,3 +109,16 @@ export const KOLORY_MODULOW: Record<string, Kolor> = {
   M1: KOLORY.czerwony,
   A5: KOLORY.turkus,
 };
+
+/**
+ * Dwa różne kolory dla ekranu z parą do wyboru.
+ *
+ * Para to dwie strony, nie jedna kategoria. Gdyby obie karty miały ten sam
+ * kolor, kolor nie pomagałby ich rozróżnić, a po to tu jest. Drugi kolor jest
+ * zawsze o trzy pozycje dalej w kole, więc nigdy nie wypadnie taki sam.
+ */
+export function paraKolorow(klucz: string): [Kolor, Kolor] {
+  const i = skrot(klucz) % KOLEJNOSC_KOLOROW.length;
+  const j = (i + 3) % KOLEJNOSC_KOLOROW.length;
+  return [KOLORY[KOLEJNOSC_KOLOROW[i]], KOLORY[KOLEJNOSC_KOLOROW[j]]];
+}
