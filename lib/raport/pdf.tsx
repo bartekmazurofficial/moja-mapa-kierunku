@@ -261,13 +261,25 @@ function Dokument({ raport, oceny }: DanePdf) {
                 {p.pytanieRozstrzygajace ? (
                   <Text style={s.drobne}>Pytanie rozstrzygające: {p.pytanieRozstrzygajace}</Text>
                 ) : null}
-                {p.zawody.map((z) => (
-                  <Text key={z.kod} style={s.drobne}>
-                    {p.typ === "klaster" ? `${z.nazwa}. ` : ""}
-                    {z.flagi.zdanieKierunkowe ? `${z.flagi.zdanieKierunkowe}. ` : ""}
-                    {oceny[z.kod] ? `Twoje oznaczenie: ${NAZWY_OCEN[oceny[z.kod]]}.` : ""}
-                  </Text>
-                ))}
+                {/* Pusty `Text` wywraca cały dokument: renderer mierzy go
+                    i wychodzi mu liczba, której nie umie zapisać
+                    („unsupported number”). Przy profilu bez odpowiedzi żadna
+                    z trzech części tej linii nie ma treści, więc składamy ją
+                    najpierw, a rysujemy tylko wtedy, gdy coś w niej jest. */}
+                {p.zawody.map((z) => {
+                  const linia = [
+                    p.typ === "klaster" ? `${z.nazwa}.` : null,
+                    z.flagi.zdanieKierunkowe ? `${z.flagi.zdanieKierunkowe}.` : null,
+                    oceny[z.kod] ? `Twoje oznaczenie: ${NAZWY_OCEN[oceny[z.kod]]}.` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" ");
+                  return linia ? (
+                    <Text key={z.kod} style={s.drobne}>
+                      {linia}
+                    </Text>
+                  ) : null;
+                })}
               </View>
             ))}
           </Sekcja>

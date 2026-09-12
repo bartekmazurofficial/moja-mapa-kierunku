@@ -72,3 +72,38 @@ describe("eksport PDF", () => {
     expect(buf.subarray(0, 5).toString()).toBe("%PDF-");
   }, 60_000);
 });
+
+/**
+ * Sufit długości dokumentu.
+ *
+ * Renderer ma granicę, powyżej której przestaje umieć policzyć układ strony
+ * i wywala się komunikatem „unsupported number”. Zmierzona granica to około
+ * stu trzydziestu pozycji w sekcji zawodów, czyli kilkadziesiąt stron.
+ *
+ * W praktyce nie da się tam dojść: raport wypełnionego uczestnika ma **sześć**
+ * pozycji, bo progi odcinają resztę. Sto dwadzieścia dziewięć wychodzi
+ * wyłącznie przy profilu bez ani jednej odpowiedzi, któremu ktoś odsłonił
+ * wszystkie warstwy raportu — a tego program nie robi, bo warstwy odsłania się
+ * po wypełnieniu modułów.
+ *
+ * Ten test pilnuje realnego rozmiaru, nie sufitu: gdyby raport prawdziwego
+ * uczestnika urósł do kilkudziesięciu pozycji, znaczyłoby to, że progi
+ * przestały działać, i dowiemy się o tym tutaj, a nie przy eksporcie.
+ */
+describe("rozmiar raportu", () => {
+  it("wypełniony profil mieści się w kilkunastu pozycjach sekcji zawodów", async () => {
+    const { uczestnikTestowy } = await import("./pomocnicze/fixtury");
+    const { pobierzRaport } = await import("@/lib/raport/serwer");
+    const { odblokujWarstwe } = await import("@/lib/raport/dostep");
+    const { WARSTWY } = await import("@/lib/raport/sekcje");
+
+    const u = await uczestnikTestowy("rzemieslniczy");
+    for (const w of WARSTWY.filter((x) => x.kod !== "ZAWSZE")) {
+      await odblokujWarstwe(u.grupaId, w.kod as never);
+    }
+    const widok = await pobierzRaport(u.kodDostepu);
+    const ile = widok?.raport.zawody?.pozycje.length ?? 0;
+    expect(ile).toBeGreaterThan(0);
+    expect(ile, "progi przestały odcinać zawody").toBeLessThan(40);
+  });
+});

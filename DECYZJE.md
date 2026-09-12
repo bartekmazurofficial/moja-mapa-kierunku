@@ -1521,3 +1521,54 @@ Mój starszy test jakości pozycji ustępuje nowym regułom w dwóch punktach:
 zniknęła dolna granica długości (bo „Zaplanować budżet" ma siedemnaście
 znaków i jest w porządku) oraz słowo `przedsięwzięcie` z listy urzędowych
 (bo dokument używa go świadomie w „Uruchomić własne przedsięwzięcie").
+
+### D83. Wdrożenie testowe: Vercel i Neon
+
+Adres: **https://moja-mapa-kierunku.vercel.app**. Baza: Neon przez Marketplace
+Vercela, czyli bez osobnego konta i bez ręcznego przepisywania adresów.
+
+Trzy rzeczy, które wyszły dopiero na serwerze i lokalnie nie miały prawa wyjść:
+
+**Fonty do PDF nie trafiały do paczki funkcji.** Renderer czyta je przez
+`join(process.cwd(), …)`, a śledzenie zależności widzi tylko importy.
+`outputFileTracingIncludes` dokłada je wprost.
+
+**pdfkit wczytuje metryki czternastki bazowej przez `require` liczony w czasie
+działania.** Efekt: `MODULE_NOT_FOUND` na `Helvetica.cjs`, znowu wyłącznie na
+serwerze. Poza fontami do paczki wchodzi więc `node_modules/pdfkit/js`,
+a sam renderer jest wyłączony z pakowania (`serverExternalPackages`).
+
+**Sprawdzanie typów obejmuje `scripts`, a jeden skrypt diagnostyczny importuje
+fiksturę z `tests`.** Wycięcie `tests` z wysyłki wywracało budowanie na
+Vercelu przy przechodzącym budowaniu lokalnym.
+
+Parametry puli połączeń dopisuje klient Prismy, bo adres wstrzykuje integracja
+i nie ma go jak zmienić w panelu (`lib/db/klient.ts`).
+
+### D84. Profil płaski wywraca eksport PDF
+
+**Znalezione przy sprawdzaniu wdrożenia, dotyczy też wersji lokalnej.**
+
+Uczestnik z profilem płaskim dostaje w raporcie **129 pozycji w sekcji
+zawodów**, bo progi nie odcinają niczego, gdy żaden obszar nie odstaje.
+Renderer PDF ma sufit długości dokumentu i powyżej mniej więcej osiemdziesięciu
+pozycji przestaje umieć policzyć układ strony: `unsupported number`.
+
+Zmierzone: 84 pozycje przechodzą, 85 pada, niezależnie od tego, które to
+pozycje. Sto dwadzieścia dziewięć krótkich pozycji przechodzi, dwieście pada,
+więc to sufit długości, nie wada konkretnego wpisu. Sprawdzone i odrzucone:
+pusty `Text`, `minPresenceAhead`, krawędź na łamanym widoku, łamanie pozycji
+między stronami. Biblioteka jest w najnowszej wersji.
+
+**To nie jest wada eksportu, tylko objaw wady treści.** Sto dwadzieścia
+dziewięć zawodów pokazanych siedemnastolatkowi znaczy dokładnie tyle samo,
+co zero. Flaga `profil_nieostry` już się przy takim profilu zapala, ale lista
+zawodów nie jest przy niej skracana.
+
+**Do rozstrzygnięcia przez autora metodyki**, bo to zmiana treści raportu:
+czy przy zapalonej fladze profilu nieostrego pokazywać czołówkę zawodów
+zamiast całej listy. Wtedy PDF przestaje padać przy okazji, a raport zaczyna
+cokolwiek znaczyć. Do czasu decyzji nie zmieniam nic.
+
+Raport na ekranie działa w każdym przypadku. Pada wyłącznie eksport do PDF
+i wyłącznie przy profilu płaskim albo pustym.

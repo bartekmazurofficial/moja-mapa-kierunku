@@ -20,7 +20,10 @@ program-doradztwa
 # Fonty do PDF powstają w czasie budowania (npm run vercel-build).
 data/generated
 
-tests
+# `tests` zostaje: sprawdzanie typów obejmuje też `scripts`, a jeden ze skryptów
+# diagnostycznych importuje fiksturę z `tests/fixtures`. Bez tego katalogu
+# budowanie na Vercelu pada na kontroli typów, a lokalnie przechodzi.
+
 *.log
 .DS_Store
 .env
