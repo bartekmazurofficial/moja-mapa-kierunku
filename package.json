@@ -16,7 +16,12 @@
     "parse:karty": "tsx scripts/parse-karty.ts",
     "fonty": "tsx scripts/przygotuj-fonty.ts",
     "import": "tsx scripts/import.ts",
-    "setup": "npm run parse:obszary && npm run parse:karty && npm run fonty && npm run db:push && npm run import"
+    "setup": "npm run parse:obszary && npm run parse:karty && npm run fonty && npm run db:push && npm run import",
+    "schema:pg": "tsx scripts/schema-postgres.ts",
+    "vercel-build": "npm run fonty && npm run schema:pg && prisma generate --schema prisma/schema.postgres.prisma && next build",
+    "wdroz:schemat": "npm run schema:pg && prisma db push --schema prisma/schema.postgres.prisma --skip-generate",
+    "wdroz:dane": "npm run schema:pg && prisma generate --schema prisma/schema.postgres.prisma && tsx scripts/import.ts; prisma generate",
+    "prisma:lokalnie": "prisma generate"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",

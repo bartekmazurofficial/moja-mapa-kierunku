@@ -1,6 +1,12 @@
 import { pobierzRaport } from "@/lib/raport/serwer";
 import { zbudujPdf } from "@/lib/raport/pdf";
 
+/**
+ * Node, nie Edge: renderer PDF czyta fonty z dysku i korzysta z Buffera.
+ * Domyslnie tak jest, ale na wdrozeniu nie chcemy tego zostawiac domysle.
+ */
+export const runtime = "nodejs";
+
 export const dynamic = "force-dynamic";
 
 /**
