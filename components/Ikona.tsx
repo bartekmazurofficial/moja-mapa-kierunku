@@ -181,7 +181,7 @@ export function Plansza({
             src={obraz}
             alt=""
             aria-hidden
-            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-xl"
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-55 blur-xl"
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

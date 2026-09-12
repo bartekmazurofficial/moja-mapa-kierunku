@@ -251,6 +251,15 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
     naDomkniecie?.();
   }
 
+  /**
+   * Znak przy odpowiedzi tylko wtedy, gdy strony mają różne.
+   *
+   * W A3 i M1 obie strony to dwa bieguny jednej osi, więc dostają ten sam
+   * klucz i ten sam znak. Dwa identyczne znaczki niczego nie rozróżniają, a
+   * ilustracja osi i tak stoi w pasie nad pytaniem.
+   */
+  const zeZnakiem = strony.length === 2 && strony[0].ikona !== strony[1].ikona;
+
   return (
     <div className="grid gap-2.5 sm:grid-cols-2">
       {strony.map((s, i) => {
@@ -275,7 +284,9 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
                 : undefined
             }
           >
-            {s.ikona ? <Ikona klucz={s.ikona} rozmiar={40} aktywna={wybrana} wybor /> : null}
+            {zeZnakiem && s.ikona ? (
+              <Ikona klucz={s.ikona} rozmiar={40} aktywna={wybrana} wybor />
+            ) : null}
             <span className="boks text-tresc leading-snug">{s.tekst}</span>
           </button>
         );
