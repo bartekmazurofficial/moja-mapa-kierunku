@@ -1,0 +1,32 @@
+# Co nie ma po co jechać na serwer.
+#
+# Uwaga: obecność tego pliku wyłącza domyślne czytanie .gitignore przez Vercela,
+# więc wszystko, co ma zostać na dysku, musi być tutaj wypisane.
+
+node_modules
+.next
+.git
+.vitest
+
+# Baza lokalna: 5 MB danych testowych, na serwerze nieużywana.
+prisma/*.db
+prisma/*.db-journal
+prisma/schema.postgres.prisma
+
+# Źródła do parsowania baz referencyjnych. Import robimy z lokalnego komputera
+# prosto do Neona, więc na serwerze nie są do niczego potrzebne.
+program-doradztwa
+
+# Fonty do PDF powstają w czasie budowania (npm run vercel-build).
+data/generated
+
+tests
+*.log
+.DS_Store
+.env
+.env.local
+.env.*.local
+
+# Dokumentacja projektu.
+*.md
+!README.md
