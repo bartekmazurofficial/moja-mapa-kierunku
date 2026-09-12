@@ -30,9 +30,9 @@ export const DOWODY_A2 = [
 
 export const INSTRUKCJA_A2 = {
   naglowek: "W czym mogę być dobry",
+  // Dwa zdania, tak jak w A1. Reszta pod „Więcej o tym ćwiczeniu".
   wprowadzenie: [
-    "Poprzednio pytaliśmy, co chciałbyś robić. Teraz pytamy o coś innego.",
-    "W czym, Twoim zdaniem, poradziłbyś sobie najlepiej, nawet jeśli wcale byś tego nie lubił?",
+    "Poprzednio pytaliśmy, co chciałbyś robić. Teraz o coś innego: w czym poradziłbyś sobie najlepiej, nawet jeśli wcale byś tego nie lubił?",
     "Twoje odpowiedzi nie muszą zgadzać się z poprzednim wynikiem. Jeśli się nie zgadzają, to najciekawsza rzecz, jaką dziś znajdziemy.",
   ],
   rozwiniecie: [

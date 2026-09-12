@@ -21,8 +21,6 @@ function dotkniecia(p: Pozycja): number {
   switch (p.typ) {
     case "ranking4":
       return p.opcje?.length ?? 4;
-    case "maxdiff":
-      return 2;
     case "para":
       return 1;
     case "trzystopniowa":

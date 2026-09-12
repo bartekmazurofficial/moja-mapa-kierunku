@@ -30,14 +30,18 @@ export const BLOKI_A1: BlokA1[] = [{"index": 1, "pozycje": [{"id": "A10_6", "tek
 export const INSTRUKCJA_A1 = {
   naglowek: "Co mnie ciągnie",
   // Instrukcja: krotko. Reszta pod "rozwin", dla tych, ktorzy chca wiedziec wiecej.
+  // Dwa zdania. Ekran wstępu jest do przewinięcia, nie do przeczytania;
+  // wszystko, co można stąd wyjąć, siedzi pod „Więcej o tym ćwiczeniu".
   wprowadzenie: [
-    "Zobaczysz zestawy po cztery czynności. W każdym nadajesz numery od 1 do 4: numer 1 dostaje ta, którą najchętniej byś robił, numer 4 ta, którą najmniej.",
+    "Zobaczysz zestawy po cztery czynności. W każdym ustawiasz je w kolejności: od tej, którą najchętniej byś robił, do tej, którą najmniej.",
     "Nie pytamy, czy Ci to wyjdzie. Pytamy, czy chciałbyś to robić.",
-    "Zaufaj pierwszemu odruchowi. To zwykle najlepszy wybór.",
   ],
   rozwiniecie: [
     "Nie zastanawiaj się, czy to dobry zawód, czy dużo się na tym zarabia i czy ktoś byłby z Ciebie dumny. Pytamy tylko o samą czynność.",
-    "W każdym zestawie numerujesz wszystkie cztery, a jeden numer możesz przypisać tylko raz. Robisz to nawet wtedy, gdy żadna Ci się nie podoba albo podobają Ci się wszystkie. Chodzi o kolejność, nie o ocenę. Nie ma dobrych i złych odpowiedzi.",
+    // Zdanie o pierwszym odruchu jest w specyfikacji oznaczone jako krytyczne:
+    // bez niego uczestnicy zacinają się na blokach, w których wszystkie cztery
+    // pozycje są im obojętne, i albo klikają losowo, albo rezygnują.
+    "W każdym zestawie numerujesz wszystkie cztery, a jeden numer możesz przypisać tylko raz. Robisz to nawet wtedy, gdy żadna Ci się nie podoba albo podobają Ci się wszystkie. Chodzi o kolejność, nie o ocenę. Nie ma dobrych i złych odpowiedzi. Zaufaj pierwszemu odruchowi, to zwykle najlepszy wybór.",
   ],
   polecenieBloku: "Co najchętniej byś robił?",
   krancePozycji: ["1 najchętniej", "4 najmniej chętnie"],
