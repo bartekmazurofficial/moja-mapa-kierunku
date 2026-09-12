@@ -5,6 +5,7 @@ build/
 *.log
 .env
 .env.local
+.env*.local
 .DS_Store
 /prisma/*.db
 /prisma/schema.postgres.prisma
@@ -14,5 +15,11 @@ build/
 next-env.d.ts
 tsconfig.tsbuildinfo
 .vercel
-.env*
 .env.neon
+*.db
+*.sqlite
+*.sqlite3
+prisma/*.db
+.agents/
+skills-lock.json
+.claude/skills/
