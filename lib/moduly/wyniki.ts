@@ -178,7 +178,7 @@ export async function planszaWynikow(
   if (modul === "A5") {
     const w = policzA5(o.a5);
     const bloki = [...new Set(FILTRY_A5.map((f) => f.blok))];
-    const slowo: Record<number, string> = { 1: "tak", 0.5: "może", 0: "nie" };
+    const slowo: Record<number, string> = { 1: "dam radę", 0.5: "zależy", 0: "to nie dla mnie" };
     return {
       modul,
       gotowy: Object.keys(o.a5.czescA ?? {}).length > 0,

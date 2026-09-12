@@ -1474,3 +1474,50 @@ bez zmian, a kolejność sekcji w raporcie też, więc zasada „nigdy nie pokaz
 zawodów przed obszarami" obowiązuje dalej. Na pustym profilu raport policzy
 dopasowania z pustych odpowiedzi i pokaże zawody wysoko: to artefakt stanu
 testowego, nie błąd silnika.
+
+### D81. Redakcja treści: A1, opisy A2, rama A5, pytania M1
+
+Dokument „Zmiana treści wszystkich modułów" wprowadzony w częściach, które
+były w nim rozstrzygnięte do końca. Cztery kroki czekają na zatwierdzenie
+przykładów, bo tak stanowi sam dokument.
+
+**Wprowadzone.** 144 pozycje A1 podmienione jeden do jednego: identyfikatory,
+obszary, rodziny i plan bloków bez zmian, więc silnik nie wie o niczym.
+Trzydzieści opisów kompetencji A2. Rama pytania A5 z „Czy jesteś gotów na…"
+na **„Jak byś to zniósł?"**, etykiety odpowiedzi na „Dam radę / Zależy /
+To nie dla mnie" (kody `tak`/`moze`/`nie` bez zmian), 43 pozycje przepisane
+jako warunki, nie jako ostrzeżenia. Siedem pytań M1 z punktami zaczepienia
+i wersją przez zaprzeczenie.
+
+**Desirability przypisane od nowa** z sześciu kandydatów z dokumentu:
+`A07_2`, `A12_1`, `A18_1`, `A19_1`, `A19_4`, `A20_3`. Żaden zestaw nie ma
+dwóch pozycji imponujących.
+
+**Audyt osiągalności po podmianie: 157 na 157, różnorodność 0,902.** Bez zmian,
+i tak miało być: to była zmiana treści, nie mechaniki.
+
+### D82. Test banku pozycji
+
+Sześć zasad redakcyjnych sprawdzanych automatycznie, zgodnie z dokumentem:
+długość do dziesięciu słów, brak porównań z ludźmi i z normą, brak rezultatu
+zależnego od innych, brak mieszania zadania ze skalą lat, symetria par.
+
+Trzy doprecyzowania wobec dosłownego brzmienia dokumentu, każde z powodu:
+
+- **Skala lat tylko w modułach zadaniowych.** M1 pyta wprost o kształt życia
+  na lata, a A5 o warunki pracy, więc „praca w jednym miejscu przez wiele lat"
+  jest tam treścią, nie pomyłką skali.
+- **„Inni" to nie zawsze porównanie.** „Uczyć innych tego, co sam umiesz"
+  z nowego banku A1 jest dopełnieniem, nie porównaniem. Test łapie formy
+  porównawcze: `niż inni`, `od innych`, `co inni`, `kiedy inni`, `gdy inni`.
+- **Trzy moduły wyłączone do czasu przepisania:** pozycje rankingowe A2,
+  pary A3 i pary A4. Lista `CZEKA_NA_PRZEPISANIE` znika razem z nimi.
+
+Dwa zdania M1 poprawione, bo łamały reguły z nowego dokumentu: jedno miało
+jedenaście słów, drugie słowo „wszyscy". Dwie pozycje A5 z mojej redakcji
+też: „gdy inni kończą" i „ze strony innych".
+
+Mój starszy test jakości pozycji ustępuje nowym regułom w dwóch punktach:
+zniknęła dolna granica długości (bo „Zaplanować budżet" ma siedemnaście
+znaków i jest w porządku) oraz słowo `przedsięwzięcie` z listy urzędowych
+(bo dokument używa go świadomie w „Uruchomić własne przedsięwzięcie").

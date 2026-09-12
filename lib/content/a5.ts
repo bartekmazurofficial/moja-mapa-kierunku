@@ -8,9 +8,9 @@
  */
 
 export const ODPOWIEDZI_A5 = [
-  { kod: "tak", etykieta: "Tak", wartosc: 1 },
-  { kod: "moze", etykieta: "Może", wartosc: 0.5 },
-  { kod: "nie", etykieta: "Nie", wartosc: 0 },
+  { kod: "tak", etykieta: "Dam radę", wartosc: 1 },
+  { kod: "moze", etykieta: "Zależy", wartosc: 0.5 },
+  { kod: "nie", etykieta: "To nie dla mnie", wartosc: 0 },
 ] as const;
 
 export const MAKS_WET = 3;
@@ -25,14 +25,14 @@ export const ZDANIA_A5 = [
 export const INSTRUKCJA_A5 = {
   naglowek: "Filtry rzeczywistości",
   wprowadzenie: [
-    "Przed chwilą opisałeś, jak chcesz żyć. Teraz zaznacz warunki pracy, które są z tym nie do pogodzenia.",
-    "Odpowiadasz TAK, MOŻE albo NIE. MOŻE jest pełnoprawną odpowiedzią. Jeśli nie wiesz, zaznacz MOŻE.",
-    "Na koniec wybierzesz najwyżej trzy rzeczy, które są dla Ciebie absolutnie wykluczone. Tylko trzy, więc zastanów się, które naprawdę. Wykluczenie usuwa zawody całkowicie, nie przesuwa ich niżej.",
+    "Przed chwilą opisałeś, jak chcesz żyć. Teraz o warunkach pracy: nie pytamy, czy je wytrzymasz, tylko jak byś je zniósł.",
+    "Odpowiadasz: dam radę, zależy albo to nie dla mnie. „Zależy” jest pełnoprawną odpowiedzią, nie unikiem.",
+    "Na koniec wybierzesz najwyżej trzy rzeczy, których naprawdę nie chcesz w swojej pracy. Tylko trzy, więc zastanów się, które naprawdę. One usuną zawody całkowicie, nie przesuną ich niżej.",
   ],
-  polecenieBloku: "Czy jesteś gotów na…",
+  polecenieBloku: "Jak byś to zniósł?",
   wetaNaglowek: "Co jest nie do przejścia",
   wetaPolecenie:
-    "Wybierz najwyżej trzy, które są dla Ciebie granicą nie do przekroczenia, czyli takie, że nawet praca idealna pod każdym innym względem odpadłaby przez to jedno. Reszta zostaje jako minus, nie jako koniec rozmowy.",
+    "Wybierz najwyżej trzy rzeczy, których naprawdę nie chcesz w swojej pracy. Nie chodzi o to, co Cię męczy, tylko o to, przy czym nie wytrzymałbyś na dłuższą metę. Te trzy rzeczy usuną z Twojego wyniku wszystkie zawody, które ich wymagają.",
   wetaMoznaPominac: "Możesz nie zaznaczyć żadnego.",
   zdaniaNaglowek: "Trzy zdania własnymi słowami",
   zdaniaPodpis:

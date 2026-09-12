@@ -16,10 +16,13 @@ const POZYCJE = [
   ...BLOKI_A2.flatMap((b) => b.pozycje).map((p) => ({ id: p.id, tekst: p.tekst, modul: "A2" })),
 ];
 
-/** Słowa, których nastolatek nie używa, a które wróciły przy poprzedniej redakcji. */
+/**
+ * Słowa, których nastolatek nie używa, a które wróciły przy poprzedniej redakcji.
+ * „Przedsięwzięcie” wypadło z listy: redakcja treści używa go świadomie
+ * w „Uruchomić własne przedsięwzięcie”, gdzie nic go nie zastąpi.
+ */
 const URZEDOWE = [
   "zjawisko",
-  "przedsięwzięcie",
   "podmiot",
   "realizować",
   "implementować",
@@ -39,9 +42,11 @@ describe("pozycje zestawów", () => {
     expect(powtorki, powtorki.join(" | ")).toEqual([]);
   });
 
-  it("każda mieści się w jednym wierszu kafla: od 18 do 70 znaków", () => {
+  it("każda mieści się w kaflu: nie więcej niż 70 znaków", () => {
+    // Dolnej granicy nie ma. Redakcja treści ustawiła limit na dziesięć słów
+    // i krótkie pozycje („Zaplanować budżet") są w niej w porządku;
+    // liczbę słów pilnuje tests/bank-pozycji.test.ts.
     for (const p of POZYCJE) {
-      expect(p.tekst.length, `${p.modul} ${p.id}: ${p.tekst}`).toBeGreaterThanOrEqual(18);
       expect(p.tekst.length, `${p.modul} ${p.id}: ${p.tekst}`).toBeLessThanOrEqual(70);
     }
   });

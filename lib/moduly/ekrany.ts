@@ -565,6 +565,10 @@ function czescM1B(kontekst: KontekstModulu): CzescModulu {
       klucz: `M1_obszar_${obszar.nr}`,
       typ: "pozycje",
       naglowek: obszar.tytul,
+      // Punkty zaczepienia mówią, o czym w ogóle mowa. Pusta kartka blokuje
+      // szesnastolatka, który nigdy się nad tym nie zastanawiał.
+      podpis: obszar.punkty,
+      odwrotnie: obszar.odwrotnie,
       kolor: `m1-${obszar.nr}`,
       notatka: szkic,
       notatkaZPola:

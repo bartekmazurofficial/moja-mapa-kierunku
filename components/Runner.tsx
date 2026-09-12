@@ -376,6 +376,14 @@ export function Runner({
               ))}
             </div>
 
+            {/* To samo pytanie od drugiej strony. Łatwiej powiedzieć, czego
+                się nie chce, niż czego się chce. */}
+            {ekran.odwrotnie ? (
+              <p className="mt-6 max-w-czytelna border-l-2 border-linia-mocna pl-4 text-tresc italic leading-relaxed text-atrament-sciszony">
+                {ekran.odwrotnie}
+              </p>
+            ) : null}
+
             {/* Szkic jest odbiciem, nie podpowiedzia: pojawia sie dopiero wtedy,
                 gdy uczestnik cos napisal. Przy pustym polu nie ma ani szkicu,
                 ani zachety - wizja zycia to jedyny modul, w ktorym wolno
