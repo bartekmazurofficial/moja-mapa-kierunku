@@ -1421,3 +1421,56 @@ teraz własny klucz kategorii (`Pozycja.ikona`), a ekran własny klucz koloru
 
 Drugi kolor pary jest zawsze o trzy pozycje dalej w kole sześciu, więc nigdy
 nie wypadnie taki sam jak pierwszy.
+
+### D77. Trzeci krój: treść bloków osobno
+
+Plus Jakarta niesie ekran, Poppins niesie **treść bloków odpowiedzi**,
+wyśrodkowaną. Geometryczny, okrągły, wyraźnie inny, więc kafel z odpowiedzią
+czyta się jako osobna rzecz, a nie jako kolejny akapit tego samego tekstu.
+Pełny latin-ext, pobierany przy budowaniu, serwowany z własnego serwera.
+
+Wyśrodkowanie dotyczy wszystkich bloków wyboru, także list jednokrotnych
+i wielokrotnych: znacznik i znak idą nad tekst, tekst na środek.
+
+### D78. Plansza nad każdym pytaniem
+
+Każde pytanie z jedną decyzją (pary A3, A4 i M1, warunki A5) ma nad blokami
+odpowiedzi **pas na całej ich szerokości**. To jest miejsce na dużą grafikę,
+z góry zajęte, żeby ekran nie zmieniał proporcji po dosłaniu plików.
+
+Dopóki grafiki nie ma, pas pokazuje duży znak kategorii na jej kolorze.
+Kwadratowe pliki A3 stoją w pasie w całości, pośrodku, a tło pasa dopełnia
+ich rozmyta kopia. Grafika w proporcji pasa wypełni go od krawędzi do krawędzi.
+
+**Do dosłania: 42 plansze, PNG 1500 × 400 px** (13 osi A3, 10 wartości A4,
+12 wymiarów M1, 7 grup warunków A5). Spis z treścią każdej w
+`GRAFIKI-KATEGORIE.md`, sekcja „Plansze pytań". Kompozycja pozioma
+i dwudzielna: pytanie stawia dwie możliwości obok siebie, więc obraz ma je
+pokazać obok siebie.
+
+Dwanaście nowych znaków `m1w-*` dorysowanych dla wymiarów kształtu życia:
+bez nich pary M1 nie miały czego pokazać ani w pasie, ani w blokach.
+
+### D79. Znak w każdym bloku odpowiedzi
+
+Blok, który miał zdjęcie, ma teraz zdjęcie i znak. Blok, który nie miał nic,
+ma znak. Dotyczy obu stron każdej pary, kotwic, dowodów, wartości i warunków.
+
+Przy parach wartości A4 każda strona bierze kolor **swojej** wartości, więc
+zgadza się z jej kolorem wszędzie indziej. Cztery z trzydziestu sześciu par
+trafiają na dwie wartości tego samego koloru; tam kolor niczego by nie
+rozróżniał, więc wracamy do pary kolorów z koła. Test sprawdza, że nie ma
+ani jednej pary o dwóch takich samych blokach.
+
+### D80. Reset odsłania wszystkie warstwy
+
+`scripts/reset.ts` odsłania teraz domyślnie wszystkie warstwy raportu, więc
+karty zawodów i cały raport są dostępne od razu. `--spotkanie1` wraca do stanu
+pilotażowego, w którym prowadzący otwiera moduły i odsłania warstwy po
+spotkaniach.
+
+**To jest zmiana stanu testowego, nie reguły.** Mechanizm odsłaniania zostaje
+bez zmian, a kolejność sekcji w raporcie też, więc zasada „nigdy nie pokazuj
+zawodów przed obszarami" obowiązuje dalej. Na pustym profilu raport policzy
+dopasowania z pustych odpowiedzi i pokaże zawody wysoko: to artefakt stanu
+testowego, nie błąd silnika.

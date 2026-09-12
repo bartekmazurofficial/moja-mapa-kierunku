@@ -15,7 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Pozycja } from "./Pozycja";
-import { Obraz } from "./Ikona";
+import { Plansza } from "./Ikona";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import type { CzescModulu, Ekran } from "@/lib/moduly/typy";
@@ -342,10 +342,12 @@ export function Runner({
                 {ekran.podpis}
               </p>
             ) : null}
-            {/* Ilustracja ekranu: jeden obraz na kategorię, nie na pozycję. */}
-            {ekran.ikona ? (
-              <div className="mb-5 flex justify-center">
-                <Obraz klucz={ekran.ikona} rozmiar={208} aktywna />
+            {/* Plansza pytania: pas na całej szerokości bloków odpowiedzi.
+                Tylko przy pytaniach z jedną decyzją; ekrany z siatką pozycji
+                mają znak przy każdej pozycji z osobna. */}
+            {jednaPozycja && (ekran.ikona ?? ekran.kolor) ? (
+              <div className="mb-5">
+                <Plansza klucz={(ekran.ikona ?? ekran.kolor) as string} />
               </div>
             ) : null}
 

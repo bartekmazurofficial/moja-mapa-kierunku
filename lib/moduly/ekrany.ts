@@ -67,6 +67,16 @@ function wstep(
 // A0
 // =====================================================================
 
+/** Numer bloku metryczki -> klucz znaku. Znaki maja nazwy, nie numery. */
+const ZNAKI_A0: Record<number, string> = {
+  1: "a0-etap",
+  2: "a0-przedmioty",
+  3: "a0-doswiadczenie",
+  4: "a0-miejsce",
+  5: "a0-zasoby",
+  6: "a0-zdrowie",
+};
+
 function czescA0(): CzescModulu {
   const ekrany: Ekran[] = [wstep("A0", INSTRUKCJA_A0)];
   const bloki = [...new Set(PYTANIA_A0.map((p) => p.blok))];
@@ -97,7 +107,7 @@ function czescA0(): CzescModulu {
         klucz: `A0_${pytanie.id}`,
         typ: "pozycje",
         naglowek: pytanie.nazwaBloku,
-        kolor: `a0-${blok}`,
+        kolor: ZNAKI_A0[blok] ?? `a0-${blok}`,
         pozycje: [pozycja],
         warunek: pozycja.warunek,
       });
@@ -262,8 +272,8 @@ function czescA3A(plan: PlanModulu): CzescModulu {
     const para = poId.get(id);
     if (!para) return;
     const odwrocona = plan.odwrocone[id] ?? false;
-    const a = { kod: "A", tekst: para.biegunA };
-    const b = { kod: "B", tekst: para.biegunB };
+    const a = { kod: "A", tekst: para.biegunA, ikona: `a3-${para.wymiar}` };
+    const b = { kod: "B", tekst: para.biegunB, ikona: `a3-${para.wymiar}` };
     ekrany.push({
       klucz: `A3_${id}`,
       typ: "pozycje",
@@ -317,13 +327,13 @@ function czescA4A(plan: PlanModulu): CzescModulu {
     const para = poNumerze.get(klucz);
     if (!para) return;
     const odwrocona = plan.odwrocone[klucz] ?? false;
-    const a = { kod: para.lewa, tekst: BRZMIENIA_A4[para.lewa] };
-    const b = { kod: para.prawa, tekst: BRZMIENIA_A4[para.prawa] };
+    const a = { kod: para.lewa, tekst: BRZMIENIA_A4[para.lewa], ikona: `a4-${para.lewa}` };
+    const b = { kod: para.prawa, tekst: BRZMIENIA_A4[para.prawa], ikona: `a4-${para.prawa}` };
     ekrany.push({
       klucz: `A4_para_${para.nr}`,
       typ: "pozycje",
       polecenie: INSTRUKCJA_A4.polecenieBloku,
-      kolor: `a4-${para.lewa}`,
+      ikona: `a4-${para.lewa}`,
       pozycje: [
         { id: `para_${para.nr}`, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b },
       ],
@@ -499,13 +509,13 @@ function czescM1A(plan: PlanModulu): CzescModulu {
     const para = poId.get(id);
     if (!para) return;
     const odwrocona = plan.odwrocone[id] ?? false;
-    const a = { kod: "A", tekst: para.biegunA };
-    const b = { kod: "B", tekst: para.biegunB };
+    const a = { kod: "A", tekst: para.biegunA, ikona: `m1w-${para.wymiar}` };
+    const b = { kod: "B", tekst: para.biegunB, ikona: `m1w-${para.wymiar}` };
     ekrany.push({
       klucz: `M1_${id}`,
       typ: "pozycje",
       polecenie: INSTRUKCJA_M1.polecenieBloku,
-      kolor: `m1w-${para.wymiar}`,
+      ikona: `m1w-${para.wymiar}`,
       pozycje: [{ id, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b }],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
     });

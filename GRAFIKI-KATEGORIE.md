@@ -187,6 +187,109 @@ Moduł startowy. Nie ma kategorii wynikowych, więc grupujemy po tym, o co pytam
 
 ---
 
+# Plansze pytań
+
+Każde pytanie z jedną decyzją ma nad blokami odpowiedzi **pas na całej
+ich szerokości**. Dziś stoi tam duży znak kategorii albo, w A3, kwadratowa
+ilustracja w środku pasa. Grafika w proporcji pasa wypełni go od krawędzi
+do krawędzi.
+
+**Format: PNG, 1500 × 400 px, z tłem.** Ta sama maniera co w A1 i A3:
+malarska, ciepłe światło, scena z człowiekiem przy pracy. Kompozycja
+**pozioma i dwudzielna**: pytanie stawia dwie możliwości obok siebie,
+więc obraz ma je pokazać obok siebie, lewa strona i prawa strona.
+
+Nazwa pliku = klucz, na przykład `a3-INI.png`. Te same klucze co wyżej,
+ale inne proporcje, więc pliki idą do katalogu `plansze/`.
+
+---
+
+## A3 · 13 osi · pięć pytań na oś
+
+Ilustracja osi, nie bieguna. Jeden obraz obsługuje pięć par tej samej osi.
+
+| Klucz | Plik | Ilustruje |
+|---|---|---|
+| `a3-INI` | `plansze/a3-INI.png` | po lewej: inicjatywa, po prawej: reagowanie |
+| `a3-STR` | `plansze/a3-STR.png` | po lewej: potrzeba struktury, po prawej: elastyczność |
+| `a3-TEM` | `plansze/a3-TEM.png` | po lewej: tempo i przybliżenie, po prawej: wolniej i dokładnie |
+| `a3-SAM` | `plansze/a3-SAM.png` | po lewej: samodzielnie, po prawej: z ludźmi |
+| `a3-GLE` | `plansze/a3-GLE.png` | po lewej: głębia, jedno do końca, po prawej: szerokość, wiele naraz |
+| `a3-RYZ` | `plansze/a3-RYZ.png` | po lewej: gotowość na ryzyko, po prawej: potrzeba pewności |
+| `a3-DEC` | `plansze/a3-DEC.png` | po lewej: chcę decydować, po prawej: chcę jasne zadanie |
+| `a3-KON` | `plansze/a3-KON.png` | po lewej: konfrontacja, po prawej: utrzymanie zgody |
+| `a3-NOW` | `plansze/a3-NOW.png` | po lewej: nowe i nieznane, po prawej: sprawdzone |
+| `a3-NAP` | `plansze/a3-NAP.png` | po lewej: napęd własny, po prawej: napęd z zewnątrz |
+| `a3-RYT` | `plansze/a3-RYT.png` | po lewej: równe tempo, po prawej: praca zrywami |
+| `a3-OTO` | `plansze/a3-OTO.png` | po lewej: cisza i porządek, po prawej: ruch i bodźce |
+| `a3-EFE` | `plansze/a3-EFE.png` | po lewej: efekt szybki, po prawej: efekt odroczony |
+
+---
+
+## A4 · 10 wartości, które otwierają parę
+
+Pary wartości biorą planszę od wartości po lewej stronie. Dwie z dwunastu nigdy nie stoją po lewej, więc nie mają własnej planszy i nie ma czego dla nich rysować.
+
+| Klucz | Plik | Ilustruje |
+|---|---|---|
+| `a4-PIE` | `plansze/a4-PIE.png` | Pieniądze i poziom życia: móc sobie pozwolić na to, czego chcę |
+| `a4-STA` | `plansze/a4-STA.png` | Stabilność i bezpieczeństwo: pewność jutra, przewidywalny dochód |
+| `a4-ROZ` | `plansze/a4-ROZ.png` | Rozwój i uczenie się: ciągle robię się w czymś lepszy |
+| `a4-SEN` | `plansze/a4-SEN.png` | Sens i pomaganie ludziom: moja praca komuś realnie służy |
+| `a4-WPL` | `plansze/a4-WPL.png` | Wpływ: moje decyzje coś zmieniają |
+| `a4-WOL` | `plansze/a4-WOL.png` | Wolność i decydowanie o sobie: nikt mi nie mówi, jak mam żyć i pracować |
+| `a4-CZA` | `plansze/a4-CZA.png` | Czas dla siebie i bliskich: praca nie zjada mi życia |
+| `a4-UZN` | `plansze/a4-UZN.png` | Uznanie: ludzie widzą i doceniają, co robię |
+| `a4-REL` | `plansze/a4-REL.png` | Bliskie relacje w pracy: ludzie, z którymi chce się być |
+| `a4-MIS` | `plansze/a4-MIS.png` | Mistrzostwo: być naprawdę dobrym w swojej rzeczy |
+
+---
+
+## M1 · 12 wymiarów kształtu życia
+
+Pytania z par zdań o tym, jak uczestnik chce żyć. Cztery pary na wymiar.
+
+| Klucz | Plik | Ilustruje |
+|---|---|---|
+| `m1w-CEN` | `plansze/m1w-CEN.png` | po lewej: praca jako centrum, po prawej: praca jako środek |
+| `m1w-GRA` | `plansze/m1w-GRA.png` | po lewej: praca przemieszana z życiem, po prawej: ostro rozdzielona |
+| `m1w-GOD` | `plansze/m1w-GOD.png` | po lewej: dużo godzin, po prawej: mniej godzin |
+| `m1w-TEMP` | `plansze/m1w-TEMP.png` | po lewej: kariera szybka, po prawej: budowana powoli |
+| `m1w-MIE` | `plansze/m1w-MIE.png` | po lewej: stacjonarnie, po prawej: zdalnie |
+| `m1w-ORG` | `plansze/m1w-ORG.png` | po lewej: duża organizacja, po prawej: mały zespół |
+| `m1w-KOR` | `plansze/m1w-KOR.png` | po lewej: osiąść na stałe, po prawej: mobilność |
+| `m1w-INW` | `plansze/m1w-INW.png` | po lewej: szybko zarabiać, po prawej: długo inwestować w naukę |
+| `m1w-POZ` | `plansze/m1w-POZ.png` | po lewej: wysoki poziom życia, po prawej: wystarczy wygodnie |
+| `m1w-LUD` | `plansze/m1w-LUD.png` | po lewej: prowadzić ludzi, po prawej: odpowiadać za siebie |
+| `m1w-WID` | `plansze/m1w-WID.png` | po lewej: życie widoczne, po prawej: prywatne |
+| `m1w-ROD` | `plansze/m1w-ROD.png` | po lewej: rodzina wcześnie, po prawej: później albo niekoniecznie |
+
+---
+
+## A5 · 7 grup warunków pracy
+
+Warunek na ekran, plansza grupy. Tu obraz ma pokazać warunek, nie wybór: jedna scena, w której widać, o czym mowa.
+
+| Klucz | Plik | Ilustruje |
+|---|---|---|
+| `a5-1` | `plansze/a5-1.png` | Nauka i zdobywanie uprawnień (5 warunków), na przykład: studia trwające pięć lat lub dłużej |
+| `a5-2` | `plansze/a5-2.png` | Miejsce (5 warunków), na przykład: przeprowadzkę do innego miasta |
+| `a5-3` | `plansze/a5-3.png` | Czas (6 warunków), na przykład: pracę w weekendy |
+| `a5-4` | `plansze/a5-4.png` | Warunki fizyczne (11 warunków), na przykład: pracę fizyczną, wymagającą siły i wysiłku |
+| `a5-5` | `plansze/a5-5.png` | Ludzie (8 warunków), na przykład: ciągły kontakt z ludźmi przez cały dzień |
+| `a5-6` | `plansze/a5-6.png` | Pieniądze i ryzyko (4 warunków), na przykład: niepewny, zmienny dochód |
+| `a5-7` | `plansze/a5-7.png` | Odpowiedzialność (4 warunków), na przykład: odpowiedzialność za czyjeś zdrowie lub bezpieczeństwo |
+
+---
+
+## Plansz razem: 42
+
+Bez nich pas nie jest pusty: stoi w nim duży znak kategorii na jej kolorze,
+a w A3 kwadratowa ilustracja pośrodku pasa. Plansze zamieniają to miejsce
+na obraz na całą szerokość.
+
+---
+
 ## Razem: 99 grafik
 
 Bez tej optymalizacji trzeba by ich było **ponad czterysta**: tyle jest

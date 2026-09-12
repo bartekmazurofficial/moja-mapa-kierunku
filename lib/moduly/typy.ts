@@ -50,8 +50,8 @@ export interface Pozycja {
   /** ranking4: cztery opcje do ustawienia w kolejnosci. */
   opcje?: OpcjaWyboru[];
   /** para: dwie strony wyboru, juz po losowaniu strony. */
-  stronaA?: { kod: string; tekst: string };
-  stronaB?: { kod: string; tekst: string };
+  stronaA?: { kod: string; tekst: string; ikona?: string };
+  stronaB?: { kod: string; tekst: string; ikona?: string };
   /** skala5: etykiety krancow. */
   krance?: [string, string];
   /** dowody: trzy pola do zaznaczenia. */

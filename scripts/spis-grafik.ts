@@ -6,8 +6,16 @@
  * Uzycie: npx tsx scripts/spis-grafik.ts > GRAFIKI-KATEGORIE.md
  */
 
-import { OBSZARY_A1, KOMPETENCJE_A2, WYMIARY_A3, WARTOSCI_A4, FILTRY_A5 } from "../lib/domain/slowniki";
+import {
+  OBSZARY_A1,
+  KOMPETENCJE_A2,
+  WYMIARY_A3,
+  WYMIARY_M1,
+  WARTOSCI_A4,
+  FILTRY_A5,
+} from "../lib/domain/slowniki";
 import { OBSZARY_M1 } from "../lib/content/m1";
+import { PARY_A4 } from "../lib/content/a4";
 
 const linie: string[] = [];
 const w = (s = "") => linie.push(s);
@@ -110,6 +118,87 @@ sekcja(
     ["a0-zdrowie", "a0-zdrowie.png", "ograniczenia zdrowotne, pytanie dobrowolne"],
   ],
 );
+
+// =====================================================================
+// PLANSZE PYTAN
+// =====================================================================
+
+w("---");
+w();
+w("# Plansze pytań");
+w();
+w("Każde pytanie z jedną decyzją ma nad blokami odpowiedzi **pas na całej");
+w("ich szerokości**. Dziś stoi tam duży znak kategorii albo, w A3, kwadratowa");
+w("ilustracja w środku pasa. Grafika w proporcji pasa wypełni go od krawędzi");
+w("do krawędzi.");
+w();
+w("**Format: PNG, 1500 × 400 px, z tłem.** Ta sama maniera co w A1 i A3:");
+w("malarska, ciepłe światło, scena z człowiekiem przy pracy. Kompozycja");
+w("**pozioma i dwudzielna**: pytanie stawia dwie możliwości obok siebie,");
+w("więc obraz ma je pokazać obok siebie, lewa strona i prawa strona.");
+w();
+w("Nazwa pliku = klucz, na przykład `a3-INI.png`. Te same klucze co wyżej,");
+w("ale inne proporcje, więc pliki idą do katalogu `plansze/`.");
+w();
+
+const osie = new Map(WYMIARY_A3.map((x) => [x.kod, x]));
+sekcja(
+  "A3 · 13 osi · pięć pytań na oś",
+  "Ilustracja osi, nie bieguna. Jeden obraz obsługuje pięć par tej samej osi.",
+  WYMIARY_A3.map((x) => [
+    `a3-${x.kod}`,
+    `plansze/a3-${x.kod}.png`,
+    `po lewej: ${x.biegunA.toLowerCase()}, po prawej: ${x.biegunB.toLowerCase()}`,
+  ] as [string, string, string]),
+);
+
+const lewe = [...new Set(PARY_A4.map((p) => p.lewa))];
+const wartosci = new Map(WARTOSCI_A4.map((x) => [x.kod, x]));
+sekcja(
+  `A4 · ${lewe.length} wartości, które otwierają parę`,
+  "Pary wartości biorą planszę od wartości po lewej stronie. Dwie z dwunastu " +
+    "nigdy nie stoją po lewej, więc nie mają własnej planszy i nie ma czego dla nich rysować.",
+  lewe.map((kod) => [
+    `a4-${kod}`,
+    `plansze/a4-${kod}.png`,
+    `${wartosci.get(kod)?.nazwa ?? kod}: ${(wartosci.get(kod)?.znaczenie ?? "").toLowerCase()}`,
+  ] as [string, string, string]),
+);
+
+sekcja(
+  "M1 · 12 wymiarów kształtu życia",
+  "Pytania z par zdań o tym, jak uczestnik chce żyć. Cztery pary na wymiar.",
+  WYMIARY_M1.map((x) => [
+    `m1w-${x.kod}`,
+    `plansze/m1w-${x.kod}.png`,
+    `po lewej: ${x.biegunA.toLowerCase()}, po prawej: ${x.biegunB.toLowerCase()}`,
+  ] as [string, string, string]),
+);
+
+sekcja(
+  "A5 · 7 grup warunków pracy",
+  "Warunek na ekran, plansza grupy. Tu obraz ma pokazać warunek, nie wybór: " +
+    "jedna scena, w której widać, o czym mowa.",
+  [...new Set(FILTRY_A5.map((f) => f.blok))].map((b) => {
+    const blok = FILTRY_A5.find((f) => f.blok === b)!;
+    const ile = FILTRY_A5.filter((f) => f.blok === b).length;
+    return [
+      `a5-${b}`,
+      `plansze/a5-${b}.png`,
+      `${blok.nazwaBloku} (${ile} warunków), na przykład: ${blok.tekst}`,
+    ] as [string, string, string];
+  }),
+);
+
+const sumaPlansz = WYMIARY_A3.length + lewe.length + WYMIARY_M1.length + new Set(FILTRY_A5.map((f) => f.blok)).size;
+w("---");
+w();
+w(`## Plansz razem: ${sumaPlansz}`);
+w();
+w("Bez nich pas nie jest pusty: stoi w nim duży znak kategorii na jej kolorze,");
+w("a w A3 kwadratowa ilustracja pośrodku pasa. Plansze zamieniają to miejsce");
+w("na obraz na całą szerokość.");
+w();
 
 const suma =
   OBSZARY_A1.length +

@@ -7,9 +7,9 @@
  * inaczej trzeba by rozdawać nowe kody.
  *
  * Uzycie:
- *   npx tsx scripts/reset.ts                    wszystkie grupy, stan pierwszego dnia
- *   npx tsx scripts/reset.ts --spotkanie1       otwiera tylko pierwsze spotkanie
- *   npx tsx scripts/reset.ts --warstwy          dodatkowo odsłania wszystkie warstwy
+ *   npx tsx scripts/reset.ts                    wszystko otwarte i odsłonięte
+ *   npx tsx scripts/reset.ts --spotkanie1       stan pilotażowy: pierwsze spotkanie
+ *   npx tsx scripts/reset.ts --spotkanie1 --warstwy   moduły po kolei, warstwy odsłonięte
  *   npx tsx scripts/reset.ts <kod grupy> ...    tylko ta grupa
  *
  * Grupa testowa zakladana przez testy automatyczne (kod TESTAUTO) jest
@@ -71,7 +71,10 @@ async function main() {
     if (tylkoSpotkanie1) await otworzSpotkanie(grupa.id, 1);
     else for (const m of KOLEJNOSC_MODULOW) await otworzModul(grupa.id, m);
 
-    if (wszystkieWarstwy) {
+    // Domyslnie odsloniete wszystkie warstwy raportu: do testow ma byc widac
+    // caly produkt, razem z kartami zawodow. `--spotkanie1` wraca do stanu
+    // pilotazowego, w ktorym prowadzacy odslania warstwy po spotkaniach.
+    if (!tylkoSpotkanie1 || wszystkieWarstwy) {
       for (const w of WARSTWY.filter((x) => x.kod !== "ZAWSZE")) {
         await odblokujWarstwe(grupa.id, w.kod as KodWarstwy);
       }

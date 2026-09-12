@@ -39,3 +39,19 @@ export function obrazDuzy(klucz: string): string | null {
   const [modul, ...reszta] = klucz.split("-");
   return `/grafika/${modul}/${reszta.join("-")}-duzy.jpg`;
 }
+
+/**
+ * Plansze pytań: poziomy pas nad blokami odpowiedzi, proporcja około 3,7:1.
+ *
+ * Lista jest pusta, dopóki plansz nie ma. Wtedy pas pokazuje duży znak
+ * kategorii, a w A3 kwadratową ilustrację pośrodku. Po dosłaniu plików
+ * wystarczy dopisać klucze tutaj: `components/Ikona.tsx` samo je weźmie.
+ *
+ * Spis tego, co ma być na których planszach: `GRAFIKI-KATEGORIE.md`.
+ */
+const Z_PLANSZA = new Set<string>([]);
+
+export function obrazPlanszy(klucz: string): string | null {
+  if (!Z_PLANSZA.has(klucz)) return null;
+  return `/grafika/plansze/${klucz}.jpg`;
+}

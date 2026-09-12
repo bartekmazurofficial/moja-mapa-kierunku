@@ -151,9 +151,7 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
             >
               <div className="flex flex-1 flex-col items-center">
                 {o.ikona ? <Obraz klucz={o.ikona} rozmiar={124} aktywna={Boolean(numer)} /> : null}
-                <span className="mt-2.5 flex-1 text-center text-tresc leading-snug">
-                  {o.etykieta}
-                </span>
+                <span className="boks mt-2.5 flex-1 text-tresc leading-snug">{o.etykieta}</span>
               </div>
 
               <div
@@ -201,9 +199,27 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
   const strony = [pozycja.stronaA, pozycja.stronaB].filter(Boolean) as Array<{
     kod: string;
     tekst: string;
+    ikona?: string;
   }>;
-  // Dwie strony pary dostają dwa różne kolory: kolor ma pomagać je rozróżnić.
-  const kolory = kluczKoloru ? paraKolorow(kluczKoloru) : null;
+  /**
+   * Dwie strony pary dostają dwa różne kolory: kolor ma pomagać je rozróżnić.
+   * Gdy każda strona jest osobną kategorią (wartości A4), kolor bierze się
+   * z niej samej i zgadza się z kolorem tej wartości wszędzie indziej.
+   * Gdy obie strony to dwa bieguny jednej osi (A3, M1), kategoria jest wspólna,
+   * więc kolory dobieramy tak, żeby po prostu były różne.
+   */
+  const wlasne =
+    pozycja.stronaA?.ikona && pozycja.stronaB?.ikona
+      ? ([kolorKategorii(pozycja.stronaA.ikona), kolorKategorii(pozycja.stronaB.ikona)] as const)
+      : null;
+  // Cztery z trzydziestu sześciu par A4 trafiają na dwie wartości tego samego
+  // koloru. Wtedy kolor niczego nie rozróżnia, więc wracamy do pary z koła.
+  const kolory =
+    wlasne && wlasne[0].kod !== wlasne[1].kod
+      ? wlasne
+      : kluczKoloru
+        ? paraKolorow(kluczKoloru)
+        : null;
 
   function wybierz(kod: string) {
     naZmiane(kod);
@@ -221,7 +237,7 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
             type="button"
             onClick={() => wybierz(s.kod)}
             aria-pressed={wybrana}
-            className={`${KAFELEK} min-h-[5.5rem] border-2 sm:min-h-[8rem] ${
+            className={`${KAFELEK} flex min-h-[5.5rem] flex-col items-center justify-center gap-2.5 border-2 sm:min-h-[8rem] ${
               wybrana ? "" : "border-linia"
             }`}
             style={
@@ -234,7 +250,8 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
                 : undefined
             }
           >
-            <span className="leading-snug">{s.tekst}</span>
+            {s.ikona ? <Ikona klucz={s.ikona} rozmiar={40} aktywna={wybrana} /> : null}
+            <span className="boks text-tresc leading-snug">{s.tekst}</span>
           </button>
         );
       })}
@@ -350,7 +367,7 @@ function Trzystopniowa({
         naDomkniecie?.();
       }}
       aria-pressed={wartosc === o.kod}
-      className={`przejscie rounded-xl border-2 font-semibold ${
+      className={`przejscie boks rounded-xl border-2 font-semibold ${
         sama ? "min-h-14 min-w-[7rem] px-6 text-tresc-duza" : "h-11 min-w-[4.5rem] px-3 text-male"
       } ${
         wartosc === o.kod ? "text-na-akcencie" : "bg-panel text-atrament-sciszony hover:text-atrament"
@@ -401,7 +418,7 @@ function Pojedynczy({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPozy
             type="button"
             onClick={() => naZmiane(o.kod)}
             aria-pressed={wartosc === o.kod}
-            className={`${KAFELEK} flex items-center gap-3 ${
+            className={`${KAFELEK} flex flex-col items-center justify-center gap-2 py-4 ${
               kolor ? "border-2" : wartosc === o.kod ? "border-akcent bg-akcent-tlo" : "border-linia"
             }`}
             style={
@@ -425,10 +442,12 @@ function Pojedynczy({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPozy
                   : undefined
               }
             />
-            <span className="min-w-0 flex-1 leading-snug">
+            <span className="boks w-full leading-snug">
               {o.etykieta}
               {o.podpis ? (
-                <span className="mt-0.5 block text-male text-atrament-sciszony">{o.podpis}</span>
+                <span className="mt-0.5 block text-male font-normal text-atrament-sciszony">
+                  {o.podpis}
+                </span>
               ) : null}
             </span>
           </button>
@@ -483,7 +502,7 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
               onClick={() => przelacz(o.kod, o.wylaczna)}
               aria-pressed={zaznaczona}
               disabled={zablokowana}
-              className={`${KAFELEK} flex items-center gap-3 ${
+              className={`${KAFELEK} flex flex-col items-center justify-center gap-2 py-4 ${
                 kolor ? "border-2" : zaznaczona ? "border-akcent bg-akcent-tlo" : "border-linia"
               } ${zablokowana ? "opacity-40" : ""}`}
               style={
@@ -509,10 +528,12 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
                 ) : null}
               </span>
               {o.ikona ? <Ikona klucz={o.ikona} rozmiar={44} aktywna={zaznaczona} /> : null}
-              <span className="min-w-0 flex-1 leading-snug">
+              <span className="boks w-full leading-snug">
                 {o.etykieta}
                 {o.podpis ? (
-                  <span className="mt-0.5 block text-male text-atrament-sciszony">{o.podpis}</span>
+                  <span className="mt-0.5 block text-male font-normal text-atrament-sciszony">
+                    {o.podpis}
+                  </span>
                 ) : null}
               </span>
             </button>

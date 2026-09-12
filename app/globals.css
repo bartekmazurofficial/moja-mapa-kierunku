@@ -19,6 +19,7 @@
 
 @theme {
   --font-sans: var(--font-bezszeryfowy), ui-sans-serif, system-ui, sans-serif;
+  --font-boksowy: var(--font-boksowy), var(--font-bezszeryfowy), ui-sans-serif, sans-serif;
   --font-odreczny: var(--font-odreczny), ui-serif, cursive;
 
   /* Podłoże: trzy poziomy jasności, nie dwa */
@@ -241,6 +242,18 @@ body::after {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/**
+ * Treść bloku odpowiedzi. Inny krój niż reszta ekranu, wyśrodkowany:
+ * kafel z odpowiedzią ma się czytać jako osobna rzecz, nie jako akapit.
+ */
+.boks {
+  font-family: var(--font-boksowy);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  text-align: center;
+  text-wrap: balance;
 }
 
 /** Odręczny dopisek na marginesie. Ozdoba, nigdy nośnik treści. */

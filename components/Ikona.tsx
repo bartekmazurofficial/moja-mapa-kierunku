@@ -1,6 +1,6 @@
 import { GLIFY, type KluczGlifu } from "@/lib/ui/glify";
 import { kolorKategorii } from "@/lib/ui/kolory";
-import { obrazDuzy, obrazKafla } from "@/lib/ui/obrazy";
+import { obrazDuzy, obrazKafla, obrazPlanszy } from "@/lib/ui/obrazy";
 
 /**
  * Znak kategorii: rysowany glif w bloku w kolorze kategorii.
@@ -104,6 +104,85 @@ export function Obraz({
         className="przejscie h-full w-full object-contain"
         style={{ opacity: aktywna ? 1 : 0.9 }}
       />
+    </span>
+  );
+}
+
+/**
+ * Plansza pytania: szeroki pas nad blokami odpowiedzi.
+ *
+ * Każde pytanie ma tu miejsce na dużą grafikę, na całej szerokości bloków
+ * do odpowiadania. Dopóki grafiki nie ma, pas pokazuje duży znak kategorii
+ * na jej kolorze — miejsce jest zajęte i widać, czego pytanie dotyczy.
+ *
+ * Dostarczone pliki są kwadratowe, więc wchodzą w pas w całości, bez
+ * przycinania, a tło pasa dopełnia rozmyta kopia tego samego obrazu.
+ * Grafika w proporcji pasa wypełni go od krawędzi do krawędzi.
+ */
+export function Plansza({
+  klucz,
+  wysokosc = 176,
+}: {
+  klucz: KluczGlifu;
+  wysokosc?: number;
+}) {
+  const k = kolorKategorii(klucz);
+  const plansza = obrazPlanszy(klucz);
+  const obraz = obrazDuzy(klucz) ?? obrazKafla(klucz);
+  const sciezki = GLIFY[klucz];
+
+  return (
+    <span
+      aria-hidden
+      className="relative block w-full overflow-hidden rounded-2xl border"
+      style={{ height: wysokosc, borderColor: k.obwod, background: k.tlo }}
+    >
+      {plansza ? (
+        /* Plansza ma proporcje pasa, więc wypełnia go od krawędzi do krawędzi. */
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={plansza}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
+      ) : obraz ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={obraz}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 blur-xl"
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={obraz}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="relative mx-auto h-full w-auto object-contain"
+          />
+        </>
+      ) : sciezki ? (
+        <span className="flex h-full w-full items-center justify-center" style={{ color: k.neon }}>
+          <svg
+            viewBox="0 0 24 24"
+            width={wysokosc * 0.46}
+            height={wysokosc * 0.46}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {sciezki.map((d, i) => (
+              <path key={i} d={d} />
+            ))}
+          </svg>
+        </span>
+      ) : null}
     </span>
   );
 }

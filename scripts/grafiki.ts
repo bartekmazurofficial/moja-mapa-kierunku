@@ -27,6 +27,9 @@ const ROZMIARY: Array<{ px: number; jakosc: number; przyrostek: string }> = [
   { px: 768, jakosc: 72, przyrostek: "-duzy" },
 ];
 
+/** Plansze pytan sa poziome i idą w jednej wersji, szerokiej. */
+const ROZMIARY_PLANSZ: typeof ROZMIARY = [{ px: 1200, jakosc: 74, przyrostek: "" }];
+
 function main() {
   const [zrodla, modul = "a1"] = process.argv.slice(2);
   if (!zrodla) {
@@ -41,13 +44,18 @@ function main() {
   let zrobione = 0;
 
   for (const plik of pliki) {
-    const m = plik.match(new RegExp(`^${modul}-([A-Za-z0-9_]+)\\.png`, "i"));
+    // Plansze nazywają się pełnym kluczem (`a3-INI.png`), kafle numerem
+    // albo kodem po przedrostku modułu (`a1-7.png`, `a3-INI.png`).
+    const m =
+      modul === "plansze"
+        ? plik.match(/^([A-Za-z0-9_]+-[A-Za-z0-9_]+)\.png/i)
+        : plik.match(new RegExp(`^${modul}-([A-Za-z0-9_]+)\\.png`, "i"));
     if (!m) {
-      console.log(`pomijam ${plik}: nazwa nie pasuje do ${modul}-<klucz>.png`);
+      console.log(`pomijam ${plik}: nazwa nie pasuje do wzorca modułu ${modul}`);
       continue;
     }
     const klucz = m[1];
-    for (const r of ROZMIARY) {
+    for (const r of modul === "plansze" ? ROZMIARY_PLANSZ : ROZMIARY) {
       execFileSync("sips", [
         "-Z", String(r.px),
         "-s", "format", "jpeg",
