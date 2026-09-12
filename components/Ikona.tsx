@@ -1,5 +1,5 @@
 import { GLIFY, type KluczGlifu } from "@/lib/ui/glify";
-import { kolorKategorii, kolorWyboru, type Kolor } from "@/lib/ui/kolory";
+import { kolorKategorii, type Kolor } from "@/lib/ui/kolory";
 import { obrazDuzy, obrazKafla, obrazPlanszy } from "@/lib/ui/obrazy";
 
 /**
@@ -15,9 +15,9 @@ const NEUTRALNY: Kolor = {
   atrament: "var(--color-atrament-sciszony)",
 };
 
-function paleta(klucz: KluczGlifu, wybor: boolean | undefined): Kolor {
+function paleta(klucz: KluczGlifu, wybor?: boolean, kolor?: Kolor | null): Kolor {
   if (!wybor) return kolorKategorii(klucz);
-  return kolorWyboru(klucz) ?? NEUTRALNY;
+  return kolor ?? NEUTRALNY;
 }
 
 /**
@@ -36,16 +36,19 @@ export function Ikona({
   rozmiar = 44,
   aktywna,
   wybor,
+  kolor,
 }: {
   klucz: KluczGlifu;
   rozmiar?: number;
   aktywna?: boolean;
   /** Znak stoi na ekranie wyboru: nie wolno mu zdradzac kategorii. */
   wybor?: boolean;
+  /** Kolor miejsca na ekranie wyboru. Bez niego znak jest neutralny. */
+  kolor?: Kolor | null;
 }) {
   const sciezki = GLIFY[klucz];
   if (!sciezki) return null;
-  const k = paleta(klucz, wybor);
+  const k = paleta(klucz, wybor, kolor);
 
   return (
     <span
@@ -54,8 +57,10 @@ export function Ikona({
       style={{
         width: rozmiar,
         height: rozmiar,
-        borderColor: aktywna ? k.neon : k.obwod,
-        background: aktywna ? k.neon : k.tlo,
+        // Wypelnienie bierze atrament kategorii, nie neon: bialy znak na
+        // neonowym zoltym ma 1,7:1 i po prostu znika.
+        borderColor: aktywna ? k.atrament : k.obwod,
+        background: aktywna ? k.atrament : k.tlo,
         color: aktywna ? "#ffffff" : k.atrament,
         boxShadow: aktywna ? `0 8px 20px -10px ${k.neon}` : "none",
       }}
@@ -93,17 +98,20 @@ export function Obraz({
   rozmiar = 128,
   aktywna,
   wybor,
+  kolor,
 }: {
   klucz: KluczGlifu;
   rozmiar?: number;
   aktywna?: boolean;
   /** Ilustracja stoi na ekranie wyboru: nie wolno jej zdradzac kategorii. */
   wybor?: boolean;
+  /** Kolor miejsca na ekranie wyboru. Bez niego ilustracja jest neutralna. */
+  kolor?: Kolor | null;
 }) {
-  const k = paleta(klucz, wybor);
+  const k = paleta(klucz, wybor, kolor);
   const zrodlo = rozmiar > 200 ? (obrazDuzy(klucz) ?? obrazKafla(klucz)) : obrazKafla(klucz);
 
-  if (!zrodlo) return <Ikona klucz={klucz} rozmiar={rozmiar} aktywna={aktywna} wybor={wybor} />;
+  if (!zrodlo) return <Ikona klucz={klucz} rozmiar={rozmiar} aktywna={aktywna} wybor={wybor} kolor={kolor} />;
 
   return (
     <span
@@ -147,13 +155,16 @@ export function Plansza({
   klucz,
   wysokosc = 176,
   wybor,
+  kolor,
 }: {
   klucz: KluczGlifu;
   wysokosc?: number;
   /** Pas stoi nad blokami wyboru: nie wolno mu zdradzac kategorii. */
   wybor?: boolean;
+  /** Kolor ekranu wyboru. Bez niego pas jest neutralny. */
+  kolor?: Kolor | null;
 }) {
-  const k = paleta(klucz, wybor);
+  const k = paleta(klucz, wybor, kolor);
   const plansza = obrazPlanszy(klucz);
   const obraz = obrazDuzy(klucz) ?? obrazKafla(klucz);
   const sciezki = GLIFY[klucz];

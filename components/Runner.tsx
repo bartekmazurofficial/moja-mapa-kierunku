@@ -401,6 +401,7 @@ export function Runner({
                     ostatnia={i === lista.length - 1}
                     wSiatce={siatka}
                     kluczKoloru={ekran.ikona ?? ekran.kolor}
+                    miejsce={i}
                     wartosc={odpowiedzi[p.id]}
                     naZmiane={(v) => zmien(p.id, v, p.typ === "tekst" || p.typ === "kilka_tekstow")}
                   />

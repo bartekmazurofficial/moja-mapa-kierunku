@@ -124,37 +124,55 @@ export function paraKolorow(klucz: string): [Kolor, Kolor] {
 }
 
 /**
- * Czy kolor kategorii wchodzi na ekrany wyboru. Nie wchodzi.
+ * Skad bierze sie kolor na ekranach wyboru.
  *
- * Kolor jest przypisany kategorii na stale, a w jednym zestawie stoja cztery
- * pozycje z czterech roznych kategorii. Wynikaja z tego dwie rzeczy, obie zle.
+ * `kategoria` - kolor przypisany kategorii na stale. **Odradzane.** Kolor daje
+ * sie nauczyc: przy 36 zestawach uczestnik kojarzy, ze zielony to jedna
+ * rodzina zawodow, i zaczyna odpowiadac pod wynik. Do tego kolory nie sa tak
+ * samo atrakcyjne, wiec przy dwoch pozycjach o zblizonej bliskosci wygrywa ta
+ * na ladniejszym tle. To ten sam rodzaj zanieczyszczenia pomiaru, przed
+ * ktorym chroni mechanizm pozycji imponujacych, tylko wniesiony kolorem.
  *
- * Kolor nie jest neutralny. Zolty, czerwony i niebieski nie sa tak samo
- * przyjemne. Przy dwoch pozycjach o zblizonej bliskosci wygrywa ta na
- * ladniejszym tle, a to jest dokladnie ten sam rodzaj zanieczyszczenia, przed
- * ktorym chroni mechanizm pozycji imponujacych - tylko wniesiony kolorem
- * zamiast slowem.
+ * `pozycja` - kolor z miejsca na ekranie, a nie z kategorii. Kolejnosc opcji
+ * wewnatrz zestawu jest losowana osobno dla kazdego uczestnika i utrwalana
+ * (lib/moduly/plan.ts), wiec miejsce nie mowi nic o rodzinie zawodow. Ekran
+ * jest kolorowy, a z koloru nie da sie niczego wywnioskowac ani nauczyc.
  *
- * Koloru da sie nauczyc. Przy 36 zestawach uczestnik zaczyna kojarzyc, ze
- * zielony to jedna rodzina zawodow. To jest informacja, ktorej nie powinien
- * miec w trakcie wypelniania, bo zaczyna odpowiadac pod wynik.
+ * `brak` - wszystkie karty identyczne, kolor niesie tylko zaznaczenie.
  *
- * Kolor kategorii zostaje wszedzie tam, gdzie niesie informacje, a uczestnik
- * zna juz wynik: plansza wynikow modulu, raport, lista zawodow, trzy drogi.
- *
- * Jedna stala, bo to jest decyzja do cofniecia jednym ruchem, a nie do
- * wygrzebania z szesciu komponentow.
+ * Jedna stala, bo to jest decyzja do zmiany jednym ruchem.
  */
-export const KOLOR_KATEGORII_NA_WYBORZE = false;
+export type TrybKoloruWyboru = "kategoria" | "pozycja" | "brak";
 
-/** Kolor kategorii na ekranie wyboru albo nic. Patrz stala powyzej. */
-export function kolorWyboru(klucz: string | undefined): Kolor | null {
-  if (!KOLOR_KATEGORII_NA_WYBORZE || !klucz) return null;
+export const TRYB_KOLORU_WYBORU: TrybKoloruWyboru = "pozycja";
+
+/**
+ * Kolory miejsc w zestawie. Cztery wyrazne i rozroznialne takze dla kogos,
+ * kto nie odroznia czerwieni od zieleni, bo kolor nigdy nie jest tu jedynym
+ * nosnikiem: obok stoi pelny tekst i numer.
+ */
+const MIEJSCA: KodKoloru[] = ["niebieski", "zolty", "zielony", "fiolet", "turkus", "czerwony"];
+
+/**
+ * Kolor pozycji na ekranie wyboru.
+ *
+ * `klucz` to kategoria (uzywana tylko w trybie `kategoria`), `miejsce` to
+ * numer pozycji na ekranie liczony od zera.
+ */
+export function kolorWyboru(klucz: string | undefined, miejsce?: number): Kolor | null {
+  if (TRYB_KOLORU_WYBORU === "brak") return null;
+  if (TRYB_KOLORU_WYBORU === "pozycja") {
+    if (miejsce === undefined) return null;
+    return KOLORY[MIEJSCA[miejsce % MIEJSCA.length]];
+  }
+  if (!klucz) return null;
   return kolorKategorii(klucz);
 }
 
-/** Para kolorow na ekranie wyboru albo nic. Patrz stala powyzej. */
+/** Para kolorow na ekranie wyboru: dwie strony musza sie roznic. */
 export function paraWyboru(klucz: string | undefined): [Kolor, Kolor] | null {
-  if (!KOLOR_KATEGORII_NA_WYBORZE || !klucz) return null;
+  if (TRYB_KOLORU_WYBORU === "brak") return null;
+  if (TRYB_KOLORU_WYBORU === "pozycja") return [KOLORY[MIEJSCA[0]], KOLORY[MIEJSCA[1]]];
+  if (!klucz) return null;
   return paraKolorow(klucz);
 }

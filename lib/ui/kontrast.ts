@@ -45,4 +45,13 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
   { nazwa: "atrament na bloku turkusowym", tekst: "#10132a", tlo: "#e2f8fb" },
   { nazwa: "atrament na bloku fioletowym", tekst: "#10132a", tlo: "#f2ecff" },
   { nazwa: "atrament ściszony na bloku żółtym", tekst: "#3d4460", tlo: "#fff6dc" },
+
+  // Zaznaczenie: biały numer na pelnym kolorze. Pelny kolor to atrament
+  // kategorii, a nie neon: bialy na neonowym zoltym ma 1,7:1 i jest nieczytelny.
+  { nazwa: "biały na pełnym niebieskim", tekst: "#ffffff", tlo: "#0a3ac9" },
+  { nazwa: "biały na pełnym żółtym", tekst: "#ffffff", tlo: "#8a5a00" },
+  { nazwa: "biały na pełnym czerwonym", tekst: "#ffffff", tlo: "#c00030" },
+  { nazwa: "biały na pełnym zielonym", tekst: "#ffffff", tlo: "#067a45" },
+  { nazwa: "biały na pełnym turkusowym", tekst: "#ffffff", tlo: "#056b78" },
+  { nazwa: "biały na pełnym fioletowym", tekst: "#ffffff", tlo: "#5b21b6" },
 ];

@@ -13,7 +13,7 @@ import { describe, expect, it } from "vitest";
 import { zbudujPlan } from "@/lib/moduly/plan";
 import { zbudujCzesc } from "@/lib/moduly/ekrany";
 import { ODDECHY } from "@/lib/content/wspolne";
-import { KOLOR_KATEGORII_NA_WYBORZE, kolorWyboru, paraWyboru } from "@/lib/ui/kolory";
+import { TRYB_KOLORU_WYBORU, kolorKategorii, kolorWyboru } from "@/lib/ui/kolory";
 
 /** Numery zestawów, po których w tej części stoi ekran oddechu. */
 function poKtorychBlokach(modul: "A1" | "A2"): number[] {
@@ -65,14 +65,27 @@ describe("oddech co dwanaście zestawów", () => {
 });
 
 describe("ekran wyboru nie niesie koloru kategorii", () => {
-  it("przełącznik jest wyłączony", () => {
-    expect(KOLOR_KATEGORII_NA_WYBORZE).toBe(false);
+  it("kolor bierze się z miejsca na ekranie, nie z kategorii", () => {
+    expect(TRYB_KOLORU_WYBORU).toBe("pozycja");
   });
 
-  it("kolor pozycji na ekranie wyboru jest pusty niezależnie od klucza", () => {
+  it("to samo miejsce ma ten sam kolor niezależnie od kategorii", () => {
     for (const klucz of ["a1-7", "a2-13", "a3-INI", "a4-PIE", undefined]) {
-      expect(kolorWyboru(klucz)).toBeNull();
-      expect(paraWyboru(klucz)).toBeNull();
+      expect(kolorWyboru(klucz, 0)?.kod).toBe(kolorWyboru("a1-1", 0)?.kod);
+      expect(kolorWyboru(klucz, 3)?.kod).toBe(kolorWyboru("a1-1", 3)?.kod);
     }
+  });
+
+  it("cztery miejsca w zestawie mają cztery różne kolory", () => {
+    const kody = [0, 1, 2, 3].map((i) => kolorWyboru(undefined, i)?.kod);
+    expect(new Set(kody).size).toBe(4);
+  });
+
+  it("kolor kategorii dalej istnieje, bo raport i lista zawodów go używają", () => {
+    expect(kolorKategorii("a1-7").kod).toBeTruthy();
+  });
+
+  it("bez podanego miejsca nie ma koloru: ekran wyboru nie zgaduje z kategorii", () => {
+    expect(kolorWyboru("a1-7")).toBeNull();
   });
 });
