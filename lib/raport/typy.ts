@@ -23,6 +23,16 @@ export interface ZawodWRaporcie {
   pasmo: string;
   pasmoOpis: string;
   obszar: string;
+  /** Numer obszaru: po nim grupuje sie lista kart, nazwa nie jest kluczem. */
+  obszarId: number;
+  /** Jedna z osmiu rodzin obszarow, do naglowka grupy. */
+  grupaObszaru: string;
+  poziom: string;
+  studia: string;
+  /** Litera drogi z warstwy pierwszej, przypisana przez obszar zawodu. */
+  droga: "A" | "B" | "C" | null;
+  /** Czy uczestnik ma juz karte tego zawodu w klastrze z innym zawodem. */
+  klasterKod: string | null;
   /** Trzy zdania: co Cie ciagnie, co masz, co moze przeszkadzac. */
   uzasadnienie: string[];
   flagi: { trampolina: boolean; zagrozony: boolean; barieraKosztowa: boolean; zdanieKierunkowe: string | null };

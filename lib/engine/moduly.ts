@@ -53,6 +53,9 @@ export function policzA1(o: OdpowiedziA1): WynikA1 {
   const wRaw: Record<number, number> = {};
   for (const a of OBSZARY_A1) wRaw[a.id] = 0;
   for (const ranking of Object.values(o.czescA)) {
+    // Blok cofniety przez uczestnika nie ma wartosci. Pominiecie go daje ten
+    // sam wynik co jego nieobecnosc: zadna waga sie nie zmienia.
+    if (!ranking) continue;
     for (const [id, miejsce] of Object.entries(ranking)) {
       const obszar = pozycjaDoObszaru.get(id);
       if (obszar !== undefined) wRaw[obszar] += WAGI_RANKINGU[miejsce] ?? 0;
@@ -128,6 +131,9 @@ export function policzA2(o: OdpowiedziA2): WynikA2 {
   const sRaw: Record<number, number> = {};
   for (const k of KOMPETENCJE_A2) sRaw[k.id] = 0;
   for (const ranking of Object.values(o.czescA)) {
+    // Blok cofniety przez uczestnika nie ma wartosci. Pominiecie go daje ten
+    // sam wynik co jego nieobecnosc: zadna waga sie nie zmienia.
+    if (!ranking) continue;
     for (const [id, miejsce] of Object.entries(ranking)) {
       const kompetencja = pozycjaDoKompetencji.get(id);
       if (kompetencja !== undefined) sRaw[kompetencja] += WAGI_RANKINGU[miejsce] ?? 0;

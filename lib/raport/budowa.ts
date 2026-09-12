@@ -301,6 +301,12 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
   // --- KONKRETNE ZAWODY ---
   if (wolno("zawody")) {
     const nazwaObszaru = new Map(baza.obszary.map((o) => [o.id, o.nazwa]));
+    const grupaObszaru = new Map(baza.obszary.map((o) => [o.id, o.grupa]));
+    const klasterZawodu = new Map(baza.zawody.map((z) => [z.kod, z.klaster ?? null]));
+    // Litere drogi dostaje kazdy zawod z obszaru drogi, a nie tylko te dwa,
+    // trzy, ktore weszly na jej liste. Bez tego filtr „Droga A" pokazuje
+    // cztery kafle zamiast calego obszaru.
+    const drogaObszaru = new Map(silnik.warstwa1.drogi.map((d) => [d.obszar, d.etykieta]));
     const nazwyWszystkich = new Map(baza.zawody.map((z) => [z.kod, z.nazwaWyswietlana]));
     raport.zawody = {
       wynikiWstepne: silnik.warstwa2.wynikiWstepne,
@@ -329,6 +335,12 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
           pasmo: z.pasmo,
           pasmoOpis: pasmoOpisZawodu(z.pasmo),
           obszar: nazwaObszaru.get(z.obszar) ?? "",
+          obszarId: z.obszar,
+          grupaObszaru: grupaObszaru.get(z.obszar) ?? "",
+          poziom: z.poziom,
+          studia: z.studia,
+          droga: drogaObszaru.get(z.obszar) ?? null,
+          klasterKod: klasterZawodu.get(z.kod) ?? null,
           uzasadnienie: uzasadnienieZawodu(z, silnik, a1, a2),
           flagi: {
             trampolina: z.flagi.trampolina,

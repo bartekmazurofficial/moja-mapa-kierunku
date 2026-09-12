@@ -68,3 +68,36 @@ describe("blok A1 jest pełnym rankingiem", () => {
     expect(rozne.size, "wszystkie obszary mają identyczny wynik").toBeGreaterThan(2);
   });
 });
+
+/**
+ * Cofnięcie ostatniej odpowiedzi.
+ *
+ * Uczestnik może cofnąć jedną decyzję zaraz po niej. Cofnięta odpowiedź znika
+ * z bazy, a nie zostaje jako pusta: pusty wiersz wysadzał odczyt modułu i cały
+ * raport przestawał się liczyć. Gdyby taki wiersz mimo wszystko się pojawił,
+ * silnik ma go pominąć, a nie przewrócić.
+ */
+describe("cofnięta odpowiedź nie psuje wyniku", () => {
+  it("pusty blok liczy się tak samo jak jego brak", () => {
+    const pelne = wypelnij();
+    const pierwszy = BLOKI_A1[0].index;
+
+    const bezBloku = { ...pelne, czescA: { ...pelne.czescA } };
+    delete bezBloku.czescA[pierwszy];
+
+    const zPustym = {
+      ...pelne,
+      czescA: { ...pelne.czescA, [pierwszy]: null as unknown as Record<string, number> },
+    };
+
+    expect(policzA1(zPustym).z).toEqual(policzA1(bezBloku).z);
+  });
+
+  it("wypełnienie bez jednego bloku nadal daje wynik dla wszystkich obszarów", () => {
+    const pelne = wypelnij();
+    const bez = { ...pelne, czescA: { ...pelne.czescA } };
+    delete bez.czescA[BLOKI_A1[0].index];
+    const wynik = policzA1(bez);
+    for (const o of OBSZARY_A1) expect(Number.isFinite(wynik.z[o.id]), `obszar ${o.id}`).toBe(true);
+  });
+});

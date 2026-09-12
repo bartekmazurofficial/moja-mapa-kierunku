@@ -79,6 +79,8 @@ export function Runner({
             czesc: definicja.kod,
             pozycja,
             wartosc: tresc,
+            // Cofnieta odpowiedz ma zniknac z bazy, a nie zostac jako pusta.
+            usun: tresc === null || tresc === undefined,
             msSpent: Date.now() - wejscieNaEkran.current,
             rozpoczeta: new Date(wejscieNaEkran.current).toISOString(),
           }),

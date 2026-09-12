@@ -19,6 +19,8 @@ interface Zadanie {
   wartosc: unknown;
   msSpent?: number;
   rozpoczeta?: string;
+  /** Cofniecie odpowiedzi: wiersz ma zniknac, a nie dostac wartosc pusta. */
+  usun?: boolean;
 }
 
 export async function POST(request: Request) {
@@ -49,6 +51,26 @@ export async function POST(request: Request) {
   }
 
   const teraz = new Date();
+
+  /**
+   * Cofniecie ostatniej odpowiedzi kasuje wiersz.
+   *
+   * Zapis pustej wartosci nie wystarczy: silnik czyta odpowiedzi modulu jako
+   * mape blok -> ranking i przy wartosci pustej caly raport przestaje sie
+   * liczyc. Brak wiersza znaczy „nie odpowiedzial", i tak ma to wygladac.
+   */
+  if (dane.usun) {
+    await prisma.odpowiedz.deleteMany({
+      where: {
+        uczestnikId: uczestnik.id,
+        modul: dane.modul,
+        czesc: dane.czesc,
+        pozycja: dane.pozycja,
+      },
+    });
+    return NextResponse.json({ ok: true });
+  }
+
   const wartosc = JSON.stringify(dane.wartosc ?? null);
   const rozpoczeta = dane.rozpoczeta ? new Date(dane.rozpoczeta) : null;
 

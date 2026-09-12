@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { pobierzRaport } from "@/lib/raport/serwer";
-import { Pasmo } from "@/components/raport/Sekcje";
 import { Bramy } from "@/components/pulpit/Bramy";
+import { ListaZawodow, type ZawodNaLiscie } from "@/components/pulpit/ListaZawodow";
 
 export const dynamic = "force-dynamic";
 
@@ -29,9 +28,17 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
     );
   }
 
-  const wszystkie = sekcja.pozycje.flatMap((p) =>
+  const wszystkie: ZawodNaLiscie[] = sekcja.pozycje.flatMap((p) =>
     p.zawody.map((z) => ({ ...z, klaster: p.typ === "klaster" ? p.nazwa : null })),
   );
+
+  /**
+   * Czolowka uczestnika: trzy obszary, ktore pojawiaja sie najwyzej na liscie
+   * ulozonej wynikiem z silnika. Te grupy startuja otwarte, reszta czeka pod
+   * przyciskiem. Liczymy to z samej listy, a nie z sekcji obszarow, bo tamta
+   * siedzi w innej warstwie i moze byc jeszcze zamknieta.
+   */
+  const czolowka = [...new Set(wszystkie.map((z) => z.obszarId))].slice(0, 3);
 
   return (
     <div className="flex flex-col gap-6">
@@ -55,37 +62,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </p>
       </header>
 
-      <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {wszystkie.map((z) => (
-          <li key={z.kod}>
-            <Link
-              href={`/u/${kod}/zawod/${z.kod}`}
-              className="przejscie szklo group flex h-full flex-col p-5 hover:border-akcent/45"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <h2 className="text-tresc-duza font-bold leading-snug">{z.nazwa}</h2>
-                {z.maPelnaKarte ? null : (
-                  <span className="mt-0.5 shrink-0 rounded-full border border-linia-mocna px-2 py-0.5 text-drobne text-atrament-slaby">
-                    skrót
-                  </span>
-                )}
-              </div>
-              <p className="mt-1.5 text-drobne text-atrament-slaby">{z.obszar}</p>
-              <div className="mt-3">
-                <Pasmo opis={z.pasmoOpis} />
-              </div>
-              {z.klaster ? (
-                <p className="mt-3 text-drobne text-atrament-slaby">
-                  Razem z innym zawodem w grupie „{z.klaster}"
-                </p>
-              ) : null}
-              <p className="przejscie mt-auto pt-4 text-male font-semibold text-akcent-jasny group-hover:translate-x-0.5">
-                Przeczytaj kartę <span aria-hidden>→</span>
-              </p>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <ListaZawodow kod={kod} zawody={wszystkie} czolowka={czolowka} />
     </div>
   );
 }
