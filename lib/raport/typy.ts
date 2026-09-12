@@ -27,6 +27,8 @@ export interface ZawodWRaporcie {
   obszarId: number;
   /** Jedna z osmiu rodzin obszarow, do naglowka grupy. */
   grupaObszaru: string;
+  /** Klucz znaku A1 obszaru (`a1-7`): stad kolor naglowka grupy i ilustracja. */
+  znakObszaru: string | null;
   poziom: string;
   studia: string;
   /** Litera drogi z warstwy pierwszej, przypisana przez obszar zawodu. */

@@ -4,6 +4,7 @@ import { prisma } from "../db/klient";
 import { pobierzBazeReferencyjna } from "../db/repozytorium";
 import { zbierzOdpowiedzi } from "../moduly/zbieranie";
 import { stanDostepu } from "./dostep";
+import { znakObszaru } from "@/lib/karty/obszary";
 import { zbudujRaport } from "./budowa";
 import { SEKCJE, WARSTWY, type KodWarstwy } from "./sekcje";
 import type { Raport } from "./typy";
@@ -81,8 +82,14 @@ export interface KartaZawodu {
   studia: string;
   koszt: string;
   zagrozenie: string;
+  /** `trampolina` albo `docelowy`. Trampolina to dobre pierwsze miejsce pracy. */
+  flaga: string;
   zdanieKierunkowe: string | null;
   klasterKod: string | null;
+  /** Numer obszaru silnika. Uwaga: to nie jest numer obszaru A1. */
+  obszarId: number;
+  /** Klucz znaku A1 obszaru (`a1-7`): stad ilustracja w naglowku karty. */
+  znakObszaru: string | null;
 }
 
 /** Karta zawodu. Pelna dla Drogi A i B, skrocona dla pozostalych. */
@@ -118,7 +125,10 @@ export async function pobierzKarty(
 
   const [karty, zawody] = await Promise.all([
     prisma.karta.findMany({ where: { kod: { in: kodyZawodow } } }),
-    prisma.zawod.findMany({ where: { kod: { in: kodyZawodow } } }),
+    prisma.zawod.findMany({
+      where: { kod: { in: kodyZawodow } },
+      include: { obszar: { select: { zainteresowania: true } } },
+    }),
   ]);
   const poKodzie = new Map(karty.map((k) => [k.kod, k]));
   const zawodPoKodzie = new Map(zawody.map((z) => [z.kod, z]));
@@ -138,8 +148,13 @@ export async function pobierzKarty(
       studia: zawod.studia,
       koszt: zawod.koszt,
       zagrozenie: zawod.zagr,
+      flaga: zawod.flaga,
       zdanieKierunkowe: zawod.kier,
       klasterKod: zawod.klasterKod,
+      obszarId: zawod.obszarId,
+      znakObszaru: znakObszaru(
+        JSON.parse(zawod.obszar.zainteresowania) as Record<string, number>,
+      ),
     });
   }
   return wynik;

@@ -27,6 +27,8 @@ export interface ZawodNaLiscie extends ZawodWRaporcie {
 interface Grupa {
   obszarId: number;
   nazwa: string;
+  /** Klucz znaku A1 obszaru. Numery obszarów silnika i A1 to dwa różne słowniki. */
+  znak: string | null;
   zawody: ZawodNaLiscie[];
 }
 
@@ -76,7 +78,13 @@ export function ListaZawodow({
     for (const z of widoczne) {
       const grupa = mapa.get(z.obszarId);
       if (grupa) grupa.zawody.push(z);
-      else mapa.set(z.obszarId, { obszarId: z.obszarId, nazwa: z.obszar, zawody: [z] });
+      else
+        mapa.set(z.obszarId, {
+          obszarId: z.obszarId,
+          nazwa: z.obszar,
+          znak: z.znakObszaru,
+          zawody: [z],
+        });
     }
     return [...mapa.values()];
   }, [widoczne]);
@@ -262,7 +270,7 @@ function GrupaObszaru({
   naWybor: (kodZawodu: string) => void;
 }) {
   // Ten sam kolor, co na planszy wyników modułu: obszar wygląda tak samo wszędzie.
-  const kolor = kolorKategorii(`a1-${grupa.obszarId}`);
+  const kolor = kolorKategorii(grupa.znak ?? `obszar-${grupa.obszarId}`);
   return (
     <details open={otwarta} className="szklo overflow-hidden">
       <summary

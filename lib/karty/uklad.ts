@@ -24,7 +24,39 @@ export type RodzajBloku =
   | "droga"
   | "czas"
   | "skala"
-  | "zagrozenie";
+  | "zagrozenie"
+  | "harmonogram"
+  | "hasla"
+  | "wypunktowanie";
+
+/**
+ * Miejsce sekcji w karcie.
+ *
+ * Rodzaj mowi, jak sekcje narysowac; slot mowi, ktora to sekcja. Dwie rzeczy,
+ * bo piec roznych sekcji rysuje sie tak samo (lista pogrubionych akapitow),
+ * a strona uklada je w roznych miejscach i pod roznymi naglowkami.
+ */
+export type Slot =
+  | "streszczenie"
+  | "czym_jest"
+  | "skala"
+  | "dzien"
+  | "rok"
+  | "obciazenie"
+  | "czas"
+  | "twarde"
+  | "narzedzia"
+  | "miekkie"
+  | "profil"
+  | "kto"
+  | "koszt"
+  | "droga"
+  | "pieniadze"
+  | "zagrozenie"
+  | "czlowiek"
+  | "mity"
+  | "dalej"
+  | "pokrewne";
 
 export interface SekcjaKarty {
   tytul: string;
@@ -61,8 +93,23 @@ export interface LiczbaSkali {
   wartosc: string;
 }
 
-export type Blok =
+export interface KrokHarmonogramu {
+  kiedy: string;
+  co: string;
+}
+
+export interface Punkt {
+  etykieta: string;
+  opis: string;
+}
+
+export type Blok = { slot: Slot | null } & PostacBloku;
+
+export type PostacBloku =
   | { rodzaj: "markdown"; tytul: string; tresc: string }
+  | { rodzaj: "harmonogram"; tytul: string; kroki: KrokHarmonogramu[] }
+  | { rodzaj: "hasla"; tytul: string; hasla: string[] }
+  | { rodzaj: "wypunktowanie"; tytul: string; punkty: Punkt[]; uwagi: string }
   | { rodzaj: "obciazenie"; tytul: string; wymiary: WymiarObciazenia[] }
   | { rodzaj: "pieniadze"; tytul: string; etapy: WidelkiEtap[]; uwagi: string }
   | { rodzaj: "droga"; tytul: string; kroki: KrokDrogi[]; uwagi: string }
@@ -83,6 +130,96 @@ function bezOgonkow(tekst: string): string {
     .replace(/ł/g, "l")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+/**
+ * Znormalizowany przedrostek tytułu -> slot. Kolejność ma znaczenie: pierwszy
+ * pasujący wygrywa, więc dłuższe przedrostki stoją przed krótszymi.
+ */
+const SLOTY: Array<[string, Slot]> = [
+  ["w jednym zdaniu", "streszczenie"],
+  ["czym ta praca", "czym_jest"],
+  ["skala miedzynarodowa", "pieniadze"],
+  ["skala", "skala"],
+  ["zwykly dzien", "dzien"],
+  ["zwykly dyzur", "dzien"],
+  ["zwykla zmiana", "dzien"],
+  ["zwykly rok", "rok"],
+  ["obciazenie", "obciazenie"],
+  ["na co", "czas"],
+  ["umiejetnosci twarde", "twarde"],
+  ["narzedzia", "narzedzia"],
+  ["umiejetnosci miekkie", "miekkie"],
+  ["profil", "profil"],
+  ["kto sie", "kto"],
+  ["ile kosztuje", "koszt"],
+  ["ile realnie kosztuje", "koszt"],
+  ["droga", "droga"],
+  ["pieniadze", "pieniadze"],
+  ["czy zagrozony", "zagrozenie"],
+  ["czy ten zawod", "zagrozenie"],
+  ["co ten zawod robi", "czlowiek"],
+  ["co robi z", "czlowiek"],
+  ["trzy mity", "mity"],
+  ["mity", "mity"],
+  ["co dalej", "dalej"],
+  ["zawody pokrewne", "pokrewne"],
+  ["pokrewne", "pokrewne"],
+];
+
+/** Klucz z importu -> slot, gdy tytuł nie wystarczy. */
+const SLOT_Z_KLUCZA: Record<string, Slot> = {
+  streszczenie: "streszczenie",
+  czym_jest: "czym_jest",
+  kto_sie_nie_odnajdzie: "kto",
+  koszt: "koszt",
+  droga: "droga",
+  pieniadze: "pieniadze",
+  przyszlosc: "zagrozenie",
+  profil: "profil",
+};
+
+/** Która to sekcja karty. Dopasowanie po przedrostku, nigdy po pełnym tytule. */
+export function slotSekcji(tytul: string, klucz?: string | null): Slot | null {
+  const t = bezOgonkow(tytul);
+  // „Skala międzynarodowa" to dalszy ciąg pieniędzy, nie skala zawodu.
+  if (t.startsWith("skala miedzynarodowa")) return "pieniadze";
+  for (const [przedrostek, slot] of SLOTY) {
+    if (t.startsWith(przedrostek)) return slot;
+  }
+  return klucz ? (SLOT_Z_KLUCZA[klucz] ?? null) : null;
+}
+
+/** Jak narysować sekcję stojącą w tym slocie. */
+function postacSlotu(slot: Slot | null): RodzajBloku | "markdown" {
+  switch (slot) {
+    case "obciazenie":
+      return "obciazenie";
+    case "pieniadze":
+      return "pieniadze";
+    case "droga":
+      return "droga";
+    case "czas":
+      return "czas";
+    case "skala":
+      return "skala";
+    case "zagrozenie":
+      return "zagrozenie";
+    case "dzien":
+      return "harmonogram";
+    case "miekkie":
+    case "dalej":
+    case "pokrewne":
+      return "hasla";
+    case "twarde":
+    case "narzedzia":
+    case "kto":
+    case "czlowiek":
+    case "mity":
+      return "wypunktowanie";
+    default:
+      return "markdown";
+  }
 }
 
 /**
@@ -316,6 +453,90 @@ export function czytajZagrozenie(tresc: string): { werdykt: string; tresc: strin
   };
 }
 
+/**
+ * Zwykły dzień jako kolejne godziny.
+ *
+ * Siedemdziesiąt siedem kart ma tabelę „godzina / co się dzieje", pięćdziesiąt
+ * jeden jedną linię z kropkami, w której każda pozycja zaczyna się od godziny.
+ */
+export function czytajHarmonogram(tresc: string): KrokHarmonogramu[] | null {
+  const t = tabela(tresc);
+  if (t) {
+    const kroki = t.wiersze
+      .filter((w) => (w[0] ?? "").trim() && (w[1] ?? "").trim())
+      .map((w) => ({ kiedy: bezPogrubien(w[0]), co: bezPogrubien(w[1]) }));
+    return kroki.length >= 3 ? kroki : null;
+  }
+
+  const kroki: KrokHarmonogramu[] = [];
+  for (const czesc of nakropki(pierwszyAkapit(tresc))) {
+    const dopasowanie = bezPogrubien(czesc).match(/^(\d{1,2}[:.]\d{2})\s+(.*)$/);
+    if (!dopasowanie) continue;
+    kroki.push({ kiedy: dopasowanie[1].replace(".", ":"), co: dopasowanie[2].trim() });
+  }
+  return kroki.length >= 3 ? kroki : null;
+}
+
+/**
+ * Lista haseł rozdzielonych kropką środkową.
+ *
+ * Tak zapisane są umiejętności miękkie, zawody pokrewne i „co dalej z tego
+ * zawodu". Każde hasło jest krótkie i samodzielne, więc nadaje się na pastylkę.
+ */
+export function czytajHasla(tresc: string): string[] | null {
+  const akapit = pierwszyAkapit(tresc);
+  if (!akapit.includes("·")) return null;
+  const hasla = nakropki(akapit)
+    .map((h) => bezPogrubien(h))
+    .filter((h) => h.length > 1 && h.length < 120);
+  return hasla.length >= 2 ? hasla : null;
+}
+
+/**
+ * Akapity zaczynające się od pogrubionej etykiety.
+ *
+ * Tak zapisane są umiejętności twarde, narzędzia, trzy mity, „co ten zawód
+ * robi z człowiekiem" i „kto się nie odnajdzie". Etykieta jest tezą, reszta
+ * akapitu jej rozwinięciem, więc w druku to działa, a na ekranie zlewa się
+ * w ścianę tekstu.
+ */
+export function czytajPunkty(tresc: string): { punkty: Punkt[]; uwagi: string } | null {
+  const punkty: Punkt[] = [];
+  const luzne: string[] = [];
+  for (const akapit of tresc.trim().split(/\n\s*\n/)) {
+    const dopasowanie = akapit.trim().match(/^\*\*(.+?)([.:]?)\*\*\s*([\s\S]*)$/);
+    const etykieta = dopasowanie?.[1] ?? "";
+    const domkniecie = dopasowanie?.[2] ?? "";
+    const reszta = (dopasowanie?.[3] ?? "").trim();
+
+    // Pogrubienie na początku akapitu bywa etykietą, a bywa zwykłym
+    // wyróżnieniem w środku zdania („**Za to jest to zawód przewidywalny**,
+    // z jasną granicą…"). Etykietę domyka kropka albo dwukropek, po niej idzie
+    // nowe zdanie. Bez domknięcia decyduje długość: „**Narzędzie do mailingu**,
+    // na przykład Mailchimp" to etykieta, a zdanie na pół akapitu nią nie jest.
+    const KROTKA_ETYKIETA = 45;
+    const etykietowe =
+      Boolean(dopasowanie) &&
+      etykieta.length < 90 &&
+      (domkniecie !== "" ||
+        reszta === "" ||
+        /^[:.]/.test(reszta) ||
+        /^[A-ZĄĆĘŁŃÓŚŹŻ]/.test(reszta) ||
+        etykieta.length <= KROTKA_ETYKIETA);
+
+    if (etykietowe) {
+      punkty.push({
+        etykieta: bezPogrubien(etykieta).replace(/[.:]$/, ""),
+        // „**Portale urzędowe**: e-Deklaracje" zostawia dwukropek poza pogrubieniem.
+        opis: reszta.replace(/^[:.]\s*/, ""),
+      });
+    } else if (akapit.trim()) {
+      luzne.push(akapit.trim());
+    }
+  }
+  return punkty.length >= 2 ? { punkty, uwagi: luzne.join("\n\n") } : null;
+}
+
 function zWielkiej(tekst: string): string {
   return tekst.charAt(0).toUpperCase() + tekst.slice(1);
 }
@@ -325,11 +546,12 @@ function zWielkiej(tekst: string): string {
 // =====================================================================
 
 /** Etykieta pogrubionego akapitu -> rodzaj bloku, który się z niego składa. */
-const AKAPITY_Z_DANYMI: Array<{ etykieta: string; rodzaj: RodzajBloku; tytul: string }> = [
-  { etykieta: "Obciążenie", rodzaj: "obciazenie", tytul: "Obciążenie" },
-  { etykieta: "Na co idzie czas", rodzaj: "czas", tytul: "Na co idzie czas" },
-  { etykieta: "Pieniądze", rodzaj: "pieniadze", tytul: "Pieniądze" },
-  { etykieta: "Droga", rodzaj: "droga", tytul: "Droga dojścia" },
+const AKAPITY_Z_DANYMI: Array<{ etykieta: string; slot: Slot; tytul: string }> = [
+  { etykieta: "Obciążenie", slot: "obciazenie", tytul: "Obciążenie" },
+  { etykieta: "Na co idzie czas", slot: "czas", tytul: "Na co idzie czas" },
+  { etykieta: "Pieniądze", slot: "pieniadze", tytul: "Pieniądze" },
+  { etykieta: "Droga", slot: "droga", tytul: "Droga dojścia" },
+  { etykieta: "Zwykły dzień", slot: "dzien", tytul: "Zwykły dzień" },
 ];
 
 /**
@@ -348,8 +570,12 @@ function wyjmijAkapit(tresc: string, etykieta: string): { reszta: string; wyjete
 // Układ całej karty
 // =====================================================================
 
-/** Zamienia jedną sekcję w blok strukturalny albo w markdown, jak dotąd. */
-function zlozBlok(rodzaj: RodzajBloku | null, tytul: string, tresc: string): Blok | null {
+/** Zamienia jedną sekcję w postać strukturalną albo nic, gdy kształt się nie zgadza. */
+function zlozBlok(
+  rodzaj: RodzajBloku | "markdown" | null,
+  tytul: string,
+  tresc: string,
+): PostacBloku | null {
   if (rodzaj === "obciazenie") {
     const wymiary = czytajObciazenie(tresc);
     return wymiary ? { rodzaj, tytul, wymiary } : null;
@@ -374,45 +600,71 @@ function zlozBlok(rodzaj: RodzajBloku | null, tytul: string, tresc: string): Blo
     const czytane = czytajZagrozenie(tresc);
     return czytane ? { rodzaj, tytul, werdykt: czytane.werdykt, uwagi: czytane.tresc } : null;
   }
+  if (rodzaj === "harmonogram") {
+    const kroki = czytajHarmonogram(tresc);
+    if (kroki) return { rodzaj, tytul, kroki };
+    // Połowa kart opisuje dzień listą czynności, bez godzin. To nie jest oś
+    // czasu i nie wolno jej taką udawać, ale listą pozostaje.
+    const hasla = czytajHasla(tresc);
+    return hasla ? { rodzaj: "hasla", tytul, hasla } : null;
+  }
+  if (rodzaj === "hasla") {
+    const hasla = czytajHasla(tresc);
+    return hasla ? { rodzaj, tytul, hasla } : null;
+  }
+  if (rodzaj === "wypunktowanie") {
+    const czytane = czytajPunkty(tresc);
+    if (czytane) return { rodzaj, tytul, punkty: czytane.punkty, uwagi: czytane.uwagi };
+    // Część kart zapisuje to samo jako listę haseł, a nie akapity z etykietą.
+    const hasla = czytajHasla(tresc);
+    return hasla ? { rodzaj: "hasla", tytul, hasla } : null;
+  }
   return null;
 }
 
 /**
  * Cała karta jako lista bloków w kolejności z dokumentu.
  *
- * Sekcja rozpoznana daje blok strukturalny, a to, co po niej zostało w
- * markdownie, idzie osobnym blokiem, żeby żadna uwaga nie przepadła. Sekcja
- * nierozpoznana zostaje markdownem, dokładnie jak dotąd.
+ * Każdy blok niesie dwie rzeczy: `rodzaj` mówi, jak go narysować, `slot` mówi,
+ * która to sekcja karty. Strona układa bloki po slotach, a czego nie rozpozna,
+ * zostawia markdownem w kolejności z dokumentu. Żadna karta nie może wyjść
+ * pusta i nic z niej nie może przepaść.
  */
 export function ulozKarte(sekcje: SekcjaKarty[]): Blok[] {
   const bloki: Blok[] = [];
 
   for (const s of sekcje) {
-    const rodzaj = rodzajSekcji(s.tytul, s.klucz);
+    const slot = slotSekcji(s.tytul, s.klucz);
+    const rodzaj = postacSlotu(slot);
     let tresc = s.tresc;
 
     // Karty skrócone trzymają dane w pogrubionych akapitach. Wyjmujemy je
     // dopiero z sekcji, która sama nie jest tymi danymi.
     const dodatkowe: Blok[] = [];
     for (const wzor of AKAPITY_Z_DANYMI) {
-      if (wzor.rodzaj === rodzaj) continue;
+      if (wzor.slot === slot) continue;
       const { reszta, wyjete } = wyjmijAkapit(tresc, wzor.etykieta);
       if (!wyjete) continue;
-      const blok = zlozBlok(wzor.rodzaj, wzor.tytul, wyjete);
-      if (blok) {
-        dodatkowe.push(blok);
+      const postac = zlozBlok(postacSlotu(wzor.slot), wzor.tytul, wyjete);
+      if (postac) {
+        dodatkowe.push({ ...postac, slot: wzor.slot });
         tresc = reszta;
       }
     }
 
     // Blok strukturalny niesie swoje uwagi sam, więc nic tu nie przepada.
-    const glowny = zlozBlok(rodzaj, s.tytul, tresc);
-    bloki.push(glowny ?? { rodzaj: "markdown", tytul: s.tytul, tresc });
+    const postac = zlozBlok(rodzaj, s.tytul, tresc);
+    bloki.push({ ...(postac ?? { rodzaj: "markdown", tytul: s.tytul, tresc }), slot });
 
     bloki.push(...dodatkowe);
   }
 
   return bloki;
+}
+
+/** Blok stojący w danym slocie karty. */
+export function wSlocie(bloki: Blok[], slot: Slot): Blok | null {
+  return bloki.find((b) => b.slot === slot) ?? null;
 }
 
 /** Pierwszy blok danego rodzaju albo nic. Do porównania dwóch kart pole po polu. */

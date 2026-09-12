@@ -24,6 +24,7 @@ import { etykietaM1 } from "../moduly/ekrany";
 import { stopkaRaportu } from "./sekcje";
 import type { BazaReferencyjna } from "../domain/typy";
 import type { Raport } from "./typy";
+import { znakObszaru } from "@/lib/karty/obszary";
 
 const A1_PO_ID = new Map(OBSZARY_A1.map((o) => [o.id, o]));
 const A2_PO_ID = new Map(KOMPETENCJE_A2.map((k) => [k.id, k]));
@@ -302,6 +303,9 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
   if (wolno("zawody")) {
     const nazwaObszaru = new Map(baza.obszary.map((o) => [o.id, o.nazwa]));
     const grupaObszaru = new Map(baza.obszary.map((o) => [o.id, o.grupa]));
+    // Obszar silnika i obszar zainteresowan A1 to dwa rozne slowniki o tych
+    // samych numerach. Znak bierze sie z mostu w danych, nie z numeru.
+    const znakObszaruPoId = new Map(baza.obszary.map((o) => [o.id, znakObszaru(o.zainteresowania)]));
     const klasterZawodu = new Map(baza.zawody.map((z) => [z.kod, z.klaster ?? null]));
     // Litere drogi dostaje kazdy zawod z obszaru drogi, a nie tylko te dwa,
     // trzy, ktore weszly na jej liste. Bez tego filtr „Droga A" pokazuje
@@ -337,6 +341,7 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
           obszar: nazwaObszaru.get(z.obszar) ?? "",
           obszarId: z.obszar,
           grupaObszaru: grupaObszaru.get(z.obszar) ?? "",
+          znakObszaru: znakObszaruPoId.get(z.obszar) ?? null,
           poziom: z.poziom,
           studia: z.studia,
           droga: drogaObszaru.get(z.obszar) ?? null,
