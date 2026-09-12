@@ -1,6 +1,24 @@
 import { GLIFY, type KluczGlifu } from "@/lib/ui/glify";
-import { kolorKategorii } from "@/lib/ui/kolory";
+import { kolorKategorii, kolorWyboru, type Kolor } from "@/lib/ui/kolory";
 import { obrazDuzy, obrazKafla, obrazPlanszy } from "@/lib/ui/obrazy";
+
+/**
+ * Paleta znaku. Na ekranie wyboru znak nie zdradza kategorii: wszystkie
+ * bloki w zestawie wygladaja tak samo, a wybrany zaznacza jeden akcent
+ * (lib/ui/kolory.ts, KOLOR_KATEGORII_NA_WYBORZE).
+ */
+const NEUTRALNY: Kolor = {
+  kod: "niebieski",
+  neon: "var(--color-akcent)",
+  tlo: "var(--color-panel)",
+  obwod: "var(--color-linia)",
+  atrament: "var(--color-atrament-sciszony)",
+};
+
+function paleta(klucz: KluczGlifu, wybor: boolean | undefined): Kolor {
+  if (!wybor) return kolorKategorii(klucz);
+  return kolorWyboru(klucz) ?? NEUTRALNY;
+}
 
 /**
  * Znak kategorii: rysowany glif w bloku w kolorze kategorii.
@@ -17,14 +35,17 @@ export function Ikona({
   klucz,
   rozmiar = 44,
   aktywna,
+  wybor,
 }: {
   klucz: KluczGlifu;
   rozmiar?: number;
   aktywna?: boolean;
+  /** Znak stoi na ekranie wyboru: nie wolno mu zdradzac kategorii. */
+  wybor?: boolean;
 }) {
   const sciezki = GLIFY[klucz];
   if (!sciezki) return null;
-  const k = kolorKategorii(klucz);
+  const k = paleta(klucz, wybor);
 
   return (
     <span
@@ -71,15 +92,18 @@ export function Obraz({
   klucz,
   rozmiar = 128,
   aktywna,
+  wybor,
 }: {
   klucz: KluczGlifu;
   rozmiar?: number;
   aktywna?: boolean;
+  /** Ilustracja stoi na ekranie wyboru: nie wolno jej zdradzac kategorii. */
+  wybor?: boolean;
 }) {
-  const k = kolorKategorii(klucz);
+  const k = paleta(klucz, wybor);
   const zrodlo = rozmiar > 200 ? (obrazDuzy(klucz) ?? obrazKafla(klucz)) : obrazKafla(klucz);
 
-  if (!zrodlo) return <Ikona klucz={klucz} rozmiar={rozmiar} aktywna={aktywna} />;
+  if (!zrodlo) return <Ikona klucz={klucz} rozmiar={rozmiar} aktywna={aktywna} wybor={wybor} />;
 
   return (
     <span
@@ -122,11 +146,14 @@ export function Obraz({
 export function Plansza({
   klucz,
   wysokosc = 176,
+  wybor,
 }: {
   klucz: KluczGlifu;
   wysokosc?: number;
+  /** Pas stoi nad blokami wyboru: nie wolno mu zdradzac kategorii. */
+  wybor?: boolean;
 }) {
-  const k = kolorKategorii(klucz);
+  const k = paleta(klucz, wybor);
   const plansza = obrazPlanszy(klucz);
   const obraz = obrazDuzy(klucz) ?? obrazKafla(klucz);
   const sciezki = GLIFY[klucz];

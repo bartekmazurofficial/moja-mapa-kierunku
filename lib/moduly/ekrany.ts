@@ -13,6 +13,7 @@ import { BRZMIENIA_A4, PARY_A4, TEST_KOSZTU, INSTRUKCJA_A4 } from "../content/a4
 import { INSTRUKCJA_A5, ODPOWIEDZI_A5, ZDANIA_A5 } from "../content/a5";
 import { INSTRUKCJA_M1, OBSZARY_M1, PARY_M1 } from "../content/m1";
 import { PYTANIA_A0, INSTRUKCJA_A0 } from "../content/a0";
+import { ODDECHY } from "../content/wspolne";
 import { FILTRY_A5, OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_M1 } from "../domain/slowniki";
 import type { CzescModulu, Ekran, KodModulu, Pozycja } from "./typy";
 import type { PlanModulu } from "./plan";
@@ -48,6 +49,26 @@ export const NAZWY_MODULOW: Record<KodModulu, string> = {
  * jak chcesz zyc".
  */
 export const KOLEJNOSC_MODULOW: KodModulu[] = ["A0", "A1", "A3", "A2", "A4", "M1", "A5"];
+
+/**
+ * Ekran oddechu w dlugim module.
+ *
+ * Trzydziesci szesc zestawow bez jednego slowa to najdluzszy odcinek bez
+ * kontaktu w calym programie i tam ludzie odpadaja. Jedno zdanie, przycisk,
+ * nic wiecej: stwierdzenie faktu, nigdy pochwala. W tych modulach nie da sie
+ * isc dobrze ani zle, wiec „swietnie Ci idzie" byloby klamstwem, a odznaka za
+ * serie zamienilaby rozmowe o czyims zyciu w aplikacje do nauki slowek.
+ */
+function oddech(modul: KodModulu, poBloku: number, wszystkich: number): Ekran | null {
+  const tekst = ODDECHY[modul]?.[poBloku];
+  if (!tekst || poBloku >= wszystkich) return null;
+  return {
+    klucz: `${modul}_oddech_${poBloku}`,
+    typ: "przerwa",
+    naglowek: tekst,
+    przyciskDalej: "Dalej",
+  };
+}
 
 function wstep(
   modul: KodModulu,
@@ -148,6 +169,8 @@ function czescA1A(plan: PlanModulu): CzescModulu {
       ],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "zestawów" },
     });
+    const przerwa = oddech("A1", i + 1, plan.kolejnosc.length);
+    if (przerwa) ekrany.push(przerwa);
   });
 
   ekrany.push({
@@ -222,15 +245,10 @@ function czescA2A(plan: PlanModulu): CzescModulu {
       ],
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "zestawów" },
     });
-    // Przerwa obowiazkowa po 23 blokach: bez niej jakosc drugiej polowy spada.
-    if (i === 22) {
-      ekrany.push({
-        klucz: "A2_przerwa",
-        typ: "przerwa",
-        naglowek: INSTRUKCJA_A2.przerwa,
-        przyciskDalej: "Dalej",
-      });
-    }
+    // Oddech co dwanascie zestawow. Przerwa w polowie byla juz wczesniej i
+    // zostaje - teraz jako jedna z trzech, a nie jako jedyna na czterdziesci piec.
+    const przerwa = oddech("A2", i + 1, plan.kolejnosc.length);
+    if (przerwa) ekrany.push(przerwa);
   });
   return { kod: "A", nazwa: "Zestawy zadań", ekrany };
 }

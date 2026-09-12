@@ -122,3 +122,39 @@ export function paraKolorow(klucz: string): [Kolor, Kolor] {
   const j = (i + 3) % KOLEJNOSC_KOLOROW.length;
   return [KOLORY[KOLEJNOSC_KOLOROW[i]], KOLORY[KOLEJNOSC_KOLOROW[j]]];
 }
+
+/**
+ * Czy kolor kategorii wchodzi na ekrany wyboru. Nie wchodzi.
+ *
+ * Kolor jest przypisany kategorii na stale, a w jednym zestawie stoja cztery
+ * pozycje z czterech roznych kategorii. Wynikaja z tego dwie rzeczy, obie zle.
+ *
+ * Kolor nie jest neutralny. Zolty, czerwony i niebieski nie sa tak samo
+ * przyjemne. Przy dwoch pozycjach o zblizonej bliskosci wygrywa ta na
+ * ladniejszym tle, a to jest dokladnie ten sam rodzaj zanieczyszczenia, przed
+ * ktorym chroni mechanizm pozycji imponujacych - tylko wniesiony kolorem
+ * zamiast slowem.
+ *
+ * Koloru da sie nauczyc. Przy 36 zestawach uczestnik zaczyna kojarzyc, ze
+ * zielony to jedna rodzina zawodow. To jest informacja, ktorej nie powinien
+ * miec w trakcie wypelniania, bo zaczyna odpowiadac pod wynik.
+ *
+ * Kolor kategorii zostaje wszedzie tam, gdzie niesie informacje, a uczestnik
+ * zna juz wynik: plansza wynikow modulu, raport, lista zawodow, trzy drogi.
+ *
+ * Jedna stala, bo to jest decyzja do cofniecia jednym ruchem, a nie do
+ * wygrzebania z szesciu komponentow.
+ */
+export const KOLOR_KATEGORII_NA_WYBORZE = false;
+
+/** Kolor kategorii na ekranie wyboru albo nic. Patrz stala powyzej. */
+export function kolorWyboru(klucz: string | undefined): Kolor | null {
+  if (!KOLOR_KATEGORII_NA_WYBORZE || !klucz) return null;
+  return kolorKategorii(klucz);
+}
+
+/** Para kolorow na ekranie wyboru albo nic. Patrz stala powyzej. */
+export function paraWyboru(klucz: string | undefined): [Kolor, Kolor] | null {
+  if (!KOLOR_KATEGORII_NA_WYBORZE || !klucz) return null;
+  return paraKolorow(klucz);
+}

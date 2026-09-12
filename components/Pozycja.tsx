@@ -14,7 +14,7 @@
 import { useId } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
 import { Ikona, Obraz } from "@/components/Ikona";
-import { kolorKategorii, paraKolorow } from "@/lib/ui/kolory";
+import { kolorWyboru, paraWyboru } from "@/lib/ui/kolory";
 import { nadajNumer, wlascicieleNumerow } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
@@ -73,8 +73,9 @@ function ramka(wSiatce: boolean | undefined, ostatnia: boolean | undefined): str
 
 /** Styl bloku w kolorze kategorii. Tylko w siatce: w liscie kolor przeszkadza. */
 function stylBloku(klucz: string | undefined, wSiatce: boolean | undefined) {
-  if (!wSiatce || !klucz) return undefined;
-  const k = kolorKategorii(klucz);
+  if (!wSiatce) return undefined;
+  const k = kolorWyboru(klucz);
+  if (!k) return undefined;
   return { borderColor: k.obwod, background: k.tlo };
 }
 
@@ -87,9 +88,28 @@ function kolumnyOpcji(ile: number): string {
   return ile > 4 ? "grid sm:grid-cols-2" : "flex flex-col";
 }
 
+/**
+ * Karta wyboru. Wszystkie karty na ekranie sa identyczne: to samo tlo, ta sama
+ * krawedz, ta sama typografia. Rozni je wylacznie tresc. Grubosc krawedzi jest
+ * stala w obu stanach, zeby zaznaczenie nie przesuwalo ukladu o piksel.
+ */
 const KAFELEK =
-  "przejscie w-full min-h-[3rem] rounded-lg border bg-szklo px-4 py-3 text-left text-tresc " +
-  "hover:border-linia-mocna active:scale-[0.995]";
+  "przejscie w-full min-h-[3rem] rounded-xl border-2 bg-szklo px-4 py-3 text-left text-tresc " +
+  "active:scale-[0.995]";
+
+/** Stan karty wyboru bez koloru kategorii: jeden akcent, ten sam we wszystkich modulach. */
+function stanKarty(wybrana: boolean): string {
+  return wybrana ? "wybor-wybrany" : "border-linia hover:border-linia-mocna";
+}
+
+/**
+ * Stan kafla w rankingu. Numer dostaja wszystkie cztery, wiec pelne
+ * podswietlenie kazdego z nich zamienia ekran w sciane koloru. Kafel
+ * ponumerowany dostaje sama krawedz; mocny akcent niesie przycisk z numerem.
+ */
+function stanKafla(ponumerowany: boolean): string {
+  return ponumerowany ? "border-akcent/40" : "border-linia hover:border-linia-mocna";
+}
 
 function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) {
   const ranking = (wartosc as Record<string, number>) ?? {};
@@ -131,14 +151,15 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
       <ul className="mx-auto grid max-w-3xl gap-2.5 sm:grid-cols-2">
         {opcje.map((o) => {
           const numer = ranking[o.kod];
-          // Kafel bierze kolor swojej kategorii. W zestawie cztery pozycje
-          // pochodzą z czterech różnych kategorii, a kolory są tak dobrane,
-          // że żadne dwa kafle obok siebie nie mają tego samego.
-          const kolor = o.ikona ? kolorKategorii(o.ikona) : null;
+          // Kafel nie niesie koloru kategorii: cztery pozycje w zestawie
+          // pochodzą z czterech różnych rodzin, a kolor podpowiadałby, z której.
+          const kolor = kolorWyboru(o.ikona);
           return (
             <li
               key={o.kod}
-              className="przejscie flex flex-col rounded-xl border-2 bg-szklo p-3"
+              className={`przejscie flex flex-col rounded-xl border-2 bg-szklo p-3 ${
+                kolor ? "" : stanKafla(Boolean(numer))
+              }`}
               style={
                 kolor
                   ? {
@@ -150,7 +171,9 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
               }
             >
               <div className="flex flex-1 flex-col items-center">
-                {o.ikona ? <Obraz klucz={o.ikona} rozmiar={124} aktywna={Boolean(numer)} /> : null}
+                {o.ikona ? (
+                  <Obraz klucz={o.ikona} rozmiar={124} aktywna={Boolean(numer)} wybor />
+                ) : null}
                 <span className="boks mt-2.5 flex-1 text-tresc leading-snug">{o.etykieta}</span>
               </div>
 
@@ -171,7 +194,7 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
                       aria-label={`${o.etykieta}: miejsce ${n}`}
                       className={`przejscie h-11 w-11 rounded-lg border text-tresc font-bold tabular-nums ${
                         wybrany
-                          ? "text-na-akcencie"
+                          ? `text-na-akcencie ${kolor ? "" : "border-akcent bg-akcent"}`
                           : uKogosInnego
                             ? "border-linia text-atrament-slaby opacity-45"
                             : "border-linia-mocna bg-panel text-atrament-sciszony hover:text-atrament"
@@ -210,16 +233,14 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
    */
   const wlasne =
     pozycja.stronaA?.ikona && pozycja.stronaB?.ikona
-      ? ([kolorKategorii(pozycja.stronaA.ikona), kolorKategorii(pozycja.stronaB.ikona)] as const)
+      ? ([kolorWyboru(pozycja.stronaA.ikona), kolorWyboru(pozycja.stronaB.ikona)] as const)
       : null;
   // Cztery z trzydziestu sześciu par A4 trafiają na dwie wartości tego samego
   // koloru. Wtedy kolor niczego nie rozróżnia, więc wracamy do pary z koła.
   const kolory =
-    wlasne && wlasne[0].kod !== wlasne[1].kod
-      ? wlasne
-      : kluczKoloru
-        ? paraKolorow(kluczKoloru)
-        : null;
+    wlasne?.[0] && wlasne[1] && wlasne[0].kod !== wlasne[1].kod
+      ? ([wlasne[0], wlasne[1]] as const)
+      : paraWyboru(kluczKoloru);
 
   function wybierz(kod: string) {
     naZmiane(kod);
@@ -237,8 +258,8 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
             type="button"
             onClick={() => wybierz(s.kod)}
             aria-pressed={wybrana}
-            className={`${KAFELEK} flex min-h-[5.5rem] flex-col items-center justify-center gap-2.5 border-2 sm:min-h-[8rem] ${
-              wybrana ? "" : "border-linia"
+            className={`${KAFELEK} flex min-h-[5.5rem] flex-col items-center justify-center gap-2.5 sm:min-h-[8rem] ${
+              kolor ? "" : stanKarty(wybrana)
             }`}
             style={
               kolor
@@ -250,7 +271,7 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
                 : undefined
             }
           >
-            {s.ikona ? <Ikona klucz={s.ikona} rozmiar={40} aktywna={wybrana} /> : null}
+            {s.ikona ? <Ikona klucz={s.ikona} rozmiar={40} aktywna={wybrana} wybor /> : null}
             <span className="boks text-tresc leading-snug">{s.tekst}</span>
           </button>
         );
@@ -264,7 +285,7 @@ function Skala5({ pozycja, wartosc, naZmiane, pierwsza, ostatnia, wSiatce }: Wla
     <div className={ramka(wSiatce, ostatnia)} style={stylBloku(pozycja.ikona, wSiatce)}>
       {pozycja.tresc ? (
         <p className="mb-2 flex items-start gap-2.5 text-tresc leading-snug">
-          {pozycja.ikona && wSiatce ? <Ikona klucz={pozycja.ikona} rozmiar={36} /> : null}
+          {pozycja.ikona && wSiatce ? <Ikona klucz={pozycja.ikona} rozmiar={36} wybor /> : null}
           <span className="flex-1">{pozycja.tresc}</span>
         </p>
       ) : null}
@@ -321,7 +342,7 @@ function Kotwica({ pozycja, wartosc, naZmiane, pierwsza, ostatnia, wSiatce }: Wl
   return (
     <div className={ramka(wSiatce, ostatnia)} style={stylBloku(pozycja.ikona, wSiatce)}>
       <p className="mb-2 flex items-start gap-2.5 text-tresc leading-snug">
-        {pozycja.ikona && wSiatce ? <Ikona klucz={pozycja.ikona} rozmiar={36} /> : null}
+        {pozycja.ikona && wSiatce ? <Ikona klucz={pozycja.ikona} rozmiar={36} wybor /> : null}
         <span className="flex-1">{pozycja.tresc}</span>
       </p>
       <SkalaPrzyciski
@@ -353,7 +374,7 @@ function Trzystopniowa({
   kluczKoloru,
 }: WlasciwosciPozycji) {
   const opcje = pozycja.opcje ?? [];
-  const kolor = kluczKoloru ? kolorKategorii(kluczKoloru) : null;
+  const kolor = kolorWyboru(kluczKoloru);
   // Jedyna pozycja na ekranie dostaje cały ekran: duże zdanie i trzy duże
   // przyciski pośrodku. Ten sam komponent w małym wydaniu obsługuje listy.
   const sama = Boolean(pierwsza && ostatnia && !wSiatce);
@@ -370,7 +391,9 @@ function Trzystopniowa({
       className={`przejscie boks rounded-xl border-2 font-semibold ${
         sama ? "min-h-14 min-w-[7rem] px-6 text-tresc-duza" : "h-11 min-w-[4.5rem] px-3 text-male"
       } ${
-        wartosc === o.kod ? "text-na-akcencie" : "bg-panel text-atrament-sciszony hover:text-atrament"
+        wartosc === o.kod
+          ? `text-na-akcencie ${kolor ? "" : "border-akcent bg-akcent"}`
+          : `bg-panel text-atrament-sciszony hover:text-atrament ${kolor ? "" : "border-linia hover:border-linia-mocna"}`
       }`}
       style={
         kolor
@@ -402,7 +425,7 @@ function Trzystopniowa({
 }
 
 function Pojedynczy({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPozycji) {
-  const kolor = kluczKoloru ? kolorKategorii(kluczKoloru) : null;
+  const kolor = kolorWyboru(kluczKoloru);
   return (
     <fieldset>
       {pozycja.tresc ? (
@@ -419,7 +442,7 @@ function Pojedynczy({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPozy
             onClick={() => naZmiane(o.kod)}
             aria-pressed={wartosc === o.kod}
             className={`${KAFELEK} flex flex-col items-center justify-center gap-2 py-4 ${
-              kolor ? "border-2" : wartosc === o.kod ? "border-akcent bg-akcent-tlo" : "border-linia"
+              kolor ? "" : stanKarty(wartosc === o.kod)
             }`}
             style={
               kolor
@@ -494,7 +517,7 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
         {(pozycja.opcje ?? []).map((o) => {
           const zaznaczona = wybrane.includes(o.kod);
           const zablokowana = !zaznaczona && Boolean(maks) && wybrane.length >= (maks ?? 0) && !o.wylaczna;
-          const kolor = o.ikona ? kolorKategorii(o.ikona) : null;
+          const kolor = kolorWyboru(o.ikona);
           return (
             <button
               key={o.kod}
@@ -503,7 +526,7 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
               aria-pressed={zaznaczona}
               disabled={zablokowana}
               className={`${KAFELEK} flex flex-col items-center justify-center gap-2 py-4 ${
-                kolor ? "border-2" : zaznaczona ? "border-akcent bg-akcent-tlo" : "border-linia"
+                kolor ? "" : stanKarty(zaznaczona)
               } ${zablokowana ? "opacity-40" : ""}`}
               style={
                 kolor
@@ -527,7 +550,7 @@ function Wielokrotny({ pozycja, wartosc, naZmiane }: WlasciwosciPozycji) {
                   </svg>
                 ) : null}
               </span>
-              {o.ikona ? <Ikona klucz={o.ikona} rozmiar={44} aktywna={zaznaczona} /> : null}
+              {o.ikona ? <Ikona klucz={o.ikona} rozmiar={44} aktywna={zaznaczona} wybor /> : null}
               <span className="boks w-full leading-snug">
                 {o.etykieta}
                 {o.podpis ? (
@@ -550,7 +573,7 @@ function Dowody({ pozycja, wartosc, naZmiane, ostatnia, wSiatce }: WlasciwosciPo
   return (
     <div className={ramka(wSiatce, ostatnia)} style={stylBloku(pozycja.ikona, wSiatce)}>
       <p className="flex items-start gap-2.5 text-tresc font-medium">
-        {pozycja.ikona && wSiatce ? <Ikona klucz={pozycja.ikona} rozmiar={36} /> : null}
+        {pozycja.ikona && wSiatce ? <Ikona klucz={pozycja.ikona} rozmiar={36} wybor /> : null}
         <span className="flex-1">{pozycja.tresc}</span>
       </p>
       <p className="mt-0.5 max-w-czytelna text-male text-atrament-sciszony">{pozycja.podpis}</p>

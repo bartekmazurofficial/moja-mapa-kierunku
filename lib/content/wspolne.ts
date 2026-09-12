@@ -23,11 +23,19 @@ export const ZAPIS_SAM =
  * ani źle, więc „świetnie Ci idzie" byłoby kłamstwem, a odznaka za serię
  * zamieniłaby rozmowę o czyimś życiu w aplikację do nauki słówek.
  */
-export const ODDECH = {
-  jednaTrzecia: "Jedna trzecia za Tobą. Dalej idzie już szybciej, bo złapałeś rytm.",
-  dwieTrzecie: "Zostało dwanaście. To ostatnia prosta.",
-  polowa: "Połowa za Tobą. Odetchnij chwilę.",
-} as const;
+export const ODDECHY: Record<string, Record<number, string>> = {
+  /** 36 zestawów: oddech po dwunastym i po dwudziestym czwartym. */
+  A1: {
+    12: "Jedna trzecia za Tobą. Dalej idzie już szybciej, bo złapałeś rytm.",
+    24: "Zostało dwanaście. To ostatnia prosta.",
+  },
+  /** 45 zestawów: co dwanaście, a w środku ta sama przerwa co dotąd. */
+  A2: {
+    12: "Dwanaście zestawów za Tobą. Dalej idzie szybciej, bo złapałeś rytm.",
+    24: "Połowa za Tobą. Odetchnij chwilę.",
+    36: "Zostało dziewięć. To ostatnia prosta.",
+  },
+};
 
 /**
  * Ekran zamykający moduł.

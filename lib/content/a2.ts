@@ -41,7 +41,7 @@ export const INSTRUKCJA_A2 = {
   ],
   polecenieBloku: "Co poszłoby Ci najlepiej?",
   krancePozycji: ["1 najlepiej", "4 najsłabiej"],
-  przerwa: "Połowa za Tobą. Odetchnij chwilę.",
+  // Teksty ekranow oddechu: lib/content/wspolne.ts, ODDECHY.
   dowodyNaglowek: "Gdzie to widać?",
   dowodyPodtytul:
     "Zamiast pytać, jak dobry jesteś, pytamy o ślad w rzeczywistości. Zaznacz to, co się zdarzyło.",

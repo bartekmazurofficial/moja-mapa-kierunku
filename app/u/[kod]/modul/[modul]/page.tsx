@@ -4,6 +4,7 @@ import { Runner } from "@/components/Runner";
 import { pobierzStanModulu, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
 import { NAZWY_MODULOW } from "@/lib/moduly/ekrany";
+import { ZAMKNIECIE } from "@/lib/content/wspolne";
 import type { KodModulu } from "@/lib/moduly/typy";
 
 export const dynamic = "force-dynamic";
@@ -45,10 +46,24 @@ export default async function Strona({
 
   if (stan.czesc === null || stan.definicja === null) {
     return (
+      /**
+       * Ekran zamykajacy modul. Uczestnik konczy kilkadziesiat minut pracy i ma
+       * sie dowiedziec, co z tych odpowiedzi wynika - bez pokazywania wyniku,
+       * bo regula odslaniania warstwami jest wazniejsza. „Dziekujemy, dalej"
+       * to za malo po takiej ilosci pracy.
+       */
       <main className="mx-auto flex min-h-dvh max-w-czytelna flex-col justify-center px-6 py-16">
-        <h1 className="text-naglowek font-extrabold tracking-tight">To już masz za sobą</h1>
-        <p className="proza mt-4 text-atrament-sciszony">
-          Ta część jest wypełniona. Możesz zobaczyć swoje odpowiedzi albo wypełnić ją jeszcze raz. Wtedy poprzednie
+        <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">
+          {NAZWY_MODULOW[modul as KodModulu]}
+        </p>
+        <h1 className="mt-3 text-naglowek font-extrabold tracking-tight">
+          Ta część jest za Tobą
+        </h1>
+        <p className="szklo mt-6 p-6 text-tresc-duza leading-relaxed text-atrament">
+          {ZAMKNIECIE[modul] ?? "Gotowe. Twoje odpowiedzi są zapisane."}
+        </p>
+        <p className="proza mt-5 text-atrament-sciszony">
+          Możesz zobaczyć swoje odpowiedzi albo wypełnić tę część jeszcze raz. Wtedy poprzednie
           odpowiedzi znikają i zaczynasz od pierwszego ekranu.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -92,8 +107,6 @@ export default async function Strona({
       definicja={stan.definicja}
       zapisane={stan.zapisane}
       nazwaModulu={NAZWY_MODULOW[modul as KodModulu]}
-      czescNumer={stan.wszystkieCzesci.indexOf(stan.czesc) + 1}
-      czescLacznie={stan.wszystkieCzesci.length}
     />
   );
 }

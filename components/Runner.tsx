@@ -18,9 +18,19 @@ import { Pozycja } from "./Pozycja";
 import { Plansza } from "./Ikona";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
+import { ZAPIS_SAM } from "@/lib/content/wspolne";
 import type { CzescModulu, Ekran } from "@/lib/moduly/typy";
 
 const MARKER_ZAKONCZENIA = "__zakonczono";
+
+/**
+ * Jak dlugo po przejsciu dalej widac przycisk cofniecia.
+ *
+ * Pieć sekund, nie trzy: przycisk, ktory znika szybciej, nie daje sie
+ * zauwazyc i siegnac po niego osobie, ktora czyta wolniej. Nie chowamy go
+ * takze wtedy, gdy stoi na nim fokus klawiatury.
+ */
+const WIDOCZNOSC_COFNIECIA = 5000;
 
 interface Wlasciwosci {
   kodUczestnika: string;
@@ -28,9 +38,6 @@ interface Wlasciwosci {
   definicja: CzescModulu;
   zapisane: Record<string, unknown>;
   nazwaModulu: string;
-  /** Ile czesci modulu jest juz za uczestnikiem. */
-  czescNumer: number;
-  czescLacznie: number;
 }
 
 export function Runner({
@@ -39,8 +46,6 @@ export function Runner({
   definicja,
   zapisane,
   nazwaModulu,
-  czescNumer,
-  czescLacznie,
 }: Wlasciwosci) {
   const router = useRouter();
   const [odpowiedzi, ustawOdpowiedzi] = useState<Record<string, unknown>>(zapisane);
@@ -55,6 +60,10 @@ export function Runner({
   const [zablokowane, ustawZablokowane] = useState(false);
   /** `domknij` powstaje przed `dalej`, więc sięga po nie referencją. */
   const dalejRef = useRef<null | (() => Promise<void>)>(null);
+  /** Ostatnie przejście dalej: pozwala cofnąć jedną decyzję zaraz po niej. */
+  const [cofniecie, ustawCofniecie] = useState<{ indeks: number; pozycje: string[] } | null>(null);
+  const licznikCofniecia = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const przyciskCofniecia = useRef<HTMLButtonElement | null>(null);
 
   const kolejka = useRef<KolejkaZapisu | null>(null);
   if (kolejka.current === null) {
@@ -153,8 +162,55 @@ export function Runner({
     [zapisz],
   );
 
+  /**
+   * Pokazuje przycisk cofnięcia i chowa go po chwili. Przycisk z fokusem
+   * zostaje: zniknięcie celu spod palca jest gorsze niż chwilę dłuższy przycisk.
+   */
+  const zaproponujCofniecie = useCallback((indeksEkranu: number, pozycje: string[]) => {
+    if (licznikCofniecia.current) clearTimeout(licznikCofniecia.current);
+    ustawCofniecie({ indeks: indeksEkranu, pozycje });
+    const sprobujSchowac = () => {
+      if (przyciskCofniecia.current && document.activeElement === przyciskCofniecia.current) {
+        licznikCofniecia.current = setTimeout(sprobujSchowac, 2000);
+        return;
+      }
+      ustawCofniecie(null);
+    };
+    licznikCofniecia.current = setTimeout(sprobujSchowac, WIDOCZNOSC_COFNIECIA);
+  }, []);
+
+  /**
+   * Cofnięcie jednej decyzji: wraca na poprzedni ekran i kasuje to, co na nim
+   * padło. Nie jest to nawigacja wstecz — odpowiedź trzeba dać jeszcze raz,
+   * więc „Dalej” jest znowu zablokowane. Kasowanie idzie też na serwer, bo
+   * inaczej po powrocie do modułu wróciłaby stara odpowiedź.
+   */
+  const cofnij = useCallback(() => {
+    if (!cofniecie) return;
+    const { indeks: doKtorego, pozycje } = cofniecie;
+    ustawIndeks(doKtorego);
+    ustawOdpowiedzi((poprzednie) => {
+      const nowe = { ...poprzednie };
+      for (const id of pozycje) delete nowe[id];
+      return nowe;
+    });
+    for (const id of pozycje) {
+      const odroczony = odroczone.current.get(id);
+      if (odroczony) {
+        clearTimeout(odroczony);
+        odroczone.current.delete(id);
+      }
+      kolejka.current?.zapisz(id, null);
+    }
+    if (licznikCofniecia.current) clearTimeout(licznikCofniecia.current);
+    ustawCofniecie(null);
+    if (window.scrollY > 8) window.scrollTo({ top: 0, behavior: "auto" });
+  }, [cofniecie]);
+
   const dalej = useCallback(async () => {
     if (indeks < widoczne.length - 1) {
+      const zEkranu = (widoczne[indeks]?.pozycje ?? []).map((p) => p.id);
+      if (zEkranu.length > 0) zaproponujCofniecie(indeks, zEkranu);
       ustawIndeks((i) => i + 1);
       ustawWychodzi(false);
       // Przewijamy tylko wtedy, gdy strona faktycznie jest przewinięta.
@@ -164,6 +220,7 @@ export function Runner({
     }
     ustawKonczy(true);
     ustawZablokowane(false);
+    ustawCofniecie(null);
     // Odroczone pola tekstowe wysyłamy od razu, bez czekania na 700 ms.
     for (const [id, timeout] of odroczone.current) {
       clearTimeout(timeout);
@@ -187,7 +244,7 @@ export function Runner({
       return;
     }
     router.refresh();
-  }, [indeks, odpowiedzi, router, widoczne.length]);
+  }, [indeks, odpowiedzi, router, widoczne, zaproponujCofniecie]);
 
   dalejRef.current = dalej;
 
@@ -213,62 +270,28 @@ export function Runner({
     widocznePozycje.length === 1 &&
     JEDNA_DECYZJA.includes(widocznePozycje[0].typ);
 
-  const postepCzesci = czescLacznie > 1 ? (czescNumer - 1) / czescLacznie : 0;
-  const postepEkranu = ekran.postep
-    ? ekran.postep.nr / ekran.postep.z
-    : (bezpiecznyIndeks + 1) / widoczne.length;
-  const postep = Math.round((postepCzesci + postepEkranu / Math.max(1, czescLacznie)) * 100);
-
   return (
     <div className="mx-auto flex min-h-dvh max-w-artykul flex-col px-5 pb-6 pt-4 sm:px-8 sm:pt-6">
-      <header className="szklo mb-5 px-5 py-4">
-        <div className="flex items-center justify-between gap-4">
-          <Link
-            href={`/u/${kodUczestnika}/moduly`}
-            className="przejscie flex min-w-0 items-center gap-2.5 text-drobne uppercase tracking-[0.14em] text-atrament-slaby hover:text-atrament"
-          >
-            <span aria-hidden>←</span>
-            <span className="truncate">{nazwaModulu}</span>
-          </Link>
-
-          {/* Liczby, nie procent: procent wywołuje pośpiech, a „krok 7 z 36”
-              mówi dokładnie tyle, ile trzeba. */}
-          <p className="shrink-0 text-male font-semibold tabular-nums">
-            {ekran.postep ? (
-              <>
-                <span className="text-akcent-jasny">{ekran.postep.nr}</span>
-                <span className="text-atrament-slaby"> z {ekran.postep.z}</span>
-                <span className="ml-1.5 text-drobne font-normal text-atrament-slaby">
-                  {ekran.postep.slowo}
-                </span>
-              </>
-            ) : czescLacznie > 1 ? (
-              <>
-                <span className="text-akcent-jasny">{czescNumer}</span>
-                <span className="text-atrament-slaby"> z {czescLacznie}</span>
-                <span className="ml-1.5 text-drobne font-normal text-atrament-slaby">część</span>
-              </>
-            ) : null}
-          </p>
-        </div>
-
-        <div
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={postep}
-          aria-label="Postęp w tej części"
-          className="mt-3 h-1.5 overflow-hidden rounded-full bg-linia"
+      {/*
+        Nagłówek jest cichy z rozmysłem. Pasek wypełniający się procentowo każe
+        liczyć, ile zostało, zamiast myśleć o pytaniu, a trzy wskaźniki postępu
+        naraz to o dwa za dużo. Zostaje sam licznik sztuk, mały i szary.
+        Nazwa modułu schodzi z ekranów z jedną decyzją: uczestnik wie, co robi,
+        a to miejsce należy się pytaniu.
+      */}
+      <header className="mb-5 flex items-center justify-between gap-4 px-1">
+        <Link
+          href={`/u/${kodUczestnika}/moduly`}
+          aria-label="Wróć do listy modułów"
+          className="przejscie -ml-1 flex min-h-11 min-w-0 items-center gap-2.5 rounded-lg px-1 text-drobne uppercase tracking-[0.14em] text-atrament-slaby hover:text-atrament"
         >
-          <div
-            className="przejscie h-full rounded-full bg-gradient-to-r from-akcent-ciemny to-akcent-jasny"
-            style={{ width: `${Math.min(100, Math.max(3, postep))}%` }}
-          />
-        </div>
+          <span aria-hidden>←</span>
+          {jednaPozycja ? null : <span className="truncate">{nazwaModulu}</span>}
+        </Link>
 
-        {czescLacznie > 1 && ekran.postep ? (
-          <p className="mt-2 text-drobne text-atrament-slaby">
-            część {czescNumer} z {czescLacznie}
+        {ekran.postep ? (
+          <p className="shrink-0 text-drobne tabular-nums text-atrament-slaby">
+            {ekran.postep.nr} z {ekran.postep.z}
           </p>
         ) : null}
       </header>
@@ -302,6 +325,12 @@ export function Runner({
                 <p key={i}>{a}</p>
               ))}
             </div>
+            {ekran.typ === "wstep" ? (
+              <p className="mt-5 flex items-start gap-2.5 rounded-xl border border-linia bg-panel px-4 py-3 text-male text-atrament-sciszony">
+                <span aria-hidden className="text-akcent">✓</span>
+                <span>{ZAPIS_SAM}</span>
+              </p>
+            ) : null}
             {ekran.rozwiniecie ? (
               <details className="mt-5 max-w-czytelna">
                 <summary className="cursor-pointer list-none text-male text-atrament-sciszony underline decoration-linia-mocna underline-offset-4 hover:text-atrament">
@@ -317,26 +346,27 @@ export function Runner({
           </div>
         ) : (
           <>
-            {ekran.naglowek ? (
-              <h1
-                className={`mb-1 font-bold text-atrament ${
-                  jednaPozycja
-                    ? "text-center text-drobne uppercase tracking-[0.16em] text-atrament-slaby"
-                    : "text-naglowek-maly"
-                }`}
-              >
-                {ekran.naglowek}
+            {/* Na ekranie z jedną decyzją pytanie jest największym tekstem.
+                Wcześniej było najmniejszym i najbledszym, przez co wyglądało
+                na podpis pod odpowiedziami. */}
+            {jednaPozycja ? (
+              <h1 className="mx-auto mb-6 max-w-czytelna text-balance text-center text-naglowek-maly font-bold leading-snug text-atrament">
+                {ekran.polecenie ?? ekran.naglowek}
               </h1>
-            ) : null}
-            {ekran.polecenie ? (
-              <p
-                className={`mb-4 text-tresc text-atrament-sciszony ${
-                  jednaPozycja ? "text-center" : "max-w-czytelna"
-                }`}
-              >
-                {ekran.polecenie}
-              </p>
-            ) : null}
+            ) : (
+              <>
+                {ekran.naglowek ? (
+                  <h1 className="mb-1 text-naglowek-maly font-bold text-atrament">
+                    {ekran.naglowek}
+                  </h1>
+                ) : null}
+                {ekran.polecenie ? (
+                  <p className="mb-4 max-w-czytelna text-tresc text-atrament-sciszony">
+                    {ekran.polecenie}
+                  </p>
+                ) : null}
+              </>
+            )}
             {ekran.podpis ? (
               <p className="mb-6 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
                 {ekran.podpis}
@@ -347,7 +377,7 @@ export function Runner({
                 mają znak przy każdej pozycji z osobna. */}
             {jednaPozycja && (ekran.ikona ?? ekran.kolor) ? (
               <div className="mb-5">
-                <Plansza klucz={(ekran.ikona ?? ekran.kolor) as string} />
+                <Plansza klucz={(ekran.ikona ?? ekran.kolor) as string} wybor />
               </div>
             ) : null}
 
@@ -402,6 +432,22 @@ export function Runner({
           </>
         )}
       </main>
+
+      {/* Cofnięcie jednej decyzji, zaraz po niej. Kto stuknął odruchowo nie
+          tam, gdzie chciał, ma to jak naprawić, nie szukając nawigacji. */}
+      {cofniecie ? (
+        <div className="mt-3 flex justify-end">
+          <button
+            ref={przyciskCofniecia}
+            type="button"
+            onClick={cofnij}
+            className="przejscie wejscie-ekranu inline-flex min-h-11 items-center gap-2 rounded-full border border-linia-mocna bg-panel px-4 text-male font-semibold text-atrament-sciszony hover:border-akcent/45 hover:text-akcent-jasny"
+          >
+            <span aria-hidden>↩</span>
+            Cofnij ostatnią odpowiedź
+          </button>
+        </div>
+      ) : null}
 
       <footer className="mt-5 flex items-center justify-between gap-4">
         <button

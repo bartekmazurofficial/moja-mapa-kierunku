@@ -79,6 +79,8 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
             {moduly.map((m) => {
               const s = stan(m);
               const kolor = KOLORY_MODULOW[m];
+              const czesci = CZESCI_MODULOW[m].length;
+              const gotoweCzesci = zakonczone.get(m)?.size ?? 0;
               const tresc = (
                 <>
                   <div className="flex items-start justify-between gap-3">
@@ -91,6 +93,13 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
                     <Odznaka stan={s} spotkanie={SPOTKANIE_MODULU[m]} />
                   </div>
                   <p className="mt-2 text-male leading-relaxed text-atrament-sciszony">{PO_CO[m]}</p>
+                  {/* Informacja o częściach należy tutaj, a nie na ekranie
+                      pozycji: tam zabierała uwagę pytaniu. */}
+                  {s === "wtrakcie" && czesci > 1 ? (
+                    <p className="mt-2 text-drobne tabular-nums text-atrament-slaby">
+                      część {Math.min(gotoweCzesci + 1, czesci)} z {czesci}
+                    </p>
+                  ) : null}
                   {s !== "zamkniety" ? (
                     <p className="mt-4 flex items-center justify-end text-drobne text-akcent-jasny">
                       <span aria-hidden className="przejscie group-hover:translate-x-0.5">→</span>
