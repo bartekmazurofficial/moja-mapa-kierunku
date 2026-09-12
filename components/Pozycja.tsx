@@ -15,7 +15,7 @@ import { useId } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
 import { Ikona, Obraz } from "@/components/Ikona";
 import { kolorWyboru, paraWyboru } from "@/lib/ui/kolory";
-import { nadajNumer, wlascicieleNumerow } from "@/lib/moduly/ranking";
+import { dopelnijOstatni, nadajNumer, wlascicieleNumerow } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
 export interface WlasciwosciPozycji {
@@ -118,7 +118,11 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
   const wlasciciel = wlascicieleNumerow(ranking);
 
   function ustaw(kod: string, numer: number) {
-    const nowy = nadajNumer(ranking, kod, numer);
+    // Ponowne stuknięcie we własny numer go zdejmuje. Wtedy nie wolno domykać,
+    // bo numer wskakiwałby z powrotem i nie dałoby się niczego cofnąć.
+    const zdejmowanie = ranking[kod] === numer;
+    const nadane = nadajNumer(ranking, kod, numer);
+    const nowy = zdejmowanie ? nadane : dopelnijOstatni(nadane, opcje.map((o) => o.kod));
     naZmiane(nowy);
     if (Object.keys(nowy).length === ile) naDomkniecie?.();
   }

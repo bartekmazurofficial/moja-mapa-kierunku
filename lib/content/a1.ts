@@ -41,7 +41,7 @@ export const INSTRUKCJA_A1 = {
     // Zdanie o pierwszym odruchu jest w specyfikacji oznaczone jako krytyczne:
     // bez niego uczestnicy zacinają się na blokach, w których wszystkie cztery
     // pozycje są im obojętne, i albo klikają losowo, albo rezygnują.
-    "W każdym zestawie numerujesz wszystkie cztery, a jeden numer możesz przypisać tylko raz. Robisz to nawet wtedy, gdy żadna Ci się nie podoba albo podobają Ci się wszystkie. Chodzi o kolejność, nie o ocenę. Nie ma dobrych i złych odpowiedzi. Zaufaj pierwszemu odruchowi, to zwykle najlepszy wybór.",
+    "W każdym zestawie numerujesz trzy, a czwarty numer dopisuje się sam, bo nie ma już czego wybierać. Jeden numer możesz przypisać tylko raz. Robisz to nawet wtedy, gdy żadna Ci się nie podoba albo podobają Ci się wszystkie. Chodzi o kolejność, nie o ocenę. Nie ma dobrych i złych odpowiedzi. Zaufaj pierwszemu odruchowi, to zwykle najlepszy wybór.",
   ],
   polecenieBloku: "Co najchętniej byś robił?",
   krancePozycji: ["1 najchętniej", "4 najmniej chętnie"],

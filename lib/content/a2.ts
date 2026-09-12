@@ -37,7 +37,7 @@ export const INSTRUKCJA_A2 = {
   ],
   rozwiniecie: [
     "To nie jest to samo pytanie. Często najlepiej wychodzą nam rzeczy, za którymi nie przepadamy. I odwrotnie: uwielbiamy coś, co idzie nam średnio.",
-    "Nie oceniaj, czy to ważne albo czy dobrze brzmi. Pytamy tylko: co poszłoby Ci lepiej niż pozostałe trzy rzeczy w zestawie. W każdym zestawie nadajesz numery od 1 do 4, a jeden numer możesz przypisać tylko raz.",
+    "Nie oceniaj, czy to ważne albo czy dobrze brzmi. Pytamy tylko: co poszłoby Ci lepiej niż pozostałe trzy rzeczy w zestawie. W każdym zestawie nadajesz trzy numery, a czwarty dopisuje się sam. Jeden numer możesz przypisać tylko raz.",
   ],
   polecenieBloku: "Co poszłoby Ci najlepiej?",
   krancePozycji: ["1 najlepiej", "4 najsłabiej"],

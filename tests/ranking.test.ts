@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { nadajNumer, wlascicieleNumerow, type Ranking } from "@/lib/moduly/ranking";
+import { dopelnijOstatni, nadajNumer, wlascicieleNumerow, type Ranking } from "@/lib/moduly/ranking";
 
 const KODY = ["a", "b", "c", "d"];
 
@@ -53,5 +53,40 @@ describe("nadawanie numerów", () => {
     expect(mapa.get(1)).toBe("a");
     expect(mapa.get(3)).toBe("c");
     expect(mapa.get(2)).toBeUndefined();
+  });
+});
+
+/**
+ * Dopełnienie czwartego miejsca.
+ *
+ * Czwarte stuknięcie nie niesie informacji: przy trzech nadanych numerach
+ * czwarty jest wymuszony. Zapis wychodzi identyczny jak przy ręcznym nadaniu,
+ * więc silnik liczy dokładnie to samo, a uczestnik ma o osiemdziesiąt jeden
+ * stuknięć mniej w całym programie.
+ */
+describe("czwarte miejsce dopełnia się samo", () => {
+  const kody = ["a", "b", "c", "d"];
+
+  it("trzy nadane numery domykają zestaw", () => {
+    const po = dopelnijOstatni({ a: 1, b: 2, c: 3 }, kody);
+    expect(po).toEqual({ a: 1, b: 2, c: 3, d: 4 });
+  });
+
+  it("dopełnia niezależnie od tego, którego numeru brakuje", () => {
+    expect(dopelnijOstatni({ a: 1, b: 4, c: 3 }, kody)).toEqual({ a: 1, b: 4, c: 3, d: 2 });
+  });
+
+  it("przy dwóch nadanych nie zgaduje", () => {
+    expect(dopelnijOstatni({ a: 1, b: 2 }, kody)).toEqual({ a: 1, b: 2 });
+  });
+
+  it("pełny zestaw zostaje bez zmian", () => {
+    const pelny = { a: 1, b: 2, c: 3, d: 4 };
+    expect(dopelnijOstatni(pelny, kody)).toEqual(pelny);
+  });
+
+  it("dopełnienie daje ten sam wynik co ręczne nadanie czwartego numeru", () => {
+    const recznie = nadajNumer({ a: 1, b: 2, c: 3 }, "d", 4);
+    expect(dopelnijOstatni({ a: 1, b: 2, c: 3 }, kody)).toEqual(recznie);
   });
 });
