@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { marked } from "marked";
 import { pobierzKarte } from "@/lib/raport/serwer";
+import { ulozKarte } from "@/lib/karty/uklad";
+import { BlokKarty } from "@/components/karta/Bloki";
+import { POZIOM, STUDIA, ZAGROZENIE } from "@/lib/karty/etykiety";
+import { towarzyszeZKlastra } from "@/lib/karty/klastry";
 
 export const dynamic = "force-dynamic";
 
@@ -15,17 +18,10 @@ export default async function Strona({
   const karta = await pobierzKarte(kod, zawod);
   if (!karta) notFound();
 
-  const poziomy: Record<string, string> = {
-    szybki: "szybkie wejście",
-    sredni: "średnia droga",
-    dlugi: "długa droga",
-    bardzo_dlugi: "bardzo długa droga",
-  };
-  const studia: Record<string, string> = {
-    tak: "wymaga studiów",
-    nie: "bez studiów",
-    czesciowo: "studia częściowo",
-  };
+  const bloki = ulozKarte(karta.sekcje);
+  // Zawody z jednego klastra rozstrzyga sie czytaniem obu kart obok siebie,
+  // a nie na zmiane. Wejscie w porownanie stoi przy karcie, nie tylko w raporcie.
+  const obok = await towarzyszeZKlastra(karta.kod, karta.klasterKod);
 
   return (
     <article className="flex flex-col gap-6">
@@ -44,7 +40,7 @@ export default async function Strona({
           className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-akcent/20 blur-3xl"
         />
         <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">
-          {poziomy[karta.poziom] ?? karta.poziom} · {studia[karta.studia] ?? karta.studia}
+          {POZIOM[karta.poziom] ?? karta.poziom} · {STUDIA[karta.studia] ?? karta.studia}
         </p>
         <h1 className="mt-3 text-naglowek-duzy font-extrabold leading-tight tracking-tight">
           <span className="gradient-tytul">{karta.tytul}</span>
@@ -61,15 +57,31 @@ export default async function Strona({
         ) : null}
       </header>
 
-      <div className="szklo flex flex-col gap-2 p-6 sm:p-9">
-        {karta.sekcje.map((s) => (
-          <section key={s.tytul}>
-            <h2 className="text-naglowek-maly font-bold leading-snug">{s.tytul}</h2>
-            <div
-              className="karta mt-3"
-              dangerouslySetInnerHTML={{ __html: marked.parse(s.tresc, { async: false }) }}
-            />
-          </section>
+      {obok.length > 0 ? (
+        <aside className="szklo p-6">
+          <p className="text-male text-atrament-sciszony">
+            {obok.length === 1
+              ? "Ten zawód trudno odróżnić od jednego innego na podstawie samych odpowiedzi."
+              : "Ten zawód trudno odróżnić od kilku innych na podstawie samych odpowiedzi."}{" "}
+            Łatwiej to rozstrzygnąć, czytając obie karty obok siebie.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {obok.map((z) => (
+              <Link
+                key={z.kod}
+                href={`/u/${kod}/porownanie?a=${karta.kod}&b=${z.kod}`}
+                className="przejscie inline-flex min-h-11 items-center gap-2 rounded-xl bg-akcent px-5 text-male font-semibold text-na-akcencie hover:bg-akcent-ciemny"
+              >
+                Porównaj z: {z.nazwa} <span aria-hidden>→</span>
+              </Link>
+            ))}
+          </div>
+        </aside>
+      ) : null}
+
+      <div className="szklo flex flex-col p-6 sm:p-9">
+        {bloki.map((b, i) => (
+          <BlokKarty key={`${b.rodzaj}-${i}`} blok={b} stopienZagrozenia={ZAGROZENIE[karta.zagrozenie]} />
         ))}
       </div>
 

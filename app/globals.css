@@ -253,6 +253,25 @@ body::after {
     0 16px 36px -20px rgba(29, 91, 255, 0.55);
 }
 
+/**
+ * Porównanie dwóch kart zawodów.
+ *
+ * Na wąskim ekranie widać jedną kolumnę, wybraną przełącznikiem; na szerokim
+ * obie naraz. Przełączanie klasą, a nie odmontowaniem, bo dzięki temu wiersze
+ * zostają w drzewie i da się wrócić do tego samego pola po przełączeniu.
+ */
+[data-strona="a"] .kolumna-b,
+[data-strona="b"] .kolumna-a {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  [data-strona] .kolumna-a,
+  [data-strona] .kolumna-b {
+    display: block;
+  }
+}
+
 /** Nagłówek z gradientem: druga linia jaśnieje. */
 .gradient-tytul {
   background: linear-gradient(104deg, #1d5bff 0%, #8b5cf6 42%, #ff2d55 78%, #ffc400 100%);
