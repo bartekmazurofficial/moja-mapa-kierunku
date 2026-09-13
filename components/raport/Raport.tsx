@@ -32,7 +32,10 @@ import {
   Zawody,
 } from "./Sekcje";
 
+type KodZakladki = "podsumowanie" | "o_mnie" | "zawody" | "kierunki";
+
 export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kodUczestnika: string }) {
+  const [zakladka, ustawZakladke] = useState<KodZakladki>("podsumowanie");
   const { raport } = widok;
   const [oceny, ustawOceny] = useState<Record<string, string>>(widok.oceny);
   const [pytanie, ustawPytanie] = useState(widok.pytanie ?? "");
@@ -208,6 +211,33 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
   };
 
   const widoczneSekcje = KOLEJNOSC_WYSWIETLANIA.filter((id) => dostepne.has(id));
+  /**
+   * Cztery zakladki zamiast jednej dlugiej strony.
+   *
+   * Raport ma dwadziescia sekcji i w jednej kolumnie czytalo sie to jak
+   * dokument, a nie jak narzedzie. Podzial jest ten sam, co w makiecie:
+   * podsumowanie na wejscie, moduly do czytania po kolei, zawody i kierunki
+   * jako dwie osobne listy. Zakladka pusta nie pokazuje sie wcale.
+   */
+  const SEKCJE_ZAKLADKI: Record<KodZakladki, string[]> = {
+    podsumowanie: [],
+    o_mnie: [
+      "punkt_startu", "co_mnie_interesuje", "czego_nie_sprawdzilem", "jak_dzialam",
+      "w_czym_dobry", "lubie_a_wychodzi", "srodowisko", "wartosci", "ksztalt_zycia",
+      "wizja_zycia", "czego_nie_chce", "na_co_gotow", "profil_w_jednym_ekranie",
+      "umiejetnosci",
+    ],
+    zawody: ["obszary", "zawody", "czego_unikac"],
+    kierunki: ["kierunki", "trzy_drogi", "moja_decyzja", "pierwsze_kroki", "notatka"],
+  };
+  const sekcjeZakladki = (k: KodZakladki) =>
+    widoczneSekcje.filter((id) => SEKCJE_ZAKLADKI[k].includes(id));
+  const ZAKLADKI: Array<{ kod: KodZakladki; nazwa: string; ile: number | null }> = [
+    { kod: "podsumowanie", nazwa: "Podsumowanie", ile: null },
+    { kod: "o_mnie", nazwa: "O mnie", ile: sekcjeZakladki("o_mnie").length },
+    { kod: "zawody", nazwa: "Zawody", ile: null },
+    { kod: "kierunki", nazwa: "Kierunki i drogi", ile: null },
+  ];
   const mozePobracPdf = dostepne.has("trzy_drogi");
   const wszystkichSekcji = KOLEJNOSC_WYSWIETLANIA.length;
 
@@ -257,9 +287,89 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
         </p>
       ) : null}
 
+      {/* ZAKŁADKI: cztery wejścia zamiast jednej długiej strony. */}
+      <nav aria-label="Części raportu" className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1">
+        {ZAKLADKI.map((z) => {
+          const aktywna = z.kod === zakladka;
+          return (
+            <button
+              key={z.kod}
+              type="button"
+              onClick={() => ustawZakladke(z.kod)}
+              aria-current={aktywna ? "page" : undefined}
+              className={`przejscie flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-male font-bold ${
+                aktywna
+                  ? "przycisk-gradient"
+                  : "bg-panel/80 text-atrament-sciszony hover:bg-panel hover:text-atrament"
+              }`}
+            >
+              {z.nazwa}
+              {z.ile ? (
+                <span
+                  className={`rounded-full px-2 py-0.5 text-drobne font-extrabold tabular-nums ${
+                    aktywna ? "bg-white/25" : "bg-akcent-tlo text-akcent-jasny"
+                  }`}
+                >
+                  {z.ile}
+                </span>
+              ) : null}
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* KIM JESTEŚ: jedno zdanie, które wraca w każdym module. */}
+      {zakladka === "podsumowanie" && raport.profil_w_jednym_ekranie ? (
+        <section className="szklo relative overflow-hidden p-6 sm:p-9">
+          <p className="text-drobne font-bold uppercase tracking-[0.24em] text-atrament-slaby">
+            Kim jesteś
+          </p>
+          <h2
+            className={`mt-3 max-w-[26ch] font-extrabold leading-[1.08] tracking-[-0.025em] text-atrament ${
+              (raport.profil_w_jednym_ekranie.zdania[0] ?? "").length > 64
+                ? "text-naglowek sm:text-naglowek-duzy"
+                : "text-naglowek-duzy sm:text-tytul"
+            }`}
+          >
+            <DwaTonyRaportu tekst={raport.profil_w_jednym_ekranie.zdania[0] ?? ""} />
+          </h2>
+          {raport.profil_w_jednym_ekranie.zdania.length > 1 ? (
+            <div className="proza mt-5 max-w-artykul">
+              {raport.profil_w_jednym_ekranie.zdania.slice(1, 4).map((z, i) => (
+                <p key={i}>{z}</p>
+              ))}
+            </div>
+          ) : null}
+          {raport.trzy_drogi ? (
+            <ul className="mt-7 flex flex-wrap gap-3">
+              {[
+                raport.kierunki?.sensStudiow ? ZNACZNIK_STUDIOW[raport.kierunki.sensStudiow] : null,
+                `${raport.trzy_drogi.drogi.length} drogi, równorzędne`,
+                raport.trzy_drogi.flagi.length > 0 ? `${raport.trzy_drogi.flagi.length} do rozstrzygnięcia` : null,
+              ]
+                .filter((x): x is string => Boolean(x))
+                .map((t) => (
+                  <li
+                    key={t}
+                    className="rounded-full bg-panel px-4 py-2.5 text-male font-semibold text-atrament-sciszony shadow-[0_2px_10px_-5px_rgba(20,27,52,0.25)]"
+                  >
+                    {t}
+                  </li>
+                ))}
+            </ul>
+          ) : null}
+          <p aria-hidden className="odreczny mt-6 sm:absolute sm:bottom-8 sm:right-8 sm:mt-0 sm:text-right">
+            Twoja mapa.
+            <br />
+            Twoje tempo.
+          </p>
+        </section>
+      ) : null}
+
       {/* SKRÓT: siatka płyt różnej wielkości. Każda pokazuje kawałek jednej
           sekcji i prowadzi do niej w pełnym raporcie niżej. Sekcja zamknięta
           jest widoczna i podpisana, kiedy się otworzy. */}
+      {zakladka === "podsumowanie" ? (
       <div className="grid gap-4 lg:grid-cols-12">
         <Plyta szer="lg:col-span-4" tinta="#e9f0ff" znak="slowa" tytul="Twoje słowa" dostepna>
           {pierwszeSlowa ? (
@@ -492,15 +602,21 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
           </Plyta>
         ) : null}
       </div>
+      ) : null}
 
-      {/* PEŁNY RAPORT: sekcja po sekcji, każda do rozwinięcia. */}
+      {/* SEKCJE ZAKŁADKI: każda do rozwinięcia, w kolejności raportu. */}
+      {zakladka === "podsumowanie" ? null : (
       <section>
         <div className="mb-3 flex items-end justify-between gap-4 px-1">
-          <h2 className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">Pełny raport, sekcja po sekcji</h2>
-          <p className="text-drobne text-atrament-slaby">{widoczneSekcje.length} otwartych sekcji</p>
+          <h2 className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
+            {ZAKLADKI.find((z) => z.kod === zakladka)?.nazwa}
+          </h2>
+          <p className="text-drobne text-atrament-slaby">
+            {sekcjeZakladki(zakladka).length} z {widoczneSekcje.length} otwartych sekcji
+          </p>
         </div>
 
-        {raport.profil_w_jednym_ekranie ? (
+        {raport.profil_w_jednym_ekranie && zakladka === "o_mnie" ? (
           <section id="sekcja-profil_w_jednym_ekranie" className="szklo szklo-akcent mb-4 p-6 sm:p-8">
             <h2 className="text-naglowek font-extrabold leading-snug tracking-tight">Mój profil w jednym ekranie</h2>
             <div className="proza mt-4">
@@ -511,8 +627,14 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
           </section>
         ) : null}
 
+        {sekcjeZakladki(zakladka).length === 0 ? (
+          <p className="szklo p-6 text-tresc leading-relaxed text-atrament-sciszony">
+            Ta część otworzy się na kolejnych spotkaniach. Zakładka jest już tutaj, żebyś wiedział,
+            co Cię czeka.
+          </p>
+        ) : null}
         <div className="grid items-start gap-3 lg:grid-cols-2">
-          {widoczneSekcje
+          {sekcjeZakladki(zakladka)
             .filter((id) => id !== "profil_w_jednym_ekranie")
             .map((id) => {
               const def = SEKCJE_PO_ID.get(id)!;
@@ -551,8 +673,9 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
             })}
         </div>
       </section>
+      )}
 
-      {dostepne.has("zawody") ? (
+      {zakladka === "podsumowanie" && dostepne.has("zawody") ? (
         <section className="szklo p-6">
           <h2 className="text-naglowek-maly font-bold">Pytanie na rozmowę indywidualną</h2>
           <p className="mt-1 text-male text-atrament-sciszony">
@@ -605,6 +728,30 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
     </div>
   );
 }
+
+/**
+ * Zdanie profilu z gradientem na drugiej polowie, jak naglowki modulow.
+ * Znak zapytania tu nie wystepuje, wiec dzielimy po slowach i tyle.
+ */
+function DwaTonyRaportu({ tekst }: { tekst: string }) {
+  const slowa = tekst.trim().split(/\s+/).filter(Boolean);
+  if (slowa.length < 3) return <>{tekst}</>;
+  const ile = Math.max(1, Math.floor(slowa.length * 0.45));
+  return (
+    <>
+      <span className="block">{slowa.slice(0, -ile).join(" ")}</span>
+      <span className="gradient-tytul block">{slowa.slice(-ile).join(" ")}</span>
+    </>
+  );
+}
+
+/** Werdykt o studiach jako jedno slowo do znacznika w naglowku podsumowania. */
+const ZNACZNIK_STUDIOW: Record<string, string> = {
+  warunek: "Studia są warunkiem",
+  czesc_drog: "Studia przy części dróg",
+  jedna_z_opcji: "Studia to jedna z opcji",
+  niepotrzebne: "Studia nie są potrzebne",
+};
 
 function skroc(tekst: string, ile: number): string {
   const t = tekst.trim();

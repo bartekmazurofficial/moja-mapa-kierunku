@@ -12,7 +12,8 @@
 import { describe, expect, it } from "vitest";
 import { PYTANIA_A0 } from "@/lib/content/a0";
 import { zakonczenieWedlugEtapu, korektaMiekkaA0 } from "@/lib/engine/layer0-start";
-import type { PunktStartu, Zawod } from "@/lib/engine/typy";
+import type { PunktStartu } from "@/lib/engine/typy";
+import type { Zawod } from "@/lib/domain/typy";
 
 const ETAPY_SZKOLNE = ["podstawowka", "liceum_1_2", "liceum_maturalna", "branzowa"];
 const ETAPY_POZASZKOLNE = [
