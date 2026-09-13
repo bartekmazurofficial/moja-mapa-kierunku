@@ -56,14 +56,14 @@ export default async function Strona({
       </nav>
 
       {/* NAGŁÓWEK */}
-      <header className="szklo relative overflow-hidden p-7 sm:p-9 lg:pr-[19rem]">
+      <header className="szklo relative overflow-hidden p-5 sm:p-7 lg:pr-[15rem]">
         <div
           aria-hidden
           className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-akcent/20 blur-3xl"
         />
         {ilustracja ? (
-          <div aria-hidden className="pointer-events-none absolute right-8 top-8 hidden lg:block">
-            <Obraz klucz={ilustracja} rozmiar={208} />
+          <div aria-hidden className="pointer-events-none absolute right-6 top-6 hidden lg:block">
+            <Obraz klucz={ilustracja} rozmiar={160} />
           </div>
         ) : null}
 
@@ -74,28 +74,27 @@ export default async function Strona({
 
         {streszczenie?.rodzaj === "markdown" ? (
           <>
-            <p className="mt-6 text-tresc-duza font-bold text-atrament">Co to za praca naprawdę?</p>
-            <div className="mt-1 max-w-czytelna">
+            <p className="mt-4 text-tresc font-bold text-atrament">Co to za praca naprawdę?</p>
+            <div className="mt-0.5 max-w-czytelna">
               <Proza tresc={streszczenie.tresc} />
             </div>
           </>
         ) : null}
 
         {karta.zdanieKierunkowe ? (
-          <p className="mt-6 max-w-czytelna border-l-2 border-akcent pl-4 text-tresc-duza font-semibold leading-relaxed">
+          <p className="mt-4 max-w-czytelna border-l-2 border-akcent pl-4 text-tresc font-semibold leading-relaxed">
             {karta.zdanieKierunkowe}
           </p>
         ) : null}
 
         {!karta.pelna ? (
-          <p className="mt-5 max-w-czytelna rounded-xl border border-linia bg-tlo/50 px-4 py-3 text-male text-atrament-sciszony">
+          <p className="mt-4 max-w-czytelna rounded-xl border border-linia bg-tlo/50 px-4 py-3 text-male text-atrament-sciszony">
             Ta karta jest na razie w wersji skróconej. Pełny opis powstaje.
           </p>
         ) : null}
-      </header>
 
-      {/* TRZY ZNACZNIKI */}
-      <ul className="grid gap-3 sm:grid-cols-3">
+        {/* TRZY ZNACZNIKI: to samo, co w nagłówku mockupu, w tej samej płycie. */}
+        <ul className="mt-5 grid gap-2.5 sm:grid-cols-3">
         <Znacznik
           barwa={karta.flaga === "trampolina" ? "zielony" : "niebieski"}
           tytul={karta.flaga === "trampolina" ? "Dobre pierwsze miejsce pracy" : "Zawód docelowy"}
@@ -114,7 +113,8 @@ export default async function Strona({
           podpis="Jak ten zawód wygląda za dziesięć lat"
           ikona="przyszlosc"
         />
-      </ul>
+        </ul>
+      </header>
 
       {obok.length > 0 ? (
         <aside className="szklo p-6">
@@ -138,59 +138,52 @@ export default async function Strona({
         </aside>
       ) : null}
 
-      {/* Siatka: dwanaście kolumn, płyty różnej szerokości. Duża sekcja
-          dostaje więcej miejsca, mała mniej, i nic nie stoi w jednej długiej
-          kolumnie. Brakująca płyta po prostu się nie renderuje. */}
-      <div className="grid gap-5 lg:grid-cols-12">
-        <Karta blok={w("czym_jest")} tytul="Czym ta praca jest naprawdę" slot="czym_jest" szer="lg:col-span-7" />
-        <Karta blok={w("skala")} tytul="Skala zawodu" slot="skala" szer="lg:col-span-5" />
-
-        <Karta blok={w("dzien")} tytul="Jak wygląda zwykły dzień?" slot="dzien" szer="lg:col-span-6" />
-        <Karta blok={w("czas")} tytul="Na co naprawdę idzie czas?" slot="czas" szer="lg:col-span-6" />
-
-        <Karta blok={w("obciazenie")} tytul="Sześć wymiarów obciążenia" slot="obciazenie" szer="lg:col-span-12" />
-
-        <Karta blok={w("miekkie")} tytul="Jakie umiejętności są potrzebne?" slot="miekkie" szer="lg:col-span-7" />
+      {/* Tablica, nie kolumna.
+          Karta ma dwadzieścia sekcji i w jednej kolumnie rozciągała się na
+          prawie dziewięć ekranów. Układ wielokolumnowy pakuje je obok siebie:
+          płyta nigdy nie pęka między kolumnami, a to, co najważniejsze przy
+          decyzji, stoi na początku pierwszej kolumny. */}
+      <div className="gap-4 [column-fill:balance] md:columns-2 xl:columns-3 [&>*]:mb-4 [&>*]:break-inside-avoid">
+        <Karta blok={w("czym_jest")} tytul="Czym ta praca jest naprawdę" slot="czym_jest" />
+        <Karta blok={w("obciazenie")} tytul="Sześć wymiarów obciążenia" slot="obciazenie" />
+        <Karta blok={w("pieniadze")} tytul="Realne zarobki na etapach" slot="pieniadze" />
+        <Karta blok={w("czas")} tytul="Na co naprawdę idzie czas?" slot="czas" />
+        <Karta blok={w("dzien")} tytul="Jak wygląda zwykły dzień?" slot="dzien" />
+        <Karta blok={w("droga")} tytul="Droga dojścia" slot="droga" />
         <Karta
           blok={w("koszt")}
           tytul="Koszt wejścia"
           slot="koszt"
-          szer="lg:col-span-5"
           nad={
             <p className="mb-3 inline-block rounded-full border border-koszt/30 bg-koszt-tlo px-3.5 py-1.5 text-male font-semibold text-koszt">
               {KOSZT[karta.koszt] ?? karta.koszt}
             </p>
           }
         />
-
-        <Karta blok={w("twarde")} tytul="Co trzeba umieć" slot="twarde" szer="lg:col-span-6" />
-        <Karta blok={w("narzedzia")} tytul="Narzędzia i programy, wyjaśnione" slot="narzedzia" szer="lg:col-span-6" />
-
-        <Karta blok={w("pieniadze")} tytul="Realne zarobki na etapach" slot="pieniadze" szer="lg:col-span-12" />
-
-        <Karta blok={w("droga")} tytul="Droga dojścia" slot="droga" szer="lg:col-span-7" />
         <Karta
           blok={w("zagrozenie")}
           tytul="Czy ten zawód jest zagrożony"
           slot="zagrozenie"
-          szer="lg:col-span-5"
           stopien={ZAGROZENIE[karta.zagrozenie]}
         />
-
-        <Karta blok={w("czlowiek")} tytul="Co ta praca robi z człowiekiem" slot="czlowiek" szer="lg:col-span-6" />
-        <Karta blok={w("kto")} tytul="Kto może się tu nie odnaleźć?" slot="kto" szer="lg:col-span-6" />
-
-        <Karta blok={w("mity")} tytul="Trzy mity" slot="mity" szer="lg:col-span-7" />
-        <Karta blok={w("rok")} tytul="Jak wygląda zwykły rok?" slot="rok" szer="lg:col-span-5" />
-
-        <Karta blok={w("dalej")} tytul="Co dalej z tego zawodu" slot="dalej" szer="lg:col-span-6" />
-        <Karta blok={w("pokrewne")} tytul="Zawody pokrewne" slot="pokrewne" szer="lg:col-span-6" />
+        <Karta blok={w("miekkie")} tytul="Jakie umiejętności są potrzebne?" slot="miekkie" />
+        <Karta blok={w("kto")} tytul="Kto może się tu nie odnaleźć?" slot="kto" />
+        <Karta blok={w("czlowiek")} tytul="Co ta praca robi z człowiekiem" slot="czlowiek" />
+        <Karta blok={w("skala")} tytul="Skala zawodu" slot="skala" />
+        <Karta blok={w("rok")} tytul="Jak wygląda zwykły rok?" slot="rok" />
+        <Karta blok={w("twarde")} tytul="Co trzeba umieć" slot="twarde" />
+        <Karta blok={w("narzedzia")} tytul="Narzędzia i programy, wyjaśnione" slot="narzedzia" />
+        <Karta blok={w("mity")} tytul="Trzy mity" slot="mity" />
+        <Karta blok={w("dalej")} tytul="Co dalej z tego zawodu" slot="dalej" />
+        <Karta blok={w("pokrewne")} tytul="Zawody pokrewne" slot="pokrewne" />
       </div>
 
       {reszta.length > 0 ? (
-        <div className="szklo flex flex-col gap-8 p-6 sm:p-8">
+        <div className="gap-4 lg:columns-2 [&>*]:mb-4 [&>*]:break-inside-avoid">
           {reszta.map((b, i) => (
-            <BlokKarty key={`${b.rodzaj}-${i}`} blok={b} />
+            <div key={`${b.rodzaj}-${i}`} className="szklo min-w-0 p-5">
+              <BlokKarty blok={b} />
+            </div>
           ))}
         </div>
       ) : null}
@@ -258,22 +251,19 @@ function Karta({
   blok,
   tytul,
   slot,
-  szer,
   stopien,
   nad,
 }: {
   blok: Blok | null;
   tytul: string;
   slot: string;
-  /** Szerokość w siatce dwunastu kolumn. */
-  szer: string;
   stopien?: string;
   /** Treść nad blokiem, na przykład znacznik słownikowy z bazy zawodów. */
   nad?: React.ReactNode;
 }) {
   if (!blok) return null;
   return (
-    <div className={`szklo min-w-0 p-5 sm:p-6 ${szer}`}>
+    <div className="szklo min-w-0 p-5">
       <div className="mb-4 flex items-center gap-3">
         <ZnakSekcji slot={slot} />
         <h2 className="text-naglowek-maly font-bold leading-tight text-atrament">{tytul}</h2>
@@ -317,7 +307,7 @@ function Znacznik({
   const b = BARWY[barwa] ?? BARWY.niebieski;
   return (
     <li
-      className="flex items-start gap-3 rounded-karta border px-4 py-4"
+      className="flex items-start gap-3 rounded-karta border px-3.5 py-3"
       style={{ borderColor: b.obwod, background: b.tlo }}
     >
       <span

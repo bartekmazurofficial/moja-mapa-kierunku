@@ -16,7 +16,7 @@ import { PYTANIA_A0, INSTRUKCJA_A0 } from "../content/a0";
 import { ODDECHY } from "../content/wspolne";
 import { FILTRY_A5, OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_M1 } from "../domain/slowniki";
 import type { CzescModulu, Ekran, KodModulu, Pozycja } from "./typy";
-import type { PlanModulu } from "./plan";
+import { zbudujPlan, type PlanModulu } from "./plan";
 
 /** Wynik czesci wczesniejszych, potrzebny do zbudowania czesci zaleznych. */
 export interface KontekstModulu {
@@ -49,6 +49,31 @@ export const NAZWY_MODULOW: Record<KodModulu, string> = {
  * jak chcesz zyc".
  */
 export const KOLEJNOSC_MODULOW: KodModulu[] = ["A0", "A1", "A3", "A2", "A4", "M1", "A5"];
+
+/**
+ * Ile pozycji ma caly modul. Do paska postepu na liscie modulow.
+ *
+ * Liczba nie zalezy od wylosowanego planu, wiec budujemy czesci raz, z planem
+ * domyslnym. Pozycje warunkowe licza sie do sumy: sa tylko dwie, obie w A0,
+ * wiec dla szesciu modulow liczba jest dokladna, a dla A0 jest gornym
+ * ograniczeniem. Sygnalem „skonczone" jest i tak marker domkniecia czesci,
+ * a nie ten ulamek.
+ */
+const POZYCJI_W_MODULE = new Map<KodModulu, number>();
+
+export function liczbaPozycjiModulu(modul: KodModulu): number {
+  const zapamietane = POZYCJI_W_MODULE.get(modul);
+  if (zapamietane !== undefined) return zapamietane;
+  const plan = zbudujPlan(modul);
+  let ile = 0;
+  for (const czesc of CZESCI_MODULOW[modul]) {
+    for (const ekran of zbudujCzesc(modul, czesc, plan, {}).ekrany) {
+      ile += (ekran.pozycje ?? []).length;
+    }
+  }
+  POZYCJI_W_MODULE.set(modul, ile);
+  return ile;
+}
 
 /**
  * Ekran oddechu w dlugim module.

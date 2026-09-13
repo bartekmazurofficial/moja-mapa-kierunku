@@ -17,6 +17,7 @@
  */
 
 import { marked } from "marked";
+import { Zwijane } from "./Zwijane";
 import type {
   Blok,
   KrokDrogi,
@@ -126,7 +127,9 @@ function Sekcja({ tytul, children }: { tytul: string; children: React.ReactNode 
       {tytul ? (
         <h2 className="mb-4 text-naglowek-maly font-bold leading-tight text-atrament">{tytul}</h2>
       ) : null}
-      {children}
+      {/* Sekcja dłuższa niż kilka akapitów zwija się do „Rozwiń". Krótka nie
+          dostaje przycisku wcale: o tym decyduje zmierzona wysokość. */}
+      <Zwijane>{children}</Zwijane>
     </section>
   );
 }

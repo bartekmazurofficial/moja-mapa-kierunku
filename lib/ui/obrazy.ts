@@ -24,19 +24,45 @@
  * Co czeka na pliki (spis tresci w GRAFIKI_DO_WYGENEROWANIA.md):
  *   - bieguny osi A3: `a3-INI-A`, `a3-INI-B`, ... (13 osi po dwa)
  *   - bieguny wymiarow M1: `m1w-CEN-A`, `m1w-CEN-B`, ... (12 po dwa)
- *   - wartosci A4: `a4-PIE`, `a4-STA`, ... (12)
  *   - warunki A5: `a5-F01` ... `a5-F43` albo same bloki `a5-1` ... `a5-7`
- *   - kompetencje A2: `a2-1` ... `a2-30`
  */
 const Z_OBRAZEM = new Set<string>([
   ...Array.from({ length: 24 }, (_, i) => `a1-${i + 1}`),
+  ...Array.from({ length: 30 }, (_, i) => `a2-${i + 1}`),
   ...["INI", "STR", "TEM", "SAM", "GLE", "RYZ", "DEC", "KON", "NOW", "NAP", "RYT", "OTO", "EFE"].map(
     (kod) => `a3-${kod}`,
+  ),
+  ...["PIE", "STA", "WOL", "ROZ", "WPL", "SEN", "UZN", "REL", "CZA", "MIS", "ZMI", "ZAS"].map(
+    (kod) => `a4-${kod}`,
   ),
 ]);
 
 export function maObraz(klucz: string): boolean {
   return Z_OBRAZEM.has(klucz);
+}
+
+/**
+ * Klucz ilustracji bieguna pary.
+ *
+ * Gdy strony maja rozne kategorie (wartosci A4), ilustruje je sama kategoria.
+ * Gdy dziela jedna os (A3, M1), biegun dostaje przyrostek `-A` albo `-B`.
+ * Null, gdy pliku nie ma: kafel zostaje bez obrazu i nie udaje, ze cos tam jest.
+ */
+export function kluczBieguna(
+  ikonaA: string | undefined,
+  ikonaB: string | undefined,
+  ktory: 0 | 1,
+): string | null {
+  const ikona = ktory === 0 ? ikonaA : ikonaB;
+  if (!ikona) return null;
+  const rozne = Boolean(ikonaA && ikonaB && ikonaA !== ikonaB);
+  const klucz = rozne ? ikona : `${ikona}-${ktory === 0 ? "A" : "B"}`;
+  return maObraz(klucz) ? klucz : null;
+}
+
+/** Czy obie strony pary maja wlasna ilustracje. Wtedy pas nad nimi jest zbedny. */
+export function paraMaObrazy(ikonaA: string | undefined, ikonaB: string | undefined): boolean {
+  return Boolean(kluczBieguna(ikonaA, ikonaB, 0) && kluczBieguna(ikonaA, ikonaB, 1));
 }
 
 /** Adres kafla (256 px). Null, gdy kategoria nie ma jeszcze ilustracji. */

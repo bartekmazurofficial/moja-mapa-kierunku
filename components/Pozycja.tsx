@@ -11,10 +11,10 @@
  * koloru jako nosnika informacji.
  */
 
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
 import { Ikona, Obraz } from "@/components/Ikona";
-import { maObraz } from "@/lib/ui/obrazy";
+import { kluczBieguna } from "@/lib/ui/obrazy";
 import { kolorWyboru, paraWyboru, type Kolor } from "@/lib/ui/kolory";
 import { kolejnoscDoPokazania, naMiejsca, przenies } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
@@ -186,19 +186,35 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
   const zapisane = wartosc as Record<string, number> | undefined;
   const ustawione = Boolean(zapisane && Object.keys(zapisane).length === opcje.length);
 
-  const kolejnosc = useMemo(
+  const kody = useMemo(
     () => kolejnoscDoPokazania(opcje.map((o) => o.kod), zapisane),
     [opcje, zapisane],
   );
 
-  // Kolejność pokazywana w trakcie przeciągania, zanim zapadnie decyzja.
-  const [podglad, ustawPodglad] = useState<string[] | null>(null);
-  const [chwytany, ustawChwytany] = useState<string | null>(null);
+  /**
+   * Stan przeciągania: który wiersz, skąd, dokąd i o ile palec go przesunął.
+   *
+   * **Kolejność w drzewie nie zmienia się w trakcie przeciągania**, zmieniają
+   * się tylko przesunięcia. Wcześniej przestawiałem wiersze na bieżąco i przez
+   * to przeglądarka gubiła przechwycenie wskaźnika: węzeł z przechwyceniem
+   * wędrował w drzewie, przechwycenie znikało i chwyt przeskakiwał na sąsiedni
+   * wiersz. Kolejność zapisujemy dopiero po puszczeniu.
+   */
+  const [przeciaganie, ustawPrzeciaganie] = useState<{
+    kod: string;
+    od: number;
+    do: number;
+    dy: number;
+  } | null>(null);
 
-  const kody = podglad ?? kolejnosc;
-  const widoczne = kody
-    .map((k) => opcje.find((o) => o.kod === k))
-    .filter((o): o is (typeof opcje)[number] => Boolean(o));
+  const lista = useRef<HTMLOListElement | null>(null);
+  /** Wymiary wierszy zmierzone raz, na starcie przeciągania. */
+  const miary = useRef<{ srodki: number[]; wysokosci: number[]; odstep: number }>({
+    srodki: [],
+    wysokosci: [],
+    odstep: 0,
+  });
+  const startY = useRef(0);
 
   function zapisz(noweKody: string[]) {
     naZmiane(naMiejsca(noweKody));
@@ -206,27 +222,64 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
   }
 
   function przesun(kod: string, oIle: number) {
-    const lista = przenies(kody, kod, kody.indexOf(kod) + oIle);
-    ustawPodglad(null);
-    zapisz(lista);
+    zapisz(przenies(kody, kod, kody.indexOf(kod) + oIle));
   }
 
-  function naRuch(e: React.PointerEvent<HTMLElement>) {
-    if (!chwytany) return;
-    const pod = document.elementFromPoint(e.clientX, e.clientY);
-    const wiersz = pod?.closest("[data-kod]") as HTMLElement | null;
-    const kodCelu = wiersz?.dataset.kod;
-    if (!kodCelu || kodCelu === chwytany) return;
-    ustawPodglad(przenies(kody, chwytany, kody.indexOf(kodCelu)));
+  function zacznij(e: React.PointerEvent<HTMLButtonElement>, kod: string, od: number) {
+    const wiersze = [...(lista.current?.querySelectorAll<HTMLElement>("li[data-kod]") ?? [])];
+    if (wiersze.length === 0) return;
+    const prostokaty = wiersze.map((w) => w.getBoundingClientRect());
+    miary.current = {
+      srodki: prostokaty.map((r) => r.top + r.height / 2),
+      wysokosci: prostokaty.map((r) => r.height),
+      odstep: prostokaty.length > 1 ? prostokaty[1].top - prostokaty[0].bottom : 0,
+    };
+    startY.current = e.clientY;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    ustawPrzeciaganie({ kod, od, do: od, dy: 0 });
   }
 
-  function naKoniec() {
-    if (!chwytany) return;
-    ustawChwytany(null);
-    if (podglad) {
-      ustawPodglad(null);
-      zapisz(podglad);
+  function wTrakcie(e: React.PointerEvent<HTMLButtonElement>) {
+    if (!przeciaganie) return;
+    const dy = e.clientY - startY.current;
+    const { srodki } = miary.current;
+    const srodekChwytanego = srodki[przeciaganie.od] + dy;
+
+    // Ile środków sąsiadów minął chwytany wiersz. Liczymy z wymiarów zmierzonych
+    // na starcie, bo w trakcie nic się w drzewie nie przesuwa.
+    let cel = przeciaganie.od;
+    if (dy < 0) {
+      for (let i = przeciaganie.od - 1; i >= 0; i--) {
+        if (srodekChwytanego < srodki[i]) cel = i;
+        else break;
+      }
+    } else {
+      for (let i = przeciaganie.od + 1; i < srodki.length; i++) {
+        if (srodekChwytanego > srodki[i]) cel = i;
+        else break;
+      }
     }
+    if (dy !== przeciaganie.dy || cel !== przeciaganie.do) {
+      ustawPrzeciaganie({ ...przeciaganie, dy, do: cel });
+    }
+  }
+
+  function skoncz() {
+    if (!przeciaganie) return;
+    const { kod, od, do: cel } = przeciaganie;
+    ustawPrzeciaganie(null);
+    if (cel !== od) zapisz(przenies(kody, kod, cel));
+  }
+
+  /** O ile przesunąć wiersz, żeby zrobić miejsce chwytanemu. */
+  function przesuniecie(i: number): number {
+    const p = przeciaganie;
+    if (!p) return 0;
+    if (i === p.od) return p.dy;
+    const skok = miary.current.wysokosci[p.od] + miary.current.odstep;
+    if (p.do > p.od && i > p.od && i <= p.do) return -skok;
+    if (p.do < p.od && i >= p.do && i < p.od) return skok;
+    return 0;
   }
 
   return (
@@ -250,24 +303,36 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
         </p>
       ) : null}
 
-      <ol className="flex flex-col gap-2.5">
-        {widoczne.map((o, miejsce) => {
+      <ol ref={lista} className="flex flex-col gap-2.5">
+        {kody.map((kodOpcji, miejsce) => {
+          const o = opcje.find((x) => x.kod === kodOpcji);
+          if (!o) return null;
           const kolor = kolorWyboru(o.ikona, miejsce);
-          const chwycony = chwytany === o.kod;
+          const chwycony = przeciaganie?.kod === o.kod;
+          // Numer bierze się z miejsca docelowego, żeby w trakcie przeciągania
+          // było widać, na którą pozycję wiersz wejdzie.
+          const numer = chwycony
+            ? przeciaganie.do + 1
+            : miejsce + 1 + (przesuniecie(miejsce) === 0 ? 0 : przesuniecie(miejsce) < 0 ? -1 : 1);
           return (
             <li
               key={o.kod}
               data-kod={o.kod}
-              className={`przejscie flex items-center gap-3 rounded-2xl border-2 p-2.5 sm:gap-4 sm:p-3 ${
-                chwycony ? "scale-[1.01] shadow-lg" : ""
+              className={`flex items-center gap-3 rounded-2xl border-2 p-2.5 sm:gap-4 sm:p-3 ${
+                chwycony ? "" : "przejscie"
               }`}
               style={{
                 borderColor: kolor ? (ustawione ? kolor.neon : kolor.obwod) : "var(--color-linia)",
                 background: kolor ? kolor.tlo : "var(--color-szklo)",
-                boxShadow: chwycony && kolor ? `0 18px 34px -18px ${kolor.neon}` : undefined,
+                transform: `translateY(${przesuniecie(miejsce)}px)`,
+                transition: chwycony ? "none" : undefined,
+                zIndex: chwycony ? 20 : undefined,
+                position: chwycony ? "relative" : undefined,
+                boxShadow: chwycony
+                  ? `0 22px 40px -18px ${kolor ? kolor.neon : "rgba(16,19,42,0.45)"}`
+                  : undefined,
               }}
             >
-              {/* Numer wynika z miejsca na liście, nie z decyzji uczestnika. */}
               <span
                 aria-hidden
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 bg-panel text-tresc font-extrabold tabular-nums sm:h-11 sm:w-11 sm:text-tresc-duza"
@@ -276,7 +341,7 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
                   color: kolor ? kolor.atrament : "var(--color-atrament-sciszony)",
                 }}
               >
-                {miejsce + 1}
+                {numer}
               </span>
 
               {o.ikona ? (
@@ -289,15 +354,13 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
 
               <button
                 type="button"
-                aria-label={`${o.etykieta}: miejsce ${miejsce + 1} z ${widoczne.length}. Przeciągnij albo użyj strzałek, żeby zmienić kolejność.`}
-                className="przejscie -m-1 flex h-11 w-9 shrink-0 cursor-grab touch-none items-center justify-center rounded-lg text-atrament-slaby hover:text-atrament active:cursor-grabbing"
-                onPointerDown={(e) => {
-                  e.currentTarget.setPointerCapture(e.pointerId);
-                  ustawChwytany(o.kod);
-                }}
-                onPointerMove={naRuch}
-                onPointerUp={naKoniec}
-                onPointerCancel={naKoniec}
+                aria-label={`${o.etykieta}: miejsce ${miejsce + 1} z ${kody.length}. Przeciągnij albo użyj strzałek, żeby zmienić kolejność.`}
+                className="przejscie -my-2 flex h-14 w-11 shrink-0 cursor-grab touch-none select-none items-center justify-center rounded-lg text-atrament-slaby hover:bg-panel/70 hover:text-atrament active:cursor-grabbing"
+                onPointerDown={(e) => zacznij(e, o.kod, miejsce)}
+                onPointerMove={wTrakcie}
+                onPointerUp={skoncz}
+                onPointerCancel={skoncz}
+                onLostPointerCapture={skoncz}
                 onKeyDown={(e) => {
                   if (e.key === "ArrowUp") {
                     e.preventDefault();
@@ -357,24 +420,14 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
    */
   const zeZnakiem = strony.length === 2 && strony[0].ikona !== strony[1].ikona;
 
-  /**
-   * Klucz ilustracji bieguna. Gdy strony maja rozne kategorie (wartosci A4),
-   * ilustruje je sama kategoria. Gdy dziela jedna os (A3, M1), biegun dostaje
-   * przyrostek `-A` albo `-B`. Bez pliku kafel zostaje bez obrazu i nie udaje,
-   * ze cos tam jest.
-   */
-  const kluczObrazu = (s: { ikona?: string }, i: number) => {
-    if (!s.ikona) return undefined;
-    const klucz = zeZnakiem ? s.ikona : `${s.ikona}-${i === 0 ? "A" : "B"}`;
-    return maObraz(klucz) ? klucz : undefined;
-  };
+
 
   return (
     <div className="grid grid-cols-2 gap-3 sm:gap-4">
       {strony.map((s, i) => {
         const wybrana = wartosc === s.kod;
         const kolor = kolory ? kolory[i] : null;
-        const obraz = kluczObrazu(s, i);
+        const obraz = kluczBieguna(pozycja.stronaA?.ikona, pozycja.stronaB?.ikona, i === 0 ? 0 : 1);
         return (
           <button
             key={`${s.kod}-${i}`}
@@ -386,7 +439,7 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
           >
             <ZnakWyboru wybrana={wybrana} />
             {obraz ? (
-              <Obraz klucz={obraz} rozmiar={116} aktywna={wybrana} wybor kolor={kolor} />
+              <Obraz klucz={obraz} rozmiar={132} aktywna={wybrana} wybor kolor={kolor} />
             ) : zeZnakiem && s.ikona ? (
               <KolkoZnaku klucz={s.ikona} kolor={kolor} />
             ) : null}

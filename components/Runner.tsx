@@ -19,7 +19,7 @@ import { Plansza } from "./Ikona";
 import { Marka } from "./pulpit/Marka";
 import { Bramy } from "./pulpit/Bramy";
 import { DOPISEK, PODTYTUL, WSKAZOWKA } from "@/lib/moduly/opisy";
-import { maObraz } from "@/lib/ui/obrazy";
+import { maObraz, paraMaObrazy } from "@/lib/ui/obrazy";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import { ZAPIS_SAM } from "@/lib/content/wspolne";
@@ -322,7 +322,13 @@ export function Runner({
   const kluczPlanszy = [ekran.obraz, ekran.ikona ?? ekran.kolor].find(
     (k): k is string => Boolean(k) && maObraz(k as string),
   );
-  const zPlansza = jednaPozycja && Boolean(kluczPlanszy);
+  // Gdy obie karty pary maja juz wlasna ilustracje, pas nad nimi powtarzalby
+  // jedna z nich. Wtedy go nie ma.
+  const kartyZObrazami = paraMaObrazy(
+    widocznePozycje[0]?.stronaA?.ikona,
+    widocznePozycje[0]?.stronaB?.ikona,
+  );
+  const zPlansza = jednaPozycja && Boolean(kluczPlanszy) && !kartyZObrazami;
   const postepModulu = Math.round((Math.max(0, numerModulu - 1) / Math.max(1, liczbaModulow)) * 100);
 
   return (
