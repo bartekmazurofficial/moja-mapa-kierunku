@@ -58,7 +58,8 @@ export const DOPISEK: Record<string, string> = {
  * Stwierdzenie, nie zachęta.
  */
 export const WSKAZOWKA: Record<string, string> = {
-  ranking4: "Numerujesz trzy, czwarty dopisze się sam. Jeden numer możesz przypisać tylko raz.",
+  ranking4:
+    "Kolejność na start jest losowa. Przeciągnij wiersze tak, żeby na górze było to, co najbardziej, a na dole to, co najmniej.",
   para: "Jedno pytanie naraz. Wybieraj intuicyjnie, nie ma dobrych ani złych odpowiedzi.",
   pojedynczy: "Wybierz jedną odpowiedź, tę najbliższą prawdy o Tobie dzisiaj.",
   wielokrotny: "Możesz zaznaczyć kilka. Liczy się to, co jest prawdą, nie to, co dobrze brzmi.",

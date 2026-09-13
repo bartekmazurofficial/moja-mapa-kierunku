@@ -32,14 +32,6 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
     p.zawody.map((z) => ({ ...z, klaster: p.typ === "klaster" ? p.nazwa : null })),
   );
 
-  /**
-   * Czolowka uczestnika: trzy obszary, ktore pojawiaja sie najwyzej na liscie
-   * ulozonej wynikiem z silnika. Te grupy startuja otwarte, reszta czeka pod
-   * przyciskiem. Liczymy to z samej listy, a nie z sekcji obszarow, bo tamta
-   * siedzi w innej warstwie i moze byc jeszcze zamknieta.
-   */
-  const czolowka = [...new Set(wszystkie.map((z) => z.obszarId))].slice(0, 3);
-
   return (
     <div className="flex flex-col gap-5">
       <header className="szklo relative overflow-hidden p-6 sm:p-8 lg:pr-[26rem]">
@@ -65,7 +57,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </p>
       </header>
 
-      <ListaZawodow kod={kod} zawody={wszystkie} czolowka={czolowka} oceny={widok.oceny} />
+      <ListaZawodow kod={kod} zawody={wszystkie} oceny={widok.oceny} />
     </div>
   );
 }

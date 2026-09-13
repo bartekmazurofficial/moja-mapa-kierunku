@@ -290,21 +290,39 @@ export function Runner({
   // Ekran z jednym pytaniem wielokrotnego albo pojedynczego wyboru (A0):
   // pytanie idzie do nagłówka, nazwa bloku zostaje nad nim jako etykieta.
   const pojedynczePytanie = ekranWyboru && !jednaPozycja && widocznePozycje.length === 1;
+  /**
+   * Gdzie stoi pytanie, zależy od modułu.
+   *
+   * W A1, A2, A3, A4 i M1 pytanie jest wspólne dla całego ekranu i siedzi
+   * w `polecenie` („Co najchętniej byś robił?"), a pozycje mają tylko opcje.
+   * W A5 odwrotnie: `polecenie` to stała instrukcja („Jak byś to zniósł?"),
+   * a pytany warunek siedzi w treści pozycji („Przeprowadzka do innego
+   * miasta"). Bez tego rozróżnienia czterdzieści trzy ekrany A5 pytają
+   * o coś, czego nie widać.
+   */
+  const trescPozycji = jednaPozycja ? widocznePozycje[0]?.tresc : undefined;
   const tytulEkranu = jednaPozycja
-    ? (ekran.polecenie ?? ekran.naglowek ?? "")
+    ? (trescPozycji ?? ekran.polecenie ?? ekran.naglowek ?? "")
     : pojedynczePytanie
       ? (widocznePozycje[0].tresc ?? ekran.naglowek ?? "")
       : (ekran.naglowek ?? ekran.polecenie ?? "");
-  const etykietaNadTytulem = pojedynczePytanie && ekran.naglowek ? ekran.naglowek : nazwaModulu;
+  const etykietaNadTytulem = ekran.naglowek && (pojedynczePytanie || trescPozycji)
+    ? ekran.naglowek
+    : nazwaModulu;
+  // Instrukcja trafia nad odpowiedzi dopiero wtedy, gdy nagłówkiem jest warunek.
+  const poleceniePrzyOdpowiedziach = trescPozycji ? ekran.polecenie : undefined;
   const podtytul = jednaPozycja
-    ? (ekran.podpis ?? PODTYTUL[modul])
+    ? (trescPozycji ? undefined : (ekran.podpis ?? PODTYTUL[modul]))
     : pojedynczePytanie
       ? (widocznePozycje[0].podpis ?? ekran.podpis ?? ekran.polecenie)
       : undefined;
-  // Plansza tylko wtedy, gdy kategoria ma prawdziwa ilustracje. Sam glif na
-  // pustym pasie wyglada jak brak obrazu, a nie jak obraz.
-  const kluczPlanszy = ekran.ikona ?? ekran.kolor;
-  const zPlansza = jednaPozycja && kluczPlanszy ? maObraz(kluczPlanszy) : false;
+  // Plansza tylko wtedy, gdy jest prawdziwa ilustracja. Sam glif na pustym
+  // pasie wyglada jak brak obrazu, a nie jak obraz. Najpierw obrazek tego
+  // pytania, potem obrazek kategorii, a gdy nie ma zadnego, pasa nie ma.
+  const kluczPlanszy = [ekran.obraz, ekran.ikona ?? ekran.kolor].find(
+    (k): k is string => Boolean(k) && maObraz(k as string),
+  );
+  const zPlansza = jednaPozycja && Boolean(kluczPlanszy);
   const postepModulu = Math.round((Math.max(0, numerModulu - 1) / Math.max(1, liczbaModulow)) * 100);
 
   return (
@@ -418,13 +436,19 @@ export function Runner({
                 mają znak przy każdej pozycji z osobna. */}
             {zPlansza ? (
               <div className="mt-6">
-                <Plansza klucz={kluczPlanszy as string} wybor wysokosc={150} />
+                <Plansza klucz={kluczPlanszy as string} wybor wysokosc={168} />
               </div>
+            ) : null}
+
+            {poleceniePrzyOdpowiedziach ? (
+              <p className="mt-6 text-drobne font-semibold uppercase tracking-[0.14em] text-atrament-slaby">
+                {poleceniePrzyOdpowiedziach}
+              </p>
             ) : null}
 
             <div
               className={`${siatka ? "grid gap-3 sm:grid-cols-2" : "flex flex-col gap-6"} ${
-                ekranWyboru ? "mt-6" : "szklo mt-6 p-5 sm:p-7"
+                ekranWyboru ? (poleceniePrzyOdpowiedziach ? "mt-3" : "mt-6") : "szklo mt-6 p-5 sm:p-7"
               }`}
             >
               {widocznePozycje.map((p, i, lista) => (
@@ -439,7 +463,11 @@ export function Runner({
                   }
                 >
                   <Pozycja
-                    pozycja={pojedynczePytanie ? { ...p, tresc: undefined, podpis: undefined } : p}
+                    pozycja={
+                      pojedynczePytanie || (trescPozycji && i === 0)
+                        ? { ...p, tresc: undefined, podpis: undefined }
+                        : p
+                    }
                     pierwsza={i === 0}
                     ostatnia={i === lista.length - 1}
                     wSiatce={siatka}

@@ -1,65 +1,46 @@
 /**
- * Regula nadawania numerow w zestawie czterech pozycji (A1 i A2).
+ * Regula ukladania kolejnosci w zestawie (A1 i A2).
  *
- * Poprzednio numer nadawal sie sam, w kolejnosci stukania, a czwarta pozycja
- * dopelniala sie bez udzialu uczestnika. Wygladalo to jak awaria: klikasz
- * trzeci raz i nagle wszystko jest ponumerowane, a ekran ucieka.
+ * Uczestnik nie nadaje numerow, tylko przestawia wiersze: **miejsce na liscie
+ * jest odpowiedzia**. Zapis do bazy zostaje ten sam co zawsze,
+ * `{ identyfikator: miejsce 1-4 }`, wiec silnik liczy dokladnie to samo
+ * i cztery niezerowe wagi zostaja nietkniete.
  *
- * Teraz numer wybiera sie wprost. Jedna zasada: **jeden numer nalezy do jednej
- * pozycji**. Nadanie zajetego numeru zabiera go poprzedniej pozycji, zamiast
- * blokowac przycisk, bo blokada konczy sie tym, ze uczestnik nie ma jak
- * poprawic pomylki inaczej niz kasujac wszystko.
- *
- * Czysta funkcja, bez Reacta: to jest regula, nie widok.
+ * Czyste funkcje, bez Reacta: to jest regula, nie widok.
  */
 
 export type Ranking = Record<string, number>;
 
-export function nadajNumer(ranking: Ranking, kod: string, numer: number): Ranking {
-  const nowy: Ranking = { ...ranking };
-
-  // Ponowne stukniecie we wlasny numer zdejmuje go.
-  if (nowy[kod] === numer) {
-    delete nowy[kod];
-    return nowy;
-  }
-
-  for (const [innyKod, n] of Object.entries(nowy)) {
-    if (n === numer && innyKod !== kod) delete nowy[innyKod];
-  }
-  nowy[kod] = numer;
-  return nowy;
-}
-
-/** Numer -> kod pozycji, ktora go trzyma. */
-export function wlascicieleNumerow(ranking: Ranking): Map<number, string> {
-  const mapa = new Map<number, string>();
-  for (const [kod, n] of Object.entries(ranking)) mapa.set(n, kod);
+/** Miejsca z kolejnosci: pierwszy wiersz dostaje 1, ostatni tyle, ile jest wierszy. */
+export function naMiejsca(kody: string[]): Ranking {
+  const mapa: Ranking = {};
+  kody.forEach((kod, i) => {
+    mapa[kod] = i + 1;
+  });
   return mapa;
 }
 
 /**
- * Domyka ranking, gdy do przypisania zostala jedna pozycja i jeden numer.
+ * Kolejnosc do pokazania.
  *
- * Czwarte stukniecie nie niesie zadnej informacji: przy trzech nadanych
- * numerach czwarty jest wymuszony i uczestnik nie ma tam nic do wyboru.
- * Na trzydziesci szesc zestawow A1 i czterdziesci piec A2 to osiemdziesiat
- * jeden stuknieć w rzecz juz rozstrzygnieta.
- *
- * Zapis w bazie jest identyczny jak przy recznym nadaniu: wszystkie cztery
- * miejsca, wiec silnik liczy dokladnie to samo.
- *
- * Uwaga: wolno to wolac tylko po nadaniu numeru, nigdy po jego zdjeciu.
- * Po zdjeciu dopelnienie natychmiast wstawialoby numer z powrotem i nie dalo
- * sie niczego cofnac.
+ * Gdy uczestnik juz ustawil zestaw, wraca jego kolejnosc. Gdy jeszcze nie,
+ * wraca kolejnosc wyjsciowa, czyli ta wylosowana i utrwalona w planie modulu.
+ * Zapis niepelny (np. po cofnieciu odpowiedzi) traktujemy jak jego brak.
  */
-export function dopelnijOstatni(ranking: Ranking, kody: string[]): Ranking {
-  const wolneKody = kody.filter((k) => ranking[k] === undefined);
-  if (wolneKody.length !== 1) return ranking;
+export function kolejnoscDoPokazania(kody: string[], zapisane: Ranking | undefined): string[] {
+  if (!zapisane || Object.keys(zapisane).length !== kody.length) return kody;
+  if (kody.some((k) => typeof zapisane[k] !== "number")) return kody;
+  return [...kody].sort((a, b) => zapisane[a] - zapisane[b]);
+}
 
-  const zajete = new Set(Object.values(ranking));
-  const wolneNumery = kody.map((_, i) => i + 1).filter((n) => !zajete.has(n));
-  if (wolneNumery.length !== 1) return ranking;
-
-  return { ...ranking, [wolneKody[0]]: wolneNumery[0] };
+/**
+ * Przenosi jeden wiersz na wskazane miejsce, reszta zsuwa sie sama.
+ * Miejsce poza zakresem albo brak wiersza zostawiaja liste bez zmian.
+ */
+export function przenies(kody: string[], kod: string, doIndeksu: number): string[] {
+  const z = kody.indexOf(kod);
+  if (z < 0 || doIndeksu < 0 || doIndeksu >= kody.length || z === doIndeksu) return kody;
+  const lista = kody.slice();
+  lista.splice(doIndeksu, 0, ...lista.splice(z, 1));
+  return lista;
 }

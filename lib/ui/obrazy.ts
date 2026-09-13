@@ -14,7 +14,20 @@
  * 256 px na kafel i 768 px na nagłówek. Przelicza je `scripts/grafiki.ts`.
  */
 
-/** Klucze, dla których leży plik. Ręczna lista: build ma nie chodzić po dysku. */
+/**
+ * Klucze, dla ktorych lezy plik. Reczna lista: build ma nie chodzic po dysku.
+ *
+ * Ilustracje dochodza partiami i **klucz dopisany tutaj musi miec plik**
+ * w `public/grafika/<modul>/`, bo inaczej kafel pokaze pusta ramke. Dopoki
+ * klucza tu nie ma, ekran po prostu go nie rysuje i nic sie nie psuje.
+ *
+ * Co czeka na pliki (spis tresci w GRAFIKI_DO_WYGENEROWANIA.md):
+ *   - bieguny osi A3: `a3-INI-A`, `a3-INI-B`, ... (13 osi po dwa)
+ *   - bieguny wymiarow M1: `m1w-CEN-A`, `m1w-CEN-B`, ... (12 po dwa)
+ *   - wartosci A4: `a4-PIE`, `a4-STA`, ... (12)
+ *   - warunki A5: `a5-F01` ... `a5-F43` albo same bloki `a5-1` ... `a5-7`
+ *   - kompetencje A2: `a2-1` ... `a2-30`
+ */
 const Z_OBRAZEM = new Set<string>([
   ...Array.from({ length: 24 }, (_, i) => `a1-${i + 1}`),
   ...["INI", "STR", "TEM", "SAM", "GLE", "RYZ", "DEC", "KON", "NOW", "NAP", "RYT", "OTO", "EFE"].map(

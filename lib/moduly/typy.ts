@@ -80,6 +80,13 @@ export interface Ekran {
   odwrotnie?: string;
   /** Klucz kategorii tylko dla koloru, bez ilustracji. */
   kolor?: string;
+  /**
+   * Klucz ilustracji na pas nad odpowiedziami, gdy ma byc inna niz znak
+   * kategorii. A5 pyta o czterdziesci trzy rozne warunki w siedmiu blokach,
+   * wiec obrazek warunku mowi wiecej niz obrazek bloku. Gdy pliku nie ma,
+   * pas cofa sie do znaku kategorii, a gdy i tego nie ma, nie rysuje sie wcale.
+   */
+  obraz?: string;
   typ: "wstep" | "pozycje" | "przerwa" | "koniec";
   naglowek?: string;
   akapity?: string[];

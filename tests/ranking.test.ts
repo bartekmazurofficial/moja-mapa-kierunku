@@ -1,92 +1,80 @@
 /**
- * Nadawanie numerów w zestawie czterech pozycji.
- * Jedna zasada: jeden numer należy do jednej pozycji.
+ * Układanie kolejności w zestawie A1 i A2.
+ *
+ * Uczestnik przestawia wiersze, a miejsce na liście jest odpowiedzią. Zapis
+ * do bazy musi zostać dokładnie taki jak przy dawnym nadawaniu numerów,
+ * `{ identyfikator: miejsce 1-4 }`, bo od tego zależy silnik: cztery
+ * niezerowe wagi, suma zero na zestaw.
  */
 
 import { describe, expect, it } from "vitest";
-import { dopelnijOstatni, nadajNumer, wlascicieleNumerow, type Ranking } from "@/lib/moduly/ranking";
+import { kolejnoscDoPokazania, naMiejsca, przenies } from "@/lib/moduly/ranking";
 
 const KODY = ["a", "b", "c", "d"];
 
-describe("nadawanie numerów", () => {
-  it("pusty zestaw przyjmuje dowolny numer", () => {
-    expect(nadajNumer({}, "a", 3)).toEqual({ a: 3 });
+describe("miejsca z kolejności", () => {
+  it("pierwszy wiersz dostaje jedynkę, ostatni czwórkę", () => {
+    expect(naMiejsca(KODY)).toEqual({ a: 1, b: 2, c: 3, d: 4 });
   });
 
-  it("stuknięcie we własny numer zdejmuje go", () => {
-    expect(nadajNumer({ a: 2, b: 1 }, "a", 2)).toEqual({ b: 1 });
+  it("przestawiona lista daje przestawione miejsca", () => {
+    expect(naMiejsca(["c", "a", "d", "b"])).toEqual({ c: 1, a: 2, d: 3, b: 4 });
   });
 
-  it("numer zajęty przez kogoś innego przechodzi tam, gdzie kliknięto", () => {
-    expect(nadajNumer({ a: 1, b: 2 }, "b", 1)).toEqual({ b: 1 });
-  });
-
-  it("pozycja trzyma najwyżej jeden numer", () => {
-    const r = nadajNumer({ a: 1 }, "a", 4);
-    expect(r).toEqual({ a: 4 });
-  });
-
-  it("żaden numer nie występuje dwa razy, cokolwiek się kliknie", () => {
-    let r: Ranking = {};
-    // Sto losowych, ale powtarzalnych kliknięć.
-    let ziarno = 7;
-    const losowa = () => (ziarno = (ziarno * 1103515245 + 12345) % 2147483648) / 2147483648;
-    for (let i = 0; i < 100; i++) {
-      const kod = KODY[Math.floor(losowa() * KODY.length)];
-      const numer = Math.floor(losowa() * 4) + 1;
-      r = nadajNumer(r, kod, numer);
-      const numery = Object.values(r);
-      expect(new Set(numery).size, JSON.stringify(r)).toBe(numery.length);
-      expect(Object.keys(r).length).toBeLessThanOrEqual(4);
-    }
-  });
-
-  it("komplet czterech numerów da się złożyć czterema kliknięciami", () => {
-    let r: Ranking = {};
-    KODY.forEach((kod, i) => (r = nadajNumer(r, kod, i + 1)));
-    expect(r).toEqual({ a: 1, b: 2, c: 3, d: 4 });
-    expect(Object.keys(r)).toHaveLength(4);
-  });
-
-  it("mapa właścicieli wskazuje pozycję każdego zajętego numeru", () => {
-    const mapa = wlascicieleNumerow({ a: 1, c: 3 });
-    expect(mapa.get(1)).toBe("a");
-    expect(mapa.get(3)).toBe("c");
-    expect(mapa.get(2)).toBeUndefined();
+  it("każdy zestaw ma cztery różne miejsca, więc suma wag wychodzi zero", () => {
+    const miejsca = Object.values(naMiejsca(KODY));
+    expect(new Set(miejsca).size).toBe(4);
+    expect(miejsca.sort()).toEqual([1, 2, 3, 4]);
   });
 });
 
-/**
- * Dopełnienie czwartego miejsca.
- *
- * Czwarte stuknięcie nie niesie informacji: przy trzech nadanych numerach
- * czwarty jest wymuszony. Zapis wychodzi identyczny jak przy ręcznym nadaniu,
- * więc silnik liczy dokładnie to samo, a uczestnik ma o osiemdziesiąt jeden
- * stuknięć mniej w całym programie.
- */
-describe("czwarte miejsce dopełnia się samo", () => {
-  const kody = ["a", "b", "c", "d"];
-
-  it("trzy nadane numery domykają zestaw", () => {
-    const po = dopelnijOstatni({ a: 1, b: 2, c: 3 }, kody);
-    expect(po).toEqual({ a: 1, b: 2, c: 3, d: 4 });
+describe("kolejność do pokazania", () => {
+  it("bez zapisu zostaje kolejność wyjściowa, czyli ta wylosowana w planie", () => {
+    expect(kolejnoscDoPokazania(KODY, undefined)).toEqual(KODY);
   });
 
-  it("dopełnia niezależnie od tego, którego numeru brakuje", () => {
-    expect(dopelnijOstatni({ a: 1, b: 4, c: 3 }, kody)).toEqual({ a: 1, b: 4, c: 3, d: 2 });
+  it("zapis wraca jako kolejność wierszy", () => {
+    expect(kolejnoscDoPokazania(KODY, { a: 3, b: 1, c: 4, d: 2 })).toEqual(["b", "d", "a", "c"]);
   });
 
-  it("przy dwóch nadanych nie zgaduje", () => {
-    expect(dopelnijOstatni({ a: 1, b: 2 }, kody)).toEqual({ a: 1, b: 2 });
+  it("zapis niepełny traktujemy jak jego brak, nie zgadujemy reszty", () => {
+    expect(kolejnoscDoPokazania(KODY, { a: 1, b: 2 })).toEqual(KODY);
   });
 
-  it("pełny zestaw zostaje bez zmian", () => {
-    const pelny = { a: 1, b: 2, c: 3, d: 4 };
-    expect(dopelnijOstatni(pelny, kody)).toEqual(pelny);
+  it("zapis z cudzymi identyfikatorami nie wywraca listy", () => {
+    expect(kolejnoscDoPokazania(KODY, { x: 1, y: 2, z: 3, w: 4 })).toEqual(KODY);
   });
 
-  it("dopełnienie daje ten sam wynik co ręczne nadanie czwartego numeru", () => {
-    const recznie = nadajNumer({ a: 1, b: 2, c: 3 }, "d", 4);
-    expect(dopelnijOstatni({ a: 1, b: 2, c: 3 }, kody)).toEqual(recznie);
+  it("kolejność i miejsca są swoimi odwrotnościami", () => {
+    const ustawiona = ["d", "b", "a", "c"];
+    expect(kolejnoscDoPokazania(KODY, naMiejsca(ustawiona))).toEqual(ustawiona);
+  });
+});
+
+describe("przenoszenie wiersza", () => {
+  it("w górę: reszta zsuwa się w dół", () => {
+    expect(przenies(KODY, "c", 0)).toEqual(["c", "a", "b", "d"]);
+  });
+
+  it("w dół: reszta zsuwa się w górę", () => {
+    expect(przenies(KODY, "a", 3)).toEqual(["b", "c", "d", "a"]);
+  });
+
+  it("o jedno miejsce to zamiana sąsiadów", () => {
+    expect(przenies(KODY, "b", 2)).toEqual(["a", "c", "b", "d"]);
+  });
+
+  it("poza zakres nie rusza listy, więc strzałka na końcu nic nie psuje", () => {
+    expect(przenies(KODY, "a", -1)).toEqual(KODY);
+    expect(przenies(KODY, "d", 4)).toEqual(KODY);
+  });
+
+  it("nieznany wiersz nie rusza listy", () => {
+    expect(przenies(KODY, "x", 1)).toEqual(KODY);
+  });
+
+  it("lista zawsze zostaje kompletna i bez powtórzeń", () => {
+    const po = przenies(przenies(KODY, "d", 0), "b", 3);
+    expect([...po].sort()).toEqual(KODY);
   });
 });

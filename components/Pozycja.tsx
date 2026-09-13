@@ -11,11 +11,12 @@
  * koloru jako nosnika informacji.
  */
 
-import { useId } from "react";
+import { useId, useMemo, useState } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
 import { Ikona, Obraz } from "@/components/Ikona";
+import { maObraz } from "@/lib/ui/obrazy";
 import { kolorWyboru, paraWyboru, type Kolor } from "@/lib/ui/kolory";
-import { dopelnijOstatni, nadajNumer, wlascicieleNumerow } from "@/lib/moduly/ranking";
+import { kolejnoscDoPokazania, naMiejsca, przenies } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
 export interface WlasciwosciPozycji {
@@ -161,31 +162,71 @@ function kolumnyOpcji(ile: number): string {
 }
 
 // =====================================================================
-// Ranking: cztery wiersze, numer z lewej, przyciski numerów z prawej
+// Ranking: układanie kolejności
 // =====================================================================
 
 /**
- * Zestaw czterech pozycji jako cztery wiersze.
+ * Zestaw czterech pozycji układany od najlepszej u góry do najsłabszej u dołu.
  *
- * Wiersz ma z lewej kółko z nadanym numerem, obok znak kategorii i treść,
- * z prawej cztery przyciski numerów. Kolejność wierszy jest kolejnością z
- * planu i nie zmienia się po nadaniu numeru: przestawianie wierszy pod ręką
- * wyglądałoby jak awaria. Kolor wiersza bierze się z miejsca, nie z kategorii.
+ * Uczestnik nie nadaje numerów, tylko przestawia wiersze: numer wynika
+ * z miejsca na liście. Zapis do bazy jest identyczny jak przy ręcznym
+ * nadawaniu, `{ identyfikator: miejsce 1-4 }`, więc silnik liczy dokładnie to
+ * samo i cztery niezerowe wagi zostają.
+ *
+ * Kolejność startowa jest losowa i utrwalona w planie modułu, więc **nic nie
+ * zapisujemy, dopóki uczestnik czegoś nie przestawi**. Inaczej „Dalej" byłoby
+ * aktywne od razu i trzydzieści sześć ekranów dałoby się przeklikać, oddając
+ * silnikowi czysty szum. Mówimy o tym wprost we wskazówce pod kartami.
+ *
+ * Przestawiać da się myszą, palcem i klawiaturą: uchwyt jest przyciskiem
+ * i reaguje na strzałki.
  */
 function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) {
-  const ranking = (wartosc as Record<string, number>) ?? {};
   const opcje = pozycja.opcje ?? [];
-  const ile = opcje.length;
-  const wlasciciel = wlascicieleNumerow(ranking);
+  const zapisane = wartosc as Record<string, number> | undefined;
+  const ustawione = Boolean(zapisane && Object.keys(zapisane).length === opcje.length);
 
-  function ustaw(kod: string, numer: number) {
-    // Ponowne stuknięcie we własny numer go zdejmuje. Wtedy nie wolno domykać,
-    // bo numer wskakiwałby z powrotem i nie dałoby się niczego cofnąć.
-    const zdejmowanie = ranking[kod] === numer;
-    const nadane = nadajNumer(ranking, kod, numer);
-    const nowy = zdejmowanie ? nadane : dopelnijOstatni(nadane, opcje.map((o) => o.kod));
-    naZmiane(nowy);
-    if (Object.keys(nowy).length === ile) naDomkniecie?.();
+  const kolejnosc = useMemo(
+    () => kolejnoscDoPokazania(opcje.map((o) => o.kod), zapisane),
+    [opcje, zapisane],
+  );
+
+  // Kolejność pokazywana w trakcie przeciągania, zanim zapadnie decyzja.
+  const [podglad, ustawPodglad] = useState<string[] | null>(null);
+  const [chwytany, ustawChwytany] = useState<string | null>(null);
+
+  const kody = podglad ?? kolejnosc;
+  const widoczne = kody
+    .map((k) => opcje.find((o) => o.kod === k))
+    .filter((o): o is (typeof opcje)[number] => Boolean(o));
+
+  function zapisz(noweKody: string[]) {
+    naZmiane(naMiejsca(noweKody));
+    naDomkniecie?.();
+  }
+
+  function przesun(kod: string, oIle: number) {
+    const lista = przenies(kody, kod, kody.indexOf(kod) + oIle);
+    ustawPodglad(null);
+    zapisz(lista);
+  }
+
+  function naRuch(e: React.PointerEvent<HTMLElement>) {
+    if (!chwytany) return;
+    const pod = document.elementFromPoint(e.clientX, e.clientY);
+    const wiersz = pod?.closest("[data-kod]") as HTMLElement | null;
+    const kodCelu = wiersz?.dataset.kod;
+    if (!kodCelu || kodCelu === chwytany) return;
+    ustawPodglad(przenies(kody, chwytany, kody.indexOf(kodCelu)));
+  }
+
+  function naKoniec() {
+    if (!chwytany) return;
+    ustawChwytany(null);
+    if (podglad) {
+      ustawPodglad(null);
+      zapisz(podglad);
+    }
   }
 
   return (
@@ -209,78 +250,78 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
         </p>
       ) : null}
 
-      <ul className="flex flex-col gap-2.5">
-        {opcje.map((o, miejsce) => {
-          const numer = ranking[o.kod];
+      <ol className="flex flex-col gap-2.5">
+        {widoczne.map((o, miejsce) => {
           const kolor = kolorWyboru(o.ikona, miejsce);
+          const chwycony = chwytany === o.kod;
           return (
             <li
               key={o.kod}
-              className="przejscie flex flex-wrap items-center gap-3 rounded-2xl border-2 p-3 sm:flex-nowrap sm:p-3.5"
+              data-kod={o.kod}
+              className={`przejscie flex items-center gap-3 rounded-2xl border-2 p-2.5 sm:gap-4 sm:p-3 ${
+                chwycony ? "scale-[1.01] shadow-lg" : ""
+              }`}
               style={{
-                borderColor: kolor ? (numer ? kolor.neon : kolor.obwod) : numer ? "var(--color-akcent)" : "var(--color-linia)",
+                borderColor: kolor ? (ustawione ? kolor.neon : kolor.obwod) : "var(--color-linia)",
                 background: kolor ? kolor.tlo : "var(--color-szklo)",
-                boxShadow: numer && kolor ? `0 14px 30px -20px ${kolor.neon}` : undefined,
+                boxShadow: chwycony && kolor ? `0 18px 34px -18px ${kolor.neon}` : undefined,
               }}
             >
-              {/* Nadany numer. Puste kółko mówi „to jeszcze czeka". */}
+              {/* Numer wynika z miejsca na liście, nie z decyzji uczestnika. */}
               <span
                 aria-hidden
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 text-tresc-duza font-extrabold tabular-nums"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 bg-panel text-tresc font-extrabold tabular-nums sm:h-11 sm:w-11 sm:text-tresc-duza"
                 style={{
                   borderColor: kolor ? kolor.obwod : "var(--color-linia-mocna)",
-                  background: numer ? (kolor ? kolor.atrament : "var(--color-akcent)") : "#ffffff",
-                  color: numer ? "#ffffff" : "var(--color-atrament-slaby)",
+                  color: kolor ? kolor.atrament : "var(--color-atrament-sciszony)",
                 }}
               >
-                {numer ?? ""}
+                {miejsce + 1}
               </span>
 
-              {o.ikona ? <Obraz klucz={o.ikona} rozmiar={56} aktywna={Boolean(numer)} wybor kolor={kolor} /> : null}
+              {o.ikona ? (
+                <Obraz klucz={o.ikona} rozmiar={52} aktywna={ustawione} wybor kolor={kolor} />
+              ) : null}
 
-              <span className="min-w-0 flex-1 font-boksowy text-tresc font-medium leading-snug text-atrament">
+              <span className="min-w-0 flex-1 font-boksowy text-male font-medium leading-snug text-atrament sm:text-tresc">
                 {o.etykieta}
               </span>
 
-              <div
-                role="group"
-                aria-label={o.etykieta}
-                className="flex basis-full justify-end gap-1.5 sm:basis-auto"
+              <button
+                type="button"
+                aria-label={`${o.etykieta}: miejsce ${miejsce + 1} z ${widoczne.length}. Przeciągnij albo użyj strzałek, żeby zmienić kolejność.`}
+                className="przejscie -m-1 flex h-11 w-9 shrink-0 cursor-grab touch-none items-center justify-center rounded-lg text-atrament-slaby hover:text-atrament active:cursor-grabbing"
+                onPointerDown={(e) => {
+                  e.currentTarget.setPointerCapture(e.pointerId);
+                  ustawChwytany(o.kod);
+                }}
+                onPointerMove={naRuch}
+                onPointerUp={naKoniec}
+                onPointerCancel={naKoniec}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    przesun(o.kod, -1);
+                  }
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    przesun(o.kod, 1);
+                  }
+                }}
               >
-                {Array.from({ length: ile }, (_, i) => i + 1).map((n) => {
-                  const wybrany = numer === n;
-                  const uKogosInnego = wlasciciel.get(n) !== undefined && !wybrany;
-                  return (
-                    <button
-                      key={n}
-                      type="button"
-                      onClick={() => ustaw(o.kod, n)}
-                      aria-pressed={wybrany}
-                      aria-label={`${o.etykieta}: miejsce ${n}`}
-                      className={`przejscie h-10 w-10 rounded-xl border text-male font-bold tabular-nums ${
-                        wybrany
-                          ? `text-na-akcencie ${kolor ? "" : "border-akcent bg-akcent"}`
-                          : uKogosInnego
-                            ? "border-linia bg-panel/60 text-atrament-slaby opacity-45"
-                            : "border-linia-mocna bg-panel text-atrament-sciszony hover:text-atrament"
-                      }`}
-                      style={
-                        wybrany && kolor
-                          ? // Pelny kolor to atrament kategorii, nie neon: bialy
-                            // numer na neonowym zoltym ma 1,7:1 i znika.
-                            { background: kolor.atrament, borderColor: kolor.atrament }
-                          : undefined
-                      }
-                    >
-                      {n}
-                    </button>
-                  );
-                })}
-              </div>
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
+                  <circle cx="9" cy="6" r="1.6" />
+                  <circle cx="15" cy="6" r="1.6" />
+                  <circle cx="9" cy="12" r="1.6" />
+                  <circle cx="15" cy="12" r="1.6" />
+                  <circle cx="9" cy="18" r="1.6" />
+                  <circle cx="15" cy="18" r="1.6" />
+                </svg>
+              </button>
             </li>
           );
         })}
-      </ul>
+      </ol>
     </div>
   );
 }
@@ -316,11 +357,24 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
    */
   const zeZnakiem = strony.length === 2 && strony[0].ikona !== strony[1].ikona;
 
+  /**
+   * Klucz ilustracji bieguna. Gdy strony maja rozne kategorie (wartosci A4),
+   * ilustruje je sama kategoria. Gdy dziela jedna os (A3, M1), biegun dostaje
+   * przyrostek `-A` albo `-B`. Bez pliku kafel zostaje bez obrazu i nie udaje,
+   * ze cos tam jest.
+   */
+  const kluczObrazu = (s: { ikona?: string }, i: number) => {
+    if (!s.ikona) return undefined;
+    const klucz = zeZnakiem ? s.ikona : `${s.ikona}-${i === 0 ? "A" : "B"}`;
+    return maObraz(klucz) ? klucz : undefined;
+  };
+
   return (
     <div className="grid grid-cols-2 gap-3 sm:gap-4">
       {strony.map((s, i) => {
         const wybrana = wartosc === s.kod;
         const kolor = kolory ? kolory[i] : null;
+        const obraz = kluczObrazu(s, i);
         return (
           <button
             key={`${s.kod}-${i}`}
@@ -331,7 +385,11 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
             style={stylKarty(kolor, wybrana)}
           >
             <ZnakWyboru wybrana={wybrana} />
-            {zeZnakiem && s.ikona ? <KolkoZnaku klucz={s.ikona} kolor={kolor} /> : null}
+            {obraz ? (
+              <Obraz klucz={obraz} rozmiar={116} aktywna={wybrana} wybor kolor={kolor} />
+            ) : zeZnakiem && s.ikona ? (
+              <KolkoZnaku klucz={s.ikona} kolor={kolor} />
+            ) : null}
             <span className="boks text-tresc leading-snug text-atrament sm:text-tresc-duza">{s.tekst}</span>
           </button>
         );

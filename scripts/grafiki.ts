@@ -44,12 +44,13 @@ function main() {
   let zrobione = 0;
 
   for (const plik of pliki) {
-    // Plansze nazywają się pełnym kluczem (`a3-INI.png`), kafle numerem
-    // albo kodem po przedrostku modułu (`a1-7.png`, `a3-INI.png`).
+    // Plansze nazywają się pełnym kluczem (`a3-INI.png`), kafle kodem po
+    // przedrostku modułu (`a1-7.png`, `a3-INI.png`). Kod bywa dwuczłonowy,
+    // bo bieguny osi mają przyrostek: `a3-INI-A.png` daje klucz `INI-A`.
     const m =
       modul === "plansze"
-        ? plik.match(/^([A-Za-z0-9_]+-[A-Za-z0-9_]+)\.png/i)
-        : plik.match(new RegExp(`^${modul}-([A-Za-z0-9_]+)\\.png`, "i"));
+        ? plik.match(/^([A-Za-z0-9_]+-[A-Za-z0-9_-]+)\.png/i)
+        : plik.match(new RegExp(`^${modul}-([A-Za-z0-9_-]+)\\.png`, "i"));
     if (!m) {
       console.log(`pomijam ${plik}: nazwa nie pasuje do wzorca modułu ${modul}`);
       continue;

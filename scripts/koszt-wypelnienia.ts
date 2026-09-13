@@ -20,9 +20,9 @@ import type { KodModulu, Pozycja } from "../lib/moduly/typy";
 function dotkniecia(p: Pozycja): number {
   switch (p.typ) {
     case "ranking4":
-      // Ostatnie miejsce dopelnia sie samo, bo jest wymuszone: trzy stukniecia
-      // na zestaw, nie cztery (lib/moduly/ranking.ts, dopelnijOstatni).
-      return Math.max(1, (p.opcje?.length ?? 4) - 1);
+      // Ukladanie kolejnosci: srednio dwa przeciagniecia na zestaw wystarcza,
+      // zeby z losowej kolejnosci czterech pozycji zrobic wlasna.
+      return 2;
     case "para":
       return 1;
     case "trzystopniowa":

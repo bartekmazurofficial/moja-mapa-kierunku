@@ -60,16 +60,23 @@ const DROGI = ["A", "B", "C"] as const;
 export function ListaZawodow({
   kod,
   zawody,
-  czolowka,
   oceny,
 }: {
   kod: string;
   zawody: ZawodNaLiscie[];
-  /** Numery obszarów z czołówki uczestnika: te grupy startują otwarte. */
-  czolowka: number[];
   /** Oceny zawodów z bazy: serce oznacza „interesuje mnie". */
   oceny: Record<string, string>;
 }) {
+  /**
+   * Numer dopasowania: miejsce na pełnej liście, a nie na przefiltrowanej.
+   * Dzięki temu „siódmy" znaczy siódmy w całym wyniku i nie zmienia się,
+   * kiedy uczestnik zawęzi listę filtrem.
+   */
+  const numery = useMemo(() => {
+    const mapa = new Map<string, number>();
+    zawody.forEach((z, i) => mapa.set(z.kod, i + 1));
+    return mapa;
+  }, [zawody]);
   const [szukaj, ustawSzukaj] = useState("");
   const [grupa, ustawGrupe] = useState<string | null>(null);
   const [fakty, ustawFakty] = useState<string[]>([]);
@@ -137,7 +144,6 @@ export function ListaZawodow({
   }
 
   const zawodWybrany = wybrany ? zawody.find((z) => z.kod === wybrany) ?? null : null;
-  const czolowe = new Set(czolowka);
 
   return (
     <div className="grid items-start gap-5 lg:grid-cols-[15.5rem_minmax(0,1fr)] xl:grid-cols-[15.5rem_minmax(0,1fr)_19.5rem]">
@@ -259,8 +265,8 @@ export function ListaZawodow({
                 <KartaZawodu
                   kod={kod}
                   zawod={z}
+                  numer={numery.get(z.kod) ?? 0}
                   wybrana={wybrany === z.kod}
-                  zCzolowki={czolowe.has(z.obszarId)}
                   wPorownaniu={doPorownania.includes(z.kod)}
                   serce={serca[z.kod] === "interesuje"}
                   naWybor={() => ustawWybrany(wybrany === z.kod ? null : z.kod)}
@@ -306,6 +312,7 @@ export function ListaZawodow({
           <Podglad
             kod={kod}
             zawod={zawodWybrany}
+            numer={numery.get(zawodWybrany.kod) ?? 0}
             serce={serca[zawodWybrany.kod] === "interesuje"}
             wPorownaniu={doPorownania.includes(zawodWybrany.kod)}
             naZamknij={() => ustawWybrany(null)}
@@ -332,6 +339,7 @@ export function ListaZawodow({
           <Podglad
             kod={kod}
             zawod={zawodWybrany}
+            numer={numery.get(zawodWybrany.kod) ?? 0}
             serce={serca[zawodWybrany.kod] === "interesuje"}
             wPorownaniu={doPorownania.includes(zawodWybrany.kod)}
             naZamknij={() => ustawWybrany(null)}
@@ -442,11 +450,20 @@ function Serce({ pelne, onClick, etykieta }: { pelne: boolean; onClick: () => vo
   );
 }
 
+/**
+ * Ile pierwszych pozycji dostaje pełne podświetlenie.
+ *
+ * To nie jest próg silnika ani żadna granica w wyniku, tylko tyle kart, ile
+ * człowiek obejmuje wzrokiem naraz. Numer stoi przy każdej pozycji, więc
+ * podświetlenie niczego nie niesie samo: mówi tylko „zacznij stąd".
+ */
+const CZOLOWKA = 3;
+
 function KartaZawodu({
   kod,
   zawod,
+  numer,
   wybrana,
-  zCzolowki,
   wPorownaniu,
   serce,
   naWybor,
@@ -455,8 +472,9 @@ function KartaZawodu({
 }: {
   kod: string;
   zawod: ZawodNaLiscie;
+  /** Miejsce na pełnej liście, od najmocniej do najsłabiej dopasowanego. */
+  numer: number;
   wybrana: boolean;
-  zCzolowki: boolean;
   wPorownaniu: boolean;
   serce: boolean;
   naWybor: () => void;
@@ -464,10 +482,17 @@ function KartaZawodu({
   naPorownanie: () => void;
 }) {
   const kolor = kolorKategorii(zawod.znakObszaru ?? `obszar-${zawod.obszarId}`);
+  const zCzolowki = numer > 0 && numer <= CZOLOWKA;
   return (
     <article
       className={`przejscie relative flex h-full flex-col overflow-hidden rounded-karta border-2 bg-panel ${
-        wybrana ? "obwodka-gradient" : wPorownaniu ? "border-akcent" : "border-linia hover:border-linia-mocna"
+        wybrana
+          ? "obwodka-gradient"
+          : wPorownaniu
+            ? "border-akcent"
+            : zCzolowki
+              ? "border-akcent/45 poswiata"
+              : "border-linia hover:border-linia-mocna"
       }`}
     >
       {/* Serce i odznaka leżą obok przycisku wyboru, nie w nim: przycisk
@@ -475,11 +500,16 @@ function KartaZawodu({
       <div className="absolute right-3 top-3 z-10">
         <Serce pelne={serce} onClick={naSerce} etykieta={`${zawod.nazwa}: interesuje mnie`} />
       </div>
-      {zCzolowki ? (
-        <span className="absolute left-3 top-3 z-10 rounded-full bg-panel/90 px-2.5 py-1 text-drobne font-semibold text-akcent-jasny shadow-sm">
-          Twoja czołówka
-        </span>
-      ) : null}
+      {/* Numer dopasowania. Czołówka ma go wypełnionego, reszta na białym:
+          kolor mówi „zacznij stąd", a liczba i tak stoi przy każdej karcie. */}
+      <span
+        className={`absolute left-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full text-male font-extrabold tabular-nums shadow-sm ${
+          zCzolowki ? "przycisk-gradient" : "border border-linia bg-panel/90 text-atrament-sciszony"
+        }`}
+      >
+        <span className="sr-only">Dopasowanie, miejsce </span>
+        {numer}
+      </span>
       <button type="button" onClick={naWybor} className="block w-full text-left" aria-pressed={wybrana}>
         <div>
           {zawod.znakObszaru ? (
@@ -549,6 +579,7 @@ function Tag({ children }: { children: React.ReactNode }) {
 function Podglad({
   kod,
   zawod,
+  numer,
   serce,
   wPorownaniu,
   naZamknij,
@@ -558,6 +589,7 @@ function Podglad({
 }: {
   kod: string;
   zawod: ZawodNaLiscie;
+  numer: number;
   serce: boolean;
   wPorownaniu: boolean;
   naZamknij: () => void;
@@ -591,7 +623,11 @@ function Podglad({
             <path d="M6 6l12 12M18 6 6 18" />
           </svg>
         </button>
-        <div className="absolute bottom-3 left-3">
+        <div className="absolute bottom-3 left-3 flex items-center gap-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-panel/95 text-male font-extrabold tabular-nums text-atrament shadow-sm">
+            <span className="sr-only">Dopasowanie, miejsce </span>
+            {numer}
+          </span>
           <Pasmo opis={zawod.pasmoOpis} />
         </div>
       </div>
