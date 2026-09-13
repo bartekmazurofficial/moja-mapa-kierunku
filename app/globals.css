@@ -19,7 +19,8 @@
 
 @theme {
   --font-sans: var(--font-bezszeryfowy), ui-sans-serif, system-ui, sans-serif;
-  --font-boksowy: var(--font-boksowy), var(--font-bezszeryfowy), ui-sans-serif, sans-serif;
+  /* Jeden system: bloki odpowiedzi tym samym krojem, osobną wagą i składem. */
+  --font-boksowy: var(--font-bezszeryfowy), ui-sans-serif, sans-serif;
   --font-odreczny: var(--font-odreczny), ui-serif, cursive;
 
   /* Podłoże: trzy poziomy jasności, nie dwa */
@@ -87,8 +88,8 @@
   --text-naglowek-maly--line-height: 1.3;
   --text-naglowek: 1.875rem;
   --text-naglowek--line-height: 1.2;
-  --text-naglowek-duzy: 2.75rem;
-  --text-naglowek-duzy--line-height: 1.08;
+  --text-naglowek-duzy: 2.5rem;
+  --text-naglowek-duzy--line-height: 1.1;
   --text-tytul: 3.75rem;
   --text-tytul--line-height: 1.02;
 
@@ -96,7 +97,7 @@
   --container-czytelna: 34rem;
   --container-artykul: 44rem;
 
-  --radius-karta: 1.25rem;
+  --radius-karta: 1.5rem;
 }
 
 html {
@@ -127,10 +128,10 @@ body::before {
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(52rem 36rem at 82% -8%, rgba(29, 91, 255, 0.18), transparent 62%),
-    radial-gradient(40rem 30rem at 6% 2%, rgba(29, 91, 255, 0.1), transparent 60%),
-    radial-gradient(46rem 34rem at 96% 82%, rgba(184, 70, 15, 0.09), transparent 62%),
-    radial-gradient(58rem 40rem at 22% 106%, rgba(139, 92, 246, 0.16), transparent 64%),
+    radial-gradient(52rem 36rem at 82% -8%, rgba(29, 91, 255, 0.09), transparent 62%),
+    radial-gradient(40rem 30rem at 6% 2%, rgba(29, 91, 255, 0.05), transparent 60%),
+    radial-gradient(46rem 34rem at 96% 82%, rgba(184, 70, 15, 0.04), transparent 62%),
+    radial-gradient(58rem 40rem at 22% 106%, rgba(139, 92, 246, 0.08), transparent 64%),
     linear-gradient(180deg, #f2f7ff 0%, #f4f6fb 46%, #faf3f8 100%);
 }
 
@@ -216,19 +217,22 @@ body::after {
 }
 
 /**
- * Szkło. Biała, półprzezroczysta płyta z jasną krawędzią u góry: światło pada
- * z góry, więc górna krawędź jest jaśniejsza od dolnej.
+ * Karta. Prawie kryjąca biel z ledwo widoczną krawędzią i jednym miękkim,
+ * rozproszonym cieniem w chłodnym fiolecie. Bez rozmycia tła: szklane mają
+ * być drobiazgi (pastylka podnawigacji, odznaka), nie cała aplikacja.
  */
 .szklo {
   position: relative;
-  background: linear-gradient(158deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.74));
-  border: 1px solid var(--color-linia);
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(96, 119, 176, 0.1);
   border-radius: var(--radius-karta);
-  backdrop-filter: blur(14px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 1px 2px rgba(76, 42, 140, 0.05),
-    0 22px 54px -30px rgba(76, 42, 140, 0.34);
+  box-shadow: 0 12px 40px rgba(55, 74, 130, 0.07);
+}
+
+/** Karta klikalna: lekkie uniesienie zamiast powiększenia. */
+.szklo-klik:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 48px rgba(55, 74, 130, 0.12);
 }
 
 .szklo-mocne {
@@ -303,7 +307,11 @@ body::after {
 }
 
 .przycisk-gradient:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.06);
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(29, 91, 255, 0.25),
+    0 20px 44px -16px rgba(109, 61, 245, 0.7);
 }
 
 /** Przycisk drugi: biała pastylka z krawędzią. */
@@ -316,6 +324,7 @@ body::after {
 .przycisk-pigulka:hover {
   border-color: color-mix(in oklab, var(--color-akcent) 45%, transparent);
   color: var(--color-akcent-jasny);
+  transform: translateY(-2px);
 }
 
 /**
@@ -333,9 +342,9 @@ body::after {
 
 /** Cienki pasek postępu: tło z linii, wypełnienie gradientem. */
 .pasek-cienki {
-  height: 0.375rem;
+  height: 0.5rem;
   border-radius: 999px;
-  background: var(--color-linia);
+  background: #e7ebf5;
   overflow: hidden;
 }
 
@@ -368,9 +377,9 @@ body::after {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.85rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.9rem;
   flex-shrink: 0;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.75),

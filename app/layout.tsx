@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { bezszeryfowy, boksowy, odreczny } from "@/lib/ui/fonty";
+import { bezszeryfowy, odreczny } from "@/lib/ui/fonty";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pl" className={`${bezszeryfowy.variable} ${boksowy.variable} ${odreczny.variable}`}>
+    <html lang="pl" className={`${bezszeryfowy.variable} ${odreczny.variable}`}>
       <body className="min-h-dvh bg-tlo font-sans text-atrament antialiased">
         <a href="#tresc" className="przeskocz">
           Przejdź do treści

@@ -72,10 +72,10 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           <div>
             <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Twój program</p>
             <h1 className="mt-2 text-naglowek-maly font-extrabold leading-[1.1] tracking-tight sm:text-naglowek 2xl:text-naglowek-duzy">
-              Cześć, {uczestnik.imie}.
+              Cześć, {uczestnik.imie}.{dalej ? " Dziś odkrywasz," : ""}
               <br />
               <span className="gradient-tytul">
-                {dalej ? `Dziś odkrywasz, ${DZIS_ODKRYWASZ[dalej] ?? "co Cię ciągnie."}` : "Masz to za sobą."}
+                {dalej ? (DZIS_ODKRYWASZ[dalej] ?? "co Cię ciągnie.") : "Masz to za sobą."}
               </span>
             </h1>
             <p className="mt-2 max-w-czytelna text-male leading-relaxed text-atrament-sciszony">
@@ -84,7 +84,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
             {dalej ? (
               <Link
                 href={`/u/${kod}/modul/${dalej}`}
-                className="przejscie przycisk-gradient mt-4 inline-flex min-h-11 items-center gap-3 rounded-full px-6 text-male font-bold"
+                className="przejscie przycisk-gradient mt-4 inline-flex min-h-11 items-center gap-3 rounded-2xl px-6 text-male font-bold"
               >
                 {stan(dalej) === "wtrakcie" ? "Dokończ" : "Zacznij"}: {NAZWY_MODULOW[dalej]}
                 <span aria-hidden>→</span>
@@ -195,7 +195,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
               </ul>
               <Link
                 href={`/u/${kod}/raport`}
-                className="przejscie przycisk-pigulka mt-4 inline-flex min-h-10 items-center gap-2 rounded-full px-5 text-male font-semibold"
+                className="przejscie przycisk-pigulka mt-4 inline-flex min-h-10 items-center gap-2 rounded-2xl px-5 text-male font-semibold"
               >
                 {otwarteWarstwy.length > 4 ? `Otwórz raport, ${otwarteWarstwy.length} części` : "Otwórz raport"}{" "}
                 <span aria-hidden>→</span>

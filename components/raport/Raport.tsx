@@ -241,9 +241,9 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
         </p>
         <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Twój osobisty raport</p>
         <h1 className="mt-3 text-naglowek font-extrabold leading-tight tracking-tight sm:text-naglowek-duzy">
-          Moja mapa kierunku.
+          Moja mapa kierunku. Coraz lepiej
           <br />
-          <span className="gradient-tytul">Coraz lepiej rozumiem siebie.</span>
+          <span className="gradient-tytul">rozumiem siebie.</span>
         </h1>
         <p className="proza mt-3 max-w-czytelna">
           Nie wynik testu. Uporządkowanie tego, co sam o sobie napisałeś przez cztery tygodnie.
@@ -261,7 +261,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
           sekcji i prowadzi do niej w pełnym raporcie niżej. Sekcja zamknięta
           jest widoczna i podpisana, kiedy się otworzy. */}
       <div className="grid gap-4 lg:grid-cols-12">
-        <Plyta szer="lg:col-span-4" tinta="#f2ecff" znak="slowa" tytul="Twoje słowa" dostepna>
+        <Plyta szer="lg:col-span-4" tinta="#e9f0ff" znak="slowa" tytul="Twoje słowa" dostepna>
           {pierwszeSlowa ? (
             <>
               <p className="text-drobne uppercase tracking-[0.1em] text-atrament-slaby">{pierwszeSlowa.tytul}</p>
@@ -313,7 +313,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
 
         <Plyta
           szer="lg:col-span-4"
-          tinta="#fff6dc"
+          tinta="#fff1e8"
           znak="obszary"
           tytul="Moje najmocniejsze obszary"
           dostepna={dostepne.has("obszary")}
@@ -439,7 +439,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
 
         <Plyta
           szer="lg:col-span-3"
-          tinta="#e9f0ff"
+          tinta="#f2ecff"
           znak="drogi"
           tytul="Trzy możliwe drogi"
           dostepna={dostepne.has("trzy_drogi")}
@@ -587,14 +587,14 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
           {mozePobracPdf ? (
             <a
               href={`/u/${kodUczestnika}/raport/pdf`}
-              className="przejscie przycisk-pigulka inline-flex min-h-12 items-center rounded-full px-6 text-male font-semibold"
+              className="przejscie przycisk-pigulka inline-flex min-h-12 items-center rounded-2xl px-6 text-male font-semibold"
             >
               Pobierz PDF
             </a>
           ) : null}
           <Link
             href={`/u/${kodUczestnika}`}
-            className="przejscie przycisk-gradient inline-flex min-h-12 items-center gap-2 rounded-full px-7 text-male font-bold"
+            className="przejscie przycisk-gradient inline-flex min-h-12 items-center gap-2 rounded-2xl px-7 text-male font-bold"
           >
             Kontynuuj swoją drogę <span aria-hidden>→</span>
           </Link>

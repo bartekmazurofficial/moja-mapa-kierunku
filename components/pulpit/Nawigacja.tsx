@@ -44,8 +44,8 @@ export function Nawigacja({ pozycje }: { pozycje: PozycjaNawigacji[] }) {
             aria-current={aktywna ? "page" : undefined}
             className={`przejscie flex items-start gap-3 rounded-xl px-3 py-2.5 ${
               aktywna
-                ? "szklo szklo-akcent text-atrament"
-                : "border border-transparent text-atrament-sciszony hover:border-linia hover:bg-szklo/60 hover:text-atrament"
+                ? "bg-akcent-tlo text-akcent-jasny"
+                : "text-atrament-sciszony hover:bg-panel hover:text-atrament"
             }`}
           >
             <Ikona rodzaj={p.ikona} aktywna={aktywna} />

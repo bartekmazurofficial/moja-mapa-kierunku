@@ -90,4 +90,8 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
 
   // Ramka z podpowiedzia: tinta fioletu zamiast szklistej bieli.
   { nazwa: "podpowiedź na tincie fioletu", tekst: "#3d4460", tlo: "#f2ecff" },
+
+  // Plyty raportu: tekst sciszony na tintach sekcji.
+  { nazwa: "ściszony na tincie pomarańczu", tekst: "#3d4460", tlo: "#fff1e8" },
+  { nazwa: "ściszony na tincie błękitu", tekst: "#3d4460", tlo: "#e9f0ff" },
 ];

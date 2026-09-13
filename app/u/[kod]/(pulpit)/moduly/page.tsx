@@ -58,14 +58,14 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-akcent/20 blur-3xl"
         />
         <Bramy klasa="pointer-events-none absolute -right-4 bottom-0 hidden h-[15rem] w-[23rem] opacity-80 lg:block" />
-        <p aria-hidden className="odreczny absolute right-[20rem] top-8 hidden max-w-[12rem] xl:block">
+        <p aria-hidden className="odreczny absolute right-10 top-7 hidden max-w-[12rem] text-right xl:block">
           Lepiej siebie poznać, niż przypadkiem przeżyć życie.
         </p>
         <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Twój program</p>
         <h1 className="mt-2 text-naglowek font-extrabold leading-[1.1] tracking-tight sm:text-naglowek-duzy">
-          Moduły
+          Moduły. Krok po kroku
           <br />
-          <span className="gradient-tytul">Krok po kroku do większej jasności.</span>
+          <span className="gradient-tytul">do większej jasności.</span>
         </h1>
         <p className="mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
           Siedem modułów. Każdy odkrywa inny kawałek tego, co już o sobie wiesz. Wypełniaj je po
@@ -123,7 +123,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         {dalej ? (
           <Link
             href={`/u/${kod}/modul/${dalej}`}
-            className="przejscie przycisk-gradient inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded-full px-7 text-male font-bold"
+            className="przejscie przycisk-gradient inline-flex min-h-[3.25rem] shrink-0 items-center justify-center gap-3 rounded-2xl px-7 text-male font-bold"
           >
             {stan(dalej) === "wtrakcie" ? "Kontynuuj moduł" : "Zacznij moduł"}: {NAZWY_MODULOW[dalej]}
             <span aria-hidden>→</span>
@@ -189,11 +189,11 @@ function KartaModulu({
         aria-hidden
         className="relative flex h-24 items-center justify-center rounded-xl"
         style={{
-          background: zamkniety
-            ? "var(--color-tlo)"
-            : `linear-gradient(150deg, ${kolor.tlo}, #ffffff 85%)`,
+          background: `linear-gradient(150deg, ${kolor.tlo}, #ffffff 85%)`,
           boxShadow: `inset 0 0 0 1px ${zamkniety ? "var(--color-linia)" : kolor.obwod}`,
           color: zamkniety ? "var(--color-atrament-slaby)" : kolor.atrament,
+          // Zamkniete: kolor schodzi z pasa (desaturacja), nie z tekstu.
+          filter: zamkniety ? "saturate(0.25) opacity(0.75)" : undefined,
         }}
       >
         <ZnakModulu modul={modul} rozmiar={38} />

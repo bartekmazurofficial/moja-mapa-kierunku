@@ -333,7 +333,7 @@ export function Runner({
   const postepModulu = Math.round((Math.max(0, numerModulu - 1) / Math.max(1, liczbaModulow)) * 100);
 
   return (
-    <div className="relative isolate mx-auto flex min-h-dvh w-full max-w-[54rem] flex-col overflow-hidden px-4 pb-6 pt-4 sm:px-8 sm:pt-5">
+    <div className="relative isolate mx-auto flex min-h-dvh w-full max-w-[60rem] flex-col px-4 pb-6 pt-4 sm:px-8 sm:pt-5">
       {/*
         Ilustracja modułu: droga, horyzont, wschód słońca. Stoi pod treścią,
         przy dolnej krawędzi, i pojawia się tylko wtedy, gdy ekran nie ma
@@ -543,7 +543,7 @@ export function Runner({
             ref={przyciskCofniecia}
             type="button"
             onClick={cofnij}
-            className="przejscie wejscie-ekranu przycisk-pigulka inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-male font-semibold"
+            className="przejscie wejscie-ekranu przycisk-pigulka inline-flex min-h-11 items-center gap-2 rounded-2xl px-4 text-male font-semibold"
           >
             <span aria-hidden>↩</span>
             Cofnij ostatnią odpowiedź
@@ -551,7 +551,7 @@ export function Runner({
         </div>
       ) : null}
 
-      <footer className="mt-6 flex items-center justify-between gap-4">
+      <footer className="sticky bottom-0 z-20 -mx-4 mt-6 flex items-center justify-between gap-4 bg-gradient-to-t from-tlo via-tlo/85 to-transparent px-4 pb-3 pt-4 sm:static sm:z-auto sm:m-0 sm:mt-6 sm:bg-none sm:p-0">
         <button
           type="button"
           onClick={() => {
@@ -560,7 +560,7 @@ export function Runner({
             if (window.scrollY > 8) window.scrollTo({ top: 0, behavior: "auto" });
           }}
           disabled={bezpiecznyIndeks === 0}
-          className="przejscie przycisk-pigulka min-h-12 rounded-full px-6 text-male font-semibold disabled:invisible"
+          className="przejscie przycisk-pigulka min-h-12 rounded-2xl px-6 text-male font-semibold disabled:invisible"
         >
           <span aria-hidden className="mr-2">←</span>
           Wstecz
@@ -570,7 +570,7 @@ export function Runner({
           type="button"
           onClick={() => void dalej()}
           disabled={!kompletny || konczy}
-          className={`przejscie min-h-12 rounded-full px-8 text-tresc font-bold sm:min-w-[14rem] ${
+          className={`przejscie min-h-[3.25rem] rounded-2xl px-8 text-tresc font-bold sm:min-w-[14rem] ${
             !kompletny || konczy ? "border border-linia bg-panel text-atrament-sciszony" : "przycisk-gradient"
           }`}
         >
@@ -612,9 +612,9 @@ function DwaTony({ tekst }: { tekst: string }) {
   // Podział pada w łamaniu wiersza, nie w środku linii: w referencjach
   // pierwsza linia jest ciemna, druga gradientowa. Bez tego gradient zaczyna
   // się w połowie wiersza i przestaje czytać się jako druga linia.
-  // Druga połowa nagłówka dostaje gradient. Przy dwóch słowach to jedno słowo,
-  // przy ośmiu cztery — gradient ma być drugą linią, nie końcówką.
-  const ile = Math.max(1, Math.floor(slowa.length / 2));
+  // Gradient dostaje 25-45% słów nagłówka: przy czterech jedno, przy pięciu
+  // dwa, przy siedmiu trzy. Ciemna część jest zawsze dłuższa od gradientowej.
+  const ile = Math.max(1, Math.floor(slowa.length * 0.45));
   const poczatek = slowa.slice(0, -ile).join(" ");
   const koniec = slowa.slice(-ile).join(" ");
   return (

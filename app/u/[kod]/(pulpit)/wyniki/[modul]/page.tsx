@@ -49,7 +49,7 @@ export default async function Strona({
           Twoje odpowiedzi
         </p>
         <h1 className="mt-2 text-naglowek-duzy font-extrabold leading-tight tracking-tight">
-          <span className="gradient-tytul">{nazwa}</span>
+          {nazwa}
         </h1>
         <p className="proza mt-3 max-w-czytelna">
           {plansza.gotowy
@@ -58,7 +58,7 @@ export default async function Strona({
         </p>
         <Link
           href={plansza.gotowy ? `/u/${kod}/modul/${modul}/od-nowa` : `/u/${kod}/modul/${modul}`}
-          className="przejscie przycisk-pigulka mt-6 inline-flex min-h-12 items-center gap-2 rounded-full px-7 text-male font-semibold"
+          className="przejscie przycisk-pigulka mt-6 inline-flex min-h-12 items-center gap-2 rounded-2xl px-7 text-male font-semibold"
         >
           {plansza.gotowy ? "Wypełnij tę część od nowa" : "Wypełnij tę część"}
           <span aria-hidden>→</span>

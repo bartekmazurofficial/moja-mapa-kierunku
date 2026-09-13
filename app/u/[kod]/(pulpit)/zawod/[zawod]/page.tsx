@@ -5,7 +5,7 @@ import { ulozKarte, wSlocie, type Blok, type Slot } from "@/lib/karty/uklad";
 import { BlokKarty, Proza } from "@/components/karta/Bloki";
 import { POZIOM, STUDIA, KOSZT, ZAGROZENIE } from "@/lib/karty/etykiety";
 import { towarzyszeZKlastra } from "@/lib/karty/klastry";
-import { Obraz } from "@/components/Ikona";
+import { obrazDuzy, obrazPlanszy } from "@/lib/ui/obrazy";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +43,7 @@ export default async function Strona({
 
   const streszczenie = w("streszczenie");
   const ilustracja = karta.znakObszaru;
+  const zdjecieHero = ilustracja ? (obrazPlanszy(ilustracja) ?? obrazDuzy(ilustracja)) : null;
 
   return (
     <article className="flex flex-col gap-5">
@@ -55,21 +56,32 @@ export default async function Strona({
         </Link>
       </nav>
 
-      {/* NAGŁÓWEK */}
-      <header className="szklo relative overflow-hidden p-5 sm:p-7 lg:pr-[15rem]">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-akcent/20 blur-3xl"
-        />
-        {ilustracja ? (
-          <div aria-hidden className="pointer-events-none absolute right-6 top-6 hidden lg:block">
-            <Obraz klucz={ilustracja} rozmiar={160} />
+      {/* NAGŁÓWEK: 55% tekstu, 45% obrazu dochodzącego do prawej i górnej
+          krawędzi, zszytego z kartą maską gradientową. */}
+      <header className="szklo szklo-mocne relative isolate overflow-hidden rounded-[1.75rem] p-5 sm:p-7 lg:min-h-[23rem] lg:pr-[44%]">
+        {zdjecieHero ? (
+          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[54%] lg:block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={zdjecieHero} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+            <span className="absolute -left-2 inset-y-0 right-0 bg-gradient-to-r from-white from-18% via-white/45 via-55% to-transparent" />
+          </div>
+        ) : (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-20 -top-24 -z-10 h-64 w-64 rounded-full bg-akcent/20 blur-3xl"
+          />
+        )}
+        {zdjecieHero ? (
+          <div aria-hidden className="pointer-events-none relative -mx-5 -mt-5 mb-4 h-40 overflow-hidden sm:-mx-7 sm:-mt-7 sm:h-48 lg:hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={zdjecieHero} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+            <span className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
           </div>
         ) : null}
 
         <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Zawód</p>
-        <h1 className="mt-3 text-naglowek font-extrabold leading-tight tracking-tight sm:text-naglowek-duzy">
-          <span className="gradient-tytul">{karta.tytul}</span>
+        <h1 className="mt-3 max-w-[16ch] text-naglowek-duzy font-extrabold leading-[1.05] tracking-tight sm:text-tytul">
+          {karta.tytul}
         </h1>
 
         {streszczenie?.rodzaj === "markdown" ? (
@@ -93,8 +105,11 @@ export default async function Strona({
           </p>
         ) : null}
 
-        {/* TRZY ZNACZNIKI: to samo, co w nagłówku mockupu, w tej samej płycie. */}
-        <ul className="mt-5 grid gap-2.5 sm:grid-cols-3">
+
+      </header>
+
+      {/* SZYBKIE FAKTY: trzy karty pod hero, jak w referencji. */}
+      <ul className="grid gap-3 sm:grid-cols-3">
         <Znacznik
           barwa={karta.flaga === "trampolina" ? "zielony" : "niebieski"}
           tytul={karta.flaga === "trampolina" ? "Dobre pierwsze miejsce pracy" : "Zawód docelowy"}
@@ -114,7 +129,6 @@ export default async function Strona({
           ikona="przyszlosc"
         />
         </ul>
-      </header>
 
       {obok.length > 0 ? (
         <aside className="szklo p-6">
@@ -129,7 +143,7 @@ export default async function Strona({
               <Link
                 key={z.kod}
                 href={`/u/${kod}/porownanie?a=${karta.kod}&b=${z.kod}`}
-                className="przejscie inline-flex min-h-11 items-center gap-2 rounded-full bg-akcent px-6 text-male font-semibold text-na-akcencie hover:bg-akcent-ciemny"
+                className="przejscie inline-flex min-h-11 items-center gap-2 rounded-2xl bg-akcent px-6 text-male font-semibold text-na-akcencie hover:bg-akcent-ciemny"
               >
                 Porównaj z: {z.nazwa} <span aria-hidden>→</span>
               </Link>
@@ -191,13 +205,13 @@ export default async function Strona({
       <footer className="flex flex-wrap gap-3">
         <Link
           href={`/u/${kod}/zawody`}
-          className="przejscie przycisk-pigulka inline-flex min-h-12 flex-1 items-center justify-center gap-3 rounded-full px-7 text-tresc font-semibold"
+          className="przejscie przycisk-pigulka inline-flex min-h-12 flex-1 items-center justify-center gap-3 rounded-2xl px-7 text-tresc font-semibold"
         >
           <span aria-hidden>←</span> Wróć do listy
         </Link>
         <Link
           href={`/u/${kod}/zawody`}
-          className="przejscie przycisk-gradient inline-flex min-h-12 flex-1 items-center justify-center gap-3 rounded-full px-7 text-tresc font-bold"
+          className="przejscie przycisk-gradient inline-flex min-h-12 flex-1 items-center justify-center gap-3 rounded-2xl px-7 text-tresc font-bold"
         >
           Sprawdź podobne zawody <span aria-hidden>→</span>
         </Link>

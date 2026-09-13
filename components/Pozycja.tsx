@@ -101,7 +101,7 @@ function stylBloku(klucz: string | undefined, wSiatce: boolean | undefined, miej
  * zaznaczenie nie przesuwa układu o piksel.
  */
 function klasyKarty(wybrana: boolean): string {
-  return `przejscie relative w-full rounded-2xl border-2 text-left active:scale-[0.995] ${
+  return `przejscie relative w-full rounded-karta border-2 text-left active:scale-[0.995] ${
     wybrana ? "obwodka-gradient" : "border-linia hover:border-linia-mocna"
   }`;
 }
@@ -117,13 +117,28 @@ function stylKarty(kolor: Kolor | null, wybrana: boolean): React.CSSProperties {
 }
 
 /** Znak wyboru w rogu karty: pełny gradient po wybraniu, pusty pierścień przed. */
-function ZnakWyboru({ wybrana, kwadrat }: { wybrana: boolean; kwadrat?: boolean }) {
+function ZnakWyboru({
+  wybrana,
+  kwadrat,
+  naObrazie,
+}: {
+  wybrana: boolean;
+  kwadrat?: boolean;
+  /** Znak lezy na zdjeciu: kryjaca biel pod pierscieniem, inaczej ginie. */
+  naObrazie?: boolean;
+}) {
   return (
     <span
       aria-hidden
-      className={`absolute right-3 top-3 flex h-7 w-7 items-center justify-center border-2 ${
+      className={`absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center border-2 ${
         kwadrat ? "rounded-lg" : "rounded-full"
-      } ${wybrana ? "przycisk-gradient border-transparent" : "border-linia-mocna bg-panel/80"}`}
+      } ${
+        wybrana
+          ? "przycisk-gradient border-transparent"
+          : naObrazie
+            ? "border-white bg-panel/90 shadow-sm"
+            : "border-linia-mocna bg-panel/80"
+      }`}
     >
       {wybrana ? (
         <svg viewBox="0 0 12 12" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2">
@@ -318,7 +333,7 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
             <li
               key={o.kod}
               data-kod={o.kod}
-              className={`flex items-center gap-3 rounded-2xl border-2 p-2.5 sm:gap-4 sm:p-3 ${
+              className={`flex min-h-24 items-center gap-3 rounded-2xl border-2 p-2.5 sm:gap-4 sm:p-3 ${
                 chwycony ? "" : "przejscie"
               }`}
               style={{
@@ -345,7 +360,7 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
               </span>
 
               {o.ikona ? (
-                <Obraz klucz={o.ikona} rozmiar={52} aktywna={ustawione} wybor kolor={kolor} />
+                <Obraz klucz={o.ikona} rozmiar={76} aktywna={ustawione} wybor kolor={kolor} />
               ) : null}
 
               <span className="min-w-0 flex-1 font-boksowy text-male font-medium leading-snug text-atrament sm:text-tresc">
@@ -429,22 +444,38 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
         const wybrana = wartosc === s.kod;
         const kolor = kolorPary;
         const obraz = kluczBieguna(pozycja.stronaA?.ikona, pozycja.stronaB?.ikona, i === 0 ? 0 : 1);
+        const przygaszona = Boolean(wartosc) && !wybrana;
         return (
           <button
             key={`${s.kod}-${i}`}
             type="button"
             onClick={() => wybierz(s.kod)}
             aria-pressed={wybrana}
-            className={`${klasyKarty(wybrana)} flex min-h-[9rem] flex-col items-center justify-center gap-3 px-4 pb-5 pt-9 sm:min-h-[11rem] sm:px-6`}
-            style={stylKarty(kolor, wybrana)}
+            className={`${klasyKarty(wybrana)} przejscie flex flex-col overflow-hidden ${
+              obraz
+                ? "items-stretch justify-start pb-4 text-center"
+                : "min-h-[9rem] items-center justify-center gap-3 px-4 pb-5 pt-9 sm:min-h-[11rem] sm:px-6"
+            }`}
+            style={{
+              ...stylKarty(kolor, wybrana),
+              // Po wyborze druga karta lekko sie wycisza, zeby wybrana
+              // przejela uwage. Symetrycznie: przygasa zawsze ta niewybrana.
+              opacity: przygaszona ? 0.85 : undefined,
+            }}
           >
-            <ZnakWyboru wybrana={wybrana} />
             {obraz ? (
-              <Obraz klucz={obraz} rozmiar={132} aktywna={wybrana} wybor kolor={kolor} />
+              <Obraz klucz={obraz} pelny aktywna={wybrana} wybor kolor={kolor} />
             ) : zeZnakiem && s.ikona ? (
               <KolkoZnaku klucz={s.ikona} kolor={kolor} />
             ) : null}
-            <span className="boks text-tresc leading-snug text-atrament sm:text-tresc-duza">{s.tekst}</span>
+            <ZnakWyboru wybrana={wybrana} naObrazie={Boolean(obraz)} />
+            <span
+              className={`boks text-tresc leading-snug text-atrament sm:text-tresc-duza ${
+                obraz ? "px-3 pt-3.5 sm:px-4" : ""
+              }`}
+            >
+              {s.tekst}
+            </span>
           </button>
         );
       })}

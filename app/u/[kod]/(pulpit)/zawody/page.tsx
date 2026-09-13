@@ -47,9 +47,9 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           Realne możliwości. Prawdziwi ludzie.
         </p>
         <h1 className="mt-3 text-naglowek font-extrabold leading-tight tracking-tight sm:text-naglowek-duzy">
-          Zawody
+          Zawody. Poznaj drogi.
           <br />
-          <span className="gradient-tytul">Poznaj drogi. Wybierz swoją.</span>
+          <span className="gradient-tytul">Wybierz swoją.</span>
         </h1>
         <p className="proza mt-3 max-w-czytelna">
           Nie obowiązki, tylko życie. O której wstaje, ile go boli, kiedy ma wolne, co go wykańcza.

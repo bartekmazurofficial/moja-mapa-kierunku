@@ -58,7 +58,7 @@ export function WejscieKodem() {
         <button
           type="submit"
           disabled={sprawdza}
-          className="przejscie przycisk-gradient min-h-14 rounded-full px-9 text-tresc font-bold disabled:saturate-50 disabled:brightness-110"
+          className="przejscie przycisk-gradient min-h-14 rounded-2xl px-9 text-tresc font-bold disabled:saturate-50 disabled:brightness-110"
         >
           {sprawdza ? "Sprawdzam…" : "Rozpocznij"}
           {sprawdza ? null : (

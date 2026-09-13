@@ -99,6 +99,7 @@ export function Obraz({
   aktywna,
   wybor,
   kolor,
+  pelny,
 }: {
   klucz: KluczGlifu;
   rozmiar?: number;
@@ -107,11 +108,37 @@ export function Obraz({
   wybor?: boolean;
   /** Kolor miejsca na ekranie wyboru. Bez niego ilustracja jest neutralna. */
   kolor?: Kolor | null;
+  /**
+   * Obraz na cala szerokosc karty, przyciety do 4:3, bez wlasnej ramki —
+   * krawedzie daje karta. Dla kart odpowiedzi, gdzie obraz JEST decyzja,
+   * a nie miniaturka przy tekscie.
+   */
+  pelny?: boolean;
 }) {
   const k = paleta(klucz, wybor, kolor);
-  const zrodlo = rozmiar > 200 ? (obrazDuzy(klucz) ?? obrazKafla(klucz)) : obrazKafla(klucz);
+  const zrodlo = pelny || rozmiar > 200 ? (obrazDuzy(klucz) ?? obrazKafla(klucz)) : obrazKafla(klucz);
 
   if (!zrodlo) return <Ikona klucz={klucz} rozmiar={rozmiar} aktywna={aktywna} wybor={wybor} kolor={kolor} />;
+
+  if (pelny) {
+    return (
+      <span
+        aria-hidden
+        className="relative block w-full overflow-hidden"
+        style={{ aspectRatio: "4 / 3", background: k.tlo }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={zrodlo}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="przejscie absolute inset-0 h-full w-full object-cover"
+          style={{ opacity: aktywna ? 1 : 0.94 }}
+        />
+      </span>
+    );
+  }
 
   return (
     <span

@@ -106,13 +106,6 @@ export default async function Uklad({
             <Nawigacja pozycje={pozycje} />
           </div>
 
-          <div className="mt-6 rounded-xl border border-akcent/20 bg-akcent-tlo/50 p-4">
-            <p aria-hidden className="odreczny">
-              Małe wybory.
-              <br />
-              Wielkie możliwości.
-            </p>
-          </div>
         </div>
       </aside>
 
