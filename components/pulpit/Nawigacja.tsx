@@ -17,7 +17,10 @@ export function Nawigacja({ pozycje }: { pozycje: PozycjaNawigacji[] }) {
   const sciezka = usePathname();
 
   return (
-    <nav aria-label="Sekcje programu" className="flex flex-col gap-1.5">
+    <nav
+      aria-label="Sekcje programu"
+      className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0"
+    >
       {pozycje.map((p) => {
         const aktywna = p.href === sciezka || sciezka.startsWith(`${p.href}/`);
 
@@ -25,12 +28,12 @@ export function Nawigacja({ pozycje }: { pozycje: PozycjaNawigacji[] }) {
           return (
             <span
               key={p.href}
-              className="flex items-start gap-3 rounded-xl px-3 py-2.5 text-atrament-slaby"
+              className="flex shrink-0 items-center gap-2.5 rounded-xl px-3 py-2.5 text-atrament-slaby lg:shrink lg:items-start lg:gap-3"
             >
               <Ikona rodzaj={p.ikona} przygaszona />
               <span className="min-w-0 flex-1">
-                <span className="block text-male font-medium">{p.etykieta}</span>
-                <span className="block text-drobne">{p.zamkniete}</span>
+                <span className="block whitespace-nowrap text-male font-medium">{p.etykieta}</span>
+                <span className="hidden text-drobne lg:block">{p.zamkniete}</span>
               </span>
               <Klodka />
             </span>
@@ -42,7 +45,7 @@ export function Nawigacja({ pozycje }: { pozycje: PozycjaNawigacji[] }) {
             key={p.href}
             href={p.href}
             aria-current={aktywna ? "page" : undefined}
-            className={`przejscie flex items-start gap-3 rounded-xl px-3 py-2.5 ${
+            className={`przejscie flex shrink-0 items-center gap-2.5 rounded-xl px-3 py-2.5 lg:shrink lg:items-start lg:gap-3 ${
               aktywna
                 ? "bg-akcent-tlo text-akcent-jasny"
                 : "text-atrament-sciszony hover:bg-panel hover:text-atrament"
@@ -50,8 +53,8 @@ export function Nawigacja({ pozycje }: { pozycje: PozycjaNawigacji[] }) {
           >
             <Ikona rodzaj={p.ikona} aktywna={aktywna} />
             <span className="min-w-0 flex-1">
-              <span className="block text-male font-semibold">{p.etykieta}</span>
-              <span className="block text-drobne text-atrament-slaby">{p.podpis}</span>
+              <span className="block whitespace-nowrap text-male font-semibold">{p.etykieta}</span>
+              <span className="hidden text-drobne text-atrament-slaby lg:block">{p.podpis}</span>
             </span>
             {p.odznaka ? (
               <span className="mt-0.5 shrink-0 rounded-full bg-akcent-tlo px-2 py-0.5 text-drobne font-semibold text-akcent-jasny">

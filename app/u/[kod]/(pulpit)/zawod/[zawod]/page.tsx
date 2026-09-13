@@ -12,13 +12,17 @@ export const dynamic = "force-dynamic";
 /**
  * Karta zawodu: jak wygląda życie człowieka, który to robi.
  *
- * Układ jest prowadzony, a nie przepisany z dokumentu. Kolejność odpowiada
- * kolejności pytań, które zadaje sobie ktoś wybierający: co to w ogóle jest,
- * jak wygląda dzień, ile to kosztuje ciało i głowę, co trzeba umieć, ile
- * płacą, jak długa droga, czy to przetrwa i czy to na pewno nie jest dla mnie.
+ * Układ jest szablonem, nie przepisanym dokumentem: ten sam porządek sekcji,
+ * te same pary i te same szerokości dla wszystkich stu pięćdziesięciu siedmiu
+ * kart. Kolejność odpowiada kolejności pytań, które zadaje sobie ktoś
+ * wybierający: co to w ogóle jest, jak wygląda dzień i rok, ile to kosztuje
+ * ciało i głowę, co trzeba umieć, ile płacą, jak długa droga, czy to przetrwa
+ * i czy to na pewno nie jest dla mnie.
  *
- * Sekcja, której układ nie rozpoznał, ląduje na końcu jako tekst do czytania.
- * Nic z karty nie może przepaść tylko dlatego, że nie zmieściło się w planie.
+ * Sekcja, której karta nie ma, nie zostawia po sobie dziury: para z jedną
+ * stroną rozciąga się na całą szerokość. Sekcja, której układ nie rozpoznał,
+ * ląduje na końcu jako tekst do czytania — nic z karty nie może przepaść
+ * tylko dlatego, że nie zmieściło się w planie.
  */
 export default async function Strona({
   params,
@@ -36,8 +40,9 @@ export default async function Strona({
   // Sloty, ktore maja swoje miejsce w ukladzie. Reszta idzie na koniec.
   const ROZSTAWIONE: Slot[] = [
     "streszczenie", "czym_jest", "dzien", "czas", "obciazenie", "skala", "rok",
-    "miekkie", "koszt", "twarde", "narzedzia", "pieniadze", "droga",
-    "zagrozenie", "czlowiek", "kto", "mity", "dalej", "pokrewne",
+    "miekkie", "profil", "koszt", "twarde", "narzedzia", "pieniadze",
+    "miedzynarodowa", "droga", "zagrozenie", "czlowiek", "kto", "mity",
+    "dalej", "pokrewne",
   ];
   const reszta = bloki.filter((b) => !b.slot || !ROZSTAWIONE.includes(b.slot));
 
@@ -50,66 +55,64 @@ export default async function Strona({
       <nav>
         <Link
           href={`/u/${kod}/zawody`}
-          className="przejscie inline-flex items-center gap-2 text-male text-atrament-slaby hover:text-atrament"
+          className="przejscie inline-flex items-center gap-2 text-male font-semibold text-atrament-slaby hover:text-atrament"
         >
           <span aria-hidden>←</span> Wróć do zawodów
         </Link>
       </nav>
 
-      {/* NAGŁÓWEK: 55% tekstu, 45% obrazu dochodzącego do prawej i górnej
-          krawędzi, zszytego z kartą maską gradientową. */}
-      <header className="szklo szklo-mocne relative isolate overflow-hidden rounded-[1.75rem] p-5 sm:p-7 lg:min-h-[23rem] lg:pr-[44%]">
-        {zdjecieHero ? (
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 -z-10 hidden w-[54%] lg:block">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={zdjecieHero} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
-            <span className="absolute -left-2 inset-y-0 right-0 bg-gradient-to-r from-white from-18% via-white/45 via-55% to-transparent" />
-          </div>
-        ) : (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-20 -top-24 -z-10 h-64 w-64 rounded-full bg-akcent/20 blur-3xl"
-          />
-        )}
-        {zdjecieHero ? (
-          <div aria-hidden className="pointer-events-none relative -mx-5 -mt-5 mb-4 h-40 overflow-hidden sm:-mx-7 sm:-mt-7 sm:h-48 lg:hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={zdjecieHero} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
-            <span className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
-          </div>
-        ) : null}
+      {/* NAGŁÓWEK: po lewej nazwa, znaczniki i jedno zdanie; po prawej
+          zdjęcie dochodzące do krawędzi, z odręcznym dopiskiem. */}
+      <header className="grid items-end gap-8 lg:grid-cols-[1.15fr_1fr]">
+        <div>
+          <p className="text-drobne font-bold uppercase tracking-[0.28em] text-atrament-slaby">
+            Zawód
+          </p>
+          <h1 className="mt-2.5 text-naglowek-duzy font-extrabold leading-[1.02] tracking-[-0.03em] text-atrament sm:text-tytul">
+            {karta.tytul}
+          </h1>
 
-        <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Zawód</p>
-        <h1 className="mt-3 max-w-[16ch] text-naglowek-duzy font-extrabold leading-[1.05] tracking-tight sm:text-tytul">
-          {karta.tytul}
-        </h1>
+          <ul className="mt-6 flex flex-wrap gap-2.5">
+            <Znak>{POZIOM[karta.poziom] ?? karta.poziom}</Znak>
+            <Znak>{STUDIA[karta.studia] ?? karta.studia}</Znak>
+            <Znak>{karta.obszar}</Znak>
+          </ul>
 
-        {streszczenie?.rodzaj === "markdown" ? (
-          <>
-            <p className="mt-4 text-tresc font-bold text-atrament">Co to za praca naprawdę?</p>
-            <div className="mt-0.5 max-w-czytelna">
-              <Proza tresc={streszczenie.tresc} />
+          {streszczenie ? (
+            <div className="mt-7">
+              <p className="text-tresc font-bold text-akcent-jasny">W jednym zdaniu</p>
+              <div className="mt-1.5 max-w-[40rem] text-tresc-duza font-semibold leading-[1.45] text-atrament [&_p]:mt-0">
+                <BlokKarty blok={streszczenie} bezTytulu bezPrzyciecia />
+              </div>
             </div>
-          </>
-        ) : null}
+          ) : null}
+        </div>
 
-        {karta.zdanieKierunkowe ? (
-          <p className="mt-4 max-w-czytelna border-l-2 border-akcent pl-4 text-tresc font-semibold leading-relaxed">
-            {karta.zdanieKierunkowe}
+        <div className="relative">
+          <div className="overflow-hidden rounded-[1.75rem] bg-plyta shadow-[0_18px_40px_-22px_rgba(55,74,130,0.35)]">
+            {zdjecieHero ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={zdjecieHero}
+                alt=""
+                aria-hidden
+                className="h-full w-full object-cover"
+                style={{ aspectRatio: "4 / 3" }}
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <div aria-hidden style={{ aspectRatio: "4 / 3" }} />
+            )}
+          </div>
+          <p aria-hidden className="odreczny mt-3 whitespace-pre-line text-right">
+            {dopisekKarty(karta.kod)}
           </p>
-        ) : null}
-
-        {!karta.pelna ? (
-          <p className="mt-4 max-w-czytelna rounded-xl border border-linia bg-tlo/50 px-4 py-3 text-male text-atrament-sciszony">
-            Ta karta jest na razie w wersji skróconej. Pełny opis powstaje.
-          </p>
-        ) : null}
-
-
+        </div>
       </header>
 
-      {/* SZYBKIE FAKTY: trzy karty pod hero, jak w referencji. */}
-      <ul className="grid gap-3 sm:grid-cols-3">
+      {/* TRZY ZNACZNIKI: to, co rozstrzyga, czy w ogóle czytać dalej. */}
+      <ul className="grid gap-4 sm:grid-cols-3">
         <Znacznik
           barwa={karta.flaga === "trampolina" ? "zielony" : "niebieski"}
           tytul={karta.flaga === "trampolina" ? "Dobre pierwsze miejsce pracy" : "Zawód docelowy"}
@@ -128,7 +131,19 @@ export default async function Strona({
           podpis="Jak ten zawód wygląda za dziesięć lat"
           ikona="przyszlosc"
         />
-        </ul>
+      </ul>
+
+      {karta.zdanieKierunkowe ? (
+        <p className="szklo border-l-[3px] border-l-akcent px-6 py-5 text-tresc-duza font-semibold leading-relaxed text-atrament">
+          {karta.zdanieKierunkowe}
+        </p>
+      ) : null}
+
+      {!karta.pelna ? (
+        <p className="szklo px-6 py-4 text-male text-atrament-sciszony">
+          Ta karta jest na razie w wersji skróconej. Pełny opis powstaje.
+        </p>
+      ) : null}
 
       {obok.length > 0 ? (
         <aside className="szklo p-6">
@@ -152,71 +167,138 @@ export default async function Strona({
         </aside>
       ) : null}
 
-      {/* Tablica, nie kolumna.
-          Karta ma dwadzieścia sekcji i w jednej kolumnie rozciągała się na
-          prawie dziewięć ekranów. Układ wielokolumnowy pakuje je obok siebie:
-          płyta nigdy nie pęka między kolumnami, a to, co najważniejsze przy
-          decyzji, stoi na początku pierwszej kolumny. */}
-      <div className="gap-4 [column-fill:balance] md:columns-2 xl:columns-3 [&>*]:mb-4 [&>*]:break-inside-avoid">
-        <Karta blok={w("czym_jest")} tytul="Czym ta praca jest naprawdę" slot="czym_jest" />
-        <Karta blok={w("obciazenie")} tytul="Sześć wymiarów obciążenia" slot="obciazenie" />
-        <Karta blok={w("pieniadze")} tytul="Realne zarobki na etapach" slot="pieniadze" />
-        <Karta blok={w("czas")} tytul="Na co naprawdę idzie czas?" slot="czas" />
-        <Karta blok={w("dzien")} tytul="Jak wygląda zwykły dzień?" slot="dzien" />
-        <Karta blok={w("droga")} tytul="Droga dojścia" slot="droga" />
+      {/* Dalej szablon: ta sama kolejność i te same pary na każdej karcie. */}
+      <Karta blok={w("czym_jest")} tytul="Czym ta praca jest naprawdę" slot="czym_jest" duza dwieSzpalty />
+
+      <Para>
+        <Karta blok={w("skala")} tytul="Skala zawodu" slot="skala" />
+        <Karta blok={w("dzien")} tytul="Zwykły dzień" slot="dzien" />
+      </Para>
+
+      <Para>
+        <Karta blok={w("czas")} tytul="Na co realnie idzie czas" slot="czas" />
+        <Karta blok={w("rok")} tytul="Zwykły rok" slot="rok" />
+      </Para>
+
+      <Karta
+        blok={w("obciazenie")}
+        tytul="Obciążenie"
+        slot="obciazenie"
+        duza
+        obok={<span className="text-male font-semibold text-atrament-slaby">skala 1 do 5</span>}
+      />
+
+      <Karta blok={w("twarde")} tytul="Umiejętności twarde, z wymaganym poziomem" slot="twarde" duza />
+      <Karta blok={w("narzedzia")} tytul="Narzędzia i programy, wyjaśnione" slot="narzedzia" duza />
+
+      <Para>
+        <Karta blok={w("miekkie")} tytul="Umiejętności miękkie" slot="miekkie" />
+        <Karta blok={w("profil")} tytul="Profil, przy którym ten zawód ma sens" slot="profil" />
+      </Para>
+
+      <Para>
+        <Karta blok={w("kto")} tytul="Kto się w tym nie odnajdzie" slot="kto" />
         <Karta
           blok={w("koszt")}
-          tytul="Koszt wejścia"
+          tytul="Ile realnie kosztuje wejście"
           slot="koszt"
-          nad={
-            <p className="mb-3 inline-block rounded-full border border-koszt/30 bg-koszt-tlo px-3.5 py-1.5 text-male font-semibold text-koszt">
+          obok={
+            <span className="rounded-full bg-uwaga-tlo px-3 py-1 text-drobne font-bold text-uwaga">
               {KOSZT[karta.koszt] ?? karta.koszt}
-            </p>
+            </span>
           }
         />
-        <Karta
-          blok={w("zagrozenie")}
-          tytul="Czy ten zawód jest zagrożony"
-          slot="zagrozenie"
-          stopien={ZAGROZENIE[karta.zagrozenie]}
-        />
-        <Karta blok={w("miekkie")} tytul="Jakie umiejętności są potrzebne?" slot="miekkie" />
-        <Karta blok={w("kto")} tytul="Kto może się tu nie odnaleźć?" slot="kto" />
-        <Karta blok={w("czlowiek")} tytul="Co ta praca robi z człowiekiem" slot="czlowiek" />
-        <Karta blok={w("skala")} tytul="Skala zawodu" slot="skala" />
-        <Karta blok={w("rok")} tytul="Jak wygląda zwykły rok?" slot="rok" />
-        <Karta blok={w("twarde")} tytul="Co trzeba umieć" slot="twarde" />
-        <Karta blok={w("narzedzia")} tytul="Narzędzia i programy, wyjaśnione" slot="narzedzia" />
+      </Para>
+
+      <Karta blok={w("droga")} tytul="Droga dojścia" slot="droga" duza />
+
+      <Para>
+        <Karta blok={w("pieniadze")} tytul="Pieniądze na kolejnych etapach" slot="pieniadze" />
+        <Karta blok={w("miedzynarodowa")} tytul="Skala międzynarodowa" slot="miedzynarodowa" />
+      </Para>
+
+      {/* Przyszłość: jedyna ciemna płyta w karcie. Nie alarm, tylko akapit,
+          przy którym człowiek ma się zatrzymać. */}
+      <Przyszlosc blok={w("zagrozenie")} stopien={ZAGROZENIE[karta.zagrozenie]} />
+
+      <Para>
+        <Karta blok={w("czlowiek")} tytul="Co ten zawód robi z człowiekiem" slot="czlowiek" />
         <Karta blok={w("mity")} tytul="Trzy mity" slot="mity" />
+      </Para>
+
+      <Para>
         <Karta blok={w("dalej")} tytul="Co dalej z tego zawodu" slot="dalej" />
         <Karta blok={w("pokrewne")} tytul="Zawody pokrewne" slot="pokrewne" />
-      </div>
+      </Para>
 
       {reszta.length > 0 ? (
-        <div className="gap-4 lg:columns-2 [&>*]:mb-4 [&>*]:break-inside-avoid">
+        <div className="grid gap-5 lg:grid-cols-2">
           {reszta.map((b, i) => (
-            <div key={`${b.rodzaj}-${i}`} className="szklo min-w-0 p-5">
+            <div key={`${b.rodzaj}-${i}`} className="szklo min-w-0 p-6 sm:p-7">
               <BlokKarty blok={b} />
             </div>
           ))}
         </div>
       ) : null}
 
-      <footer className="flex flex-wrap gap-3">
+      <footer className="grid gap-4 sm:grid-cols-2">
         <Link
           href={`/u/${kod}/zawody`}
-          className="przejscie przycisk-pigulka inline-flex min-h-12 flex-1 items-center justify-center gap-3 rounded-2xl px-7 text-tresc font-semibold"
+          className="przejscie przycisk-pigulka flex min-h-[4.5rem] items-center justify-center gap-3.5 rounded-[1.25rem] px-6 text-tresc-duza font-bold"
         >
           <span aria-hidden>←</span> Wróć do listy
         </Link>
         <Link
           href={`/u/${kod}/zawody`}
-          className="przejscie przycisk-gradient inline-flex min-h-12 flex-1 items-center justify-center gap-3 rounded-2xl px-7 text-tresc font-bold"
+          className="przejscie przycisk-gradient flex min-h-[4.5rem] items-center justify-center gap-3.5 rounded-[1.25rem] px-6 text-tresc-duza font-bold"
         >
           Sprawdź podobne zawody <span aria-hidden>→</span>
         </Link>
       </footer>
     </article>
+  );
+}
+
+/**
+ * Para sekcji obok siebie.
+ *
+ * Gdy karta ma tylko jedną z dwóch, ta jedna zajmuje całą szerokość, zamiast
+ * zostawiać połowę wiersza pustą. Gdy nie ma żadnej, nie ma też odstępu.
+ */
+function Para({ children }: { children: React.ReactNode }) {
+  const obecne = (Array.isArray(children) ? children : [children]).filter(Boolean);
+  if (obecne.length === 0) return null;
+  return (
+    <div className={obecne.length === 2 ? "grid gap-5 lg:grid-cols-2" : "grid gap-5"}>{children}</div>
+  );
+}
+
+/**
+ * Odręczny dopisek przy zdjęciu.
+ *
+ * Bank czterech zdań, nie tekst generowany dla zawodu: żadne nie niesie
+ * informacji, żadne nie ocenia wyniku i każde jest prawdziwe dla każdej karty.
+ * Wybór po kodzie zawodu, żeby ta sama karta zawsze miała ten sam dopisek.
+ */
+const DOPISKI_KARTY = [
+  "Nie test.\nOpis życia.",
+  "Czytaj wolno.\nTo jest o Tobie.",
+  "Fakty,\nnie reklama.",
+  "Sprawdź,\nczy to Twój rytm.",
+];
+
+function dopisekKarty(kodZawodu: string): string {
+  let suma = 0;
+  for (const znak of kodZawodu) suma = (suma + znak.charCodeAt(0)) % 1000;
+  return DOPISKI_KARTY[suma % DOPISKI_KARTY.length];
+}
+
+/** Znacznik słownikowy w nagłówku: biała pastylka z jedną wartością. */
+function Znak({ children }: { children: React.ReactNode }) {
+  return (
+    <li className="rounded-full bg-panel px-4 py-2 text-male font-semibold text-atrament-sciszony shadow-[0_2px_10px_-5px_rgba(20,27,52,0.25)]">
+      {children}
+    </li>
   );
 }
 
@@ -232,26 +314,31 @@ const ZNAKI_SLOTOW: Record<string, { sciezki: string[]; tlo: string; atrament: s
   czas: { sciezki: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M12 12V5", "M12 12h6"], tlo: "#e9f0ff", atrament: "#0a3ac9" },
   obciazenie: { sciezki: ["M5 20V11", "M12 20V5", "M19 20v-6"], tlo: "#fff6dc", atrament: "#8a5a00" },
   miekkie: { sciezki: ["m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"], tlo: "#f2ecff", atrament: "#5b21b6" },
+  profil: { sciezki: ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Z", "M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"], tlo: "#e9f0ff", atrament: "#0a3ac9" },
   koszt: { sciezki: ["M4 8c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3Z", "M4 8v8c0 1.7 3.6 3 8 3s8-1.3 8-3V8"], tlo: "#fff6dc", atrament: "#8a5a00" },
   twarde: { sciezki: ["M12 3 4 7l8 4 8-4-8-4Z", "M4 12l8 4 8-4", "M4 17l8 4 8-4"], tlo: "#e3faed", atrament: "#067a45" },
   narzedzia: { sciezki: ["M14 6a4 4 0 0 0 4 4l-8 8-3-3 8-8a4 4 0 0 0-1-1Z", "M5 19l2-2"], tlo: "#e2f8fb", atrament: "#056b78" },
   pieniadze: { sciezki: ["M4 7h16v10H4z", "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"], tlo: "#fff6dc", atrament: "#8a5a00" },
+  miedzynarodowa: { sciezki: ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Z", "M3.5 12h17", "M12 3.5c2.2 2.4 3.4 5.3 3.4 8.5s-1.2 6.1-3.4 8.5c-2.2-2.4-3.4-5.3-3.4-8.5s1.2-6.1 3.4-8.5Z"], tlo: "#f2ecff", atrament: "#5b21b6" },
   droga: { sciezki: ["M6 20c0-6 12-6 12-12", "M6 20v-3", "M18 8V5"], tlo: "#e9f0ff", atrament: "#0a3ac9" },
-  zagrozenie: { sciezki: ["M12 4 3 19h18L12 4Z", "M12 10v4", "M12 17h.01"], tlo: "#f0eefa", atrament: "#4a4a6a" },
   czlowiek: { sciezki: ["M12 20S4 14.6 4 9.4A4.4 4.4 0 0 1 12 6.8 4.4 4.4 0 0 1 20 9.4C20 14.6 12 20 12 20Z"], tlo: "#ffe9ee", atrament: "#c00030" },
-  kto: { sciezki: ["M9 8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", "M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6", "M16 4.2a2.5 2.5 0 0 1 0 4.6", "M17.5 14.4c2.1.8 3.5 2.8 3.5 5.1"], tlo: "#fff4dc", atrament: "#a15c00" },
+  kto: { sciezki: ["M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Z", "M8 12h8"], tlo: "#ffe9ee", atrament: "#c00030" },
   mity: { sciezki: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z", "M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 3.5", "M12 17h.01"], tlo: "#f2ecff", atrament: "#5b21b6" },
   rok: { sciezki: ["M4 6h16v14H4z", "M4 10h16", "M8 4v4M16 4v4"], tlo: "#e2f8fb", atrament: "#056b78" },
   dalej: { sciezki: ["M5 12h14", "m13 6 6 6-6 6"], tlo: "#e3faed", atrament: "#067a45" },
   pokrewne: { sciezki: ["M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z", "M16 20a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z", "m11 11 2 2"], tlo: "#e9f0ff", atrament: "#0a3ac9" },
 };
 
-function ZnakSekcji({ slot }: { slot: string }) {
+function ZnakSekcji({ slot, duzy }: { slot: string; duzy?: boolean }) {
   const z = ZNAKI_SLOTOW[slot];
   if (!z) return null;
   return (
-    <span aria-hidden className="znak-sekcji" style={{ background: z.tlo, color: z.atrament }}>
-      <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <span
+      aria-hidden
+      className={`znak-sekcji ${duzy ? "znak-sekcji-duzy" : ""}`}
+      style={{ background: z.tlo, color: z.atrament }}
+    >
+      <svg viewBox="0 0 24 24" width={duzy ? 26 : 22} height={duzy ? 26 : 22} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         {z.sciezki.map((d, i) => (
           <path key={i} d={d} />
         ))}
@@ -260,31 +347,96 @@ function ZnakSekcji({ slot }: { slot: string }) {
   );
 }
 
-/** Jedna sekcja w swojej szklanej płycie, ze znakiem. Bez bloku nie renderuje się nic. */
+/** Jedna sekcja w swojej płycie, ze znakiem. Bez bloku nie renderuje się nic. */
 function Karta({
   blok,
   tytul,
   slot,
-  stopien,
-  nad,
+  duza,
+  dwieSzpalty,
+  obok,
 }: {
   blok: Blok | null;
   tytul: string;
   slot: string;
-  stopien?: string;
-  /** Treść nad blokiem, na przykład znacznik słownikowy z bazy zawodów. */
-  nad?: React.ReactNode;
+  /** Sekcja na całą szerokość: większy nagłówek i większy oddech. */
+  duza?: boolean;
+  /** Proza w dwóch szpaltach: tylko tam, gdzie tekst jest długi i ciągły. */
+  dwieSzpalty?: boolean;
+  /** Drobiazg obok nagłówka, na przykład „skala 1 do 5". */
+  obok?: React.ReactNode;
 }) {
   if (!blok) return null;
   return (
-    <div className="szklo min-w-0 p-5">
-      <div className="mb-4 flex items-center gap-3">
-        <ZnakSekcji slot={slot} />
-        <h2 className="text-naglowek-maly font-bold leading-tight text-atrament">{tytul}</h2>
+    <section className={`szklo min-w-0 ${duza ? "p-6 sm:p-8" : "p-6 sm:p-7"}`}>
+      <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <ZnakSekcji slot={slot} duzy={duza} />
+        <h2
+          className={`font-extrabold leading-tight tracking-tight text-atrament ${
+            duza ? "text-naglowek-maly sm:text-[1.55rem]" : "text-naglowek-maly"
+          }`}
+        >
+          {tytul}
+        </h2>
+        {obok}
       </div>
-      {nad}
-      <BlokKarty blok={blok} stopienZagrozenia={stopien} bezTytulu />
-    </div>
+      <div className={dwieSzpalty ? "gap-x-11 lg:columns-2 [&_p]:break-inside-avoid" : undefined}>
+        <BlokKarty blok={blok} bezTytulu bezPrzyciecia />
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Przyszłość zawodu na ciemnej płycie.
+ *
+ * Jedyne ciemne miejsce w karcie i jedyne, które ma zatrzymać wzrok. To nie
+ * jest ostrzeżenie ani alarm: werdykt stoi jako zdanie, a pod nim leży pełne
+ * uzasadnienie, bo sam stopień bez niego znaczy tyle co nic.
+ */
+function Przyszlosc({ blok, stopien }: { blok: Blok | null; stopien?: string }) {
+  if (!blok) return null;
+  const werdykt = blok.rodzaj === "zagrozenie" ? blok.werdykt : null;
+  const uwagi = blok.rodzaj === "zagrozenie" ? blok.uwagi : null;
+  return (
+    <section className="rounded-karta px-6 py-7 text-na-akcencie shadow-[0_24px_50px_-26px_rgba(27,35,82,0.7)] sm:px-9 sm:py-9"
+      style={{ background: "linear-gradient(150deg, #161c45, #202a5e 45%, #362b66)" }}
+    >
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <span aria-hidden className="znak-sekcji znak-sekcji-duzy bg-white/15 text-[#a9bdff]">
+          <svg viewBox="0 0 24 24" width={26} height={26} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 16.5 9 10l4 3.5 6.5-8" />
+            <path d="M14.5 5.5h5v5" />
+          </svg>
+        </span>
+        <h2 className="text-naglowek-maly font-extrabold leading-tight tracking-tight sm:text-[1.55rem]">
+          Czy ten zawód jest zagrożony w przyszłości
+        </h2>
+        {stopien ? (
+          <span className="rounded-full bg-white/15 px-3 py-1 text-drobne font-bold text-[#d8deff]">
+            {stopien}
+          </span>
+        ) : null}
+      </div>
+
+      {werdykt ? (
+        <p className="mt-6 max-w-[56rem] text-tresc-duza font-bold leading-[1.5]">{werdykt}</p>
+      ) : null}
+
+      {uwagi ? (
+        <div className="mt-6 rounded-[1.1rem] bg-white/10 px-5 py-5 sm:px-6">
+          <div className="proza-ciemna">
+            <Proza tresc={uwagi} />
+          </div>
+        </div>
+      ) : null}
+
+      {!werdykt ? (
+        <div className="mt-6 proza-ciemna">
+          <BlokKarty blok={blok} bezTytulu bezPrzyciecia />
+        </div>
+      ) : null}
+    </section>
   );
 }
 
@@ -320,25 +472,20 @@ function Znacznik({
 }) {
   const b = BARWY[barwa] ?? BARWY.niebieski;
   return (
-    <li
-      className="flex items-start gap-3 rounded-karta border px-3.5 py-3"
-      style={{ borderColor: b.obwod, background: b.tlo }}
-    >
+    <li className="szklo flex items-center gap-4 px-5 py-4">
       <span
         aria-hidden
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border"
-        style={{ borderColor: b.obwod, background: "#ffffff", color: b.atrament }}
+        className="znak-sekcji"
+        style={{ background: b.tlo, color: b.atrament }}
       >
-        <svg viewBox="0 0 24 24" width={20} height={20} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+        <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           {ZNAKI[ikona].map((d, i) => (
             <path key={i} d={d} />
           ))}
         </svg>
       </span>
       <span className="min-w-0">
-        <span className="block text-male font-bold leading-snug" style={{ color: b.atrament }}>
-          {tytul}
-        </span>
+        <span className="block text-male font-bold leading-snug text-atrament">{tytul}</span>
         <span className="mt-0.5 block text-drobne leading-relaxed text-atrament-sciszony">
           {podpis}
         </span>

@@ -91,6 +91,18 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
   // Ramka z podpowiedzia: tinta fioletu zamiast szklistej bieli.
   { nazwa: "podpowiedź na tincie fioletu", tekst: "#3d4460", tlo: "#f2ecff" },
 
+  // Ciemna plyta przyszlosci zawodu: jedyne miejsce z odwroconym kontrastem.
+  { nazwa: "tekst na ciemnej płycie", tekst: "#dfe4fb", tlo: "#202a5e" },
+  { nazwa: "tekst na ciemnej płycie, jaśniejszy kraniec", tekst: "#dfe4fb", tlo: "#362b66" },
+  { nazwa: "biały na ciemnej płycie", tekst: "#ffffff", tlo: "#362b66" },
+  { nazwa: "znak na ciemnej płycie", tekst: "#a9bdff", tlo: "#202a5e" },
+  { nazwa: "odznaka na ciemnej płycie", tekst: "#d8deff", tlo: "#362b66" },
+
+  // Wnetrze karty: kafle na jasnej plycie.
+  { nazwa: "atrament na płycie karty", tekst: "#10132a", tlo: "#f6f7fc" },
+  { nazwa: "ściszony na płycie karty", tekst: "#3d4460", tlo: "#f6f7fc" },
+  { nazwa: "słaby na płycie karty", tekst: "#5b6480", tlo: "#f6f7fc" },
+
   // Plyty raportu: tekst sciszony na tintach sekcji.
   { nazwa: "ściszony na tincie pomarańczu", tekst: "#3d4460", tlo: "#fff1e8" },
   { nazwa: "ściszony na tincie błękitu", tekst: "#3d4460", tlo: "#e9f0ff" },

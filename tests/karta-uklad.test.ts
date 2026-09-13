@@ -106,6 +106,28 @@ describe("rozpoznanie po przedrostku, nie po pełnym tytule", () => {
     expect(rodzajSekcji("Skala międzynarodowa")).toBeNull();
   });
 
+  /**
+   * Trzy karty (programista, lekarz, pielęgniarka) mają i „Pieniądze", i
+   * „Skalę międzynarodową". Dopóki obie trafiały do slotu `pieniadze`, druga
+   * znikała bez śladu: `wSlocie` zwraca pierwszy blok, a strona pomija to,
+   * co ma slot już rozstawiony.
+   */
+  it("skala międzynarodowa nie wypiera pieniędzy ze swojego slotu", () => {
+    const bloki = ulozKarte([
+      {
+        tytul: "Pieniądze",
+        klucz: null,
+        tresc: ["| Etap | Widełki |", "|---|---|", "| Start | 4000 zł |", "| Senior | 12 000 zł |"].join("\n"),
+      },
+      {
+        tytul: "Skala międzynarodowa",
+        klucz: null,
+        tresc: ["| Kraj | Widełki |", "|---|---|", "| Niemcy | 55 000 EUR |", "| Holandia | 60 000 EUR |"].join("\n"),
+      },
+    ]);
+    expect(bloki.map((b) => b.slot)).toEqual(["pieniadze", "miedzynarodowa"]);
+  });
+
   it("obciążenie czyta się tak samo z tabeli i z prozy", () => {
     const zTabeli = czytajObciazenie(
       [

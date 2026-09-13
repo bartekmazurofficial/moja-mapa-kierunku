@@ -65,12 +65,21 @@ export default async function Uklad({
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-[106rem] flex-col gap-5 px-4 py-4 lg:flex-row lg:gap-6 lg:px-6 lg:py-4 2xl:px-8">
       <aside className="lg:sticky lg:top-4 lg:h-fit lg:w-[17.5rem] lg:shrink-0">
-        <div className="szklo p-5">
-          <Marka href={`/u/${kod}`} />
+        <div className="szklo p-4 lg:p-5">
+          <div className="flex items-center justify-between gap-4">
+            <Marka href={`/u/${kod}`} />
+            {/* Na telefonie inicjał zastępuje całą kartę uczestnika. */}
+            <span
+              aria-hidden
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-akcent-jasny to-akcent text-male font-extrabold text-na-akcencie lg:hidden"
+            >
+              {uczestnik.imie.trim().charAt(0).toUpperCase()}
+            </span>
+          </div>
 
           {/* Kto tu jest. Zamiast zdjęcia inicjał: nie mamy fotografii
               uczestników i nie zamierzamy ich zbierać. */}
-          <div className="mt-5 flex items-center gap-3 rounded-xl border border-linia bg-tlo/50 p-4">
+          <div className="mt-5 hidden items-center gap-3 rounded-xl border border-linia bg-tlo/50 p-4 lg:flex">
             <span
               aria-hidden
               className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-akcent-jasny to-akcent text-naglowek-maly font-extrabold text-na-akcencie"
@@ -88,21 +97,21 @@ export default async function Uklad({
             </span>
           </div>
 
-          <div className="mt-4 rounded-xl border border-linia bg-tlo/50 p-4">
+          <div className="mt-4 rounded-xl border-linia bg-tlo/50 p-0 lg:border lg:p-4">
             <div className="h-1.5 overflow-hidden rounded-full bg-linia">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-akcent-ciemny to-akcent-jasny"
                 style={{ width: `${doZrobienia.length > 0 ? (ukonczone / doZrobienia.length) * 100 : 0}%` }}
               />
             </div>
-            <p className="mt-2 text-drobne text-atrament-slaby">
+            <p className="mt-2 hidden text-drobne text-atrament-slaby lg:block">
               {doZrobienia.length === 0
                 ? "Pierwsza część otworzy się na spotkaniu."
                 : `${ukonczone} z ${doZrobienia.length} otwartych części`}
             </p>
           </div>
 
-          <div className="mt-5">
+          <div className="mt-4 lg:mt-5">
             <Nawigacja pozycje={pozycje} />
           </div>
 

@@ -88,6 +88,8 @@ export interface KartaZawodu {
   klasterKod: string | null;
   /** Numer obszaru silnika. Uwaga: to nie jest numer obszaru A1. */
   obszarId: number;
+  /** Nazwa obszaru, do znacznika w nagłówku karty. */
+  obszar: string;
   /** Klucz znaku A1 obszaru (`a1-7`): stad ilustracja w naglowku karty. */
   znakObszaru: string | null;
 }
@@ -127,7 +129,7 @@ export async function pobierzKarty(
     prisma.karta.findMany({ where: { kod: { in: kodyZawodow } } }),
     prisma.zawod.findMany({
       where: { kod: { in: kodyZawodow } },
-      include: { obszar: { select: { zainteresowania: true } } },
+      include: { obszar: { select: { nazwa: true, zainteresowania: true } } },
     }),
   ]);
   const poKodzie = new Map(karty.map((k) => [k.kod, k]));
@@ -152,6 +154,7 @@ export async function pobierzKarty(
       zdanieKierunkowe: zawod.kier,
       klasterKod: zawod.klasterKod,
       obszarId: zawod.obszarId,
+      obszar: zawod.obszar.nazwa,
       znakObszaru: znakObszaru(
         JSON.parse(zawod.obszar.zainteresowania) as Record<string, number>,
       ),

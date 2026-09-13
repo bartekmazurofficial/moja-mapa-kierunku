@@ -27,6 +27,7 @@ export type RodzajBloku =
   | "zagrozenie"
   | "harmonogram"
   | "hasla"
+  | "tabela"
   | "wypunktowanie";
 
 /**
@@ -52,6 +53,7 @@ export type Slot =
   | "koszt"
   | "droga"
   | "pieniadze"
+  | "miedzynarodowa"
   | "zagrozenie"
   | "czlowiek"
   | "mity"
@@ -103,6 +105,12 @@ export interface Punkt {
   opis: string;
 }
 
+/** Wiersz tabeli dwukolumnowej: etykieta po lewej, treść po prawej. */
+export interface WierszTabeli {
+  etykieta: string;
+  wartosc: string;
+}
+
 export type Blok = { slot: Slot | null } & PostacBloku;
 
 export type PostacBloku =
@@ -110,6 +118,7 @@ export type PostacBloku =
   | { rodzaj: "harmonogram"; tytul: string; kroki: KrokHarmonogramu[] }
   | { rodzaj: "hasla"; tytul: string; hasla: string[] }
   | { rodzaj: "wypunktowanie"; tytul: string; punkty: Punkt[]; uwagi: string }
+  | { rodzaj: "tabela"; tytul: string; wiersze: WierszTabeli[]; uwagi: string }
   | { rodzaj: "obciazenie"; tytul: string; wymiary: WymiarObciazenia[] }
   | { rodzaj: "pieniadze"; tytul: string; etapy: WidelkiEtap[]; uwagi: string }
   | { rodzaj: "droga"; tytul: string; kroki: KrokDrogi[]; uwagi: string }
@@ -139,7 +148,7 @@ function bezOgonkow(tekst: string): string {
 const SLOTY: Array<[string, Slot]> = [
   ["w jednym zdaniu", "streszczenie"],
   ["czym ta praca", "czym_jest"],
-  ["skala miedzynarodowa", "pieniadze"],
+  ["skala miedzynarodowa", "miedzynarodowa"],
   ["skala", "skala"],
   ["zwykly dzien", "dzien"],
   ["zwykly dyzur", "dzien"],
@@ -182,8 +191,9 @@ const SLOT_Z_KLUCZA: Record<string, Slot> = {
 /** Która to sekcja karty. Dopasowanie po przedrostku, nigdy po pełnym tytule. */
 export function slotSekcji(tytul: string, klucz?: string | null): Slot | null {
   const t = bezOgonkow(tytul);
-  // „Skala międzynarodowa" to dalszy ciąg pieniędzy, nie skala zawodu.
-  if (t.startsWith("skala miedzynarodowa")) return "pieniadze";
+  // „Skala międzynarodowa" ma ten sam kształt co pieniądze, ale własne miejsce
+  // w układzie: wrzucona do slotu pieniędzy przepadała, bo slot jest jeden.
+  if (t.startsWith("skala miedzynarodowa")) return "miedzynarodowa";
   for (const [przedrostek, slot] of SLOTY) {
     if (t.startsWith(przedrostek)) return slot;
   }
@@ -196,9 +206,13 @@ function postacSlotu(slot: Slot | null): RodzajBloku | "markdown" {
     case "obciazenie":
       return "obciazenie";
     case "pieniadze":
+    case "miedzynarodowa":
       return "pieniadze";
     case "droga":
       return "droga";
+    case "profil":
+    case "koszt":
+      return "tabela";
     case "czas":
       return "czas";
     case "skala":
@@ -372,6 +386,27 @@ export function czytajWidelki(tresc: string): { etapy: WidelkiEtap[]; uwagi: str
     if (etap && kwota) etapy.push({ etap, kwota });
   }
   return etapy.length >= 2 ? { etapy, uwagi: poPierwszymAkapicie(tresc) } : null;
+}
+
+/**
+ * Tabela dwukolumnowa: etykieta i treść.
+ *
+ * Tak zapisany jest profil (dziewięćdziesiąt siedem kart) i koszt wejścia
+ * (trzydzieści cztery). Trzecia kolumna, gdy jest, dokleja się do drugiej:
+ * żadna z tych tabel nie ma trzech kolumn niosących osobne znaczenie.
+ */
+export function czytajTabeleDwukolumnowa(
+  tresc: string,
+): { wiersze: WierszTabeli[]; uwagi: string } | null {
+  const t = tabela(tresc);
+  if (!t) return null;
+  const wiersze = t.wiersze
+    .filter((w) => (w[0] ?? "").trim() && (w[1] ?? "").trim())
+    .map((w) => ({
+      etykieta: bezPogrubien(w[0]),
+      wartosc: [bezPogrubien(w[1]), bezPogrubien(w[2] ?? "")].filter(Boolean).join(" · "),
+    }));
+  return wiersze.length >= 2 ? { wiersze, uwagi: pozaTabela(tresc) } : null;
 }
 
 /** Droga dojścia jako kolejne kroki. Sześćdziesiąt dwie karty w tabeli, sześćdziesiąt pięć prozą. */
@@ -611,6 +646,10 @@ function zlozBlok(
   if (rodzaj === "hasla") {
     const hasla = czytajHasla(tresc);
     return hasla ? { rodzaj, tytul, hasla } : null;
+  }
+  if (rodzaj === "tabela") {
+    const czytane = czytajTabeleDwukolumnowa(tresc);
+    return czytane ? { rodzaj, tytul, wiersze: czytane.wiersze, uwagi: czytane.uwagi } : null;
   }
   if (rodzaj === "wypunktowanie") {
     const czytane = czytajPunkty(tresc);

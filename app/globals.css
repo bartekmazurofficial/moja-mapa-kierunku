@@ -71,6 +71,9 @@
    * Jasny --color-pomarancz-blask nie nadaje się ani na tekst, ani pod biały
    * napis (2,6:1) — wyłącznie wypełnienie i poświata.
    */
+  /* Wnętrze karty: jasna płyta pod kafelkami wewnątrz białej karty. */
+  --color-plyta: #f6f7fc;
+
   --color-pomarancz: #b8460f;
   --color-pomarancz-tlo: #fff1e8;
   --color-pomarancz-blask: #ff7a1a;
@@ -438,6 +441,22 @@ body::after {
 
 .odreczny-pomarancz {
   color: var(--color-pomarancz);
+}
+
+/**
+ * Proza na ciemnej płycie: jedno miejsce w produkcie, sekcja o przyszłości
+ * zawodu. Tekst i pogrubienia muszą tam zejść z granatu na biel, bo inaczej
+ * są nieczytelne (#3d4460 na #202a5e to 1,3:1).
+ */
+.proza-ciemna .karta,
+.proza-ciemna .karta p,
+.proza-ciemna .karta li {
+  color: #dfe4fb;
+}
+
+.proza-ciemna .karta strong,
+.proza-ciemna .karta b {
+  color: #ffffff;
 }
 
 /* Tekst czytelniczy: karty zawodów i raport */

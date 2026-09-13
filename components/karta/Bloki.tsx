@@ -26,6 +26,7 @@ import type {
   Punkt,
   UdzialCzasu,
   WidelkiEtap,
+  WierszTabeli,
   WymiarObciazenia,
 } from "@/lib/karty/uklad";
 
@@ -34,6 +35,7 @@ export function BlokKarty({
   tytul,
   stopienZagrozenia,
   bezTytulu,
+  bezPrzyciecia,
 }: {
   blok: Blok;
   /** Własny nagłówek zamiast tytułu z dokumentu. */
@@ -42,65 +44,87 @@ export function BlokKarty({
   stopienZagrozenia?: string;
   /** Nagłówek rysuje strona, nie blok. */
   bezTytulu?: boolean;
+  /**
+   * Sekcja pokazana w całości, bez „Rozwiń".
+   *
+   * Karta zawodu jest świadomie długą stroną: szablon pokazuje każdą sekcję
+   * od razu, a przycisk „Rozwiń" w połowie akapitu robi z niej formularz.
+   * Przycinanie zostaje tam, gdzie blok trafia w wąską kolumnę.
+   */
+  bezPrzyciecia?: boolean;
 }) {
   const naglowek = bezTytulu ? "" : (tytul ?? blok.tytul);
 
   switch (blok.rodzaj) {
     case "obciazenie":
       return (
-        <Sekcja tytul={naglowek}>
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <Obciazenie wymiary={blok.wymiary} />
         </Sekcja>
       );
     case "pieniadze":
       return (
-        <Sekcja tytul={naglowek}>
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <Widelki etapy={blok.etapy} />
           <Proza tresc={blok.uwagi} />
         </Sekcja>
       );
     case "droga":
       return (
-        <Sekcja tytul={naglowek}>
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <Droga kroki={blok.kroki} />
           <Proza tresc={blok.uwagi} />
         </Sekcja>
       );
     case "czas":
       return (
-        <Sekcja tytul={naglowek}>
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <PodzialCzasu udzialy={blok.udzialy} />
         </Sekcja>
       );
     case "skala":
       return (
-        <Sekcja tytul={naglowek}>
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <SkalaZawodu liczby={blok.liczby} />
           <Proza tresc={blok.uwagi} />
         </Sekcja>
       );
     case "harmonogram":
       return (
-        <Sekcja tytul={naglowek}>
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <Harmonogram kroki={blok.kroki} />
         </Sekcja>
       );
     case "hasla":
       return (
-        <Sekcja tytul={naglowek}>
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <Hasla hasla={blok.hasla} />
         </Sekcja>
       );
     case "wypunktowanie":
       return (
-        <Sekcja tytul={naglowek}>
-          <Punkty punkty={blok.punkty} ostrzezenie={blok.slot === "kto"} />
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
+          <Punkty
+            punkty={blok.punkty}
+            ostrzezenie={blok.slot === "kto"}
+            kafelki={blok.slot === "narzedzia" || blok.slot === "czlowiek"}
+            // Narzędzia stoją na całej szerokości i mieszczą trzy kolumny.
+            // „Co robi z człowiekiem" dzieli wiersz z mitami, więc jedna.
+            waskie={blok.slot === "czlowiek" || blok.slot === "kto" || blok.slot === "mity"}
+          />
+          <Proza tresc={blok.uwagi} />
+        </Sekcja>
+      );
+    case "tabela":
+      return (
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
+          <TabelaWierszy wiersze={blok.wiersze} znacznik={blok.slot === "profil"} />
           <Proza tresc={blok.uwagi} />
         </Sekcja>
       );
     case "zagrozenie":
       return (
-        <Sekcja tytul={naglowek}>
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <div className="rounded-xl border border-przyszlosc/25 bg-przyszlosc-tlo px-5 py-4">
             {stopienZagrozenia ? (
               <p className="mb-2 inline-block rounded-full border border-przyszlosc/30 px-3 py-0.5 text-drobne font-semibold uppercase tracking-[0.1em] text-przyszlosc">
@@ -114,14 +138,22 @@ export function BlokKarty({
       );
     default:
       return blok.tresc.trim() ? (
-        <Sekcja tytul={naglowek}>
+        <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <Proza tresc={blok.tresc} />
         </Sekcja>
       ) : null;
   }
 }
 
-function Sekcja({ tytul, children }: { tytul: string; children: React.ReactNode }) {
+function Sekcja({
+  tytul,
+  children,
+  bezPrzyciecia,
+}: {
+  tytul: string;
+  children: React.ReactNode;
+  bezPrzyciecia?: boolean;
+}) {
   return (
     <section>
       {tytul ? (
@@ -129,7 +161,7 @@ function Sekcja({ tytul, children }: { tytul: string; children: React.ReactNode 
       ) : null}
       {/* Sekcja dłuższa niż kilka akapitów zwija się do „Rozwiń". Krótka nie
           dostaje przycisku wcale: o tym decyduje zmierzona wysokość. */}
-      <Zwijane>{children}</Zwijane>
+      {bezPrzyciecia ? children : <Zwijane>{children}</Zwijane>}
     </section>
   );
 }
@@ -177,36 +209,35 @@ function kolorWymiaru(nazwa: string, i: number): string {
  */
 function Obciazenie({ wymiary }: { wymiary: WymiarObciazenia[] }) {
   return (
-    <ul className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+    <ul className="grid gap-x-11 sm:grid-cols-2">
       {wymiary.map((w, i) => {
         const kolor = kolorWymiaru(w.wymiar, i);
         return (
-          <li key={w.wymiar}>
-            <div className="flex items-center gap-3">
-              <span className="min-w-0 flex-1 text-male font-semibold leading-snug text-atrament">
-                {w.wymiar}
+          <li
+            key={w.wymiar}
+            className="grid grid-cols-[minmax(0,1fr)_5.5rem] items-center gap-x-5 gap-y-1 border-b border-linia py-3.5 last:border-b-0 sm:grid-cols-[8.5rem_5.5rem_minmax(0,1fr)]"
+          >
+            <span className="text-male font-bold leading-snug text-atrament">{w.wymiar}</span>
+            <span className="flex items-center gap-2.5">
+              <span aria-hidden className="h-2 flex-1 rounded-full bg-linia">
+                <span
+                  className="block h-full rounded-full"
+                  style={{ width: `${(w.ocena / 5) * 100}%`, background: kolor }}
+                />
               </span>
-              <span className="flex w-[7.5rem] shrink-0 gap-1" aria-hidden>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <span
-                    key={n}
-                    className="h-2.5 flex-1 rounded-full"
-                    style={{ background: n <= w.ocena ? kolor : "var(--color-linia)" }}
-                  />
-                ))}
-              </span>
-              <span className="w-9 shrink-0 text-right text-male font-bold tabular-nums text-atrament-sciszony">
+              <span className="shrink-0 text-drobne font-extrabold tabular-nums" style={{ color: kolor }}>
                 <span className="sr-only">ocena </span>
                 {w.ocena}
-                <span aria-hidden className="text-atrament-slaby">/5</span>
                 <span className="sr-only"> na 5</span>
               </span>
-            </div>
+            </span>
             {w.uzasadnienie ? (
-              <p className="mt-1 text-drobne leading-relaxed text-atrament-sciszony">
+              <span className="col-span-2 text-drobne leading-relaxed text-atrament-sciszony sm:col-span-1">
                 {w.uzasadnienie}
-              </p>
-            ) : null}
+              </span>
+            ) : (
+              <span className="hidden sm:block" />
+            )}
           </li>
         );
       })}
@@ -232,113 +263,83 @@ function zakres(kwota: string): [number, number] | null {
  * skali wspólnej dla całej karty.
  */
 function Widelki({ etapy }: { etapy: WidelkiEtap[] }) {
-  if (etapy.length <= 4 && etapy.every((e) => e.etap.length < 46)) {
-    return (
-      <ul
-        className="grid gap-3"
-        style={{ gridTemplateColumns: `repeat(${Math.min(etapy.length, 4)}, minmax(0, 1fr))` }}
-      >
-        {etapy.map((e, i) => (
-          <li
-            key={`${e.etap}-${i}`}
-            className="rounded-xl border border-akcent/20 bg-akcent-tlo/60 px-4 py-4 text-center"
-          >
-            <p className="text-drobne font-semibold uppercase tracking-[0.1em] text-atrament-slaby">
-              {e.etap}
-            </p>
-            <p className="mt-2 text-tresc-duza font-extrabold leading-tight text-akcent-jasny">
-              {e.kwota}
-            </p>
-            {e.uwaga ? (
-              <p className="mt-1.5 text-drobne text-atrament-sciszony">{e.uwaga}</p>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-    );
-  }
-
-  const zakresy = etapy.map((e) => zakres(e.kwota));
-  const gorna = Math.max(...zakresy.filter(Boolean).map((z) => z![1]), 0);
-
+  const krotkie = etapy.length <= 4 && etapy.every((e) => e.etap.length < 46);
   return (
-    <ul className="flex flex-col gap-3">
-      {etapy.map((e, i) => {
-        const z = zakresy[i];
-        return (
-          <li key={`${e.etap}-${i}`} className="rounded-xl border border-linia bg-panel px-4 py-3">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <span className="text-male font-semibold text-atrament">{e.etap}</span>
-              <span className="text-tresc font-bold tabular-nums text-akcent-jasny">{e.kwota}</span>
-            </div>
-            {z && gorna > 0 ? (
-              <span aria-hidden className="mt-2.5 block h-2 w-full rounded-full bg-linia">
-                <span
-                  className="block h-full rounded-full bg-gradient-to-r from-akcent-ciemny to-akcent"
-                  style={{
-                    marginLeft: `${(z[0] / gorna) * 100}%`,
-                    width: `${Math.max(3, ((z[1] - z[0]) / gorna) * 100)}%`,
-                  }}
-                />
-              </span>
-            ) : null}
-            {e.uwaga ? <p className="mt-1.5 text-male text-atrament-sciszony">{e.uwaga}</p> : null}
-          </li>
-        );
-      })}
+    <ul
+      className={krotkie ? "grid gap-3.5" : "grid gap-3.5 sm:grid-cols-2"}
+      style={
+        krotkie
+          ? { gridTemplateColumns: `repeat(${Math.min(etapy.length, 4)}, minmax(0, 1fr))` }
+          : undefined
+      }
+    >
+      {etapy.map((e, i) => (
+        <li key={`${e.etap}-${i}`} className="rounded-2xl bg-plyta px-5 py-4">
+          <p className="text-male font-bold text-atrament-slaby">{e.etap}</p>
+          <p className="mt-1.5 text-naglowek-maly font-extrabold leading-tight tracking-tight text-atrament">
+            {e.kwota}
+          </p>
+          {e.uwaga ? (
+            <p className="mt-1.5 text-drobne leading-relaxed text-atrament-sciszony">{e.uwaga}</p>
+          ) : null}
+        </li>
+      ))}
     </ul>
   );
 }
-
 // =====================================================================
 
 /** Droga dojścia jako oś: kolejne etapy z czasem, jeden pod drugim. */
 function Droga({ kroki }: { kroki: KrokDrogi[] }) {
+  // Kolejne etapy jako pasmo kart, a nie pionowa oś: cała droga mieści się
+  // wtedy w jednym spojrzeniu, zamiast wymuszać przewijanie.
+  const KOLORY_ETAPU = ["#1d5bff", "#3f54ee", "#6b4fe8", "#8b5cf6", "#b05ce0", "#b8460f"];
   return (
-    <ol className="relative flex flex-col gap-5 border-l-2 border-linia pl-6">
-      {kroki.map((k, i) => (
-        <li key={`${k.etap}-${i}`} className="relative">
-          <span
-            aria-hidden
-            className="absolute -left-[1.9rem] top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-akcent bg-panel text-drobne font-bold tabular-nums text-akcent-jasny"
+    <ol className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
+      {kroki.map((k, i) => {
+        const kolor = KOLORY_ETAPU[i % KOLORY_ETAPU.length];
+        return (
+          <li
+            key={`${k.etap}-${i}`}
+            className="rounded-2xl bg-plyta px-5 py-4"
+            style={{ borderTop: `3px solid ${kolor}` }}
           >
-            {i + 1}
-          </span>
-          <p className="text-tresc font-semibold leading-snug text-atrament">{k.etap}</p>
-          {k.czas ? (
-            <p className="mt-1 inline-block rounded-full bg-akcent-tlo px-2.5 py-0.5 text-drobne font-semibold tabular-nums text-akcent-jasny">
-              {k.czas}
-            </p>
-          ) : null}
-          {k.opis ? (
-            <p className="mt-1 text-male leading-relaxed text-atrament-sciszony">{k.opis}</p>
-          ) : null}
-        </li>
-      ))}
+            {k.czas ? (
+              <p
+                className="text-drobne font-extrabold uppercase tracking-[0.1em]"
+                style={{ color: kolor }}
+              >
+                {k.czas}
+              </p>
+            ) : null}
+            <p className="mt-1.5 text-tresc font-extrabold leading-snug text-atrament">{k.etap}</p>
+            {k.opis ? (
+              <p className="mt-1.5 text-male leading-relaxed text-atrament-sciszony">{k.opis}</p>
+            ) : null}
+          </li>
+        );
+      })}
     </ol>
   );
 }
-
 // =====================================================================
 
 /** Zwykły dzień: godzina przy godzinie, jak plan dnia, a nie jak tabela. */
 function Harmonogram({ kroki }: { kroki: KrokHarmonogramu[] }) {
   return (
-    <ol className="relative flex flex-col gap-4 border-l-2 border-linia pl-5">
+    <ol className="flex flex-col">
       {kroki.map((k, i) => (
-        <li key={`${k.kiedy}-${i}`} className="relative">
-          <span
-            aria-hidden
-            className="absolute -left-[1.65rem] top-1.5 h-3 w-3 rounded-full border-2 border-akcent bg-panel"
-          />
-          <p className="text-drobne font-bold tabular-nums text-akcent-jasny">{k.kiedy}</p>
-          <p className="mt-0.5 text-male leading-relaxed text-atrament-sciszony">{k.co}</p>
+        <li
+          key={`${k.kiedy}-${i}`}
+          className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-baseline gap-4 border-b border-linia py-2.5 last:border-b-0"
+        >
+          <span className="text-male font-extrabold tabular-nums text-akcent-jasny">{k.kiedy}</span>
+          <span className="text-male leading-relaxed text-atrament-sciszony">{k.co}</span>
         </li>
       ))}
     </ol>
   );
 }
-
 // =====================================================================
 
 /**
@@ -349,7 +350,7 @@ function Harmonogram({ kroki }: { kroki: KrokHarmonogramu[] }) {
  * listą: pastylka na pół wiersza tekstu przestaje być pastylką.
  */
 function Hasla({ hasla }: { hasla: string[] }) {
-  const krotkie = hasla.every((h) => h.length <= 30);
+  const krotkie = hasla.every((h) => h.length <= 34);
 
   if (krotkie) {
     return (
@@ -357,7 +358,7 @@ function Hasla({ hasla }: { hasla: string[] }) {
         {hasla.map((h, i) => (
           <li
             key={`${h}-${i}`}
-            className="rounded-full border border-akcent/25 bg-akcent-tlo px-4 py-2 text-male font-medium text-akcent-jasny"
+            className="rounded-full bg-akcent-tlo px-4 py-2 text-male font-semibold text-akcent-jasny"
           >
             {h}
           </li>
@@ -367,20 +368,18 @@ function Hasla({ hasla }: { hasla: string[] }) {
   }
 
   return (
-    <ul className="grid gap-2 sm:grid-cols-2">
+    <ul className="flex flex-col gap-3">
       {hasla.map((h, i) => (
         <li
           key={`${h}-${i}`}
-          className="flex gap-2.5 rounded-xl border border-linia bg-panel px-4 py-3 text-male leading-relaxed text-atrament-sciszony"
+          className="rounded-2xl bg-plyta px-5 py-3.5 text-male font-semibold leading-relaxed text-atrament"
         >
-          <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-akcent" />
-          <span>{h}</span>
+          {h}
         </li>
       ))}
     </ul>
   );
 }
-
 // =====================================================================
 
 /**
@@ -390,30 +389,59 @@ function Hasla({ hasla }: { hasla: string[] }) {
  * sekcji, która mówi „to nie dla Ciebie". Reszta jest neutralna: umiejętności,
  * narzędzia i mity nie są ani zaletą, ani wadą.
  */
-function Punkty({ punkty, ostrzezenie }: { punkty: Punkt[]; ostrzezenie?: boolean }) {
+function Punkty({
+  punkty,
+  ostrzezenie,
+  kafelki,
+  waskie,
+}: {
+  punkty: Punkt[];
+  ostrzezenie?: boolean;
+  /** Narzędzia i „co robi z człowiekiem": kafel z tytułem, bez numeru. */
+  kafelki?: boolean;
+  /** Blok dzieli wiersz z innym: jedna kolumna zamiast trzech. */
+  waskie?: boolean;
+}) {
+  if (kafelki) {
+    return (
+      <ul className={`grid gap-3.5 ${waskie ? "" : "sm:grid-cols-2 xl:grid-cols-3"}`}>
+        {punkty.map((p, i) => (
+          <li key={`${p.etykieta}-${i}`} className="rounded-2xl bg-plyta px-5 py-4">
+            <p className="text-tresc font-extrabold leading-snug text-atrament">{p.etykieta}</p>
+            {p.opis ? (
+              <p className="mt-1.5 text-male leading-relaxed text-atrament-sciszony">
+                {p.opis.replace(/\*\*/g, "")}
+              </p>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
-    <ul className="flex flex-col gap-3">
+    <ul className={`grid gap-x-11 ${waskie ? "" : "sm:grid-cols-2"}`}>
       {punkty.map((p, i) => (
         <li
           key={`${p.etykieta}-${i}`}
-          className={`flex gap-3 rounded-xl border px-4 py-3 ${
-            ostrzezenie ? "border-uwaga/25 bg-uwaga-tlo/50" : "border-linia bg-panel"
-          }`}
+          className="grid grid-cols-[1.75rem_minmax(0,1fr)] gap-4 border-b border-linia py-4 last:border-b-0"
         >
           <span
             aria-hidden
-            className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.8rem] font-bold ${
-              ostrzezenie ? "bg-uwaga text-na-akcencie" : "bg-akcent-tlo text-akcent-jasny"
+            className={`mt-0.5 flex h-7 w-7 items-center justify-center text-male font-extrabold ${
+              ostrzezenie
+                ? "rounded-full bg-uwaga-tlo text-uwaga"
+                : "rounded-[0.65rem] bg-akcent-tlo text-akcent-jasny"
             }`}
           >
             {ostrzezenie ? "−" : i + 1}
           </span>
           <span className="min-w-0">
-            <span className="block text-male font-bold leading-snug text-atrament">
+            <span className="block text-tresc font-bold leading-snug text-atrament">
               {p.etykieta}
             </span>
             {p.opis ? (
-              <span className="mt-0.5 block text-male leading-relaxed text-atrament-sciszony">
+              <span className="mt-1 block text-male leading-relaxed text-atrament-sciszony">
                 {p.opis.replace(/\*\*/g, "")}
               </span>
             ) : null}
@@ -423,7 +451,6 @@ function Punkty({ punkty, ostrzezenie }: { punkty: Punkt[]; ostrzezenie?: boolea
     </ul>
   );
 }
-
 // =====================================================================
 
 /**
@@ -434,40 +461,32 @@ function Punkty({ punkty, ostrzezenie }: { punkty: Punkt[]; ostrzezenie?: boolea
  * liczba, którą uczestnik ma tu zobaczyć w prawdziwej proporcji.
  */
 function PodzialCzasu({ udzialy }: { udzialy: UdzialCzasu[] }) {
-  const KOLORY_CZASU = ["#1d5bff", "#8b5cf6", "#ff2d55", "#ffc400", "#00c56a", "#00c2d8"];
+  const KOLORY_CZASU = ["#1d5bff", "#5b57e8", "#8b5cf6", "#c2185b", "#b8460f", "#056b78"];
   return (
-    <ul className="flex flex-col gap-3">
-      {udzialy.map((u, i) => (
-        <li key={`${u.nazwa}-${i}`}>
-          <div className="flex items-baseline justify-between gap-4">
-            <span className="flex min-w-0 items-baseline gap-2.5">
+    <ul className="flex flex-col gap-4">
+      {udzialy.map((u, i) => {
+        const kolor = KOLORY_CZASU[i % KOLORY_CZASU.length];
+        return (
+          <li key={`${u.nazwa}-${i}`}>
+            <div className="mb-2 flex items-baseline justify-between gap-4">
+              <span className="min-w-0 text-male font-semibold text-atrament">{u.nazwa}</span>
+              <span className="shrink-0 text-male font-extrabold tabular-nums" style={{ color: kolor }}>
+                {u.procent}%
+              </span>
+            </div>
+            <span aria-hidden className="block h-2.5 w-full rounded-full bg-linia">
               <span
-                aria-hidden
-                className="h-2.5 w-2.5 shrink-0 translate-y-[-1px] rounded-full"
-                style={{ background: KOLORY_CZASU[i % KOLORY_CZASU.length] }}
+                className="block h-full rounded-full"
+                style={{ width: `${Math.min(100, u.procent)}%`, background: kolor }}
               />
-              <span className="text-male text-atrament">{u.nazwa}</span>
             </span>
-            <span className="shrink-0 text-male font-bold tabular-nums text-atrament">
-              {u.procent}%
-            </span>
-          </div>
-          <span aria-hidden className="mt-1.5 block h-2 w-full rounded-full bg-linia">
-            <span
-              className="block h-full rounded-full"
-              style={{
-                width: `${Math.min(100, u.procent)}%`,
-                background: KOLORY_CZASU[i % KOLORY_CZASU.length],
-              }}
-            />
-          </span>
-          {u.opis ? <p className="mt-1 text-drobne text-atrament-sciszony">{u.opis}</p> : null}
-        </li>
-      ))}
+            {u.opis ? <p className="mt-1.5 text-drobne text-atrament-sciszony">{u.opis}</p> : null}
+          </li>
+        );
+      })}
     </ul>
   );
 }
-
 // =====================================================================
 
 /**
@@ -479,7 +498,7 @@ function PodzialCzasu({ udzialy }: { udzialy: UdzialCzasu[] }) {
  */
 function SkalaZawodu({ liczby }: { liczby: LiczbaSkali[] }) {
   return (
-    <ul className="grid gap-3 sm:grid-cols-2">
+    <ul className="flex flex-col">
       {liczby.map((l, i) => {
         const dopasowanie = l.wartosc.match(
           /^(≈\s*[\d\s ]+(?:do\s+[\d\s ]+)?(?:tys\.|mln|%|lata|lat|roku|rok)?)(.*)$/,
@@ -487,21 +506,49 @@ function SkalaZawodu({ liczby }: { liczby: LiczbaSkali[] }) {
         const liczba = dopasowanie?.[1]?.trim();
         const reszta = (dopasowanie?.[2] ?? l.wartosc).trim().replace(/^,\s*/, "");
         return (
-          <li key={`${l.etykieta}-${i}`} className="rounded-xl border border-linia bg-panel px-4 py-3.5">
-            <p className="text-drobne uppercase tracking-[0.12em] text-atrament-slaby">{l.etykieta}</p>
-            {liczba ? (
-              <p className="mt-1.5 text-naglowek-maly font-extrabold leading-tight text-atrament">
-                {liczba}
-              </p>
-            ) : null}
-            {reszta ? (
-              <p className={`text-male leading-relaxed text-atrament-sciszony ${liczba ? "mt-1" : "mt-1.5"}`}>
-                {reszta}
-              </p>
-            ) : null}
+          <li
+            key={`${l.etykieta}-${i}`}
+            className="grid gap-1 border-b border-linia py-3 last:border-b-0 sm:grid-cols-[9.5rem_minmax(0,1fr)] sm:gap-5"
+          >
+            <span className="text-male font-bold text-atrament-slaby">{l.etykieta}</span>
+            <span className="text-male leading-relaxed text-atrament">
+              {liczba ? <b className="font-extrabold">{liczba}</b> : null}
+              {liczba && reszta ? " " : null}
+              {reszta}
+            </span>
           </li>
         );
       })}
+    </ul>
+  );
+}
+
+// =====================================================================
+
+/**
+ * Tabela dwukolumnowa: profil i koszt wejścia.
+ *
+ * Profil dostaje po lewej znacznik modułu („A1 wysoko"), bo to nazwa części
+ * programu, a nie zdanie. Koszt zostaje zwykłą etykietą.
+ */
+function TabelaWierszy({ wiersze, znacznik }: { wiersze: WierszTabeli[]; znacznik?: boolean }) {
+  return (
+    <ul className="flex flex-col">
+      {wiersze.map((w, i) => (
+        <li
+          key={`${w.etykieta}-${i}`}
+          className="grid gap-1.5 border-b border-linia py-3 last:border-b-0 sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-4"
+        >
+          {znacznik ? (
+            <span className="justify-self-start rounded-lg bg-akcent-tlo px-2.5 py-1 text-drobne font-extrabold text-akcent-jasny">
+              {w.etykieta}
+            </span>
+          ) : (
+            <span className="text-male font-bold text-atrament-slaby">{w.etykieta}</span>
+          )}
+          <span className="text-male leading-relaxed text-atrament">{w.wartosc}</span>
+        </li>
+      ))}
     </ul>
   );
 }
