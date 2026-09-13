@@ -11,12 +11,12 @@
  * koloru jako nosnika informacji.
  */
 
-import { useId, useMemo, useRef, useState } from "react";
+import { useId, useMemo } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
 import { Ikona, Obraz } from "@/components/Ikona";
 import { kluczBieguna } from "@/lib/ui/obrazy";
 import { kolorWyboru, type Kolor } from "@/lib/ui/kolory";
-import { kolejnoscDoPokazania, naMiejsca, przenies } from "@/lib/moduly/ranking";
+import { kolejnoscDoPokazania } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
 export interface WlasciwosciPozycji {
@@ -181,225 +181,165 @@ function kolumnyOpcji(ile: number): string {
 // =====================================================================
 
 /**
- * Zestaw czterech pozycji układany od najlepszej u góry do najsłabszej u dołu.
+ * Zestaw czterech pozycji: siatka numerów 1–4.
  *
- * Uczestnik nie nadaje numerów, tylko przestawia wiersze: numer wynika
- * z miejsca na liście. Zapis do bazy jest identyczny jak przy ręcznym
- * nadawaniu, `{ identyfikator: miejsce 1-4 }`, więc silnik liczy dokładnie to
- * samo i cztery niezerowe wagi zostają.
+ * Uczestnik nie przestawia wierszy, tylko przypisuje każdemu zadaniu miejsce.
+ * Wiersze stoją nieruchomo, więc nic nie skacze pod palcem — a kliknięcie
+ * numeru zajętego przez inne zadanie **zamienia je miejscami**, zamiast
+ * odmawiać. Zapis do bazy jest identyczny jak przy układaniu kolejności,
+ * `{ identyfikator: miejsce 1-4 }`, więc silnik liczy dokładnie to samo
+ * i cztery niezerowe wagi zostają.
  *
- * Kolejność startowa jest losowa i utrwalona w planie modułu, więc **nic nie
- * zapisujemy, dopóki uczestnik czegoś nie przestawi**. Inaczej „Dalej" byłoby
- * aktywne od razu i trzydzieści sześć ekranów dałoby się przeklikać, oddając
- * silnikowi czysty szum. Mówimy o tym wprost we wskazówce pod kartami.
+ * Wiersze są wizualnie identyczne i nie zmieniają koloru: kolor niesie
+ * wyłącznie wybrany numer, ten sam we wszystkich czterech wierszach. Gdyby
+ * wiersz miał własną barwę, różnica wyglądu przechylałaby wybór dokładnie tym
+ * mechanizmem, przed którym broni reguła ochrony pomiaru.
  *
- * Przestawiać da się myszą, palcem i klawiaturą: uchwyt jest przyciskiem
- * i reaguje na strzałki.
+ * Nic nie zapisujemy, dopóki uczestnik nie ustawi czegoś sam: kolejność
+ * startowa jest losowa, więc „Dalej" aktywne od razu pozwoliłoby przeklikać
+ * trzydzieści sześć ekranów, oddając silnikowi czysty szum.
  */
 function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) {
-  const opcje = pozycja.opcje ?? [];
-  const zapisane = wartosc as Record<string, number> | undefined;
-  const ustawione = Boolean(zapisane && Object.keys(zapisane).length === opcje.length);
-
-  const kody = useMemo(
-    () => kolejnoscDoPokazania(opcje.map((o) => o.kod), zapisane),
-    [opcje, zapisane],
+  // „1 najchętniej" → „najchętniej": numer stoi już w nagłówku kolumny.
+  const podpisyKrancow = (pozycja.krance ?? ["", ""]).map((t) =>
+    t.replace(/^\s*\d+\s*/, "").trim(),
   );
+  const opcje = pozycja.opcje ?? [];
+  const zapisane = (wartosc as Record<string, number> | undefined) ?? undefined;
+  const kody = useMemo(
+    () => kolejnoscDoPokazania(opcje.map((o) => o.kod), undefined),
+    [opcje],
+  );
+  const poKodzie = useMemo(() => new Map(opcje.map((o) => [o.kod, o])), [opcje]);
+  const ustawionych = zapisane ? Object.keys(zapisane).length : 0;
 
   /**
-   * Stan przeciągania: który wiersz, skąd, dokąd i o ile palec go przesunął.
-   *
-   * **Kolejność w drzewie nie zmienia się w trakcie przeciągania**, zmieniają
-   * się tylko przesunięcia. Wcześniej przestawiałem wiersze na bieżąco i przez
-   * to przeglądarka gubiła przechwycenie wskaźnika: węzeł z przechwyceniem
-   * wędrował w drzewie, przechwycenie znikało i chwyt przeskakiwał na sąsiedni
-   * wiersz. Kolejność zapisujemy dopiero po puszczeniu.
+   * Przypisanie miejsca. Gdy numer jest zajęty, oba zadania wymieniają się
+   * miejscami; gdy klikamy numer już nadany temu zadaniu, zdejmujemy go.
    */
-  const [przeciaganie, ustawPrzeciaganie] = useState<{
-    kod: string;
-    od: number;
-    do: number;
-    dy: number;
-  } | null>(null);
-
-  const lista = useRef<HTMLOListElement | null>(null);
-  /** Wymiary wierszy zmierzone raz, na starcie przeciągania. */
-  const miary = useRef<{ srodki: number[]; wysokosci: number[]; odstep: number }>({
-    srodki: [],
-    wysokosci: [],
-    odstep: 0,
-  });
-  const startY = useRef(0);
-
-  function zapisz(noweKody: string[]) {
-    naZmiane(naMiejsca(noweKody));
-    naDomkniecie?.();
-  }
-
-  function przesun(kod: string, oIle: number) {
-    zapisz(przenies(kody, kod, kody.indexOf(kod) + oIle));
-  }
-
-  function zacznij(e: React.PointerEvent<HTMLButtonElement>, kod: string, od: number) {
-    const wiersze = [...(lista.current?.querySelectorAll<HTMLElement>("li[data-kod]") ?? [])];
-    if (wiersze.length === 0) return;
-    const prostokaty = wiersze.map((w) => w.getBoundingClientRect());
-    miary.current = {
-      srodki: prostokaty.map((r) => r.top + r.height / 2),
-      wysokosci: prostokaty.map((r) => r.height),
-      odstep: prostokaty.length > 1 ? prostokaty[1].top - prostokaty[0].bottom : 0,
-    };
-    startY.current = e.clientY;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    ustawPrzeciaganie({ kod, od, do: od, dy: 0 });
-  }
-
-  function wTrakcie(e: React.PointerEvent<HTMLButtonElement>) {
-    if (!przeciaganie) return;
-    const dy = e.clientY - startY.current;
-    const { srodki } = miary.current;
-    const srodekChwytanego = srodki[przeciaganie.od] + dy;
-
-    // Ile środków sąsiadów minął chwytany wiersz. Liczymy z wymiarów zmierzonych
-    // na starcie, bo w trakcie nic się w drzewie nie przesuwa.
-    let cel = przeciaganie.od;
-    if (dy < 0) {
-      for (let i = przeciaganie.od - 1; i >= 0; i--) {
-        if (srodekChwytanego < srodki[i]) cel = i;
-        else break;
-      }
+  function ustaw(kod: string, numer: number) {
+    const teraz: Record<string, number> = { ...(zapisane ?? {}) };
+    const poprzedni = teraz[kod];
+    if (poprzedni === numer) {
+      delete teraz[kod];
     } else {
-      for (let i = przeciaganie.od + 1; i < srodki.length; i++) {
-        if (srodekChwytanego > srodki[i]) cel = i;
-        else break;
+      const trzymajacy = Object.keys(teraz).find((k) => teraz[k] === numer && k !== kod);
+      teraz[kod] = numer;
+      if (trzymajacy) {
+        if (poprzedni) teraz[trzymajacy] = poprzedni;
+        else delete teraz[trzymajacy];
       }
     }
-    if (dy !== przeciaganie.dy || cel !== przeciaganie.do) {
-      ustawPrzeciaganie({ ...przeciaganie, dy, do: cel });
+    if (Object.keys(teraz).length === opcje.length - 1) {
+      const brakujacyKod = opcje.map((o) => o.kod).find((k) => teraz[k] === undefined);
+      const brakujacyNumer = [1, 2, 3, 4]
+        .slice(0, opcje.length)
+        .find((n) => !Object.values(teraz).includes(n));
+      if (brakujacyKod && brakujacyNumer) teraz[brakujacyKod] = brakujacyNumer;
     }
-  }
-
-  function skoncz() {
-    if (!przeciaganie) return;
-    const { kod, od, do: cel } = przeciaganie;
-    ustawPrzeciaganie(null);
-    if (cel !== od) zapisz(przenies(kody, kod, cel));
-  }
-
-  /** O ile przesunąć wiersz, żeby zrobić miejsce chwytanemu. */
-  function przesuniecie(i: number): number {
-    const p = przeciaganie;
-    if (!p) return 0;
-    if (i === p.od) return p.dy;
-    const skok = miary.current.wysokosci[p.od] + miary.current.odstep;
-    if (p.do > p.od && i > p.od && i <= p.do) return -skok;
-    if (p.do < p.od && i >= p.do && i < p.od) return skok;
-    return 0;
+    naZmiane(Object.keys(teraz).length > 0 ? teraz : undefined);
+    if (Object.keys(teraz).length === opcje.length) naDomkniecie?.();
   }
 
   return (
-    <div>
-      {pozycja.krance ? (
-        <p className="mb-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-drobne text-atrament-sciszony">
-          {pozycja.krance.map((k, i) => {
-            const spacja = k.indexOf(" ");
-            const cyfra = spacja > 0 ? k.slice(0, spacja) : k;
-            const slowo = spacja > 0 ? k.slice(spacja + 1) : "";
-            return (
-              <span key={k} className="inline-flex items-center gap-1.5">
-                {i > 0 ? <span aria-hidden className="mr-1 text-atrament-slaby">·</span> : null}
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-linia-mocna bg-panel font-bold tabular-nums">
-                  {cyfra}
-                </span>
-                {slowo}
-              </span>
-            );
-          })}
+    <div className="szklo overflow-hidden p-0">
+      {/* Szyna nagłówków: który numer co znaczy. Bez niej „1" jest tylko cyfrą. */}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-5 border-b border-linia bg-tlo/60 px-4 py-3 sm:grid-cols-[minmax(0,1fr)_22rem] sm:px-7">
+        <p className="text-drobne font-bold uppercase tracking-[0.18em] text-atrament-slaby">
+          Zadanie
+          {/* Na telefonie nie ma miejsca na cztery nagłówki kolumn, a bez nich
+              „1" i „4" są samymi cyframi. Legenda mówi to samo w jednej linii. */}
+          <span className="ml-2 font-semibold normal-case tracking-normal sm:hidden">
+            · 1 {podpisyKrancow[0]}, 4 {podpisyKrancow[1]}
+          </span>
         </p>
-      ) : null}
+        <div className="hidden grid-cols-4 gap-3 text-center sm:grid">
+          {[podpisyKrancow[0], "", "", podpisyKrancow[1]].map((podpis, i) => (
+            <p key={i} className="text-drobne font-bold uppercase tracking-[0.14em] text-atrament-slaby">
+              {i + 1}
+              {podpis ? (
+                <>
+                  <br />
+                  <span className="text-[0.7rem] tracking-[0.04em]">{podpis}</span>
+                </>
+              ) : null}
+            </p>
+          ))}
+        </div>
+      </div>
 
-      <ol ref={lista} className="flex flex-col gap-2.5">
-        {kody.map((kodOpcji, miejsce) => {
-          const o = opcje.find((x) => x.kod === kodOpcji);
+      <ul>
+        {kody.map((kod) => {
+          const o = poKodzie.get(kod);
           if (!o) return null;
-          const kolor = kolorWyboru(o.ikona, miejsce);
-          const chwycony = przeciaganie?.kod === o.kod;
-          // Numer bierze się z miejsca docelowego, żeby w trakcie przeciągania
-          // było widać, na którą pozycję wiersz wejdzie.
-          const numer = chwycony
-            ? przeciaganie.do + 1
-            : miejsce + 1 + (przesuniecie(miejsce) === 0 ? 0 : przesuniecie(miejsce) < 0 ? -1 : 1);
+          const teraz = zapisane?.[kod];
           return (
             <li
-              key={o.kod}
-              data-kod={o.kod}
-              className={`flex min-h-24 items-center gap-3 rounded-2xl border-2 p-2.5 sm:gap-4 sm:p-3 ${
-                chwycony ? "" : "przejscie"
+              key={kod}
+              className={`grid grid-cols-[minmax(0,1fr)] items-center gap-4 border-t border-linia px-4 py-4 sm:grid-cols-[minmax(0,1fr)_22rem] sm:gap-5 sm:px-7 ${
+                teraz ? "bg-akcent-tlo/30" : ""
               }`}
-              style={{
-                borderColor: kolor ? (ustawione ? kolor.neon : kolor.obwod) : "var(--color-linia)",
-                background: kolor ? kolor.tlo : "var(--color-szklo)",
-                transform: `translateY(${przesuniecie(miejsce)}px)`,
-                transition: chwycony ? "none" : undefined,
-                zIndex: chwycony ? 20 : undefined,
-                position: chwycony ? "relative" : undefined,
-                boxShadow: chwycony
-                  ? `0 22px 40px -18px ${kolor ? kolor.neon : "rgba(16,19,42,0.45)"}`
-                  : undefined,
-              }}
             >
-              <span
-                aria-hidden
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 bg-panel text-tresc font-extrabold tabular-nums sm:h-11 sm:w-11 sm:text-tresc-duza"
-                style={{
-                  borderColor: kolor ? kolor.obwod : "var(--color-linia-mocna)",
-                  color: kolor ? kolor.atrament : "var(--color-atrament-sciszony)",
-                }}
-              >
-                {numer}
-              </span>
+              <div className="flex items-center gap-4">
+                {o.ikona ? (
+                  <Obraz klucz={o.ikona} rozmiar={64} aktywna={Boolean(teraz)} wybor />
+                ) : null}
+                <span className="min-w-0">
+                  <span className="block text-tresc font-bold leading-snug text-atrament sm:text-tresc-duza">
+                    {o.etykieta}
+                  </span>
+                  {o.podpis ? (
+                    <span className="mt-1 block text-male leading-snug text-atrament-sciszony">
+                      {o.podpis}
+                    </span>
+                  ) : null}
+                </span>
+              </div>
 
-              {o.ikona ? (
-                <Obraz klucz={o.ikona} rozmiar={76} aktywna={ustawione} wybor kolor={kolor} />
-              ) : null}
-
-              <span className="min-w-0 flex-1 font-boksowy text-male font-medium leading-snug text-atrament sm:text-tresc">
-                {o.etykieta}
-              </span>
-
-              <button
-                type="button"
-                aria-label={`${o.etykieta}: miejsce ${miejsce + 1} z ${kody.length}. Przeciągnij albo użyj strzałek, żeby zmienić kolejność.`}
-                className="przejscie -my-2 flex h-14 w-11 shrink-0 cursor-grab touch-none select-none items-center justify-center rounded-lg text-atrament-slaby hover:bg-panel/70 hover:text-atrament active:cursor-grabbing"
-                onPointerDown={(e) => zacznij(e, o.kod, miejsce)}
-                onPointerMove={wTrakcie}
-                onPointerUp={skoncz}
-                onPointerCancel={skoncz}
-                onLostPointerCapture={skoncz}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowUp") {
-                    e.preventDefault();
-                    przesun(o.kod, -1);
-                  }
-                  if (e.key === "ArrowDown") {
-                    e.preventDefault();
-                    przesun(o.kod, 1);
-                  }
-                }}
-              >
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
-                  <circle cx="9" cy="6" r="1.6" />
-                  <circle cx="15" cy="6" r="1.6" />
-                  <circle cx="9" cy="12" r="1.6" />
-                  <circle cx="15" cy="12" r="1.6" />
-                  <circle cx="9" cy="18" r="1.6" />
-                  <circle cx="15" cy="18" r="1.6" />
-                </svg>
-              </button>
+              <div className="grid grid-cols-4 gap-2.5 sm:gap-3">
+                {[1, 2, 3, 4].map((n) => {
+                  const wybrany = teraz === n;
+                  return (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => ustaw(kod, n)}
+                      aria-pressed={wybrany}
+                      aria-label={`${o.etykieta}: miejsce ${n} z 4${
+                        n === 1 ? ", najchętniej" : n === 4 ? ", na końcu" : ""
+                      }`}
+                      className={`przejscie flex h-12 items-center justify-center rounded-2xl border-2 text-tresc font-extrabold tabular-nums sm:h-14 ${
+                        wybrany
+                          ? "przycisk-gradient border-transparent"
+                          : "border-linia bg-tlo/70 text-atrament-slaby hover:border-linia-mocna hover:text-atrament"
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  );
+                })}
+              </div>
             </li>
           );
         })}
-      </ol>
+      </ul>
+
+      {/* Licznik i wyczyszczenie stoją pod siatką, bo dotyczą całego zestawu. */}
+      <div className="flex items-center justify-between gap-4 border-t border-linia px-4 py-3 sm:px-7">
+        <p className="text-male text-atrament-sciszony">
+          <span className="font-bold tabular-nums text-atrament">{ustawionych}</span> z {opcje.length}{" "}
+          ustawione
+        </p>
+        {ustawionych > 0 ? (
+          <button
+            type="button"
+            onClick={() => naZmiane(undefined)}
+            className="przejscie min-h-9 rounded-full border border-linia px-4 text-male font-semibold text-atrament-slaby hover:border-linia-mocna hover:text-atrament"
+          >
+            Wyczyść
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -408,21 +348,12 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
 // Para: dwie karty obok siebie
 // =====================================================================
 
-function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: WlasciwosciPozycji) {
+function Para({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) {
   const strony = [pozycja.stronaA, pozycja.stronaB].filter(Boolean) as Array<{
     kod: string;
     tekst: string;
     ikona?: string;
   }>;
-  /**
-   * Obie karty pary dostają ten sam kolor.
-   *
-   * Wcześniej lewa była błękitna, a prawa żółta, bo kolor brał się z miejsca
-   * na ekranie. Kolor nie zdradzał kategorii, ale różnił dwie równorzędne
-   * opcje — a tu wybór JEST pomiarem, więc różnica wyglądu przechyla wynik
-   * tym samym mechanizmem, przed którym broni reguła ochrony pomiaru.
-   */
-  const kolorPary = kolorWyboru(kluczKoloru, 0);
 
   function wybierz(kod: string) {
     naZmiane(kod);
@@ -430,56 +361,56 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
   }
 
   /**
-   * Znak przy odpowiedzi tylko wtedy, gdy strony mają różne. W A3 i M1 obie
-   * strony to dwa bieguny jednej osi i dostają ten sam znak, a dwa identyczne
-   * znaczki niczego nie rozróżniają.
+   * Dwie karty odpowiedzi, wizualnie identyczne.
+   *
+   * Ilustracja stoi nad nimi jako jeden wspólny pas (Runner), a nie na
+   * kartach: karta jest tu samym zdaniem i kółkiem wyboru. Obie mają to samo
+   * tło, tę samą ramkę i ten sam rozmiar — wybór JEST pomiarem, więc każda
+   * różnica wyglądu przechylałaby wynik.
    */
-  const zeZnakiem = strony.length === 2 && strony[0].ikona !== strony[1].ikona;
-
-
-
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+    <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
       {strony.map((s, i) => {
         const wybrana = wartosc === s.kod;
-        const kolor = kolorPary;
-        const obraz = kluczBieguna(pozycja.stronaA?.ikona, pozycja.stronaB?.ikona, i === 0 ? 0 : 1);
-        const przygaszona = Boolean(wartosc) && !wybrana;
         return (
           <button
             key={`${s.kod}-${i}`}
             type="button"
             onClick={() => wybierz(s.kod)}
             aria-pressed={wybrana}
-            className={`${klasyKarty(wybrana)} przejscie flex flex-col overflow-hidden ${
-              obraz
-                ? "items-stretch justify-start pb-4 text-center"
-                : "min-h-[9rem] items-center justify-center gap-3 px-4 pb-5 pt-9 sm:min-h-[11rem] sm:px-6"
+            className={`przejscie relative flex min-h-[6rem] items-center justify-between gap-5 rounded-karta border-2 px-6 py-6 text-left sm:px-8 ${
+              wybrana
+                ? "border-akcent bg-akcent-tlo/70"
+                : "border-transparent bg-panel/80 hover:bg-panel"
             }`}
-            style={{
-              ...stylKarty(kolor, wybrana),
-              // Po wyborze druga karta lekko sie wycisza, zeby wybrana
-              // przejela uwage. Symetrycznie: przygasa zawsze ta niewybrana.
-              opacity: przygaszona ? 0.85 : undefined,
-            }}
+            style={
+              wybrana
+                ? undefined
+                : { boxShadow: "0 8px 26px rgba(46, 60, 120, 0.07)" }
+            }
           >
-            {obraz ? (
-              <Obraz klucz={obraz} pelny aktywna={wybrana} wybor kolor={kolor} />
-            ) : zeZnakiem && s.ikona ? (
-              <KolkoZnaku klucz={s.ikona} kolor={kolor} />
-            ) : null}
-            <ZnakWyboru wybrana={wybrana} naObrazie={Boolean(obraz)} />
-            <span
-              className={`boks text-tresc leading-snug text-atrament sm:text-tresc-duza ${
-                obraz ? "px-3 pt-3.5 sm:px-4" : ""
-              }`}
-            >
+            <span className="min-w-0 text-tresc-duza font-semibold leading-snug text-atrament sm:text-naglowek-maly">
               {s.tekst}
             </span>
+            <KolkoWyboru wybrana={wybrana} />
           </button>
         );
       })}
     </div>
+  );
+}
+
+/** Pierścień wyboru: pusty przed, wypełniony gradientem po wybraniu. */
+function KolkoWyboru({ wybrana }: { wybrana: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={`przejscie relative flex h-8 w-8 shrink-0 rounded-full border-2 ${
+        wybrana ? "border-akcent" : "border-linia-mocna"
+      }`}
+    >
+      {wybrana ? <span className="przycisk-gradient absolute inset-1 rounded-full" /> : null}
+    </span>
   );
 }
 
@@ -587,8 +518,14 @@ function Trzystopniowa({
   const sama = Boolean(pierwsza && ostatnia && !wSiatce);
 
   if (sama) {
+    /**
+     * Trzy odpowiedzi jako trzy karty w rzędzie: znak, etykieta, podpis
+     * i pierścień wyboru. Znak, nie ocena — żaden z trzech nie jest czerwony,
+     * bo „To nie dla mnie" jest w tym module jedyną odpowiedzią, która usuwa
+     * zawody bezwarunkowo, i nie wolno jej dokładać ładunku emocjonalnego.
+     */
     return (
-      <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
+      <div className="grid gap-4 lg:grid-cols-3">
         {opcje.map((o, i) => {
           const wybrana = wartosc === o.kod;
           return (
@@ -600,17 +537,25 @@ function Trzystopniowa({
                 naDomkniecie?.();
               }}
               aria-pressed={wybrana}
-              className={`${klasyKarty(wybrana)} flex flex-col items-center gap-3 px-2 pb-5 pt-9 sm:px-4`}
-              style={stylKarty(null, wybrana)}
+              className={`przejscie relative flex min-h-[7rem] items-center gap-5 rounded-karta border-2 px-5 py-5 text-left sm:px-6 ${
+                wybrana
+                  ? "border-akcent bg-akcent-tlo/70"
+                  : "border-transparent bg-panel/80 hover:bg-panel"
+              }`}
+              style={wybrana ? undefined : { boxShadow: "0 8px 24px rgba(46, 60, 120, 0.07)" }}
             >
-              <ZnakWyboru wybrana={wybrana} />
               <ZnakStopnia ktory={i} wybrana={wybrana} />
-              <span className="boks text-tresc font-bold text-atrament sm:text-tresc-duza">{o.etykieta}</span>
-              {o.podpis ? (
-                <span className="boks -mt-1.5 text-drobne font-normal text-atrament-sciszony sm:text-male">
-                  {o.podpis}
+              <span className="min-w-0 flex-1">
+                <span className="block text-tresc-duza font-bold leading-tight text-atrament">
+                  {o.etykieta}
                 </span>
-              ) : null}
+                {o.podpis ? (
+                  <span className="mt-1.5 block text-male leading-snug text-atrament-sciszony">
+                    {o.podpis}
+                  </span>
+                ) : null}
+              </span>
+              <KolkoWyboru wybrana={wybrana} />
             </button>
           );
         })}
@@ -655,11 +600,11 @@ function ZnakStopnia({ ktory, wybrana }: { ktory: number; wybrana: boolean }) {
   return (
     <span
       aria-hidden
-      className={`flex h-14 w-14 items-center justify-center rounded-full ${
+      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
         wybrana ? "przycisk-gradient" : "bg-akcent-tlo text-akcent-jasny"
       }`}
     >
-      <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <path d={SCIEZKI[ktory] ?? SCIEZKI[1]} />
       </svg>
     </span>

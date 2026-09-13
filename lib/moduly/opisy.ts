@@ -59,7 +59,7 @@ export const DOPISEK: Record<string, string> = {
  */
 export const WSKAZOWKA: Record<string, string> = {
   ranking4:
-    "Kolejność na start jest losowa. Przeciągnij wiersze tak, żeby na górze było to, co najbardziej, a na dole to, co najmniej.",
+    "Każdemu zadaniu przypisz miejsce od 1 do 4. Każde miejsce możesz użyć tylko raz, więc kliknięcie zajętego numeru zamienia zadania miejscami. Ostatni numer dopisuje się sam.",
   para: "Jedno pytanie naraz. Wybieraj intuicyjnie, nie ma dobrych ani złych odpowiedzi.",
   pojedynczy: "Wybierz jedną odpowiedź, tę najbliższą prawdy o Tobie dzisiaj.",
   wielokrotny: "Możesz zaznaczyć kilka. Liczy się to, co jest prawdą, nie to, co dobrze brzmi.",

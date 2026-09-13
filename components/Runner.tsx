@@ -15,7 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Pozycja } from "./Pozycja";
-import { Plansza } from "./Ikona";
+import { Plansza, PlanszaPary } from "./Ikona";
 import { Marka } from "./pulpit/Marka";
 import { Bramy } from "./pulpit/Bramy";
 import { Panorama } from "./pulpit/Panorama";
@@ -323,13 +323,18 @@ export function Runner({
   const kluczPlanszy = [ekran.obraz, ekran.ikona ?? ekran.kolor].find(
     (k): k is string => Boolean(k) && maObraz(k as string),
   );
-  // Gdy obie karty pary maja juz wlasna ilustracje, pas nad nimi powtarzalby
-  // jedna z nich. Wtedy go nie ma.
-  const kartyZObrazami = paraMaObrazy(
+  // Para z dwiema ilustracjami dostaje pas dzielony na pół: lewa połowa
+  // należy do lewej odpowiedzi, prawa do prawej. Symetrycznie, więc obraz
+  // nie przechyla wyboru tak, jak przechyliłoby jedno wspólne zdjęcie.
+  const paraZObrazami = paraMaObrazy(
     widocznePozycje[0]?.stronaA?.ikona,
     widocznePozycje[0]?.stronaB?.ikona,
   );
-  const zPlansza = jednaPozycja && Boolean(kluczPlanszy) && !kartyZObrazami;
+  const zPlanszaPary = jednaPozycja && typPozycji === "para" && paraZObrazami;
+  const zPlansza = jednaPozycja && Boolean(kluczPlanszy) && !zPlanszaPary;
+  // Pytanie z jedną decyzją stoi na środku ekranu, jak w makiecie panelu
+  // wyboru. Siatki pozycji i ranking zostają wyrównane do lewej.
+  const naSrodku = jednaPozycja && (typPozycji === "para" || typPozycji === "trzystopniowa");
   const postepModulu = Math.round((Math.max(0, numerModulu - 1) / Math.max(1, liczbaModulow)) * 100);
 
   return (
@@ -419,13 +424,17 @@ export function Runner({
           <>
             {/* Pytanie jest największym tekstem na ekranie, a ostatnie słowo
                 dostaje gradient. Pod nim jedno zdanie z zasadą tego modułu. */}
-            <div className="relative sm:pr-[13rem]">
-              <p aria-hidden className="odreczny absolute right-0 top-1 hidden max-w-[11rem] whitespace-pre-line text-right sm:block">
-                {DOPISEK[modul]}
-              </p>
+            <div className={naSrodku ? "relative text-center" : "relative sm:pr-[13rem]"}>
+              {naSrodku ? null : (
+                <p aria-hidden className="odreczny absolute right-0 top-1 hidden max-w-[11rem] whitespace-pre-line text-right sm:block">
+                  {DOPISEK[modul]}
+                </p>
+              )}
               <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">{etykietaNadTytulem}</p>
               <h1
-                className={`mt-3 max-w-[22ch] font-extrabold leading-[1.04] tracking-[-0.02em] text-atrament sm:max-w-[18ch] ${
+                className={`mt-3 font-extrabold leading-[1.04] tracking-[-0.02em] text-atrament ${
+                  naSrodku ? "mx-auto max-w-[20ch]" : "max-w-[22ch] sm:max-w-[18ch]"
+                } ${
                   tytulEkranu.length > 46
                     ? "text-naglowek sm:text-naglowek-duzy"
                     : "text-naglowek-duzy sm:text-tytul"
@@ -434,7 +443,13 @@ export function Runner({
                 <DwaTony tekst={tytulEkranu} />
               </h1>
               {podtytul ? (
-                <p className="mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">{podtytul}</p>
+                <p
+                  className={`mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony ${
+                    naSrodku ? "mx-auto" : ""
+                  }`}
+                >
+                  {podtytul}
+                </p>
               ) : null}
               {!jednaPozycja && !pojedynczePytanie ? (
                 <>
@@ -455,22 +470,34 @@ export function Runner({
             {/* Plansza pytania: pas na całej szerokości bloków odpowiedzi.
                 Tylko przy pytaniach z jedną decyzją; ekrany z siatką pozycji
                 mają znak przy każdej pozycji z osobna. */}
-            {zPlansza ? (
-              <div className="mt-6">
-                <Plansza klucz={kluczPlanszy as string} wybor wysokosc={168} />
+            {zPlanszaPary ? (
+              <div className="mx-auto mt-7 w-full max-w-[52rem]">
+                <PlanszaPary
+                  lewy={widocznePozycje[0].stronaA!.ikona as string}
+                  prawy={widocznePozycje[0].stronaB!.ikona as string}
+                  wysokosc={220}
+                />
+              </div>
+            ) : zPlansza ? (
+              <div className={`mt-7 ${naSrodku ? "mx-auto w-full max-w-[52rem]" : ""}`}>
+                <Plansza klucz={kluczPlanszy as string} wybor wysokosc={naSrodku ? 220 : 168} />
               </div>
             ) : null}
 
+            {/* Polecenie nad odpowiedziami jako linia z podpisem pośrodku:
+                w makiecie filtrów oddziela pytanie od trzech możliwych ocen. */}
             {poleceniePrzyOdpowiedziach ? (
-              <p className="mt-6 text-drobne font-semibold uppercase tracking-[0.14em] text-atrament-slaby">
+              <p className="mt-7 flex items-center gap-4 text-drobne font-bold uppercase tracking-[0.2em] text-atrament-slaby">
+                <span aria-hidden className="h-px flex-1 bg-linia" />
                 {poleceniePrzyOdpowiedziach}
+                <span aria-hidden className="h-px flex-1 bg-linia" />
               </p>
             ) : null}
 
             <div
               className={`${siatka ? "grid gap-3 sm:grid-cols-2" : "flex flex-col gap-6"} ${
-                ekranWyboru ? (poleceniePrzyOdpowiedziach ? "mt-3" : "mt-6") : "szklo mt-6 p-5 sm:p-7"
-              }`}
+                ekranWyboru ? (poleceniePrzyOdpowiedziach ? "mt-4" : "mt-7") : "szklo mt-6 p-5 sm:p-7"
+              } ${naSrodku ? "w-full text-left" : ""}`}
             >
               {widocznePozycje.map((p, i, lista) => (
                 <div

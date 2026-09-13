@@ -178,6 +178,47 @@ export function Obraz({
  * przycinania, a tło pasa dopełnia rozmyta kopia tego samego obrazu.
  * Grafika w proporcji pasa wypełni go od krawędzi do krawędzi.
  */
+/**
+ * Pas ilustracji pary: dwie połowy, jedna biała linia między nimi.
+ *
+ * Lewa połowa należy do lewej odpowiedzi, prawa do prawej, obie tej samej
+ * szerokości i wysokości — pas jest symetryczny, więc nie przechyla wyboru.
+ * Gdy któraś strona nie ma obrazu, pasa nie ma wcale: jedno zdjęcie na dwie
+ * odpowiedzi ustawiałoby jedną z nich w uprzywilejowanej pozycji.
+ */
+export function PlanszaPary({
+  lewy,
+  prawy,
+  wysokosc = 250,
+}: {
+  lewy: KluczGlifu;
+  prawy: KluczGlifu;
+  wysokosc?: number;
+}) {
+  const zrodla = [lewy, prawy].map((k) => obrazPlanszy(k) ?? obrazDuzy(k) ?? obrazKafla(k));
+  if (zrodla.some((z) => !z)) return null;
+  return (
+    <span
+      aria-hidden
+      className="relative grid w-full grid-cols-2 overflow-hidden rounded-[1.4rem] border border-white/90 shadow-[0_14px_40px_rgba(46,60,120,0.12)]"
+      style={{ height: wysokosc }}
+    >
+      {zrodla.map((z, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={i}
+          src={z as string}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
+      ))}
+      <span className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-px bg-white/95" />
+    </span>
+  );
+}
+
 export function Plansza({
   klucz,
   wysokosc = 176,
