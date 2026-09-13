@@ -37,8 +37,32 @@ const Z_OBRAZEM = new Set<string>([
   ),
 ]);
 
+/**
+ * Plansze pytań: poziomy pas nad blokami odpowiedzi, proporcja około 3,7:1.
+ *
+ * Lista jest pusta, dopóki plansz nie ma. Wtedy pas pokazuje duży znak
+ * kategorii, a w A3 kwadratową ilustrację pośrodku. Po dosłaniu plików
+ * wystarczy dopisać klucze tutaj: `components/Ikona.tsx` samo je weźmie.
+ *
+ * Spis tego, co ma być na których planszach: `GRAFIKI-KATEGORIE.md`.
+ */
+const Z_PLANSZA = new Set<string>([]);
+
+export function obrazPlanszy(klucz: string): string | null {
+  if (!Z_PLANSZA.has(klucz)) return null;
+  return `/grafika/plansze/${klucz}.jpg`;
+}
+
+/**
+ * Czy dla klucza cokolwiek narysujemy.
+ *
+ * Prawda takze wtedy, gdy jest sam pas (plansza) bez kwadratowego kafla:
+ * warunki A5 pokazuja sie wylacznie jako pas nad odpowiedziami, wiec
+ * wymaganie od nich kafla zmuszaloby do rysowania obrazka, ktorego nikt
+ * nigdy nie zobaczy.
+ */
 export function maObraz(klucz: string): boolean {
-  return Z_OBRAZEM.has(klucz);
+  return Z_OBRAZEM.has(klucz) || Z_PLANSZA.has(klucz);
 }
 
 /**
@@ -65,32 +89,17 @@ export function paraMaObrazy(ikonaA: string | undefined, ikonaB: string | undefi
   return Boolean(kluczBieguna(ikonaA, ikonaB, 0) && kluczBieguna(ikonaA, ikonaB, 1));
 }
 
-/** Adres kafla (256 px). Null, gdy kategoria nie ma jeszcze ilustracji. */
+/** Adres kafla (256 px). Null, gdy kategoria nie ma jeszcze kwadratowej ilustracji. */
 export function obrazKafla(klucz: string): string | null {
-  if (!maObraz(klucz)) return null;
+  if (!Z_OBRAZEM.has(klucz)) return null;
   const [modul, ...reszta] = klucz.split("-");
   return `/grafika/${modul}/${reszta.join("-")}.jpg`;
 }
 
 /** Adres większej wersji (768 px), do nagłówków i kart obszaru. */
 export function obrazDuzy(klucz: string): string | null {
-  if (!maObraz(klucz)) return null;
+  if (!Z_OBRAZEM.has(klucz)) return null;
   const [modul, ...reszta] = klucz.split("-");
   return `/grafika/${modul}/${reszta.join("-")}-duzy.jpg`;
 }
 
-/**
- * Plansze pytań: poziomy pas nad blokami odpowiedzi, proporcja około 3,7:1.
- *
- * Lista jest pusta, dopóki plansz nie ma. Wtedy pas pokazuje duży znak
- * kategorii, a w A3 kwadratową ilustrację pośrodku. Po dosłaniu plików
- * wystarczy dopisać klucze tutaj: `components/Ikona.tsx` samo je weźmie.
- *
- * Spis tego, co ma być na których planszach: `GRAFIKI-KATEGORIE.md`.
- */
-const Z_PLANSZA = new Set<string>([]);
-
-export function obrazPlanszy(klucz: string): string | null {
-  if (!Z_PLANSZA.has(klucz)) return null;
-  return `/grafika/plansze/${klucz}.jpg`;
-}
