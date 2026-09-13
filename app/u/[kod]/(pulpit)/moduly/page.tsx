@@ -123,7 +123,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         {dalej ? (
           <Link
             href={`/u/${kod}/modul/${dalej}`}
-            className="przejscie przycisk-gradient inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded-xl px-6 text-male font-bold"
+            className="przejscie przycisk-gradient inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded-full px-7 text-male font-bold"
           >
             {stan(dalej) === "wtrakcie" ? "Kontynuuj moduł" : "Zacznij moduł"}: {NAZWY_MODULOW[dalej]}
             <span aria-hidden>→</span>
@@ -197,7 +197,7 @@ function KartaModulu({
         }}
       >
         <ZnakModulu modul={modul} rozmiar={38} />
-        <span className="absolute left-2.5 top-2 text-drobne font-extrabold tabular-nums opacity-70">
+        <span className="absolute left-2.5 top-2 text-drobne font-extrabold tabular-nums">
           {String(numer).padStart(2, "0")}
         </span>
         <span className="absolute right-2 top-2">
@@ -241,17 +241,18 @@ function KartaModulu({
   );
 
   if (zamkniety) {
-    return <div className="szklo flex h-full flex-col p-3 opacity-70">{tresc}</div>;
+    return <div className="flex h-full flex-col rounded-karta border border-linia bg-tlo/70 p-3">{tresc}</div>;
   }
 
   return (
     <Link
       href={`/u/${kod}/modul/${modul}`}
-      className="przejscie flex h-full flex-col rounded-karta border-2 bg-panel p-3"
-      style={{
-        borderColor: stan === "wtrakcie" ? kolor.neon : "var(--color-linia)",
-        boxShadow: stan === "wtrakcie" ? `0 16px 34px -22px ${kolor.neon}` : undefined,
-      }}
+      className="przejscie szklo flex h-full flex-col p-3"
+      style={
+        stan === "wtrakcie"
+          ? { borderColor: kolor.neon, boxShadow: `0 16px 34px -22px ${kolor.neon}` }
+          : undefined
+      }
     >
       {tresc}
     </Link>
@@ -262,7 +263,7 @@ function KartaModulu({
 function Odznaka({ stan }: { stan: Stan }) {
   if (stan === "gotowy") {
     return (
-      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-neon-zielony text-na-akcencie">
+      <span className="flex h-6 w-6 items-center justify-center rounded-full text-na-akcencie" style={{ background: "#067a45" }}>
         <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.4">
           <path d="M2 6.3 4.6 9 10 3.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>

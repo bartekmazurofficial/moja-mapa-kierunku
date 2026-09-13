@@ -148,10 +148,10 @@ function Kafel({
       <span className="proza mt-3 block">{opis}</span>
 
       <span
-        className={`przejscie mt-7 inline-flex min-h-12 w-fit items-center gap-2 rounded-xl px-6 text-male font-bold ${
+        className={`przejscie mt-7 inline-flex min-h-12 w-fit items-center gap-2 rounded-full px-7 text-male font-bold ${
           glowny
-            ? "poswiata bg-gradient-to-r from-akcent-ciemny to-akcent text-na-akcencie group-hover:brightness-110"
-            : "border border-linia-mocna bg-szklo text-atrament group-hover:border-akcent/50 group-hover:text-akcent-jasny"
+            ? "przycisk-gradient group-hover:brightness-110"
+            : "przycisk-pigulka text-atrament group-hover:border-akcent/50 group-hover:text-akcent-jasny"
         }`}
       >
         {akcja}

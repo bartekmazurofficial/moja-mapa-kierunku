@@ -58,7 +58,7 @@ export function WejscieKodem() {
         <button
           type="submit"
           disabled={sprawdza}
-          className="przejscie poswiata min-h-14 rounded-xl bg-gradient-to-r from-akcent-ciemny to-akcent px-8 text-tresc font-bold text-na-akcencie hover:brightness-110 disabled:opacity-60"
+          className="przejscie przycisk-gradient min-h-14 rounded-full px-9 text-tresc font-bold disabled:saturate-50 disabled:brightness-110"
         >
           {sprawdza ? "Sprawdzam…" : "Rozpocznij"}
           {sprawdza ? null : (

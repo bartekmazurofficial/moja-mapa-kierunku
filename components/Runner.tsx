@@ -18,6 +18,7 @@ import { Pozycja } from "./Pozycja";
 import { Plansza } from "./Ikona";
 import { Marka } from "./pulpit/Marka";
 import { Bramy } from "./pulpit/Bramy";
+import { Panorama } from "./pulpit/Panorama";
 import { DOPISEK, PODTYTUL, WSKAZOWKA } from "@/lib/moduly/opisy";
 import { maObraz, paraMaObrazy } from "@/lib/ui/obrazy";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
@@ -332,7 +333,15 @@ export function Runner({
   const postepModulu = Math.round((Math.max(0, numerModulu - 1) / Math.max(1, liczbaModulow)) * 100);
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[54rem] flex-col px-4 pb-6 pt-4 sm:px-8 sm:pt-5">
+    <div className="relative isolate mx-auto flex min-h-dvh w-full max-w-[54rem] flex-col overflow-hidden px-4 pb-6 pt-4 sm:px-8 sm:pt-5">
+      {/*
+        Ilustracja modułu: droga, horyzont, wschód słońca. Stoi pod treścią,
+        przy dolnej krawędzi, i pojawia się tylko wtedy, gdy ekran nie ma
+        własnego obrazu — dwie ilustracje naraz robią szum, nie motyw.
+      */}
+      {zPlansza ? null : (
+        <Panorama klasa="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[34vh] w-full" moc={0.55} />
+      )}
       {/*
         Nagłówek: znak programu, numer modułu z siedmiu i licznik ekranów.
         Pasek pokazuje, który to moduł, a nie ile ekranów zostało: pasek rosnący
@@ -410,12 +419,18 @@ export function Runner({
           <>
             {/* Pytanie jest największym tekstem na ekranie, a ostatnie słowo
                 dostaje gradient. Pod nim jedno zdanie z zasadą tego modułu. */}
-            <div className="relative">
-              <p aria-hidden className="odreczny absolute right-0 top-0 hidden max-w-[11rem] whitespace-pre-line text-right sm:block">
+            <div className="relative sm:pr-[13rem]">
+              <p aria-hidden className="odreczny absolute right-0 top-1 hidden max-w-[11rem] whitespace-pre-line text-right sm:block">
                 {DOPISEK[modul]}
               </p>
               <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">{etykietaNadTytulem}</p>
-              <h1 className="mt-2 max-w-[34rem] text-naglowek font-extrabold leading-[1.08] tracking-tight text-atrament sm:text-naglowek-duzy">
+              <h1
+                className={`mt-3 max-w-[22ch] font-extrabold leading-[1.04] tracking-[-0.02em] text-atrament sm:max-w-[18ch] ${
+                  tytulEkranu.length > 46
+                    ? "text-naglowek sm:text-naglowek-duzy"
+                    : "text-naglowek-duzy sm:text-tytul"
+                }`}
+              >
                 <DwaTony tekst={tytulEkranu} />
               </h1>
               {podtytul ? (
@@ -545,7 +560,7 @@ export function Runner({
             if (window.scrollY > 8) window.scrollTo({ top: 0, behavior: "auto" });
           }}
           disabled={bezpiecznyIndeks === 0}
-          className="przejscie przycisk-pigulka min-h-12 rounded-2xl px-5 text-male font-semibold disabled:invisible"
+          className="przejscie przycisk-pigulka min-h-12 rounded-full px-6 text-male font-semibold disabled:invisible"
         >
           <span aria-hidden className="mr-2">←</span>
           Wstecz
@@ -555,8 +570,8 @@ export function Runner({
           type="button"
           onClick={() => void dalej()}
           disabled={!kompletny || konczy}
-          className={`przejscie min-h-12 rounded-2xl px-8 text-tresc font-bold sm:min-w-[14rem] ${
-            !kompletny || konczy ? "border border-linia bg-panel/60 text-atrament-slaby" : "przycisk-gradient"
+          className={`przejscie min-h-12 rounded-full px-8 text-tresc font-bold sm:min-w-[14rem] ${
+            !kompletny || konczy ? "border border-linia bg-panel text-atrament-sciszony" : "przycisk-gradient"
           }`}
         >
           {konczy ? "Zapisuję…" : (ekran.przyciskDalej ?? "Dalej")}
@@ -571,17 +586,44 @@ export function Runner({
   );
 }
 
-/** Ostatnie słowo pytania w gradiencie. Rozbicie po spacji, znaki interpunkcyjne zostają przy słowie. */
+/**
+ * Nagłówek dwutonowy: pierwsza połowa ciemna, druga w gradiencie, a znak
+ * zapytania osobno w pomarańczu. Rozbicie po spacji, pozostałe znaki
+ * interpunkcyjne zostają przy słowie.
+ */
 function DwaTony({ tekst }: { tekst: string }) {
-  const slowa = tekst.trim().split(/\s+/);
-  if (slowa.length < 2) return <span className="gradient-tytul">{tekst}</span>;
-  // Przy dłuższym pytaniu gradient dostają dwa ostatnie słowa, żeby był widoczny.
-  const ile = slowa.length >= 6 ? 2 : 1;
+  const pelny = tekst.trim();
+  // Znak zapytania jest trzecim akcentem, nie częścią gradientu, więc
+  // odcinamy go, zanim podzielimy nagłówek na część ciemną i gradientową.
+  const dopasowanie = /([?!]+)$/.exec(pelny);
+  const znak = dopasowanie ? dopasowanie[1] : "";
+  const bezZnaku = znak ? pelny.slice(0, -znak.length).trimEnd() : pelny;
+  const ogon = znak ? <span className="znak-pytania">{znak}</span> : null;
+
+  const slowa = bezZnaku.split(/\s+/).filter(Boolean);
+  if (slowa.length < 2) {
+    return (
+      <>
+        <span className="gradient-tytul">{bezZnaku}</span>
+        {ogon}
+      </>
+    );
+  }
+  // Podział pada w łamaniu wiersza, nie w środku linii: w referencjach
+  // pierwsza linia jest ciemna, druga gradientowa. Bez tego gradient zaczyna
+  // się w połowie wiersza i przestaje czytać się jako druga linia.
+  // Druga połowa nagłówka dostaje gradient. Przy dwóch słowach to jedno słowo,
+  // przy ośmiu cztery — gradient ma być drugą linią, nie końcówką.
+  const ile = Math.max(1, Math.floor(slowa.length / 2));
   const poczatek = slowa.slice(0, -ile).join(" ");
   const koniec = slowa.slice(-ile).join(" ");
   return (
     <>
-      {poczatek} <span className="gradient-tytul">{koniec}</span>
+      <span className="block">{poczatek}</span>
+      <span className="block">
+        <span className="gradient-tytul">{koniec}</span>
+        {ogon}
+      </span>
     </>
   );
 }

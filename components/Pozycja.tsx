@@ -15,7 +15,7 @@ import { useId, useMemo, useRef, useState } from "react";
 import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
 import { Ikona, Obraz } from "@/components/Ikona";
 import { kluczBieguna } from "@/lib/ui/obrazy";
-import { kolorWyboru, paraWyboru, type Kolor } from "@/lib/ui/kolory";
+import { kolorWyboru, type Kolor } from "@/lib/ui/kolory";
 import { kolejnoscDoPokazania, naMiejsca, przenies } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
@@ -399,14 +399,15 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
     tekst: string;
     ikona?: string;
   }>;
-  const wlasne =
-    pozycja.stronaA?.ikona && pozycja.stronaB?.ikona
-      ? ([kolorWyboru(pozycja.stronaA.ikona, 0), kolorWyboru(pozycja.stronaB.ikona, 1)] as const)
-      : null;
-  const kolory =
-    wlasne?.[0] && wlasne[1] && wlasne[0].kod !== wlasne[1].kod
-      ? ([wlasne[0], wlasne[1]] as const)
-      : paraWyboru(kluczKoloru);
+  /**
+   * Obie karty pary dostają ten sam kolor.
+   *
+   * Wcześniej lewa była błękitna, a prawa żółta, bo kolor brał się z miejsca
+   * na ekranie. Kolor nie zdradzał kategorii, ale różnił dwie równorzędne
+   * opcje — a tu wybór JEST pomiarem, więc różnica wyglądu przechyla wynik
+   * tym samym mechanizmem, przed którym broni reguła ochrony pomiaru.
+   */
+  const kolorPary = kolorWyboru(kluczKoloru, 0);
 
   function wybierz(kod: string) {
     naZmiane(kod);
@@ -426,7 +427,7 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, kluczKoloru }: Wlasciw
     <div className="grid grid-cols-2 gap-3 sm:gap-4">
       {strony.map((s, i) => {
         const wybrana = wartosc === s.kod;
-        const kolor = kolory ? kolory[i] : null;
+        const kolor = kolorPary;
         const obraz = kluczBieguna(pozycja.stronaA?.ikona, pozycja.stronaB?.ikona, i === 0 ? 0 : 1);
         return (
           <button

@@ -7,7 +7,8 @@ import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/e
 import { DZIS_ODKRYWASZ, KROTKO } from "@/lib/moduly/opisy";
 import { WARSTWY } from "@/lib/raport/sekcje";
 import { Bramy } from "@/components/pulpit/Bramy";
-import { ZnakModulu, Szczyt } from "@/components/pulpit/ZnakModulu";
+import { ZnakModulu } from "@/components/pulpit/ZnakModulu";
+import { Panorama } from "@/components/pulpit/Panorama";
 
 export const dynamic = "force-dynamic";
 
@@ -83,7 +84,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
             {dalej ? (
               <Link
                 href={`/u/${kod}/modul/${dalej}`}
-                className="przejscie przycisk-gradient mt-4 inline-flex min-h-11 items-center gap-3 rounded-xl px-5 text-male font-bold"
+                className="przejscie przycisk-gradient mt-4 inline-flex min-h-11 items-center gap-3 rounded-full px-6 text-male font-bold"
               >
                 {stan(dalej) === "wtrakcie" ? "Dokończ" : "Zacznij"}: {NAZWY_MODULOW[dalej]}
                 <span aria-hidden>→</span>
@@ -174,7 +175,14 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
       {/* CO JUŻ WIDAĆ, CO JESZCZE NIE */}
       <div className="grid gap-3 lg:grid-cols-[1fr_1fr_0.8fr]">
         <section className="szklo p-5">
-          <h2 className="text-naglowek-maly font-bold">Co już o sobie wiesz</h2>
+          <h2 className="flex items-center gap-3 text-naglowek-maly font-bold">
+            <span aria-hidden className="znak-sekcji bg-akcent-tlo text-akcent-jasny">
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m4 12.5 5 5L20 6.5" />
+              </svg>
+            </span>
+            Co już o sobie wiesz
+          </h2>
           {otwarteWarstwy.length > 0 ? (
             <>
               <ul className="mt-3 flex flex-col gap-1.5">
@@ -187,7 +195,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
               </ul>
               <Link
                 href={`/u/${kod}/raport`}
-                className="przejscie przycisk-pigulka mt-4 inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-male font-semibold"
+                className="przejscie przycisk-pigulka mt-4 inline-flex min-h-10 items-center gap-2 rounded-full px-5 text-male font-semibold"
               >
                 {otwarteWarstwy.length > 4 ? `Otwórz raport, ${otwarteWarstwy.length} części` : "Otwórz raport"}{" "}
                 <span aria-hidden>→</span>
@@ -203,14 +211,19 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </section>
 
         <section className="szklo p-5">
-          <h2 className="flex items-center gap-2.5 text-naglowek-maly font-bold">
-            <Klodka />
+          <h2 className="flex items-center gap-3 text-naglowek-maly font-bold">
+            <span aria-hidden className="znak-sekcji" style={{ background: "#f2ecff", color: "#5b21b6" }}>
+              <svg viewBox="0 0 16 16" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.4">
+                <rect x="3.2" y="7" width="9.6" height="6.6" rx="1.4" />
+                <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
+              </svg>
+            </span>
             Co jeszcze odkryjesz
           </h2>
           {zamknieteWarstwy.length > 0 ? (
             <ul className="mt-3 flex flex-col gap-2">
               {zamknieteWarstwy.slice(0, 3).map((w) => (
-                <li key={w.kod} className="flex items-start gap-3 opacity-70">
+                <li key={w.kod} className="flex items-start gap-3">
                   <span aria-hidden className="mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border border-linia-mocna" />
                   <span className="min-w-0">
                     <span className="block text-male leading-snug text-atrament-sciszony">{w.nazwa}</span>
@@ -224,8 +237,10 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           )}
         </section>
 
-        <section className="szklo relative overflow-hidden p-5">
-          <Szczyt klasa="pointer-events-none absolute -bottom-2 -right-4 h-32 w-52 opacity-90" />
+        <section className="szklo relative isolate overflow-hidden p-5">
+          {/* Ilustracja stoi pod treścią i rozpływa się przy krawędziach,
+              więc nigdy nie wchodzi pod zdanie. */}
+          <Panorama klasa="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-28 w-full" moc={0.6} />
           <h2 className="text-naglowek-maly font-bold leading-tight">
             Ta podróż
             <br />
@@ -287,16 +302,14 @@ function KafelekModulu({
   );
 
   if (stan === "zamkniety") {
-    return <div className="szklo h-full p-3.5 opacity-60">{tresc}</div>;
+    return <div className="h-full rounded-karta border border-linia bg-tlo/70 p-3.5">{tresc}</div>;
   }
 
   return (
     <Link
       href={`/u/${kod}/modul/${modul}`}
-      className={`przejscie block h-full rounded-karta border-2 bg-szklo p-3.5 ${
-        stan === "wtrakcie"
-          ? "border-akcent poswiata"
-          : "border-linia hover:border-akcent/45"
+      className={`przejscie szklo block h-full p-3.5 ${
+        stan === "wtrakcie" ? "szklo-akcent" : "hover:border-akcent/45"
       }`}
     >
       {tresc}
@@ -339,13 +352,3 @@ function Ptaszek() {
   );
 }
 
-function Klodka() {
-  return (
-    <span aria-hidden className="text-atrament-slaby">
-      <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.4">
-        <rect x="3.2" y="7" width="9.6" height="6.6" rx="1.4" />
-        <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
-      </svg>
-    </span>
-  );
-}

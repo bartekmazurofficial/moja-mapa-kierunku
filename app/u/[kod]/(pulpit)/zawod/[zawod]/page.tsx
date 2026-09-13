@@ -129,7 +129,7 @@ export default async function Strona({
               <Link
                 key={z.kod}
                 href={`/u/${kod}/porownanie?a=${karta.kod}&b=${z.kod}`}
-                className="przejscie inline-flex min-h-11 items-center gap-2 rounded-xl bg-akcent px-5 text-male font-semibold text-na-akcencie hover:bg-akcent-ciemny"
+                className="przejscie inline-flex min-h-11 items-center gap-2 rounded-full bg-akcent px-6 text-male font-semibold text-na-akcencie hover:bg-akcent-ciemny"
               >
                 Porównaj z: {z.nazwa} <span aria-hidden>→</span>
               </Link>
@@ -191,13 +191,13 @@ export default async function Strona({
       <footer className="flex flex-wrap gap-3">
         <Link
           href={`/u/${kod}/zawody`}
-          className="przejscie inline-flex min-h-12 flex-1 items-center justify-center gap-3 rounded-xl border border-linia-mocna bg-szklo px-6 text-tresc font-semibold hover:border-akcent/50 hover:text-akcent-jasny"
+          className="przejscie przycisk-pigulka inline-flex min-h-12 flex-1 items-center justify-center gap-3 rounded-full px-7 text-tresc font-semibold"
         >
           <span aria-hidden>←</span> Wróć do listy
         </Link>
         <Link
           href={`/u/${kod}/zawody`}
-          className="przejscie poswiata inline-flex min-h-12 flex-1 items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-akcent-ciemny to-akcent px-6 text-tresc font-bold text-na-akcencie hover:brightness-110"
+          className="przejscie przycisk-gradient inline-flex min-h-12 flex-1 items-center justify-center gap-3 rounded-full px-7 text-tresc font-bold"
         >
           Sprawdź podobne zawody <span aria-hidden>→</span>
         </Link>

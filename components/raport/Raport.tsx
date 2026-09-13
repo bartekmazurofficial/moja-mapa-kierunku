@@ -457,7 +457,7 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
                     >
                       <span
                         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-male font-bold text-na-akcencie"
-                        style={{ background: ["#1d5bff", "#8b5cf6", "#c2185b"][i] ?? "#1d5bff" }}
+                        style={{ background: ["#0a3ac9", "#5b21b6", "#c00030"][i] ?? "#0a3ac9" }}
                       >
                         {d.etykieta}
                       </span>
@@ -587,14 +587,14 @@ export function RaportWidok({ widok, kodUczestnika }: { widok: WidokRaportu; kod
           {mozePobracPdf ? (
             <a
               href={`/u/${kodUczestnika}/raport/pdf`}
-              className="przejscie przycisk-pigulka inline-flex min-h-12 items-center rounded-xl px-5 text-male font-semibold"
+              className="przejscie przycisk-pigulka inline-flex min-h-12 items-center rounded-full px-6 text-male font-semibold"
             >
               Pobierz PDF
             </a>
           ) : null}
           <Link
             href={`/u/${kodUczestnika}`}
-            className="przejscie przycisk-gradient inline-flex min-h-12 items-center gap-2 rounded-xl px-6 text-male font-bold"
+            className="przejscie przycisk-gradient inline-flex min-h-12 items-center gap-2 rounded-full px-7 text-male font-bold"
           >
             Kontynuuj swoją drogę <span aria-hidden>→</span>
           </Link>
@@ -650,7 +650,7 @@ function Plyta({
   const z = ZNAKI_PLYT[znak];
   return (
     <section
-      className={`szklo relative flex min-w-0 flex-col p-5 ${szer} ${dostepna ? "" : "opacity-75"}`}
+      className={`szklo relative flex min-w-0 flex-col p-5 ${szer}`}
       style={tinta && dostepna ? { background: `linear-gradient(160deg, ${tinta} 0%, rgba(255,255,255,0.85) 70%)` } : undefined}
     >
       <div className="mb-3 flex items-center gap-3">
@@ -673,7 +673,7 @@ function Plyta({
       {dostepna ? (
         children
       ) : (
-        <p className="flex items-start gap-2 text-male leading-relaxed text-atrament-slaby">
+        <p className="flex items-start gap-2 text-male leading-relaxed text-atrament-sciszony">
           <svg aria-hidden viewBox="0 0 16 16" className="mt-1 h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.4">
             <rect x="3.2" y="7" width="9.6" height="6.6" rx="1.4" />
             <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />

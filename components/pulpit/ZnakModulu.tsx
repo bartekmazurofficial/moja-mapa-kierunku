@@ -44,29 +44,3 @@ export function ZnakModulu({ modul, rozmiar = 26 }: { modul: string; rozmiar?: n
     </svg>
   );
 }
-
-/**
- * Szczyt z chorągiewką. Ozdoba do kafelka o sensie całej podróży: rysowana
- * wektorem, więc nic się nie pobiera i skaluje się do każdej szerokości.
- */
-export function Szczyt({ klasa = "" }: { klasa?: string }) {
-  return (
-    <svg aria-hidden viewBox="0 0 240 140" className={klasa} fill="none">
-      <defs>
-        <linearGradient id="szczyt-zbocze" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="#1d5bff" stopOpacity="0.12" />
-        </linearGradient>
-        <linearGradient id="szczyt-drugi" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#00c2d8" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#00c2d8" stopOpacity="0.05" />
-        </linearGradient>
-      </defs>
-      <path d="M8 128 78 44l40 48 26-30 62 66H8Z" fill="url(#szczyt-drugi)" />
-      <path d="M46 128 118 26l74 102H46Z" fill="url(#szczyt-zbocze)" />
-      <path d="M118 26 96 68h44L118 26Z" fill="#ffffff" fillOpacity="0.75" />
-      <path d="M118 26V8" stroke="#ff2d55" strokeWidth="3" strokeLinecap="round" />
-      <path d="M118 9h20l-6 6 6 6h-20V9Z" fill="#ff2d55" />
-    </svg>
-  );
-}

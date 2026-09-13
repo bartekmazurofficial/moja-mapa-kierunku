@@ -60,4 +60,34 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
   { nazwa: "biały na gradiencie, niebieski", tekst: "#ffffff", tlo: "#1d5bff" },
   { nazwa: "biały na gradiencie, fiolet", tekst: "#ffffff", tlo: "#6d3df5" },
   { nazwa: "biały na gradiencie, róż", tekst: "#ffffff", tlo: "#c2185b" },
+
+  // Trzeci akcent: pomaranycz. Znak zapytania, adnotacje, koniec gradientu
+  // naglowka. Jasne pomarancze (#ff7a1a, #ff9500, #f97316, #ea580c) nie
+  // przechodza ani jako tekst, ani pod bialym napisem, wiec ich tu nie ma.
+  { nazwa: "pomarańcz na tle", tekst: "#b8460f", tlo: "#f4f6fb" },
+  { nazwa: "pomarańcz na panelu", tekst: "#b8460f", tlo: "#ffffff" },
+  { nazwa: "pomarańcz na tle pomarańczu", tekst: "#b8460f", tlo: "#fff1e8" },
+  { nazwa: "biały na pomarańczu", tekst: "#ffffff", tlo: "#b8460f" },
+
+  // Naglowek gradientowy: kazdy przystanek JEST kolorem tekstu, bo gradient
+  // idzie przez background-clip. Tu nie wystarczy sprawdzic bieli na tle.
+  { nazwa: "tytuł gradientowy, błękit", tekst: "#1d5bff", tlo: "#f4f6fb" },
+  { nazwa: "tytuł gradientowy, fiolet", tekst: "#6d3df5", tlo: "#f4f6fb" },
+  { nazwa: "tytuł gradientowy, pomarańcz", tekst: "#b8460f", tlo: "#f4f6fb" },
+  { nazwa: "tytuł gradientowy na panelu, błękit", tekst: "#1d5bff", tlo: "#ffffff" },
+  { nazwa: "tytuł gradientowy na panelu, fiolet", tekst: "#6d3df5", tlo: "#ffffff" },
+  { nazwa: "tytuł gradientowy na panelu, pomarańcz", tekst: "#b8460f", tlo: "#ffffff" },
+
+  // Przystanki tla strony: kazdy tekst musi przejsc takze na nich, bo karta
+  // jest polprzezroczysta i tlo przez nia przechodzi.
+  { nazwa: "atrament słaby na górze tła", tekst: "#5b6480", tlo: "#f2f7ff" },
+  { nazwa: "atrament słaby na dole tła", tekst: "#5b6480", tlo: "#faf3f8" },
+  { nazwa: "uwaga na dole tła", tekst: "#a15c00", tlo: "#faf3f8" },
+
+  // Adnotacja odreczna: fiolet, nie neon. Neonowy #8b5cf6 ma na tle 3,92:1.
+  { nazwa: "odręczny fiolet na tle", tekst: "#5b21b6", tlo: "#f4f6fb" },
+  { nazwa: "odręczny fiolet na tle akcentu", tekst: "#5b21b6", tlo: "#e9f0ff" },
+
+  // Ramka z podpowiedzia: tinta fioletu zamiast szklistej bieli.
+  { nazwa: "podpowiedź na tincie fioletu", tekst: "#3d4460", tlo: "#f2ecff" },
 ];

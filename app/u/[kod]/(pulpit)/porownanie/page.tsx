@@ -140,13 +140,13 @@ export default async function Strona({
       <footer className="szklo flex flex-wrap gap-3 p-6">
         <Link
           href={`/u/${kod}/zawod/${lewa.kod}`}
-          className="przejscie inline-flex min-h-12 items-center rounded-xl border border-linia-mocna bg-szklo px-6 text-male font-semibold hover:border-akcent/50 hover:text-akcent-jasny"
+          className="przejscie przycisk-pigulka inline-flex min-h-12 items-center rounded-full px-7 text-male font-semibold"
         >
           Cała karta: {lewa.tytul}
         </Link>
         <Link
           href={`/u/${kod}/zawod/${prawa.kod}`}
-          className="przejscie inline-flex min-h-12 items-center rounded-xl border border-linia-mocna bg-szklo px-6 text-male font-semibold hover:border-akcent/50 hover:text-akcent-jasny"
+          className="przejscie przycisk-pigulka inline-flex min-h-12 items-center rounded-full px-7 text-male font-semibold"
         >
           Cała karta: {prawa.tytul}
         </Link>

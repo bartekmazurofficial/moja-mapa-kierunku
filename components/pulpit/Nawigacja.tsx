@@ -93,15 +93,15 @@ function Ikona({
   return (
     <span
       aria-hidden
-      className={`przejscie mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${
+      className={`przejscie znak-sekcji mt-0.5 ${
         aktywna
-          ? "border-akcent/50 bg-akcent-tlo text-akcent-jasny"
+          ? "bg-akcent-tlo text-akcent-jasny"
           : przygaszona
-            ? "border-linia text-atrament-slaby"
-            : "border-linia bg-szklo text-atrament-sciszony"
+            ? "bg-tlo text-atrament-slaby"
+            : "bg-panel text-atrament-sciszony"
       }`}
     >
-      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d={SCIEZKI[rodzaj]} />
       </svg>
     </span>

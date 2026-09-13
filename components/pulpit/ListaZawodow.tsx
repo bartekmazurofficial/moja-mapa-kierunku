@@ -207,7 +207,7 @@ export function ListaZawodow({
 
         <a
           href="#karty-zawodow"
-          className="przejscie przycisk-gradient mt-5 flex min-h-11 items-center justify-center rounded-xl px-4 text-male font-bold lg:hidden"
+          className="przejscie przycisk-gradient mt-5 flex min-h-11 items-center justify-center rounded-full px-5 text-male font-bold lg:hidden"
         >
           Pokaż {widoczne.length} {liczebnik(widoczne.length)}
         </a>
@@ -297,7 +297,7 @@ export function ListaZawodow({
             {doPorownania.length === 2 ? (
               <Link
                 href={`/u/${kod}/porownanie?a=${doPorownania[0]}&b=${doPorownania[1]}`}
-                className="przejscie przycisk-gradient inline-flex min-h-11 items-center rounded-xl px-5 text-male font-bold"
+                className="przejscie przycisk-gradient inline-flex min-h-11 items-center rounded-full px-6 text-male font-bold"
               >
                 Porównaj obok siebie <span aria-hidden className="ml-2">→</span>
               </Link>
@@ -668,7 +668,7 @@ function Podglad({
 
         <Link
           href={`/u/${kod}/zawod/${zawod.kod}`}
-          className="przejscie przycisk-gradient mt-5 flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 text-male font-bold"
+          className="przejscie przycisk-gradient mt-5 flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-male font-bold"
         >
           Zobacz pełny opis zawodu <span aria-hidden>→</span>
         </Link>

@@ -58,7 +58,7 @@ export default async function Strona({
         </p>
         <Link
           href={plansza.gotowy ? `/u/${kod}/modul/${modul}/od-nowa` : `/u/${kod}/modul/${modul}`}
-          className="przejscie mt-6 inline-flex min-h-12 items-center gap-2 rounded-xl border border-linia-mocna bg-szklo px-6 text-male font-semibold hover:border-akcent/50 hover:text-akcent-jasny"
+          className="przejscie przycisk-pigulka mt-6 inline-flex min-h-12 items-center gap-2 rounded-full px-7 text-male font-semibold"
         >
           {plansza.gotowy ? "Wypełnij tę część od nowa" : "Wypełnij tę część"}
           <span aria-hidden>→</span>

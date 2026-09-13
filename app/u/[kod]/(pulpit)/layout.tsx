@@ -107,7 +107,7 @@ export default async function Uklad({
           </div>
 
           <div className="mt-6 rounded-xl border border-akcent/20 bg-akcent-tlo/50 p-4">
-            <p className="odreczny">
+            <p aria-hidden className="odreczny">
               Małe wybory.
               <br />
               Wielkie możliwości.
