@@ -29,9 +29,28 @@ function jakoPunktStartu(a0: Zapis | undefined): PunktStartu | null {
   if (!o || !o["etap"]) return null;
   const lista = (k: string): string[] => (Array.isArray(o[k]) ? (o[k] as string[]) : []);
   const ograniczenia = lista("ograniczenia");
+  const tekst = (k: string): string | null => {
+    const v = o[k];
+    return typeof v === "string" && v.trim() ? v.trim() : null;
+  };
+  /**
+   * Rozszerzenia dla rekrutacji: bierzemy najmocniejszy dostepny sygnal.
+   *
+   * Matura zdana bije planowana, planowana bije rozszerzenia szkolne, a te
+   * bija plan sprzed wyboru szkoly. Warstwa 3 filtruje kierunki po tym jednym
+   * polu, wiec to tutaj decyduje sie, czy filtr dziala na fakcie, czy na
+   * domysle (lib/engine/layer3-fields.ts, etap K2).
+   */
+  const rozszerzenia =
+    [
+      lista("matura_zdana").filter((x) => x !== "brak"),
+      lista("matura_plan").filter((x) => x !== "nie_wiem"),
+      lista("rozszerzenia_mam"),
+      lista("rozszerzenia").filter((x) => x !== "nie_wiem"),
+    ].find((l) => l.length > 0) ?? [];
   return {
     etap: o["etap"] as PunktStartu["etap"],
-    rozszerzenia: lista("rozszerzenia").filter((x) => x !== "nie_wiem"),
+    rozszerzenia,
     przedmiotyMocne: lista("przedmioty_mocne"),
     przedmiotyTrudne: lista("przedmioty_trudne"),
     matematyka: (o["matematyka"] as PunktStartu["matematyka"]) ?? null,
@@ -44,6 +63,14 @@ function jakoPunktStartu(a0: Zapis | undefined): PunktStartu | null {
     // Odmowa odpowiedzi nie ma zadnych konsekwencji dla wyniku.
     ograniczenia: ograniczenia.filter((x) => x !== "brak" && x !== "nie_chce" && x !== "inne"),
     ograniczeniaPominiete: ograniczenia.includes("nie_chce"),
+    kierunek: tekst("kierunek"),
+    kierunekOcena: (o["kierunek_ocena"] as PunktStartu["kierunekOcena"]) ?? null,
+    wyksztalcenie: (o["wyksztalcenie"] as PunktStartu["wyksztalcenie"]) ?? null,
+    wyksztalcenieKierunek: tekst("wyksztalcenie_kierunek"),
+    branza: lista("branza").filter((x) => x !== "nie_pracowalem"),
+    stazPracy: (o["staz_pracy"] as PunktStartu["stazPracy"]) ?? null,
+    powodZmiany: lista("powod_zmiany"),
+    blokada: lista("blokada"),
   };
 }
 

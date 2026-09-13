@@ -35,6 +35,14 @@ const A0_BAZOWY: PunktStartu = {
   zasoby: "raty",
   ograniczenia: [],
   ograniczeniaPominiete: false,
+  kierunek: null,
+  kierunekOcena: null,
+  wyksztalcenie: null,
+  wyksztalcenieKierunek: null,
+  branza: [],
+  stazPracy: null,
+  powodZmiany: [],
+  blokada: [],
 };
 
 /** Dokladamy dane A3, ktorych profile z silnik.py nie zawieraly. */

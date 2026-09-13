@@ -50,8 +50,44 @@ export const PRZEDMIOTY_A0: OpcjaA0[] = [
   { kod: "warsztat", etykieta: "praca w warsztacie lub pracowni" },
 ];
 
-const ETAPY_Z_ROZSZERZENIAMI = ["liceum_1_2", "liceum_maturalna", "podstawowka"];
+/**
+ * Cztery scieczki przez modul.
+ *
+ * Po wyborze etapu uczestnik widzi wylacznie pytania, ktore go dotycza.
+ * Dotad przedmioty szkolne nie mialy zadnego warunku, wiec dwudziestoczterolatek
+ * po studiach dostawal pytanie "z czym radzisz sobie w szkole najlepiej" i liste
+ * z wychowaniem fizycznym. Odpowiedz byla bezuzyteczna, a samo pytanie mowilo mu
+ * przy pierwszym module, ze ten program jest nie dla niego.
+ */
+/** Sciezka 1: przed wyborem szkoly albo rozszerzen. Rozszerzenia sa planem. */
+const ETAPY_PRZED_ROZSZERZENIAMI = ["podstawowka", "liceum_1_2"];
+/** Sciezka 2: przed matura. Rozszerzenia sa juz faktem. */
+const ETAPY_PRZED_MATURA = ["liceum_maturalna"];
+/** Sciezki 1 i 2 razem: tylko tu przedmioty szkolne cokolwiek znacza. */
 const ETAPY_SZKOLNE = ["podstawowka", "liceum_1_2", "liceum_maturalna", "branzowa"];
+/** Sciezka 3: matura za soba, kierunek wybrany albo wybierany. */
+const ETAPY_PO_MATURZE = ["po_maturze", "studiuje"];
+/** Sciezka 4: po studiach, pracujacy, przerwa. Zero pytan o szkole. */
+const ETAPY_ZMIANY = ["po_studiach", "pracuje_zmiana", "nie_uczy_nie_pracuje"];
+
+/** Obszary zawodowe do pytania o dotychczasowa prace. Szerokie, nie branze PKD. */
+export const OBSZARY_PRACY_A0: OpcjaA0[] = [
+  { kod: "handel", etykieta: "Handel i sprzedaż" },
+  { kod: "biuro", etykieta: "Biuro i administracja" },
+  { kod: "produkcja", etykieta: "Produkcja i magazyn" },
+  { kod: "budowlanka", etykieta: "Budownictwo i instalacje" },
+  { kod: "transport", etykieta: "Transport i logistyka" },
+  { kod: "gastronomia", etykieta: "Gastronomia i hotelarstwo" },
+  { kod: "opieka", etykieta: "Opieka, zdrowie, praca z ludźmi" },
+  { kod: "edukacja", etykieta: "Edukacja i szkolenia" },
+  { kod: "it", etykieta: "Informatyka i technologie" },
+  { kod: "kreatywne", etykieta: "Media, projektowanie, twórczość" },
+  { kod: "uslugi", etykieta: "Usługi osobiste i rzemiosło" },
+  { kod: "sluzby", etykieta: "Służby mundurowe i ochrona" },
+  { kod: "rolnictwo", etykieta: "Rolnictwo, przyroda, zwierzęta" },
+  { kod: "inne", etykieta: "Coś innego" },
+  { kod: "nie_pracowalem", etykieta: "Nie pracowałem zawodowo" },
+];
 
 export const PYTANIA_A0: PytanieA0[] = [
   {
@@ -77,11 +113,48 @@ export const PYTANIA_A0: PytanieA0[] = [
     blok: 1,
     nazwaBloku: "Gdzie jesteś",
     typ: "wielokrotny",
-    tresc: "Jakie masz albo planujesz rozszerzenia?",
-    tylkoEtapy: ETAPY_Z_ROZSZERZENIAMI,
+    tresc: "Jakie rozszerzenia planujesz?",
+    tylkoEtapy: ETAPY_PRZED_ROZSZERZENIAMI,
     opcje: [
       ...PRZEDMIOTY_A0.filter((p) => p.kod !== "warsztat"),
       { kod: "nie_wiem", etykieta: "Jeszcze nie wiem, dlatego tu jestem" },
+    ],
+  },
+  {
+    id: "rozszerzenia_mam",
+    blok: 1,
+    nazwaBloku: "Gdzie jesteś",
+    typ: "wielokrotny",
+    tresc: "Jakie masz rozszerzenia?",
+    podpis: "To już jest fakt, nie plan. Od tego zależy, które kierunki są dla Ciebie otwarte.",
+    tylkoEtapy: ETAPY_PRZED_MATURA,
+    opcje: PRZEDMIOTY_A0.filter((p) => p.kod !== "warsztat"),
+  },
+  {
+    id: "matura_plan",
+    blok: 1,
+    nazwaBloku: "Gdzie jesteś",
+    typ: "wielokrotny",
+    tresc: "Z czego planujesz zdawać maturę rozszerzoną?",
+    podpis:
+      "Rozszerzenie w szkole i matura rozszerzona to nie zawsze to samo. Przy rekrutacji liczy się to drugie.",
+    tylkoEtapy: ETAPY_PRZED_MATURA,
+    opcje: [
+      ...PRZEDMIOTY_A0.filter((p) => p.kod !== "warsztat" && p.kod !== "zawodowe"),
+      { kod: "nie_wiem", etykieta: "Jeszcze nie zdecydowałem" },
+    ],
+  },
+  {
+    id: "matura_zdana",
+    blok: 1,
+    nazwaBloku: "Gdzie jesteś",
+    typ: "wielokrotny",
+    tresc: "Z czego zdawałeś maturę rozszerzoną?",
+    podpis: "To decyduje o tym, które kierunki są dla Ciebie realnie dostępne.",
+    tylkoEtapy: ETAPY_PO_MATURZE,
+    opcje: [
+      ...PRZEDMIOTY_A0.filter((p) => p.kod !== "warsztat" && p.kod !== "zawodowe"),
+      { kod: "brak", etykieta: "Nie zdawałem żadnego rozszerzenia" },
     ],
   },
   {
@@ -90,6 +163,7 @@ export const PYTANIA_A0: PytanieA0[] = [
     nazwaBloku: "Co Ci idzie",
     typ: "dokladnie_trzy",
     tresc: "Z czym radzisz sobie w szkole najlepiej? Wskaż trzy.",
+    tylkoEtapy: ETAPY_SZKOLNE,
     opcje: PRZEDMIOTY_A0,
   },
   {
@@ -98,6 +172,7 @@ export const PYTANIA_A0: PytanieA0[] = [
     nazwaBloku: "Co Ci idzie",
     typ: "dokladnie_trzy",
     tresc: "Co sprawia Ci największą trudność? Wskaż trzy.",
+    tylkoEtapy: ETAPY_SZKOLNE,
     opcje: PRZEDMIOTY_A0,
   },
   {
@@ -114,6 +189,120 @@ export const PYTANIA_A0: PytanieA0[] = [
       { kod: "najwiekszy_problem", etykieta: "To mój największy problem" },
     ],
   },
+  // --- SCIEZKA 3: po maturze albo w trakcie studiow ---
+  {
+    id: "kierunek",
+    blok: 2,
+    nazwaBloku: "Twoja droga",
+    typ: "tekst",
+    tresc: "Co studiujesz albo na co się wybierałeś?",
+    podpis: "Nazwa kierunku wystarczy. Jeśli jeszcze nie wiesz, zostaw puste.",
+    tylkoEtapy: ETAPY_PO_MATURZE,
+    opcjonalne: true,
+  },
+  {
+    id: "kierunek_ocena",
+    blok: 2,
+    nazwaBloku: "Twoja droga",
+    typ: "pojedynczy",
+    tresc: "Na ile ten kierunek okazał się tym, czego oczekiwałeś?",
+    tylkoEtapy: ETAPY_PO_MATURZE,
+    opcje: [
+      { kod: "dokladnie", etykieta: "To jest dokładnie to, czego chciałem" },
+      { kod: "w_porzadku", etykieta: "Jest w porządku, ale nie porywa" },
+      { kod: "zupelnie_nie", etykieta: "Zupełnie nie to, czego się spodziewałem" },
+      { kod: "nie_wiem", etykieta: "Jeszcze nie wiem" },
+    ],
+  },
+
+  // --- SCIEZKA 4: po studiach, pracujacy, przerwa ---
+  {
+    id: "wyksztalcenie",
+    blok: 2,
+    nazwaBloku: "Twoja droga",
+    typ: "pojedynczy",
+    tresc: "Co skończyłeś?",
+    tylkoEtapy: ETAPY_ZMIANY,
+    opcje: [
+      { kod: "podstawowe", etykieta: "Szkołę podstawową" },
+      { kod: "branzowe", etykieta: "Szkołę branżową albo zawodową" },
+      { kod: "srednie", etykieta: "Liceum albo technikum" },
+      { kod: "technikum_matura", etykieta: "Technikum z maturą" },
+      { kod: "licencjat", etykieta: "Studia licencjackie albo inżynierskie" },
+      { kod: "magister", etykieta: "Studia magisterskie" },
+      { kod: "podyplomowe", etykieta: "Studia podyplomowe albo doktorat" },
+    ],
+  },
+  {
+    id: "wyksztalcenie_kierunek",
+    blok: 2,
+    nazwaBloku: "Twoja droga",
+    typ: "tekst",
+    tresc: "Jaki kierunek albo zawód?",
+    podpis: "Nazwa wystarczy. To pole jest nieobowiązkowe.",
+    tylkoEtapy: ETAPY_ZMIANY,
+    opcjonalne: true,
+  },
+  {
+    id: "branza",
+    blok: 2,
+    nazwaBloku: "Twoja droga",
+    typ: "wielokrotny",
+    tresc: "Czym się zajmujesz albo zajmowałeś zawodowo?",
+    tylkoEtapy: ETAPY_ZMIANY,
+    opcje: OBSZARY_PRACY_A0,
+  },
+  {
+    id: "staz_pracy",
+    blok: 2,
+    nazwaBloku: "Twoja droga",
+    typ: "pojedynczy",
+    tresc: "Jak długo?",
+    tylkoEtapy: ETAPY_ZMIANY,
+    opcje: [
+      { kod: "do_roku", etykieta: "Do roku" },
+      { kod: "rok_trzy", etykieta: "Od roku do trzech lat" },
+      { kod: "powyzej_trzech", etykieta: "Powyżej trzech lat" },
+      { kod: "nie_pracowalem", etykieta: "Nie pracowałem zawodowo" },
+    ],
+  },
+  {
+    id: "powod_zmiany",
+    blok: 2,
+    nazwaBloku: "Twoja droga",
+    typ: "wielokrotny",
+    tresc: "Dlaczego szukasz zmiany?",
+    podpis: "Możesz zaznaczyć kilka. To zmienia zakończenie Twojego raportu.",
+    tylkoEtapy: ETAPY_ZMIANY,
+    opcje: [
+      { kod: "brak_pracy_w_zawodzie", etykieta: "Nie znalazłem pracy w swoim zawodzie" },
+      { kod: "nie_to_czego_chcialem", etykieta: "Znalazłem, ale to nie jest to, czego chciałem" },
+      { kod: "wypalenie", etykieta: "Wypaliłem się" },
+      { kod: "zdrowie", etykieta: "Zdrowie nie pozwala mi robić tego dalej" },
+      { kod: "zarobki", etykieta: "Zarabiam za mało" },
+      { kod: "na_swoim", etykieta: "Chcę pracować na swoim" },
+      { kod: "sytuacja_zyciowa", etykieta: "Zmieniła się moja sytuacja życiowa" },
+      { kod: "zawsze_co_innego", etykieta: "Zawsze chciałem robić coś innego" },
+    ],
+  },
+  {
+    id: "blokada",
+    blok: 2,
+    nazwaBloku: "Twoja droga",
+    typ: "wielokrotny",
+    tresc: "Co dziś najbardziej Cię blokuje?",
+    tylkoEtapy: ETAPY_ZMIANY,
+    opcje: [
+      { kod: "nie_wiem_co", etykieta: "Nie wiem, co chciałbym robić" },
+      { kod: "nie_mam_jak", etykieta: "Wiem, ale nie mam jak zacząć" },
+      { kod: "uprawnienia", etykieta: "Brakuje mi uprawnień albo wykształcenia" },
+      { kod: "koszt", etykieta: "Nie stać mnie na przekwalifikowanie" },
+      { kod: "przerwa_w_zarobkach", etykieta: "Nie mogę sobie pozwolić na przerwę w zarobkach" },
+      { kod: "rodzina", etykieta: "Zobowiązania rodzinne" },
+      { kod: "od_czego_zaczac", etykieta: "Nic konkretnego, po prostu nie wiem, od czego zacząć" },
+    ],
+  },
+
   {
     id: "doswiadczenie",
     blok: 3,
@@ -128,6 +317,7 @@ export const PYTANIA_A0: PytanieA0[] = [
       { kod: "projekty", etykieta: "Własne projekty, które ktoś zobaczył" },
       { kod: "hobby", etykieta: "Hobby uprawiane od kilku lat" },
       { kod: "prowadzenie", etykieta: "Prowadzenie czegoś w szkole albo w grupie" },
+      { kod: "praktyki", etykieta: "Praktyki, staż albo praca studencka" },
       { kod: "kursy", etykieta: "Kursy albo szkolenia poza szkołą" },
       { kod: "konkursy", etykieta: "Konkursy, olimpiady, zawody" },
       { kod: "nic", etykieta: "Nic z tego" },

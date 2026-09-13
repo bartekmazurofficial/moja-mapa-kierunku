@@ -31,6 +31,37 @@ export interface PunktStartu {
   /** Moze byc pominiete bez zadnych konsekwencji dla wyniku. */
   ograniczenia: string[];
   ograniczeniaPominiete: boolean;
+
+  // --- Sciezka 3: po maturze albo w trakcie studiow ---
+  /** Kierunek studiow, wlasnymi slowami. Null, gdy etap go nie dotyczy. */
+  kierunek: string | null;
+  /** Czy kierunek okazal sie tym, czego uczestnik oczekiwal. */
+  kierunekOcena: "dokladnie" | "w_porzadku" | "zupelnie_nie" | "nie_wiem" | null;
+
+  // --- Sciezka 4: po studiach, pracujacy, przerwa ---
+  /** Ukonczony poziom wyksztalcenia. Otwiera drogi, nigdy zadnej nie zamyka. */
+  wyksztalcenie:
+    | "podstawowe"
+    | "branzowe"
+    | "srednie"
+    | "technikum_matura"
+    | "licencjat"
+    | "magister"
+    | "podyplomowe"
+    | null;
+  /** Kierunek albo zawod ukonczonej szkoly, wlasnymi slowami. */
+  wyksztalcenieKierunek: string | null;
+  /** Obszary, w ktorych uczestnik pracowal. */
+  branza: string[];
+  /** Dlugosc stazu zawodowego. Steruje sila wzmocnienia za doswiadczenie. */
+  stazPracy: "do_roku" | "rok_trzy" | "powyzej_trzech" | "nie_pracowalem" | null;
+  /**
+   * Dlaczego szuka zmiany. **Steruje trescia rekomendacji, nie doborem
+   * zawodow**: zaden powod nie usuwa ani nie dodaje zawodu do puli.
+   */
+  powodZmiany: string[];
+  /** Co go dzis blokuje. Wchodzi do pierwszego kroku w raporcie. */
+  blokada: string[];
 }
 
 export type EtapEdukacji =
@@ -295,7 +326,13 @@ export interface WynikSilnika {
   warstwa2: WynikWarstwy2;
   warstwa3: WynikWarstwy3;
   /** Sterowanie trescia rekomendacji wedlug etapu edukacji. */
-  zakonczenie: { etap: EtapEdukacji | null; rekomendacja: string; pierwszyKrok: string } | null;
+  zakonczenie: {
+    etap: EtapEdukacji | null;
+    rekomendacja: string;
+    pierwszyKrok: string;
+    /** Zdania dopisane przez powod zmiany. Puste dla scieczek szkolnych. */
+    zPowodu: string[];
+  } | null;
   /** Silnik nie konczy pracy na rankingu, produkuje material do rozmowy. */
   pytaniaNaSesje: string[];
 }

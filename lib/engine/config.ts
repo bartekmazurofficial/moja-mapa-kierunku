@@ -212,6 +212,14 @@ export const WARSTWA0 = {
   KARA_MOBILNOSC: 0.15,
   /** Wzmocnienie, wylacznie w gore: doswiadczenie pokrywajace sie z zawodem. */
   WZMOCNIENIE_DOSWIADCZENIE: 0.1,
+  /**
+   * To samo wzmocnienie przy stazu zawodowym powyzej trzech lat.
+   *
+   * Trzy lata pracy w obszarze to sygnal wielokrotnie mocniejszy niz hobby
+   * uprawiane od kilku lat, wiec dostaje podwojna stawke. Nadal wylacznie
+   * w gore: krotszy staz nie odejmuje niczego.
+   */
+  WZMOCNIENIE_STAZ_ZAWODOWY: 0.2,
   /** Wzmocnienie, wylacznie w gore: konkursy i olimpiady w dziedzinie zawodu. */
   WZMOCNIENIE_KONKURSY: 0.1,
   /**

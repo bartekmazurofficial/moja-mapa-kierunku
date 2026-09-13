@@ -297,6 +297,19 @@ export function TrzyDrogi({ dane }: { dane: NonNullable<Raport["trzy_drogi"]> })
       <div className="szklo p-5">
         <Naglowek>Pierwszy krok, przy każdej z tych dróg</Naglowek>
         <p className="text-male">{dane.pierwszyKrok}</p>
+        {/* Powód zmiany z A0 nie rusza puli zawodów, tylko mówi, na co w niej
+            patrzeć. Bez tego wypalony trzydziestolatek dostaje zakończenie
+            napisane dla licealisty. */}
+        {dane.zPowodu.length > 0 ? (
+          <ul className="mt-4 flex flex-col gap-3 border-t border-linia pt-4">
+            {dane.zPowodu.map((z, i) => (
+              <li key={i} className="flex gap-3 text-male leading-relaxed text-atrament-sciszony">
+                <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-akcent" />
+                <span>{z}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
       {dane.kolejnoscOdProwadzacego ? (
         <p className="text-tresc leading-relaxed text-atrament-sciszony">

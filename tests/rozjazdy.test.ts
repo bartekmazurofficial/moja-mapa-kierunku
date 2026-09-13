@@ -100,6 +100,14 @@ describe("rozjazdy", () => {
         zasoby,
         ograniczenia: [],
         ograniczeniaPominiete: false,
+        kierunek: null,
+        kierunekOcena: null,
+        wyksztalcenie: null,
+        wyksztalcenieKierunek: null,
+        branza: [],
+        stazPracy: null,
+        powodZmiany: [],
+        blokada: [],
       },
     });
 

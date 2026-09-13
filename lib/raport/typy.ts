@@ -192,6 +192,11 @@ export interface Raport {
     drogi: DrogaWRaporcie[];
     flagi: string[];
     pierwszyKrok: string;
+    /**
+     * Zdania dopisane przez powod zmiany z A0. Pula zawodow zostaje ta sama,
+     * zmienia sie to, na co uczestnik ma w niej patrzec.
+     */
+    zPowodu: string[];
     /** Prowadzacy zmienil kolejnosc drog po rozmowie. */
     kolejnoscOdProwadzacego: boolean;
   };

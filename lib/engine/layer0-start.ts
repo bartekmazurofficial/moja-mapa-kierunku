@@ -61,7 +61,14 @@ export function korektaMiekkaA0(zawod: Zawod, a0: PunktStartu | null): KorektaA0
     mnoznik *= 1 + WARSTWA0.WZMOCNIENIE_WARSZTAT;
   }
   const maDoswiadczenie = zawod.dosw.some((d) => d !== "konkursy" && a0.doswiadczenie.includes(d));
-  if (maDoswiadczenie) mnoznik *= 1 + WARSTWA0.WZMOCNIENIE_DOSWIADCZENIE;
+  if (maDoswiadczenie) {
+    // Trzy lata pracy w obszarze to sygnal mocniejszy niz hobby, wiec dostaje
+    // podwojne wzmocnienie. Nadal **wylacznie w gore**: krotszy staz nie
+    // odejmuje niczego, dostaje tylko podstawowa stawke.
+    const dlugiStaz = a0.stazPracy === "powyzej_trzech";
+    mnoznik *=
+      1 + (dlugiStaz ? WARSTWA0.WZMOCNIENIE_STAZ_ZAWODOWY : WARSTWA0.WZMOCNIENIE_DOSWIADCZENIE);
+  }
   if (zawod.dosw.includes("konkursy") && a0.doswiadczenie.includes("konkursy")) {
     mnoznik *= 1 + WARSTWA0.WZMOCNIENIE_KONKURSY;
   }
@@ -121,12 +128,99 @@ const ZAKONCZENIA: Record<EtapEdukacji, { rekomendacja: string; pierwszyKrok: st
   },
 };
 
+/**
+ * Zakonczenie sterowane powodem zmiany.
+ *
+ * Bez tego system traktuje wypalonego trzydziestolatka tak samo jak licealiste.
+ * **Powod zmiany steruje trescia rekomendacji, nie doborem zawodow**: zdanie
+ * dopisuje sie do zakonczenia, a pula zawodow zostaje dokladnie ta sama.
+ * Kolejnosc listy jest kolejnoscia waznosci, bo pokazujemy najwyzej dwa: przy
+ * pieciu zaznaczonych powodach zakonczenie zamienia sie w liste zyczen.
+ */
+const DOPISKI_POWODU: Array<{ kod: string; zdanie: string }> = [
+  {
+    kod: "zdrowie",
+    zdanie:
+      "Skoro zdrowie nie pozwala Ci robić tego dalej, przy każdej drodze patrz najpierw na obciążenie fizyczne w karcie zawodu. To jedyna rzecz, której nie da się obejść dobrym pracodawcą.",
+  },
+  {
+    kod: "wypalenie",
+    zdanie:
+      "Skoro powodem jest wypalenie, zwróć uwagę na wymiar obciążenia psychicznego w kartach zawodów. Ten sam zawód w innym miejscu bywa zupełnie inną pracą, ale niektóre mają wysokie obciążenie wpisane w samą treść.",
+  },
+  {
+    kod: "zarobki",
+    zdanie:
+      "Skoro chodzi o zarobki, czytaj drogi dojścia pod kątem czasu do pierwszej przyzwoitej stawki, nie tylko docelowej. Droga najlepiej dopasowana i droga najszybciej płacąca rzadko są tą samą drogą.",
+  },
+  {
+    kod: "na_swoim",
+    zdanie:
+      "Skoro chcesz pracować na swoim, sprawdzaj w kartach, czy w danym zawodzie własna działalność jest realna, a nie tylko możliwa. Karta mówi wprost, ile kosztuje wejście i po ilu latach zwykle się na to przechodzi.",
+  },
+  {
+    kod: "brak_pracy_w_zawodzie",
+    zdanie:
+      "Skoro nie znalazłeś pracy w swoim zawodzie, szukaj w kartach miejsc, w których Twoje wykształcenie ma wartość poza kierunkiem. Dyplom rzadko działa tylko w jednym zawodzie i prawie nigdy nie przestaje działać.",
+  },
+  {
+    kod: "nie_to_czego_chcialem",
+    zdanie:
+      "Skoro praca w zawodzie okazała się czymś innym, niż chciałeś, warto nazwać na rozmowie, co dokładnie się nie zgadzało. To zwykle jeden wymiar, a nie cały zawód.",
+  },
+  {
+    kod: "sytuacja_zyciowa",
+    zdanie:
+      "Skoro zmieniła się Twoja sytuacja życiowa, patrz najpierw na to, co w karcie stoi o czasie i miejscu pracy. Reszta da się dopasować później.",
+  },
+  {
+    kod: "zawsze_co_innego",
+    zdanie:
+      "Skoro zawsze chciałeś robić coś innego, zacznij od sprawdzenia tego jednego zawodu w karcie, zanim zaczniesz porównywać. Dwadzieścia minut czytania oszczędza czasem dwa lata.",
+  },
+];
+
+/** Pierwszy krok dopasowany do tego, co uczestnik nazwal swoja blokada. */
+const PIERWSZE_KROKI_BLOKADY: Record<string, string> = {
+  nie_wiem_co:
+    "Wybierz z listy trzy zawody, które brzmią najciekawiej, i przeczytaj ich karty w całości. Na rozmowie zaczniemy od tego, co Cię w nich odrzuciło.",
+  nie_mam_jak:
+    "Wybierz jeden zawód i wypisz z jego karty pierwszy krok drogi dojścia. Przynieś to na rozmowę indywidualną.",
+  uprawnienia:
+    "Znajdź w kartach jedno uprawnienie albo kurs, który otwiera najwięcej Twoich dróg naraz, i sprawdź, gdzie w Twojej okolicy da się go zrobić.",
+  koszt:
+    "Wybierz z listy drogi o najniższym koszcie wejścia i sprawdź, która z nich prowadzi najbliżej tego, co Cię ciągnie.",
+  przerwa_w_zarobkach:
+    "Poszukaj w kartach dróg, które da się zacząć obok obecnej pracy: kursy wieczorowe i uprawnienia zdobywane etapami.",
+  rodzina:
+    "Zacznij od filtra miejsca i czasu pracy. Dopiero wewnątrz tego, co wchodzi w grę, patrz na dopasowanie.",
+  od_czego_zaczac:
+    "Przeczytaj karty trzech zawodów z góry listy. Nie po to, żeby wybrać, tylko żeby zobaczyć, jak wygląda taka decyzja rozłożona na części.",
+};
+
 export function zakonczenieWedlugEtapu(
   a0: PunktStartu | null,
-): { etap: EtapEdukacji | null; rekomendacja: string; pierwszyKrok: string } | null {
+): {
+  etap: EtapEdukacji | null;
+  rekomendacja: string;
+  pierwszyKrok: string;
+  /** Zdania dopisane przez powod zmiany. Puste dla scieczek szkolnych. */
+  zPowodu: string[];
+} | null {
   if (!a0) return null;
   const z = ZAKONCZENIA[a0.etap];
-  return { etap: a0.etap, rekomendacja: z.rekomendacja, pierwszyKrok: z.pierwszyKrok };
+  const zPowodu = DOPISKI_POWODU.filter((d) => a0.powodZmiany.includes(d.kod))
+    .slice(0, 2)
+    .map((d) => d.zdanie);
+  const zBlokady = a0.blokada
+    .map((b) => PIERWSZE_KROKI_BLOKADY[b])
+    .find((x): x is string => Boolean(x));
+  return {
+    etap: a0.etap,
+    rekomendacja: z.rekomendacja,
+    pierwszyKrok: zBlokady ?? z.pierwszyKrok,
+    zPowodu,
+  };
 }
 
 // =====================================================================

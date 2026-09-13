@@ -446,6 +446,7 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
     raport.trzy_drogi = {
       flagi: silnik.warstwa1.flagi.map((f) => komunikatFlagi(f)).filter((x): x is string => Boolean(x)),
       pierwszyKrok: silnik.zakonczenie?.pierwszyKrok ?? "Ustal to na rozmowie indywidualnej.",
+      zPowodu: silnik.zakonczenie?.zPowodu ?? [],
       kolejnoscOdProwadzacego: kolejnosc !== null,
       drogi: drogiWKolejnosci.map((d) => ({
         etykieta: d.etykieta,
