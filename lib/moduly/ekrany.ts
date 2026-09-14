@@ -9,7 +9,17 @@
 import { BLOKI_A1, INSTRUKCJA_A1 } from "../content/a1";
 import { BLOKI_A2, DOWODY_A2, INSTRUKCJA_A2 } from "../content/a2";
 import { KOTWICE_A3, PARY_A3, INSTRUKCJA_A3 } from "../content/a3";
-import { BRZMIENIA_A4, PARY_A4, TEST_KOSZTU, INSTRUKCJA_A4 } from "../content/a4";
+import {
+  BRZMIENIA_A4,
+  FORMULY_A4,
+  INSTRUKCJA_A4,
+  LICZBA_BLOKOW_A4,
+  NAZWY_KROTKIE_A4,
+  OSTRZEZENIE_A4,
+  PARY_A4,
+  TEST_KOSZTU,
+  type ParaA4,
+} from "../content/a4";
 import { INSTRUKCJA_A5, ODPOWIEDZI_A5, ZDANIA_A5 } from "../content/a5";
 import { INSTRUKCJA_M1, OBSZARY_M1, PARY_M1 } from "../content/m1";
 import { PYTANIA_A0, INSTRUKCJA_A0 } from "../content/a0";
@@ -403,25 +413,90 @@ function czescA3B(kontekst: KontekstModulu): CzescModulu {
 // A4
 // =====================================================================
 
+/**
+ * Czesc A: 36 porownan w pieciu formulach.
+ *
+ * **Bloki ida ciagiem**, bo zmiana formuly w srodku bloku znaczylaby dla
+ * uczestnika, ze zmienily sie zasady. Wewnatrz bloku kolejnosc jest nadal
+ * losowana razem z planem: to jest ta sama ochrona przed efektem pozycji,
+ * co w pozostalych modulach, i grupowania blokow nie psuje.
+ *
+ * Przed blokiem czwartym stoi ekran ostrzegawczy. Nie jest ozdoba: bez niego
+ * uczestnik odpowiada przez szesc pytan odwrotnie, niz mysli, a wynik wyglada
+ * potem sensownie i jest falszywy.
+ */
 function czescA4A(plan: PlanModulu): CzescModulu {
   const ekrany: Ekran[] = [wstep("A4", INSTRUKCJA_A4)];
   const poNumerze = new Map(PARY_A4.map((p) => [String(p.nr), p]));
 
-  plan.kolejnosc.forEach((klucz, i) => {
-    const para = poNumerze.get(klucz);
-    if (!para) return;
-    const odwrocona = plan.odwrocone[klucz] ?? false;
-    const a = { kod: para.lewa, tekst: BRZMIENIA_A4[para.lewa], ikona: `a4-${para.lewa}` };
-    const b = { kod: para.prawa, tekst: BRZMIENIA_A4[para.prawa], ikona: `a4-${para.prawa}` };
+  const wLosowejKolejnosci = plan.kolejnosc
+    .map((klucz) => poNumerze.get(klucz))
+    .filter((p): p is ParaA4 => Boolean(p));
+  // Stabilne sortowanie po numerze bloku zostawia losowa kolejnosc w srodku.
+  const kolejka = [...wLosowejKolejnosci].sort(
+    (a, b) => FORMULY_A4[a.formula].blok - FORMULY_A4[b.formula].blok,
+  );
+
+  let poprzedniBlok = 0;
+  kolejka.forEach((para, i) => {
+    const f = FORMULY_A4[para.formula];
+    if (f.odwrotna && poprzedniBlok !== f.blok) {
+      ekrany.push({
+        klucz: "A4_ostrzezenie",
+        typ: "przerwa",
+        ostrzezenie: true,
+        etykieta: `Blok ${f.blok} z ${LICZBA_BLOKOW_A4} · ${OSTRZEZENIE_A4.etykieta}`,
+        naglowek: OSTRZEZENIE_A4.naglowek,
+        akapity: [...OSTRZEZENIE_A4.akapity],
+        zestawienie: OSTRZEZENIE_A4.zestawienie.map((z) => ({ ...z })),
+        dopisek: OSTRZEZENIE_A4.dopisek,
+        przyciskDalej: OSTRZEZENIE_A4.przycisk,
+      });
+    }
+    poprzedniBlok = f.blok;
+
+    const nadpis = (kod: string, ktora: "A" | "B") =>
+      f.nadpisOdpowiedzi === "Oferta"
+        ? `Oferta ${ktora}`
+        : (f.nadpisOdpowiedzi ?? NAZWY_KROTKIE_A4[kod]);
+    // Nazwa wartosci stoi albo nad zdaniem, albo pod nim, nigdy dwa razy.
+    const podpis = (kod: string) => (f.nadpisOdpowiedzi ? NAZWY_KROTKIE_A4[kod] : undefined);
+
+    const a = {
+      kod: para.lewa,
+      tekst: para.tekstLewej,
+      ikona: `a4-${para.lewa}`,
+      nadpis: nadpis(para.lewa, "A"),
+      podpis: podpis(para.lewa),
+    };
+    const b = {
+      kod: para.prawa,
+      tekst: para.tekstPrawej,
+      ikona: `a4-${para.prawa}`,
+      nadpis: nadpis(para.prawa, "B"),
+      podpis: podpis(para.prawa),
+    };
+    const odwrocona = plan.odwrocone[String(para.nr)] ?? false;
     ekrany.push({
       klucz: `A4_para_${para.nr}`,
       typ: "pozycje",
-      polecenie: INSTRUKCJA_A4.polecenieBloku,
+      etykieta: `Blok ${f.blok} z ${LICZBA_BLOKOW_A4} · ${f.etykieta}`,
+      akcent: f.odwrotna ? "pomarancz" : undefined,
+      polecenie: f.naglowek,
+      podpis: f.podtytul,
+      dopisek: f.dopisek,
       ikona: `a4-${para.lewa}`,
       pozycje: [
-        { id: `para_${para.nr}`, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b },
+        {
+          id: `para_${para.nr}`,
+          typ: "para",
+          // Strona zamieniona razem z nadpisem oferty: „Oferta A" ma zostac
+          // po lewej niezaleznie od tego, ktora wartosc tam wylosowano.
+          stronaA: odwrocona ? { ...b, nadpis: nadpis(para.prawa, "A") } : a,
+          stronaB: odwrocona ? { ...a, nadpis: nadpis(para.lewa, "B") } : b,
+        },
       ],
-      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
+      postep: { nr: i + 1, z: kolejka.length, slowo: "par" },
     });
   });
   return { kod: "A", nazwa: "Pary wartości", ekrany };
@@ -459,7 +534,7 @@ function czescA4B(): CzescModulu {
 
 function czescA4C(kontekst: KontekstModulu): CzescModulu {
   const najwyzsza = kontekst.a4Najwyzsza ?? "WOL";
-  const nazwa = WARTOSCI_A4.find((w) => w.kod === najwyzsza)?.nazwa ?? "";
+  const nazwa = NAZWY_KROTKIE_A4[najwyzsza] ?? "";
   const uzyte = new Set([najwyzsza]);
   const pytania: Array<{ kod: string; tekst: string }> = [];
   for (const p of TEST_KOSZTU.pytania) {
@@ -482,12 +557,19 @@ function czescA4C(kontekst: KontekstModulu): CzescModulu {
         klucz: "A4_koszt",
         typ: "pozycje",
         naglowek: INSTRUKCJA_A4.kosztNaglowek,
-        podpis: `Twoja najwyższa wartość to: ${nazwa.toLowerCase()}. ${TEST_KOSZTU.wstep}`,
+        // Jedyne miejsce w programie, gdzie uczestnik widzi fragment wlasnego
+        // wyniku przed koncem. Tu nie ma pomiaru, jest swiadomy wybor: zeby
+        // zapytac o cene, trzeba najpierw powiedziec, czego cena dotyczy.
+        podpis: `Najwyżej wyszło u Ciebie: ${nazwa}. ${TEST_KOSZTU.wstep}`,
         pozycje: pytania.slice(0, 4).map((p, i) => ({
           id: `koszt_${i + 1}`,
           typ: "pojedynczy",
-          tresc: `Czy zrezygnowałbyś dla niej z ${p.tekst}?`,
-          opcje: TEST_KOSZTU.odpowiedzi.map((o) => ({ kod: o.wartosc, etykieta: o.etykieta })),
+          tresc: `Czy zrezygnowałbyś z ${p.tekst}, żeby ${BRZMIENIA_A4[najwyzsza].charAt(0).toLowerCase()}${BRZMIENIA_A4[najwyzsza].slice(1)}?`,
+          opcje: TEST_KOSZTU.odpowiedzi.map((o) => ({
+            kod: o.wartosc,
+            etykieta: o.etykieta,
+            podpis: o.podpis,
+          })),
         })),
         przyciskDalej: "Zakończ moduł",
       },

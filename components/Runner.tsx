@@ -316,9 +316,11 @@ export function Runner({
     : pojedynczePytanie
       ? (widocznePozycje[0].tresc ?? ekran.naglowek ?? "")
       : (ekran.naglowek ?? ekran.polecenie ?? "");
-  const etykietaNadTytulem = ekran.naglowek && (pojedynczePytanie || trescPozycji)
-    ? ekran.naglowek
-    : nazwaModulu;
+  // Ekran może nazwać nadpis sam. A4 wpisuje tam numer bloku i formułę,
+  // bo w pięciu formułach trzeba powiedzieć, w której uczestnik jest.
+  const etykietaNadTytulem =
+    ekran.etykieta ??
+    (ekran.naglowek && (pojedynczePytanie || trescPozycji) ? ekran.naglowek : nazwaModulu);
   // Instrukcja trafia nad odpowiedzi dopiero wtedy, gdy nagłówkiem jest warunek.
   const poleceniePrzyOdpowiedziach = trescPozycji ? ekran.polecenie : undefined;
   const podtytul = jednaPozycja
@@ -676,6 +678,70 @@ export function Runner({
               </p>
             </div>
           </div>
+        ) : ekran.typ === "przerwa" && ekran.ostrzezenie ? (
+          /**
+           * Zmiana zasady w środku modułu.
+           *
+           * Jedyny ekran w programie z własnym kolorem: pomarańcz zamiast
+           * błękitu, znak skierowany w dół zamiast w górę. To nie jest ozdoba.
+           * Blok czwarty A4 pyta odwrotnie i uczestnik, który tego nie zauważy,
+           * odpowiada przez sześć pytań wbrew sobie, a wynik wygląda potem
+           * sensownie i jest fałszywy. Kolor, znak i zestawienie „przedtem
+           * kontra teraz" mówią to trzy razy, różnymi środkami.
+           */
+          <div className="flex flex-col items-center px-2 text-center">
+            <span
+              aria-hidden
+              className="flex h-20 w-20 items-center justify-center rounded-[1.5rem] border border-white/90 bg-white shadow-[0_12px_34px_rgba(184,70,15,0.18)]"
+            >
+              <svg viewBox="0 0 24 24" className="h-8 w-8" fill="var(--color-pomarancz)">
+                <path d="M12 19 3.5 6h17z" />
+              </svg>
+            </span>
+            <p className="mt-6 text-drobne font-bold uppercase tracking-[0.22em] text-pomarancz">
+              {ekran.etykieta ?? nazwaModulu}
+            </p>
+            {ekran.naglowek ? (
+              <h1 className="mt-4 max-w-[18ch] text-naglowek-duzy font-extrabold leading-[1.06] tracking-[-0.03em] text-atrament sm:text-tytul">
+                <DwaTony tekst={ekran.naglowek} pomaranczowy />
+              </h1>
+            ) : null}
+            <div className="proza mt-5 max-w-[42rem] [&_p]:text-tresc-duza">
+              {(ekran.akapity ?? []).map((a, i) => (
+                <p key={i}>{a}</p>
+              ))}
+            </div>
+
+            {ekran.zestawienie ? (
+              <ul className="mt-8 grid w-full max-w-[44rem] gap-4 sm:grid-cols-2">
+                {ekran.zestawienie.map((z, i) => (
+                  <li
+                    key={z.etykieta}
+                    className={`rounded-karta border bg-panel/80 px-6 py-5 text-left ${
+                      i === ekran.zestawienie!.length - 1
+                        ? "border-pomarancz/45 bg-pomarancz-tlo/60"
+                        : "border-linia"
+                    }`}
+                  >
+                    <p
+                      className={`text-male font-extrabold ${
+                        i === ekran.zestawienie!.length - 1 ? "text-pomarancz" : "text-atrament-slaby"
+                      }`}
+                    >
+                      {z.etykieta}
+                    </p>
+                    <p className="mt-1.5 text-tresc leading-snug text-atrament-sciszony">{z.tresc}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+
+            {ekran.dopisek ? (
+              <p aria-hidden className="odreczny odreczny-pomarancz mt-8">
+                {ekran.dopisek}
+              </p>
+            ) : null}
+          </div>
         ) : ekran.typ === "przerwa" ? (
           <div className="szklo relative overflow-hidden p-6 sm:p-9">
             <Bramy klasa="pointer-events-none absolute -right-10 -top-6 hidden h-[13rem] w-[20rem] opacity-60 sm:block" />
@@ -698,7 +764,7 @@ export function Runner({
             <div className={naSrodku ? "relative text-center" : "relative sm:pr-[13rem]"}>
               {naSrodku ? null : (
                 <p aria-hidden className="odreczny absolute right-0 top-1 hidden max-w-[11rem] whitespace-pre-line text-right sm:block">
-                  {DOPISEK[modul]}
+                  {ekran.dopisek ?? DOPISEK[modul]}
                 </p>
               )}
               <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">{etykietaNadTytulem}</p>
@@ -711,7 +777,7 @@ export function Runner({
                     : "text-naglowek-duzy sm:text-tytul"
                 }`}
               >
-                <DwaTony tekst={tytulEkranu} />
+                <DwaTony tekst={tytulEkranu} pomaranczowy={ekran.akcent === "pomarancz"} />
               </h1>
               {podtytul ? (
                 <p
@@ -800,6 +866,7 @@ export function Runner({
                     ostatnia={i === lista.length - 1}
                     wSiatce={siatka}
                     kluczKoloru={ekran.ikona ?? ekran.kolor}
+                    akcent={ekran.akcent}
                     miejsce={i}
                     wartosc={odpowiedzi[p.id]}
                     naZmiane={(v) => zmien(p.id, v, p.typ === "tekst" || p.typ === "kilka_tekstow")}
@@ -877,6 +944,14 @@ export function Runner({
             Wstecz
           </button>
 
+          {/* Ekran wyśrodkowany nie ma miejsca na dopisek przy prawej krawędzi,
+              bo tam nic nie stoi. W makiecie siedzi on między przyciskami. */}
+          {naSrodku && ekran.dopisek ? (
+            <p aria-hidden className="odreczny hidden flex-1 text-center sm:block">
+              {ekran.dopisek}
+            </p>
+          ) : null}
+
           <button
             type="button"
             onClick={() => void dalej()}
@@ -903,7 +978,10 @@ export function Runner({
  * zapytania osobno w pomarańczu. Rozbicie po spacji, pozostałe znaki
  * interpunkcyjne zostają przy słowie.
  */
-function DwaTony({ tekst }: { tekst: string }) {
+function DwaTony({ tekst, pomaranczowy }: { tekst: string; pomaranczowy?: boolean }) {
+  // Ekran zmiany zasady ma własny gradient, pomarańczowy: cały ten ekran
+  // mówi „tu jest inaczej", więc niebieski tytuł by mu przeczył.
+  const gradient = pomaranczowy ? "gradient-tytul-pomarancz" : "gradient-tytul";
   const pelny = tekst.trim();
   // Znak zapytania jest trzecim akcentem, nie częścią gradientu, więc
   // odcinamy go, zanim podzielimy nagłówek na część ciemną i gradientową.
@@ -916,7 +994,7 @@ function DwaTony({ tekst }: { tekst: string }) {
   if (slowa.length < 2) {
     return (
       <>
-        <span className="gradient-tytul">{bezZnaku}</span>
+        <span className={gradient}>{bezZnaku}</span>
         {ogon}
       </>
     );
@@ -933,7 +1011,7 @@ function DwaTony({ tekst }: { tekst: string }) {
     <>
       <span className="block">{poczatek}</span>
       <span className="block">
-        <span className="gradient-tytul">{koniec}</span>
+        <span className={gradient}>{koniec}</span>
         {ogon}
       </span>
     </>

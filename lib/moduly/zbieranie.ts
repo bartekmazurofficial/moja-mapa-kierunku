@@ -9,6 +9,7 @@ import { prisma } from "../db/klient";
 import type { KompletOdpowiedzi } from "../engine/moduly";
 import type { PunktStartu } from "../engine/typy";
 import { MARKER_ZAKONCZENIA } from "./typy";
+import { FORMULY_A4, PARY_A4 } from "../content/a4";
 
 type Zapis = Record<string, Record<string, unknown>>;
 
@@ -74,6 +75,35 @@ function jakoPunktStartu(a0: Zapis | undefined): PunktStartu | null {
   };
 }
 
+const PARY_A4_PO_NR = new Map(PARY_A4.map((p) => [p.nr, p]));
+
+/**
+ * Kto wygrał parę A4, z tego, co uczestnik kliknął.
+ *
+ * W blokach 1, 2, 3 i 5 wygrywa strona kliknięta. W bloku czwartym pytamy
+ * odwrotnie („z czego prędzej byś zrezygnował"), więc kliknięta strona jest
+ * wartością MNIEJ ważną i wygraną zapisuje druga strona pary.
+ *
+ * To jest jedyne miejsce w programie, gdzie następuje to odwrócenie. Błąd
+ * tutaj daje wynik, który wygląda sensownie i jest fałszywy, więc funkcja
+ * stoi osobno i ma własny test.
+ */
+export function wygraneA4(odpowiedziCzesciA: Record<string, unknown>): Record<number, string> {
+  const wynik: Record<number, string> = {};
+  for (const [klucz, wartosc] of Object.entries(odpowiedziCzesciA)) {
+    if (typeof wartosc !== "string") continue;
+    const nr = Number(klucz.replace("para_", ""));
+    const para = PARY_A4_PO_NR.get(nr);
+    if (!para) continue;
+    wynik[nr] = FORMULY_A4[para.formula].odwrotna
+      ? wartosc === para.lewa
+        ? para.prawa
+        : para.lewa
+      : wartosc;
+  }
+  return wynik;
+}
+
 export async function zbierzOdpowiedzi(uczestnikId: string): Promise<KompletOdpowiedzi> {
   const dane = await wczytaj(uczestnikId);
   const cz = (modul: string, czesc: string): Record<string, unknown> => dane[modul]?.[czesc] ?? {};
@@ -105,10 +135,19 @@ export async function zbierzOdpowiedzi(uczestnikId: string): Promise<KompletOdpo
     a3b[klucz.replace("kotwica_", "")] = v as number;
   }
 
-  const a4a: Record<number, string> = {};
-  for (const [klucz, v] of Object.entries(cz("A4", "A"))) {
-    a4a[Number(klucz.replace("para_", ""))] = v as string;
-  }
+  /**
+   * Blok czwarty A4 pyta odwrotnie: „z czego prędzej byś zrezygnował".
+   * Kliknięta strona jest tam wartością MNIEJ ważną, więc wygraną zapisuje
+   * druga strona pary. Odwrócenie stoi tutaj, w jednym miejscu, przed
+   * podaniem odpowiedzi silnikowi.
+   *
+   * Specyfikacja każe odwracać przy zapisie do bazy. Robimy to o krok później
+   * i świadomie: w bazie zostaje to, co uczestnik naprawdę kliknął, więc panel
+   * prowadzącego pokazuje ten sam wybór co ekran. Odwrócone przy zapisie
+   * dałoby „wybrał relacje" tam, gdzie kliknął pieniądze, i nie dałoby się
+   * tego odróżnić od błędu.
+   */
+  const a4a = wygraneA4(cz("A4", "A"));
   const a4c = [1, 2, 3, 4]
     .map((i) => cz("A4", "C")[`koszt_${i}`] as "tak" | "nie" | "zalezy" | undefined)
     .filter((x): x is "tak" | "nie" | "zalezy" => Boolean(x));

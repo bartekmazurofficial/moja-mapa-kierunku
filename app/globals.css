@@ -614,6 +614,21 @@ body::after {
  * wstępu, który rusza się sam z siebie: przycisk jest tam jedyną rzeczą do
  * zrobienia i ma być widać, gdzie kliknąć.
  */
+/**
+ * Tytuł na ekranie zmiany zasady (blok czwarty A4).
+ *
+ * Ten sam zabieg co `.gradient-tytul`, tylko w cieplejszej osi. Wszystkie
+ * trzy przystanki są w PARY_KOLOROW: każdy z nich JEST kolorem tekstu, bo
+ * gradient idzie przez background-clip, więc sprawdzenie bieli na tle
+ * niczego by tu nie powiedziało.
+ */
+.gradient-tytul-pomarancz {
+  background: linear-gradient(104deg, #b8460f 0%, #c2185b 52%, #6d3df5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 @keyframes polysk {
   0% {
     transform: translateX(-120%);

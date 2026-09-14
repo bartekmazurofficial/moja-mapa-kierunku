@@ -13,7 +13,7 @@ import { OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_A3, WYMIARY_M1 } from 
 import { BLOKI_A1 } from "../content/a1";
 import { BLOKI_A2 } from "../content/a2";
 import { PARY_A3 } from "../content/a3";
-import { PARY_A4 } from "../content/a4";
+import { FORMULY_A4, NAPIECIA_A4, PARY_A4 } from "../content/a4";
 import { PARY_M1 } from "../content/m1";
 import type { PunktStartu, WynikiModulow } from "./typy";
 
@@ -252,16 +252,45 @@ export interface OdpowiedziA4 {
   czescC: Array<"tak" | "nie" | "zalezy">;
 }
 
+export type TwardoscA4 = "warunek" | "silna_preferencja" | "preferencja";
+
 export interface WynikA4 {
   rank: Record<string, number>;
   v: Record<string, number>;
+  /** Wszystkie dwanascie w kolejnosci, od najwazniejszej. */
+  kolejnosc: string[];
+  top3: string[];
   top5: string[];
   bottom3: string[];
   progowe: string[];
   koszt: number;
+  /**
+   * Ile uczestnik jest gotow oddac za wartosc, ktora wyszla najwyzej.
+   * Null, gdy test kosztu nie zostal wypelniony: brak odpowiedzi nie jest
+   * odpowiedzia „preferencja".
+   */
+  twardosc: TwardoscA4 | null;
+  /** Najwyzej dwa. Informacja, nie sprzecznosc. */
+  napiecia: Array<{ a: string; b: string }>;
+  /** Najwyzej jeden: wartosc wygrywana wprost, oddawana pod kosztem. */
+  rozjazd: { kod: string; roznica: number } | null;
   /** Wartosc nieodzowna, ktora w rankingu wypadla nisko. Flaga na sesje 1:1. */
   rozbieznosci: string[];
   zroznicowanie: number;
+}
+
+/**
+ * Twardosc z czterech odpowiedzi testu kosztu: tak 2, zalezy 1, nie 0.
+ *
+ * Prog szesciu punktow znaczy, ze uczestnik oddalby za te wartosc prawie
+ * wszystko. Prog trzech, ze jest wazna, ale nie za kazda cene. Ponizej
+ * deklaracja nie ma pokrycia w gotowosci do kosztu, co przy szesnastolatku
+ * jest stanem normalnym i nigdzie nie nazywamy tego slabosria.
+ */
+function twardoscZKosztu(odpowiedzi: Array<"tak" | "nie" | "zalezy">): TwardoscA4 | null {
+  if (odpowiedzi.length === 0) return null;
+  const punkty = odpowiedzi.reduce((s, o) => s + (o === "tak" ? 2 : o === "zalezy" ? 1 : 0), 0);
+  return punkty >= 6 ? "warunek" : punkty >= 3 ? "silna_preferencja" : "preferencja";
 }
 
 export function policzA4(o: OdpowiedziA4): WynikA4 {
@@ -290,13 +319,55 @@ export function policzA4(o: OdpowiedziA4): WynikA4 {
   );
 
   const wartosciRank = Object.values(rank);
+  const kolejnosc = posortowane.map((w) => w.kod);
+  const top5 = kolejnosc.slice(0, 5);
+
+  /**
+   * Napiecia: dwie wartosci ciagnace w przeciwne strony, obie w czolowce.
+   * Najwyzej dwa, bo trzecia uwaga tego samego rodzaju przestaje byc uwaga.
+   * Przy remisie decyduje suma `v`, wiec wynik jest powtarzalny.
+   */
+  const napiecia = NAPIECIA_A4.filter((n) => top5.includes(n.a) && top5.includes(n.b))
+    .map((n) => ({ a: n.a, b: n.b, waga: v[n.a] + v[n.b] }))
+    .sort((x, y) => y.waga - x.waga || x.a.localeCompare(y.a))
+    .slice(0, 2)
+    .map(({ a, b }) => ({ a, b }));
+
+  /**
+   * Rozjazd: wartosc wygrywala, gdy pytalismy wprost, a byla oddawana, gdy
+   * pytalismy o rezygnacje. Warunek dwoch par w bloku czwartym jest konieczny:
+   * przy jednej roznica wynosi zawsze 0 albo 1 i nic nie znaczy.
+   */
+  let rozjazd: { kod: string; roznica: number } | null = null;
+  for (const w of WARTOSCI_A4) {
+    const wBloku = (odwrotny: boolean) =>
+      PARY_A4.filter(
+        (p) =>
+          FORMULY_A4[p.formula].odwrotna === odwrotny && (p.lewa === w.kod || p.prawa === w.kod),
+      );
+    const klasyczne = wBloku(false);
+    const rezygnacyjne = wBloku(true);
+    if (rezygnacyjne.length < 2 || klasyczne.length === 0) continue;
+    const wygral = (pary: typeof PARY_A4) =>
+      pary.filter((p) => o.czescA[p.nr] === w.kod).length;
+    const roznica = wygral(klasyczne) / klasyczne.length - wygral(rezygnacyjne) / rezygnacyjne.length;
+    if (roznica >= 0.5 && top5.includes(w.kod) && (!rozjazd || roznica > rozjazd.roznica)) {
+      rozjazd = { kod: w.kod, roznica };
+    }
+  }
+
   return {
     rank,
     v,
-    top5: posortowane.slice(0, 5).map((w) => w.kod),
-    bottom3: posortowane.slice(-3).map((w) => w.kod),
+    kolejnosc,
+    top3: kolejnosc.slice(0, 3),
+    top5,
+    bottom3: kolejnosc.slice(-3),
     progowe,
     koszt: o.czescC.filter((x) => x === "tak").length,
+    twardosc: twardoscZKosztu(o.czescC),
+    napiecia,
+    rozjazd,
     rozbieznosci: progowe.filter((kod) => rank[kod] < 50),
     zroznicowanie: Math.max(...wartosciRank) - Math.min(...wartosciRank),
   };

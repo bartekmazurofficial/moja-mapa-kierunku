@@ -12,7 +12,7 @@
  */
 
 import { useId, useMemo } from "react";
-import type { Pozycja as PozycjaDef } from "@/lib/moduly/typy";
+import type { Pozycja as PozycjaDef, StronaPary } from "@/lib/moduly/typy";
 import { Ikona, Obraz } from "@/components/Ikona";
 import { kluczBieguna } from "@/lib/ui/obrazy";
 import { kolorWyboru, type Kolor } from "@/lib/ui/kolory";
@@ -34,6 +34,8 @@ export interface WlasciwosciPozycji {
   kluczKoloru?: string;
   /** Numer pozycji na ekranie, liczony od zera. Stąd bierze się kolor bloku. */
   miejsce?: number;
+  /** Akcent ekranu. Blok odwrotny A4 zaznacza się cieplej niż reszta modułu. */
+  akcent?: "pomarancz";
 }
 
 export function Pozycja(props: WlasciwosciPozycji) {
@@ -348,12 +350,9 @@ function Ranking4({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozyc
 // Para: dwie karty obok siebie
 // =====================================================================
 
-function Para({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) {
-  const strony = [pozycja.stronaA, pozycja.stronaB].filter(Boolean) as Array<{
-    kod: string;
-    tekst: string;
-    ikona?: string;
-  }>;
+function Para({ pozycja, wartosc, naZmiane, naDomkniecie, akcent }: WlasciwosciPozycji) {
+  const cieply = akcent === "pomarancz";
+  const strony = [pozycja.stronaA, pozycja.stronaB].filter(Boolean) as StronaPary[];
 
   function wybierz(kod: string) {
     naZmiane(kod);
@@ -380,7 +379,9 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) 
             aria-pressed={wybrana}
             className={`przejscie relative flex min-h-[6rem] items-center justify-between gap-5 rounded-karta border-2 px-6 py-6 text-left sm:px-8 ${
               wybrana
-                ? "border-akcent bg-akcent-tlo/70"
+                ? cieply
+                  ? "border-pomarancz bg-pomarancz-tlo/70"
+                  : "border-akcent bg-akcent-tlo/70"
                 : "border-transparent bg-panel/80 hover:bg-panel"
             }`}
             style={
@@ -389,10 +390,25 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) 
                 : { boxShadow: "0 8px 26px rgba(46, 60, 120, 0.07)" }
             }
           >
-            <span className="min-w-0 text-tresc-duza font-semibold leading-snug text-atrament sm:text-naglowek-maly">
-              {s.tekst}
+            {/* Nadpis i podpis niosą nazwę wartości albo etykietę oferty.
+                Obie strony mają je zawsze albo żadna: brak po jednej stronie
+                robiłby z niej odpowiedź gorzej opisaną, a wybór JEST pomiarem. */}
+            <span className="flex min-w-0 flex-col gap-1.5">
+              {s.nadpis ? (
+                <span className="text-drobne font-bold uppercase tracking-[0.16em] text-atrament-slaby">
+                  {s.nadpis}
+                </span>
+              ) : null}
+              <span className="text-tresc-duza font-semibold leading-snug text-atrament sm:text-naglowek-maly">
+                {s.tekst}
+              </span>
+              {s.podpis ? (
+                <span className="text-drobne font-bold uppercase tracking-[0.16em] text-atrament-slaby">
+                  {s.podpis}
+                </span>
+              ) : null}
             </span>
-            <KolkoWyboru wybrana={wybrana} />
+            <KolkoWyboru wybrana={wybrana} cieply={cieply} />
           </button>
         );
       })}
@@ -401,15 +417,26 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie }: WlasciwosciPozycji) 
 }
 
 /** Pierścień wyboru: pusty przed, wypełniony gradientem po wybraniu. */
-function KolkoWyboru({ wybrana }: { wybrana: boolean }) {
+function KolkoWyboru({ wybrana, cieply }: { wybrana: boolean; cieply?: boolean }) {
   return (
     <span
       aria-hidden
       className={`przejscie relative flex h-8 w-8 shrink-0 rounded-full border-2 ${
-        wybrana ? "border-akcent" : "border-linia-mocna"
+        wybrana ? (cieply ? "border-pomarancz" : "border-akcent") : "border-linia-mocna"
       }`}
     >
-      {wybrana ? <span className="przycisk-gradient absolute inset-1 rounded-full" /> : null}
+      {wybrana ? (
+        <span
+          className="absolute inset-1 rounded-full"
+          style={{
+            background: cieply
+              ? "linear-gradient(120deg, #b8460f, #c2185b)"
+              : undefined,
+          }}
+        >
+          {cieply ? null : <span className="przycisk-gradient block h-full w-full rounded-full" />}
+        </span>
+      ) : null}
     </span>
   );
 }

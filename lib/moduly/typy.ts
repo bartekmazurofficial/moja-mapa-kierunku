@@ -38,6 +38,16 @@ export interface OpcjaWyboru {
   wylaczna?: boolean;
 }
 
+export interface StronaPary {
+  kod: string;
+  tekst: string;
+  ikona?: string;
+  /** Nadpis nad zdaniem: nazwa wartosci albo etykieta oferty. */
+  nadpis?: string;
+  /** Podpis pod zdaniem: nazwa wartosci, gdy nie stoi nad nim. */
+  podpis?: string;
+}
+
 export interface Pozycja {
   /** Klucz zapisu w tabeli odpowiedzi. */
   id: string;
@@ -49,9 +59,16 @@ export interface Pozycja {
   podpis?: string;
   /** ranking4: cztery opcje do ustawienia w kolejnosci. */
   opcje?: OpcjaWyboru[];
-  /** para: dwie strony wyboru, juz po losowaniu strony. */
-  stronaA?: { kod: string; tekst: string; ikona?: string };
-  stronaB?: { kod: string; tekst: string; ikona?: string };
+  /**
+   * para: dwie strony wyboru, juz po losowaniu strony.
+   *
+   * `nadpis` i `podpis` sa po to, zeby ta sama para dala sie pokazac w pieciu
+   * formulach A4: raz z nazwa wartosci nad zdaniem („PIENIADZE"), raz
+   * z etykieta oferty („OFERTA A"), raz z nazwa pod zdaniem. Tekst zdania
+   * zmienia sie razem z formula, kod wartosci nie.
+   */
+  stronaA?: StronaPary;
+  stronaB?: StronaPary;
   /** skala5: etykiety krancow. */
   krance?: [string, string];
   /** dowody: trzy pola do zaznaczenia. */
@@ -88,6 +105,29 @@ export interface Ekran {
    */
   obraz?: string;
   typ: "wstep" | "pozycje" | "przerwa" | "koniec";
+  /**
+   * Nadpis nad tytulem ekranu. Bez niego stoi tam nazwa modulu. A4 wpisuje
+   * tu numer bloku i formule („Blok 1 z 5 · Formula klasyczna"), bo piec
+   * formul w jednym module wymaga powiedzenia, w ktorej uczestnik jest.
+   */
+  etykieta?: string;
+  /** Zdanie odreczne pod ekranem, gdy ma byc inne niz staly dopisek modulu. */
+  dopisek?: string;
+  /**
+   * Dwa pola „przedtem i teraz" na ekranie przerwy. Jedyne uzycie to zmiana
+   * zasady przed blokiem czwartym A4: sam akapit tego nie niesie, bo roznica
+   * miedzy „wazniejsze" a „odpuscilbym" ginie w zdaniu, a w zestawieniu nie.
+   */
+  zestawienie?: Array<{ etykieta: string; tresc: string }>;
+  /** Przerwa ostrzegawcza: inny kolor i inny znak niz zwykla przerwa. */
+  ostrzezenie?: boolean;
+  /**
+   * Akcent calego ekranu. Dzis jedno uzycie: blok czwarty A4 pyta odwrotnie
+   * i ma byc widac, ze to inny blok, takze wtedy, gdy uczestnik przewinal
+   * ekran ostrzegawczy nie czytajac. Kolor nie niesie tu informacji sam:
+   * obok stoi nadpis „Odpuszczam" i zdanie pod tytulem.
+   */
+  akcent?: "pomarancz";
   naglowek?: string;
   akapity?: string[];
   /** Polecenie nad pozycjami. */

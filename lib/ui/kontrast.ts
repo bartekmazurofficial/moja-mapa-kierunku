@@ -130,6 +130,16 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
   { nazwa: "atrament na tincie kasowania", tekst: "#10132a", tlo: "#ffe9ee" },
   { nazwa: "ściszony na tincie kasowania", tekst: "#3d4460", tlo: "#ffe9ee" },
 
+  // Blok czwarty A4: pyta odwrotnie, wiec caly ma cieplejszy akcent. Kazdy
+  // przystanek gradientu JEST kolorem tekstu, bo idzie przez background-clip.
+  { nazwa: "tytuł ciepły, pomarańcz", tekst: "#b8460f", tlo: "#f4f6fb" },
+  { nazwa: "tytuł ciepły, malina", tekst: "#c2185b", tlo: "#f4f6fb" },
+  { nazwa: "tytuł ciepły, fiolet", tekst: "#6d3df5", tlo: "#f4f6fb" },
+  { nazwa: "malina na panelu", tekst: "#c2185b", tlo: "#ffffff" },
+  { nazwa: "pomarańcz na zaznaczonej karcie", tekst: "#b8460f", tlo: "#fff5ef" },
+  { nazwa: "słaby na zaznaczonej karcie", tekst: "#5b6480", tlo: "#fff5ef" },
+  { nazwa: "atrament na zaznaczonej karcie", tekst: "#10132a", tlo: "#fff5ef" },
+
   // Plyty raportu: tekst sciszony na tintach sekcji.
   { nazwa: "ściszony na tincie pomarańczu", tekst: "#3d4460", tlo: "#fff1e8" },
   { nazwa: "ściszony na tincie błękitu", tekst: "#3d4460", tlo: "#e9f0ff" },
