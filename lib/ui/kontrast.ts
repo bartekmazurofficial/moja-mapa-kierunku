@@ -22,6 +22,7 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
   { nazwa: "akcent na tle", tekst: "#0a3ac9", tlo: "#f4f6fb" },
   { nazwa: "akcent na panelu", tekst: "#0a3ac9", tlo: "#ffffff" },
   { nazwa: "akcent na tle akcentu", tekst: "#0a3ac9", tlo: "#e9f0ff" },
+  { nazwa: "słaby na tle akcentu", tekst: "#5b6480", tlo: "#e9f0ff" },
   { nazwa: "biały na akcencie", tekst: "#ffffff", tlo: "#1d5bff" },
   { nazwa: "uwaga antyprofilowa", tekst: "#a15c00", tlo: "#fff4dc" },
   { nazwa: "uwaga na tle", tekst: "#a15c00", tlo: "#f4f6fb" },
