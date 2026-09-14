@@ -65,7 +65,10 @@ export function BlokKarty({
     case "pieniadze":
       return (
         <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
-          <Widelki etapy={blok.etapy} />
+          {/* Pieniądze czyta się jako listę etapów jeden pod drugim, a skalę
+              międzynarodową jako kafle krajów obok siebie. Ten sam kształt
+              danych, dwa różne pytania. */}
+          <Widelki etapy={blok.etapy} kafle={blok.slot === "miedzynarodowa"} />
           <Podsumowanie tresc={blok.uwagi} barwa={blok.slot === "koszt" ? "koszt" : "akcent"} />
         </Sekcja>
       );
@@ -208,16 +211,18 @@ export function Proza({ tresc }: { tresc: string }) {
 /**
  * Kolor wymiaru obciążenia. Stały, przypisany wymiarowi, nigdy zależny od
  * wartości: piątka na kontakcie z ludźmi jest dla jednych powodem, a dla
- * innych przeszkodą, i interfejs nie ma prawa tego rozstrzygać. Dlatego nie
- * ma tu ani jednego czerwonego paska.
+ * innych przeszkodą, i interfejs nie ma prawa tego rozstrzygać.
+ *
+ * Paleta jest marką, nie semantyką: błękit, fiolet, pomarańcz. Zieleń i żółć
+ * wypadły, bo w tym produkcie znaczą „dobrze" i „uwaga", a tu nie znaczą nic.
  */
 const KOLOR_WYMIARU: Array<{ dopasowanie: RegExp; kolor: string }> = [
-  { dopasowanie: /^fizyczn/i, kolor: "#00c56a" },
-  { dopasowanie: /^psychiczn/i, kolor: "#8b5cf6" },
-  { dopasowanie: /^presja/i, kolor: "#ffc400" },
-  { dopasowanie: /^odpowiedzialn/i, kolor: "#1d5bff" },
-  { dopasowanie: /^kontakt/i, kolor: "#00c2d8" },
-  { dopasowanie: /^nieprzewidywaln|^przewidywaln/i, kolor: "#0730a8" },
+  { dopasowanie: /^fizyczn/i, kolor: "#1d5bff" },
+  { dopasowanie: /^psychiczn/i, kolor: "#6d3df5" },
+  { dopasowanie: /^presja/i, kolor: "#1d5bff" },
+  { dopasowanie: /^odpowiedzialn/i, kolor: "#ff7a1a" },
+  { dopasowanie: /^kontakt/i, kolor: "#8b5cf6" },
+  { dopasowanie: /^nieprzewidywaln|^przewidywaln/i, kolor: "#e0484d" },
 ];
 
 function kolorWymiaru(nazwa: string, i: number): string {
@@ -288,33 +293,70 @@ function zakres(kwota: string): [number, number] | null {
  * bo tak widać skok między nimi. Więcej etapów wraca do listy z paskiem na
  * skali wspólnej dla całej karty.
  */
-function Widelki({ etapy }: { etapy: WidelkiEtap[] }) {
-  const krotkie = etapy.length <= 4 && etapy.every((e) => e.etap.length < 46);
+function Widelki({ etapy, kafle }: { etapy: WidelkiEtap[]; kafle?: boolean }) {
+  if (kafle) {
+    return (
+      <ul className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
+        {etapy.map((e, i) => (
+          <li key={`${e.etap}-${i}`} className="rounded-2xl bg-plyta px-5 py-4">
+            <p className="text-male font-bold text-atrament-slaby">{e.etap}</p>
+            <p className="mt-1.5 text-tresc-duza font-extrabold leading-tight tracking-tight text-atrament">
+              <Kwota tekst={e.kwota} />
+            </p>
+            {e.uwaga ? (
+              <p className="mt-1.5 text-drobne leading-relaxed text-atrament-sciszony">{e.uwaga}</p>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
-    <ul
-      className={krotkie ? "grid gap-3.5" : "grid gap-3.5 sm:grid-cols-2"}
-      style={
-        krotkie
-          ? { gridTemplateColumns: `repeat(${Math.min(etapy.length, 4)}, minmax(0, 1fr))` }
-          : undefined
-      }
-    >
+    <ul className="flex flex-col">
       {etapy.map((e, i) => (
-        <li key={`${e.etap}-${i}`} className="rounded-2xl bg-plyta px-5 py-4">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <p className="text-male font-bold text-atrament">{e.etap}</p>
-            <p className="text-tresc-duza font-extrabold leading-tight tracking-tight text-atrament">
-              {e.kwota}
+        <li key={`${e.etap}-${i}`} className="border-b border-linia py-3.5 last:border-b-0">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1">
+            <p className="text-tresc font-bold text-atrament">{e.etap}</p>
+            <p className="text-tresc font-extrabold tabular-nums tracking-tight text-atrament">
+              <Kwota tekst={e.kwota} />
             </p>
           </div>
           {e.uwaga ? (
-            <p className="mt-1.5 text-drobne leading-relaxed text-atrament-sciszony">{e.uwaga}</p>
+            <p className="mt-1 text-male leading-relaxed text-atrament-sciszony">{e.uwaga}</p>
           ) : null}
         </li>
       ))}
     </ul>
   );
 }
+
+/**
+ * Kwota ze znacznikiem szacunku.
+ *
+ * Kółko „○" w danych mówi, że to szacunek do corocznej aktualizacji, a nie
+ * kwota z rejestru. Zostaje, bo niesie informację, ale stoi obok liczby jako
+ * osobny znak, a nie sklejone z nią w „○5500" - tak wyglądało jak usterka.
+ */
+function Kwota({ tekst }: { tekst: string }) {
+  const zeznacznikiem = tekst.trim().startsWith("○");
+  const czysta = zeznacznikiem ? tekst.trim().slice(1).trim() : tekst;
+  return (
+    <>
+      {zeznacznikiem ? (
+        <span
+          aria-hidden
+          title="Szacunek, nie kwota z rejestru"
+          className="mr-1.5 align-middle text-drobne font-normal text-atrament-slaby"
+        >
+          ○
+        </span>
+      ) : null}
+      {czysta}
+    </>
+  );
+}
+
 // =====================================================================
 
 /** Droga dojścia jako oś: kolejne etapy z czasem, jeden pod drugim. */

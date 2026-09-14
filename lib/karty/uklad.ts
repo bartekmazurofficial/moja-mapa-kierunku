@@ -399,7 +399,7 @@ export function czytajTabeleDwukolumnowa(
   tresc: string,
 ): { wiersze: WierszTabeli[]; uwagi: string } | null {
   const t = tabela(tresc);
-  if (!t) return null;
+  if (!t) return czytajProfilProza(tresc);
   const wiersze = t.wiersze
     .filter((w) => (w[0] ?? "").trim() && (w[1] ?? "").trim())
     .map((w) => ({
@@ -407,6 +407,30 @@ export function czytajTabeleDwukolumnowa(
       wartosc: [bezPogrubien(w[1]), bezPogrubien(w[2] ?? "")].filter(Boolean).join(" · "),
     }));
   return wiersze.length >= 2 ? { wiersze, uwagi: pozaTabela(tresc) } : null;
+}
+
+/**
+ * Profil zapisany prozą: „A1 wysoko: … · A2 rdzeń: … · M1: …".
+ *
+ * Trzydzieści dwie karty mają tu jeden akapit zamiast tabeli, a treść jest
+ * dokładnie ta sama. Nowy wiersz zaczyna się wyłącznie tam, gdzie po kropce
+ * rozdzielającej stoi kod modułu z dwukropkiem; wszystko inne dokleja się do
+ * poprzedniego wiersza, bo wartości też bywają rozdzielane kropką.
+ */
+function czytajProfilProza(tresc: string): { wiersze: WierszTabeli[]; uwagi: string } | null {
+  const akapit = pierwszyAkapit(tresc);
+  const NAGLOWEK = /^((?:A[0-5]|M1)[^:]{0,24}):\s*(.*)$/;
+  const wiersze: WierszTabeli[] = [];
+  for (const czesc of nakropki(akapit)) {
+    const plaski = bezPogrubien(czesc);
+    const m = plaski.match(NAGLOWEK);
+    if (m) {
+      wiersze.push({ etykieta: m[1].trim(), wartosc: m[2].trim() });
+    } else if (wiersze.length > 0) {
+      wiersze[wiersze.length - 1].wartosc += ` · ${plaski}`;
+    }
+  }
+  return wiersze.length >= 3 ? { wiersze, uwagi: poPierwszymAkapicie(tresc) } : null;
 }
 
 /** Droga dojścia jako kolejne kroki. Sześćdziesiąt dwie karty w tabeli, sześćdziesiąt pięć prozą. */
@@ -424,11 +448,27 @@ export function czytajDroge(tresc: string): { kroki: KrokDrogi[]; uwagi: string 
   }
 
   const kroki: KrokDrogi[] = [];
+  /**
+   * Czas etapu: „1 do 3 lata", „po 5 do 8 latach", „około roku".
+   *
+   * Musi zaczynać się od liczby albo od przyimka z liczbą i mieścić się
+   * w trzydziestu znakach. Bez tego warunku wzorzec łapał wszystko po
+   * ostatnim przecinku i z „przejście do zarządzania operacyjnego, kadr albo
+   * zakupów po 5 do 8 latach" robił czas „kadr albo zakupów po 5 do 8 latach".
+   */
+  const CZAS = /^(?:po|od|około|ok\.)?\s*\d[^,]{0,28}(?:lat|lata|latach|rok|roku|miesi|tygod|dni)[^,]*$/i;
   for (const czesc of nakropki(pierwszyAkapit(tresc))) {
-    // „Szkoła branżowa albo kurs, 1 do 3 lata": czas stoi po ostatnim przecinku.
-    const dopasowanie = bezPogrubien(czesc).match(/^(.*),\s*([^,]*\d[^,]*(?:lat|lata|rok|roku|miesi)[^,]*)$/);
-    if (dopasowanie) kroki.push({ etap: dopasowanie[1].trim(), czas: dopasowanie[2].trim() });
-    else kroki.push({ etap: bezPogrubien(czesc) });
+    const plaski = bezPogrubien(czesc).replace(/\.$/, "");
+    // Najpierw czas po przecinku, potem czas doklejony na końcu bez przecinka.
+    const poPrzecinku = plaski.match(/^(.*),\s*([^,]+)$/);
+    const naKoncu = plaski.match(/^(.*?)\s+((?:po|od|około)\s+\d[^,]{0,28})$/i);
+    if (poPrzecinku && CZAS.test(poPrzecinku[2].trim())) {
+      kroki.push({ etap: poPrzecinku[1].trim(), czas: poPrzecinku[2].trim() });
+    } else if (naKoncu) {
+      kroki.push({ etap: naKoncu[1].trim(), czas: naKoncu[2].trim() });
+    } else {
+      kroki.push({ etap: plaski });
+    }
   }
   return kroki.length >= 2 ? { kroki, uwagi: poPierwszymAkapicie(tresc) } : null;
 }
@@ -562,8 +602,10 @@ export function czytajPunkty(tresc: string): { punkty: Punkt[]; uwagi: string } 
     if (etykietowe) {
       punkty.push({
         etykieta: bezPogrubien(etykieta).replace(/[.:]$/, ""),
-        // „**Portale urzędowe**: e-Deklaracje" zostawia dwukropek poza pogrubieniem.
-        opis: reszta.replace(/^[:.]\s*/, ""),
+        // „**Portale urzędowe**: e-Deklaracje" zostawia dwukropek poza
+        // pogrubieniem, a „**Excel**, do budżetów" przecinek. Oba są resztką
+        // po wycięciu etykiety ze zdania, nie częścią opisu.
+        opis: reszta.replace(/^[:.,;]\s*/, ""),
       });
     } else if (akapit.trim()) {
       luzne.push(akapit.trim());

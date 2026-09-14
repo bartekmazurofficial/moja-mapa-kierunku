@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { pobierzKarte } from "@/lib/raport/serwer";
@@ -68,7 +69,17 @@ export default async function Strona({
           <p className="text-drobne font-bold uppercase tracking-[0.28em] text-atrament-slaby">
             Zawód
           </p>
-          <h1 className="mt-2.5 text-naglowek-duzy font-extrabold leading-[1.02] tracking-[-0.03em] text-atrament sm:text-tytul">
+          {/* Nazwa zawodu jest największym tekstem w całym produkcie: w makiecie
+              zajmuje górną jedną trzecią kadru. Skala rośnie z szerokością, ale
+              przy długich nazwach („Funkcjonariusz Służby Więziennej") schodzi
+              o stopień, żeby nie rozpadła się na cztery wiersze. */}
+          <h1
+            className={`mt-2.5 font-extrabold leading-[1.02] tracking-[-0.035em] text-atrament ${
+              karta.tytul.length > 22
+                ? "text-naglowek-duzy sm:text-tytul"
+                : "text-tytul sm:text-[4.25rem]"
+            }`}
+          >
             {karta.tytul}
           </h1>
 
@@ -223,12 +234,19 @@ export default async function Strona({
 
       <Para>
         <Karta blok={w("czlowiek")} tytul="Co ten zawód robi z człowiekiem" slot="czlowiek" />
-        <Karta blok={w("mity")} tytul="Trzy mity" slot="mity" />
-      </Para>
-
-      <Para>
-        <Karta blok={w("dalej")} tytul="Co dalej z tego zawodu" slot="dalej" />
-        <Karta blok={w("pokrewne")} tytul="Zawody pokrewne" slot="pokrewne" />
+        <Karta
+          blok={w("mity")}
+          tytul="Trzy mity"
+          slot="mity"
+          pod={
+            <Haslawka
+              grupy={[
+                { tytul: "Co dalej z tego zawodu", blok: w("dalej"), barwa: "akcent" },
+                { tytul: "Zawody pokrewne", blok: w("pokrewne"), barwa: "fiolet" },
+              ]}
+            />
+          }
+        />
       </Para>
 
       {reszta.length > 0 ? (
@@ -250,7 +268,13 @@ export default async function Strona({
         </Link>
         <Link
           href={`/u/${kod}/zawody`}
-          className="przejscie przycisk-gradient flex min-h-[4.5rem] items-center justify-center gap-3.5 rounded-[1.25rem] px-6 text-tresc-duza font-bold"
+          className="przejscie flex min-h-[4.5rem] items-center justify-center gap-3.5 rounded-[1.25rem] px-6 text-tresc-duza font-bold text-na-akcencie"
+          style={{
+            // Makieta prowadzi gradient od pomarańczu do błękitu. Przystanki
+            // są nasze: jaśniejsze odcienie nie przechodzą 4,5:1 pod bielą.
+            background: "linear-gradient(95deg, #b8460f 0%, #c2185b 42%, #1d5bff 100%)",
+            boxShadow: "0 16px 36px -16px rgba(194, 24, 91, 0.55)",
+          }}
         >
           Sprawdź podobne zawody <span aria-hidden>→</span>
         </Link>
@@ -266,11 +290,19 @@ export default async function Strona({
  * zostawiać połowę wiersza pustą. Gdy nie ma żadnej, nie ma też odstępu.
  */
 function Para({ children }: { children: React.ReactNode }) {
-  const obecne = (Array.isArray(children) ? children : [children]).filter(Boolean);
-  if (obecne.length === 0) return null;
-  return (
-    <div className={obecne.length === 2 ? "grid gap-5 lg:grid-cols-2" : "grid gap-5"}>{children}</div>
+  /**
+   * Liczymy sekcje po tym, czy mają blok, a nie po tym, czy element istnieje.
+   *
+   * `<Karta blok={null}>` renderuje null, ale sam element jest prawdziwy, więc
+   * `filter(Boolean)` liczył go jako obecny. Karta bez pary dostawała wtedy
+   * połowę wiersza i pustkę obok, zamiast całej szerokości.
+   */
+  const obecne = React.Children.toArray(children).filter(
+    (dziecko) =>
+      React.isValidElement<{ blok?: unknown }>(dziecko) && Boolean(dziecko.props.blok),
   );
+  if (obecne.length === 0) return null;
+  return <div className={obecne.length === 2 ? "grid gap-5 lg:grid-cols-2" : "grid gap-5"}>{obecne}</div>;
 }
 
 /**
@@ -355,6 +387,7 @@ function Karta({
   duza,
   dwieSzpalty,
   obok,
+  pod,
 }: {
   blok: Blok | null;
   tytul: string;
@@ -365,6 +398,8 @@ function Karta({
   dwieSzpalty?: boolean;
   /** Drobiazg obok nagłówka, na przykład „skala 1 do 5". */
   obok?: React.ReactNode;
+  /** Treść doklejona pod blokiem, w tej samej karcie. */
+  pod?: React.ReactNode;
 }) {
   if (!blok) return null;
   return (
@@ -383,7 +418,47 @@ function Karta({
       <div className={dwieSzpalty ? "gap-x-11 lg:columns-2 [&_p]:break-inside-avoid" : undefined}>
         <BlokKarty blok={blok} bezTytulu bezPrzyciecia />
       </div>
+      {pod}
     </section>
+  );
+}
+
+/**
+ * Dwie listy haseł pod mitami: dokąd ten zawód prowadzi i co jest obok.
+ *
+ * Stoją w jednej karcie, bo to są pastylki do rzucenia okiem, a nie sekcje
+ * do czytania. Osobno robiły z dwóch krótkich list dwie pełne karty.
+ */
+function Haslawka({
+  grupy,
+}: {
+  grupy: Array<{ tytul: string; blok: Blok | null; barwa: "akcent" | "fiolet" }>;
+}) {
+  const obecne = grupy.filter((g) => g.blok?.rodzaj === "hasla");
+  if (obecne.length === 0) return null;
+  return (
+    <div className="mt-6 flex flex-col gap-5 border-t border-linia pt-5">
+      {obecne.map((g) => (
+        <div key={g.tytul}>
+          <p className="text-male font-bold text-atrament">{g.tytul}</p>
+          <ul className="mt-2.5 flex flex-wrap gap-2">
+            {(g.blok as { hasla: string[] }).hasla.map((h) => (
+              <li
+                key={h}
+                className="rounded-full px-3.5 py-1.5 text-male font-semibold"
+                style={
+                  g.barwa === "akcent"
+                    ? { background: "var(--color-akcent-tlo)", color: "var(--color-akcent-jasny)" }
+                    : { background: "#f2ecff", color: "#5b21b6" }
+                }
+              >
+                {h}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
   );
 }
 
