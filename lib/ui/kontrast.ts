@@ -103,6 +103,22 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
   { nazwa: "ściszony na płycie karty", tekst: "#3d4460", tlo: "#f6f7fc" },
   { nazwa: "słaby na płycie karty", tekst: "#5b6480", tlo: "#f6f7fc" },
 
+  // Naglowki kafli na ciemnej plycie przyszlosci.
+  { nazwa: "pomarańcz na ciemnej płycie", tekst: "#ffb06b", tlo: "#202a5e" },
+  { nazwa: "zieleń na ciemnej płycie", tekst: "#8de0b6", tlo: "#202a5e" },
+  { nazwa: "błękit na ciemnej płycie", tekst: "#a9bdff", tlo: "#362b66" },
+
+  // Znaczniki modulow w profilu karty zawodu.
+  { nazwa: "znacznik braku w profilu", tekst: "#5b6480", tlo: "#f1f2f8" },
+  { nazwa: "znacznik A5 w profilu", tekst: "#b8460f", tlo: "#fff1e8" },
+  { nazwa: "znacznik M1 w profilu", tekst: "#a15c00", tlo: "#fff4dc" },
+
+  // Ekran ukonczenia assessmentu: pastelowe tlo pod tekstem.
+  { nazwa: "ściszony na tle ukończenia", tekst: "#3d4460", tlo: "#eef0fc" },
+  { nazwa: "słaby na tle ukończenia", tekst: "#5b6480", tlo: "#eef0fc" },
+  { nazwa: "słaby na różowym rogu ukończenia", tekst: "#5b6480", tlo: "#fde3d6" },
+  { nazwa: "odręczny na tle ukończenia", tekst: "#5b21b6", tlo: "#f3eefb" },
+
   // Plyty raportu: tekst sciszony na tintach sekcji.
   { nazwa: "ściszony na tincie pomarańczu", tekst: "#3d4460", tlo: "#fff1e8" },
   { nazwa: "ściszony na tincie błękitu", tekst: "#3d4460", tlo: "#e9f0ff" },

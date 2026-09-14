@@ -5,7 +5,17 @@ import { pobierzStanModulu, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
 import { KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { ZAMKNIECIE } from "@/lib/content/wspolne";
+import { Ukonczenie } from "@/components/moduly/Ukonczenie";
 import type { KodModulu } from "@/lib/moduly/typy";
+
+/** Polska odmiana po liczbie: 1 odpowiedź, 2-4 odpowiedzi, 5 i więcej odpowiedzi. */
+function odmiana(ile: number, jeden: string, kilka: string, wiele: string): string {
+  const reszta = ile % 10;
+  const setka = ile % 100;
+  if (ile === 1) return `1 ${jeden}`;
+  if (reszta >= 2 && reszta <= 4 && (setka < 12 || setka > 14)) return `${ile} ${kilka}`;
+  return `${ile} ${wiele}`;
+}
 
 export const dynamic = "force-dynamic";
 
@@ -45,50 +55,30 @@ export default async function Strona({
   const stan = await pobierzStanModulu(uczestnik.id, modul as KodModulu);
 
   if (stan.czesc === null || stan.definicja === null) {
+    /**
+     * Ekran zamykajacy modul. Uczestnik konczy kilkadziesiat minut pracy i ma
+     * dostac moment, a nie jeden akapit. Znaczniki mowia o wykonanej pracy,
+     * nigdy o wyniku: ile zawodow sie dopasowalo, odslania prowadzacy na
+     * spotkaniu i nic z tego nie ma prawa wyciec wczesniej.
+     */
+    const odpowiedzi = stan.liczbaOdpowiedzi;
+    const znaczniki = [
+      odpowiedzi > 0 ? odmiana(odpowiedzi, "odpowiedź", "odpowiedzi", "odpowiedzi") : null,
+      stan.zakonczoneCzesci.length > 1
+        ? odmiana(stan.zakonczoneCzesci.length, "część", "części", "części")
+        : null,
+      `moduł ${KOLEJNOSC_MODULOW.indexOf(modul as KodModulu) + 1} z ${KOLEJNOSC_MODULOW.length}`,
+    ].filter((x): x is string => Boolean(x));
+
     return (
-      /**
-       * Ekran zamykajacy modul. Uczestnik konczy kilkadziesiat minut pracy i ma
-       * sie dowiedziec, co z tych odpowiedzi wynika - bez pokazywania wyniku,
-       * bo regula odslaniania warstwami jest wazniejsza. „Dziekujemy, dalej"
-       * to za malo po takiej ilosci pracy.
-       */
-      <main className="mx-auto flex min-h-dvh max-w-czytelna flex-col justify-center px-6 py-16">
-        <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">
-          {NAZWY_MODULOW[modul as KodModulu]}
-        </p>
-        <h1 className="mt-3 text-naglowek font-extrabold tracking-tight">
-          Ta część jest za Tobą
-        </h1>
-        <p className="szklo mt-6 p-6 text-tresc-duza leading-relaxed text-atrament">
-          {ZAMKNIECIE[modul] ?? "Gotowe. Twoje odpowiedzi są zapisane."}
-        </p>
-        <p className="proza mt-5 text-atrament-sciszony">
-          Możesz zobaczyć swoje odpowiedzi albo wypełnić tę część jeszcze raz. Wtedy poprzednie
-          odpowiedzi znikają i zaczynasz od pierwszego ekranu.
-        </p>
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          {modul !== "A0" ? (
-            <Link
-              href={`/u/${kod}/wyniki/${modul}`}
-              className="przejscie inline-flex min-h-11 items-center rounded-lg bg-akcent px-6 text-male font-medium text-na-akcencie hover:bg-akcent-ciemny"
-            >
-              Zobacz swoje odpowiedzi
-            </Link>
-          ) : null}
-          <Link
-            href={`/u/${kod}/modul/${modul}/od-nowa`}
-            className="przejscie inline-flex min-h-11 items-center rounded-lg border border-linia-mocna px-6 text-male font-semibold text-atrament-sciszony hover:border-akcent/45 hover:text-akcent-jasny"
-          >
-            Wypełnij od nowa
-          </Link>
-          <Link
-            href={`/u/${kod}/moduly`}
-            className="przejscie inline-flex min-h-11 items-center px-2 text-male text-atrament-slaby hover:text-atrament"
-          >
-            Wróć do listy
-          </Link>
-        </div>
-      </main>
+      <Ukonczenie
+        kodUczestnika={kod}
+        modul={modul}
+        nazwaModulu={NAZWY_MODULOW[modul as KodModulu]}
+        zamkniecie={ZAMKNIECIE[modul] ?? "Gotowe. Twoje odpowiedzi są zapisane."}
+        znaczniki={znaczniki}
+        zObszarami={modul !== "A0"}
+      />
     );
   }
 

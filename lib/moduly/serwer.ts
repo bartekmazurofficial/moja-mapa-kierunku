@@ -185,12 +185,18 @@ export interface StanModulu {
   zapisane: Record<string, unknown>;
   wszystkieCzesci: string[];
   zakonczoneCzesci: string[];
+  /** Ile odpowiedzi uczestnik zapisal w calym module, bez markerow zakonczenia. */
+  liczbaOdpowiedzi: number;
 }
 
 export async function pobierzStanModulu(uczestnikId: string, modul: KodModulu): Promise<StanModulu> {
   const zapisane = await pobierzOdpowiedzi(uczestnikId, modul);
   const czesc = aktualnaCzesc(modul, zapisane);
   const zakonczone = CZESCI_MODULOW[modul].filter((c) => zapisane[c]?.[MARKER_ZAKONCZENIA]);
+  const liczbaOdpowiedzi = Object.values(zapisane).reduce(
+    (suma, wCzesci) => suma + Object.keys(wCzesci).filter((k) => k !== MARKER_ZAKONCZENIA).length,
+    0,
+  );
 
   if (czesc === null) {
     return {
@@ -200,6 +206,7 @@ export async function pobierzStanModulu(uczestnikId: string, modul: KodModulu): 
       zapisane: {},
       wszystkieCzesci: CZESCI_MODULOW[modul],
       zakonczoneCzesci: zakonczone,
+      liczbaOdpowiedzi,
     };
   }
 
@@ -214,6 +221,7 @@ export async function pobierzStanModulu(uczestnikId: string, modul: KodModulu): 
     zapisane: zapisane[czesc] ?? {},
     wszystkieCzesci: CZESCI_MODULOW[modul],
     zakonczoneCzesci: zakonczone,
+    liczbaOdpowiedzi,
   };
 }
 

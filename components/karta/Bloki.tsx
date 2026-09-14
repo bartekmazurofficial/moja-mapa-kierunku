@@ -66,7 +66,7 @@ export function BlokKarty({
       return (
         <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <Widelki etapy={blok.etapy} />
-          <Proza tresc={blok.uwagi} />
+          <Podsumowanie tresc={blok.uwagi} barwa={blok.slot === "koszt" ? "koszt" : "akcent"} />
         </Sekcja>
       );
     case "droga":
@@ -107,6 +107,7 @@ export function BlokKarty({
           <Punkty
             punkty={blok.punkty}
             ostrzezenie={blok.slot === "kto"}
+            kreska={blok.slot === "mity"}
             kafelki={blok.slot === "narzedzia" || blok.slot === "czlowiek"}
             // Narzędzia stoją na całej szerokości i mieszczą trzy kolumny.
             // „Co robi z człowiekiem" dzieli wiersz z mitami, więc jedna.
@@ -119,7 +120,10 @@ export function BlokKarty({
       return (
         <Sekcja tytul={naglowek} bezPrzyciecia={bezPrzyciecia}>
           <TabelaWierszy wiersze={blok.wiersze} znacznik={blok.slot === "profil"} />
-          <Proza tresc={blok.uwagi} />
+          <Podsumowanie
+            tresc={blok.uwagi}
+            barwa={blok.slot === "koszt" ? "koszt" : "akcent"}
+          />
         </Sekcja>
       );
     case "zagrozenie":
@@ -163,6 +167,28 @@ function Sekcja({
           dostaje przycisku wcale: o tym decyduje zmierzona wysokość. */}
       {bezPrzyciecia ? children : <Zwijane>{children}</Zwijane>}
     </section>
+  );
+}
+
+/**
+ * Zdanie pod tabelą jako wyróżniona ramka.
+ *
+ * W kartach to nie jest przypis, tylko wniosek: „jeden z najniższych progów
+ * finansowych w całej bazie", „największy skok w karierze następuje tutaj".
+ * Puszczone przez prozę ginęło pod tabelą.
+ */
+function Podsumowanie({ tresc, barwa }: { tresc: string; barwa: "koszt" | "akcent" }) {
+  if (!tresc.trim()) return null;
+  const b =
+    barwa === "koszt"
+      ? { tlo: "var(--color-pomarancz-tlo)", atrament: "var(--color-pomarancz)" }
+      : { tlo: "var(--color-akcent-tlo)", atrament: "var(--color-akcent-jasny)" };
+  return (
+    <div
+      className="karta mt-5 rounded-2xl px-5 py-4 [&_p]:mt-0 [&_p+p]:mt-2 [&_strong]:font-extrabold"
+      style={{ background: b.tlo, color: b.atrament }}
+      dangerouslySetInnerHTML={{ __html: marked.parse(tresc, { async: false }) }}
+    />
   );
 }
 
@@ -275,10 +301,12 @@ function Widelki({ etapy }: { etapy: WidelkiEtap[] }) {
     >
       {etapy.map((e, i) => (
         <li key={`${e.etap}-${i}`} className="rounded-2xl bg-plyta px-5 py-4">
-          <p className="text-male font-bold text-atrament-slaby">{e.etap}</p>
-          <p className="mt-1.5 text-naglowek-maly font-extrabold leading-tight tracking-tight text-atrament">
-            {e.kwota}
-          </p>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <p className="text-male font-bold text-atrament">{e.etap}</p>
+            <p className="text-tresc-duza font-extrabold leading-tight tracking-tight text-atrament">
+              {e.kwota}
+            </p>
+          </div>
           {e.uwaga ? (
             <p className="mt-1.5 text-drobne leading-relaxed text-atrament-sciszony">{e.uwaga}</p>
           ) : null}
@@ -295,13 +323,15 @@ function Droga({ kroki }: { kroki: KrokDrogi[] }) {
   // wtedy w jednym spojrzeniu, zamiast wymuszać przewijanie.
   const KOLORY_ETAPU = ["#1d5bff", "#3f54ee", "#6b4fe8", "#8b5cf6", "#b05ce0", "#b8460f"];
   return (
-    <ol className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
+    // Jedno pasmo, przewijane w poziomie: droga ma się czytać jako ciąg
+    // etapów, a nie jako siatka kafli, w której kolejność ginie.
+    <ol className="-mx-1 flex snap-x gap-3.5 overflow-x-auto px-1 pb-2">
       {kroki.map((k, i) => {
         const kolor = KOLORY_ETAPU[i % KOLORY_ETAPU.length];
         return (
           <li
             key={`${k.etap}-${i}`}
-            className="rounded-2xl bg-plyta px-5 py-4"
+            className="w-[15rem] shrink-0 snap-start rounded-2xl bg-plyta px-5 py-4"
             style={{ borderTop: `3px solid ${kolor}` }}
           >
             {k.czas ? (
@@ -393,15 +423,39 @@ function Punkty({
   punkty,
   ostrzezenie,
   kafelki,
+  kreska,
   waskie,
 }: {
   punkty: Punkt[];
   ostrzezenie?: boolean;
   /** Narzędzia i „co robi z człowiekiem": kafel z tytułem, bez numeru. */
   kafelki?: boolean;
+  /** Mity: pionowa kreska po lewej. Numer sugerowałby kolejność, a jej nie ma. */
+  kreska?: boolean;
   /** Blok dzieli wiersz z innym: jedna kolumna zamiast trzech. */
   waskie?: boolean;
 }) {
+  if (kreska) {
+    return (
+      <ul className="flex flex-col gap-5">
+        {punkty.map((p, i) => (
+          <li
+            key={`${p.etykieta}-${i}`}
+            className="border-l-[3px] pl-4"
+            style={{ borderColor: "var(--color-pomarancz-blask)" }}
+          >
+            <p className="text-tresc font-bold leading-snug text-atrament">{p.etykieta}</p>
+            {p.opis ? (
+              <p className="mt-1 text-male leading-relaxed text-atrament-sciszony">
+                {p.opis.replace(/\*\*/g, "")}
+              </p>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   if (kafelki) {
     return (
       <ul className={`grid gap-3.5 ${waskie ? "" : "sm:grid-cols-2 xl:grid-cols-3"}`}>
@@ -531,24 +585,67 @@ function SkalaZawodu({ liczby }: { liczby: LiczbaSkali[] }) {
  * Profil dostaje po lewej znacznik modułu („A1 wysoko"), bo to nazwa części
  * programu, a nie zdanie. Koszt zostaje zwykłą etykietą.
  */
+/**
+ * Znacznik modulu w profilu: kolor mowi, o ktory modul chodzi, a wyszarzenie
+ * o tym, ze wiersz mowi o BRAKU. „A1 nieistotne" i „A4 nie zaspokaja" to nie
+ * sa wady zawodu ani uczestnika, tylko informacja, czego tu nie ma - i tak
+ * maja wygladac: spokojnie, nie na czerwono.
+ */
+const BARWY_MODULOW: Array<{ dopasowanie: RegExp; tlo: string; atrament: string }> = [
+  { dopasowanie: /^A1/i, tlo: "#e9f0ff", atrament: "#0a3ac9" },
+  { dopasowanie: /^A2/i, tlo: "#e9f0ff", atrament: "#0a3ac9" },
+  { dopasowanie: /^A3/i, tlo: "#f2ecff", atrament: "#5b21b6" },
+  { dopasowanie: /^A4/i, tlo: "#e3faed", atrament: "#067a45" },
+  { dopasowanie: /^A5/i, tlo: "#fff1e8", atrament: "#b8460f" },
+  { dopasowanie: /^M1/i, tlo: "#fff4dc", atrament: "#a15c00" },
+];
+
+/** Wiersz mowiacy o braku: „nieistotne", „nie zaspokaja". */
+function oBraku(etykieta: string): boolean {
+  return /\bnie\b|nieistotn/i.test(etykieta);
+}
+
+function barwaModulu(etykieta: string): { tlo: string; atrament: string } {
+  if (oBraku(etykieta)) return { tlo: "#f1f2f8", atrament: "#5b6480" };
+  return (
+    BARWY_MODULOW.find((b) => b.dopasowanie.test(etykieta.trim())) ?? {
+      tlo: "#e9f0ff",
+      atrament: "#0a3ac9",
+    }
+  );
+}
+
 function TabelaWierszy({ wiersze, znacznik }: { wiersze: WierszTabeli[]; znacznik?: boolean }) {
   return (
     <ul className="flex flex-col">
-      {wiersze.map((w, i) => (
-        <li
-          key={`${w.etykieta}-${i}`}
-          className="grid gap-1.5 border-b border-linia py-3 last:border-b-0 sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-4"
-        >
-          {znacznik ? (
-            <span className="justify-self-start rounded-lg bg-akcent-tlo px-2.5 py-1 text-drobne font-extrabold text-akcent-jasny">
-              {w.etykieta}
+      {wiersze.map((w, i) => {
+        const b = znacznik ? barwaModulu(w.etykieta) : null;
+        const przygaszony = znacznik && oBraku(w.etykieta);
+        return (
+          <li
+            key={`${w.etykieta}-${i}`}
+            className="grid gap-1.5 border-b border-linia py-3 last:border-b-0 sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-4"
+          >
+            {b ? (
+              <span
+                className="justify-self-start rounded-lg px-2.5 py-1 text-drobne font-extrabold"
+                style={{ background: b.tlo, color: b.atrament }}
+              >
+                {w.etykieta}
+              </span>
+            ) : (
+              <span className="text-male font-bold text-atrament-slaby">{w.etykieta}</span>
+            )}
+            <span
+              className={`text-male leading-relaxed ${
+                przygaszony ? "text-atrament-slaby" : "text-atrament"
+              }`}
+            >
+              {w.wartosc}
             </span>
-          ) : (
-            <span className="text-male font-bold text-atrament-slaby">{w.etykieta}</span>
-          )}
-          <span className="text-male leading-relaxed text-atrament">{w.wartosc}</span>
-        </li>
-      ))}
+          </li>
+        );
+      })}
     </ul>
   );
 }

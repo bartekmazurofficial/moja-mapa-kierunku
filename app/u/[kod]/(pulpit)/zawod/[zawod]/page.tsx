@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { pobierzKarte } from "@/lib/raport/serwer";
-import { ulozKarte, wSlocie, type Blok, type Slot } from "@/lib/karty/uklad";
+import { czytajPunkty, ulozKarte, wSlocie, type Blok, type Slot } from "@/lib/karty/uklad";
 import { BlokKarty, Proza } from "@/components/karta/Bloki";
 import { POZIOM, STUDIA, KOSZT, ZAGROZENIE } from "@/lib/karty/etykiety";
 import { towarzyszeZKlastra } from "@/lib/karty/klastry";
@@ -398,6 +398,10 @@ function Przyszlosc({ blok, stopien }: { blok: Blok | null; stopien?: string }) 
   if (!blok) return null;
   const werdykt = blok.rodzaj === "zagrozenie" ? blok.werdykt : null;
   const uwagi = blok.rodzaj === "zagrozenie" ? blok.uwagi : null;
+  const czytane = uwagi ? czytajPunkty(uwagi) : null;
+  const wszystkie = czytane?.punkty ?? [];
+  const wniosek = wszystkie.find((p) => /^wniosek/i.test(p.etykieta)) ?? null;
+  const kafle = wszystkie.filter((p) => p !== wniosek);
   return (
     <section className="rounded-karta px-6 py-7 text-na-akcencie shadow-[0_24px_50px_-26px_rgba(27,35,82,0.7)] sm:px-9 sm:py-9"
       style={{ background: "linear-gradient(150deg, #161c45, #202a5e 45%, #362b66)" }}
@@ -423,7 +427,35 @@ function Przyszlosc({ blok, stopien }: { blok: Blok | null; stopien?: string }) 
         <p className="mt-6 max-w-[56rem] text-tresc-duza font-bold leading-[1.5]">{werdykt}</p>
       ) : null}
 
-      {uwagi ? (
+      {/* Uzasadnienie rozbite na kafle po pogrubionych nagłówkach: „co się
+          zmienia", „co zostaje", „horyzont dziesięcioletni". Nazwy biorą się
+          z treści karty, nie z szablonu, bo autorzy nazywają je różnie i nie
+          wolno im podmieniać etykiet. Wniosek, jeśli jest, stoi na końcu
+          na jasnej płycie, bo to jedyne zdanie do zapamiętania. */}
+      {kafle.length > 0 ? (
+        <>
+          <div className="mt-7 grid gap-4 lg:grid-cols-3">
+            {kafle.map((k, i) => (
+              <div key={`${k.etykieta}-${i}`} className="rounded-[1.1rem] bg-white/10 px-5 py-5">
+                <p className="text-tresc font-extrabold" style={{ color: BARWY_PRZYSZLOSCI[i % 3] }}>
+                  {k.etykieta}
+                </p>
+                <p className="mt-2.5 text-male leading-relaxed text-[#dfe4fb]">
+                  {k.opis.replace(/\*\*/g, "")}
+                </p>
+              </div>
+            ))}
+          </div>
+          {wniosek ? (
+            <div className="mt-5 rounded-[1.1rem] bg-panel px-6 py-5">
+              <p className="text-tresc font-extrabold text-atrament">{wniosek.etykieta}</p>
+              <p className="mt-2 text-male leading-relaxed text-atrament-sciszony">
+                {wniosek.opis.replace(/\*\*/g, "")}
+              </p>
+            </div>
+          ) : null}
+        </>
+      ) : uwagi ? (
         <div className="mt-6 rounded-[1.1rem] bg-white/10 px-5 py-5 sm:px-6">
           <div className="proza-ciemna">
             <Proza tresc={uwagi} />
@@ -439,6 +471,9 @@ function Przyszlosc({ blok, stopien }: { blok: Blok | null; stopien?: string }) 
     </section>
   );
 }
+
+/** Kolory nagłówków kafli na ciemnej płycie: pomarańcz, zieleń, błękit. */
+const BARWY_PRZYSZLOSCI = ["#ffb06b", "#8de0b6", "#a9bdff"];
 
 const BARWY: Record<string, { obwod: string; tlo: string; atrament: string }> = {
   zielony: { obwod: "#8fe3b8", tlo: "#e3faed", atrament: "#067a45" },

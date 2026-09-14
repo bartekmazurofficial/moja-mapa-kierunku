@@ -459,6 +459,168 @@ body::after {
   color: #ffffff;
 }
 
+/**
+ * Ekran ukończenia assessmentu.
+ *
+ * Jedyne miejsce w produkcie z animacją dłuższą niż 200 ms i jedyne, gdzie to
+ * jest na miejscu: uczestnik właśnie skończył kilkadziesiąt minut pracy.
+ * Wszystko poniżej stoi w `@media (prefers-reduced-motion: no-preference)`,
+ * więc kto ma wyłączony ruch, dostaje ten sam ekran bez ani jednego klatkażu.
+ */
+@keyframes wschod {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rozjasnienie {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pierscien {
+  from {
+    stroke-dashoffset: 478;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ptaszek {
+  from {
+    stroke-dashoffset: 56;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wyskok {
+  0% {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes rozkwit {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.55);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.1);
+  }
+}
+
+@keyframes iskra {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scaleY(0.4);
+  }
+  22% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-190px) scaleY(1);
+  }
+}
+
+@keyframes pylek {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-240px) scale(1);
+  }
+}
+
+@keyframes tetno {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes plyniecie {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(40px, -30px) scale(1.08);
+  }
+}
+
+@keyframes plyniecie-wstecz {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-50px, 26px) scale(1.1);
+  }
+}
+
+@keyframes obrot {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes podkreslenie {
+  from {
+    stroke-dashoffset: 210;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/** Ruch tylko dla tych, którzy go chcą. Reszta widzi gotowy ekran od razu. */
+@media (prefers-reduced-motion: no-preference) {
+  .ukonczenie [data-ruch] {
+    animation-name: var(--ruch);
+    animation-duration: var(--czas, 800ms);
+    animation-delay: var(--zwloka, 0ms);
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.25, 1);
+    animation-fill-mode: both;
+    animation-iteration-count: var(--powtorzenia, 1);
+  }
+}
+
 /* Tekst czytelniczy: karty zawodów i raport */
 .proza {
   font-size: var(--text-tresc);
