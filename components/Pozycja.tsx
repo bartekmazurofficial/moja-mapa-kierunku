@@ -240,21 +240,27 @@ function KartaOdpowiedzi({
         Kadr jest neutralny, nie w kolorze miejsca. Osiem kart w ośmiu tintach
         czyta się jak osiem kategorii, a to są warianty jednej odpowiedzi.
         Kolor wróci wtedy, gdy w kadrze stanie zdjęcie.
+
+        Opcja wyłączna („nie wiem", „nic z tego", odmowa) kadru nie dostaje.
+        To jest wyjście z pytania, nie jedna z odpowiedzi, i kadr stawiałby ją
+        na równi z treścią.
       */}
-      <span
-        aria-hidden
-        className="flex aspect-[16/9] w-full items-center justify-center overflow-hidden bg-plyta text-atrament-slaby"
-      >
-        {opcja.ikona && maObraz(opcja.ikona) ? (
-          <Obraz klucz={opcja.ikona} pelny wybor kolor={kolor} />
-        ) : (
-          <svg viewBox="0 0 24 24" className="h-7 w-7 opacity-30" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <rect x="3" y="5" width="18" height="14" rx="2.5" />
-            <path d="m6 16 4-4 3 3 2.5-2.5L18 15" />
-            <circle cx="9" cy="9.5" r="1.2" />
-          </svg>
-        )}
-      </span>
+      {opcja.ikona ? (
+        <span
+          aria-hidden
+          className="flex aspect-[16/9] w-full items-center justify-center overflow-hidden bg-plyta text-atrament-slaby"
+        >
+          {maObraz(opcja.ikona) ? (
+            <Obraz klucz={opcja.ikona} pelny wybor kolor={kolor} />
+          ) : (
+            <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.4">
+              <rect x="3" y="5" width="18" height="14" rx="2.5" />
+              <path d="m6 16 4-4 3 3 2.5-2.5L18 15" />
+              <circle cx="9" cy="9.5" r="1.2" />
+            </svg>
+          )}
+        </span>
+      ) : null}
       <span
         className={`relative flex flex-1 items-start gap-3 px-4 py-3.5 ${wybrana ? "bg-akcent-tlo/60" : "bg-panel"}`}
       >

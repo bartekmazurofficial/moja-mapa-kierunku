@@ -22,7 +22,7 @@ import {
 } from "../content/a4";
 import { INSTRUKCJA_A5, ODPOWIEDZI_A5, ZDANIA_A5 } from "../content/a5";
 import { INSTRUKCJA_M1, OBSZARY_M1, PARY_M1 } from "../content/m1";
-import { PYTANIA_A0, INSTRUKCJA_A0 } from "../content/a0";
+import { PRZEDMIOTY_A0, PYTANIA_A0, INSTRUKCJA_A0 } from "../content/a0";
 import { ODDECHY } from "../content/wspolne";
 import { FILTRY_A5, OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_M1 } from "../domain/slowniki";
 import type { CzescModulu, Ekran, KodModulu, Pozycja } from "./typy";
@@ -159,6 +159,28 @@ const ZNAKI_A0: Record<number, string> = {
   6: "a0-zdrowie",
 };
 
+/** Kody przedmiotow szkolnych: ta sama lista wraca w szesciu pytaniach. */
+const PRZEDMIOTY_PO_KODZIE = new Set(PRZEDMIOTY_A0.map((p) => p.kod));
+
+/**
+ * Klucz obrazu odpowiedzi A0.
+ *
+ * Przedmioty szkolne dostaja jeden wspolny plik na przedmiot, a nie osobny
+ * w kazdym pytaniu. Matematyka wyglada tak samo, gdy uczestnik ja planuje,
+ * gdy ja zdaje i gdy sie z nia meczy: rozni sie pytanie, nie przedmiot.
+ * Osobne pliki znaczylyby osiemdziesiat obrazkow zamiast czternastu i cztery
+ * rozne matematyki na czterech ekranach.
+ *
+ * Opcja wylaczna („nie wiem", „nic z tego", odmowa) nie dostaje obrazu wcale.
+ * To jest wyjscie z pytania, nie jedna z odpowiedzi, i kadr stawialby ja
+ * na rowni z trescia.
+ */
+function kluczObrazuA0(idPytania: string, kod: string, wylaczna: boolean): string | undefined {
+  if (wylaczna) return undefined;
+  if (PRZEDMIOTY_PO_KODZIE.has(kod)) return `a0-przedmiot-${kod}`;
+  return `a0-${idPytania}-${kod}`;
+}
+
 function czescA0(): CzescModulu {
   const ekrany: Ekran[] = [wstep("A0", INSTRUKCJA_A0)];
   const bloki = [...new Set(PYTANIA_A0.map((p) => p.blok))];
@@ -176,16 +198,16 @@ function czescA0(): CzescModulu {
               : "wielokrotny",
         tresc: pytanie.tresc,
         podpis: pytanie.podpis,
-        opcje: pytanie.opcje?.map((o) => ({
-          kod: o.kod,
-          etykieta: o.etykieta,
-          nadpis: o.nadpis,
-          // Klucz obrazu jest zlozony z pytania i kodu, bo ten sam kod wraca
-          // w kilku pytaniach („matematyka" w rozszerzeniach i w mocnych
-          // przedmiotach) i ma tam znaczyc co innego.
-          ikona: `a0-${pytanie.id}-${o.kod}`,
-          wylaczna: o.odmowa || o.kod === "brak" || o.kod === "nic" || o.kod === "nie_wiem",
-        })),
+        opcje: pytanie.opcje?.map((o) => {
+          const wylaczna = o.odmowa || o.kod === "brak" || o.kod === "nic" || o.kod === "nie_wiem";
+          return {
+            kod: o.kod,
+            etykieta: o.etykieta,
+            nadpis: o.nadpis,
+            ikona: kluczObrazuA0(pytanie.id, o.kod, wylaczna),
+            wylaczna,
+          };
+        }),
         // A0 pyta o sytuację życiową i tam obraz niesie treść, a nie ozdobę.
         // Pole tekstowe kart nie ma.
         uklad: pytanie.typ === "tekst" ? undefined : "karty",
