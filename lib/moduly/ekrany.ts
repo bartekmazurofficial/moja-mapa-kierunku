@@ -17,6 +17,7 @@ import { ODDECHY } from "../content/wspolne";
 import { FILTRY_A5, OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_M1 } from "../domain/slowniki";
 import type { CzescModulu, Ekran, KodModulu, Pozycja } from "./typy";
 import { zbudujPlan, type PlanModulu } from "./plan";
+import { minutyZPozycji, zakresPozycji } from "./miara";
 
 /** Wynik czesci wczesniejszych, potrzebny do zbudowania czesci zaleznych. */
 export interface KontekstModulu {
@@ -74,6 +75,31 @@ export function liczbaPozycjiModulu(modul: KodModulu): number {
   POZYCJI_W_MODULE.set(modul, ile);
   return ile;
 }
+
+/** Ile mniej wiecej zajmie caly modul, w minutach. Do listy modulow. */
+export function minutyModulu(modul: KodModulu): number {
+  return minutyZPozycji(zakresPozycjiModulu(modul).max);
+}
+
+/**
+ * Ile pytan zobaczy jeden uczestnik: od najkrotszej sciezki do najdluzszej.
+ *
+ * `liczbaPozycjiModulu` sumuje wszystko, co stoi w definicji, i do paska
+ * postepu to wystarcza. Liczbe obiecana uczestnikowi trzeba wziac z jego
+ * sciezki, a to liczy `zakresPozycji` z lib/moduly/miara.ts.
+ */
+export function zakresPozycjiModulu(modul: KodModulu): { min: number; max: number } {
+  const zapamietane = ZAKRES_W_MODULE.get(modul);
+  if (zapamietane) return zapamietane;
+  const plan = zbudujPlan(modul);
+  const zakres = zakresPozycji(
+    CZESCI_MODULOW[modul].flatMap((czesc) => zbudujCzesc(modul, czesc, plan, {}).ekrany),
+  );
+  ZAKRES_W_MODULE.set(modul, zakres);
+  return zakres;
+}
+
+const ZAKRES_W_MODULE = new Map<KodModulu, { min: number; max: number }>();
 
 /**
  * Ekran oddechu w dlugim module.

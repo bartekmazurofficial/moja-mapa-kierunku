@@ -31,23 +31,35 @@ export interface DoWyczyszczenia {
   gotowy: boolean;
   /** Czy jest cokolwiek do skasowania. */
   cokolwiek: boolean;
+  /**
+   * Kiedy uczestnik odpowiadal ostatni raz. Ekran potwierdzenia nazywa data
+   * to, co ma zniknac: "masz odpowiedzi z 28 sierpnia" jest konkretem,
+   * a "masz zapisane odpowiedzi" brzmi jak komunikat systemowy o niczym.
+   * Null, gdy zaden wiersz nie ma znacznika czasu (dane sprzed wprowadzenia
+   * pomiaru albo import).
+   */
+  ostatniZapis: Date | null;
 }
 
 /** Co zniknie po wyczyszczeniu. Do ekranu potwierdzenia — nic nie kasuje. */
 export async function coZniknie(uczestnikId: string, modul: KodModulu): Promise<DoWyczyszczenia> {
   const wiersze = await prisma.odpowiedz.findMany({
     where: { uczestnikId, modul },
-    select: { czesc: true, pozycja: true },
+    select: { czesc: true, pozycja: true, zakonczona: true },
   });
   const zakonczoneCzesci = CZESCI_MODULOW[modul].filter((c) =>
     wiersze.some((w) => w.czesc === c && w.pozycja === MARKER_ZAKONCZENIA),
   );
   const odpowiedzi = wiersze.filter((w) => w.pozycja !== MARKER_ZAKONCZENIA).length;
+  const znaczniki = wiersze
+    .map((w) => w.zakonczona)
+    .filter((d): d is Date => d instanceof Date);
   return {
     odpowiedzi,
     zakonczoneCzesci,
     gotowy: zakonczoneCzesci.length === CZESCI_MODULOW[modul].length,
     cokolwiek: wiersze.length > 0,
+    ostatniZapis: znaczniki.length ? new Date(Math.max(...znaczniki.map((d) => d.getTime()))) : null,
   };
 }
 

@@ -5,7 +5,15 @@
 
 import { describe, expect, it } from "vitest";
 import { zbudujPlan } from "@/lib/moduly/plan";
-import { CZESCI_MODULOW, zbudujCzesc, NAZWY_MODULOW, KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
+import {
+  CZESCI_MODULOW,
+  zbudujCzesc,
+  NAZWY_MODULOW,
+  KOLEJNOSC_MODULOW,
+  liczbaPozycjiModulu,
+  minutyModulu,
+  zakresPozycjiModulu,
+} from "@/lib/moduly/ekrany";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import type { KodModulu } from "@/lib/moduly/typy";
 
@@ -137,5 +145,57 @@ describe("blokada przewijania do przodu", () => {
   it("pozycja obowiązkowa bez odpowiedzi blokuje", () => {
     expect(pozycjaKompletna({ id: "x", typ: "pojedynczy" }, undefined)).toBe(false);
     expect(pozycjaKompletna({ id: "x", typ: "trzystopniowa" }, "moze")).toBe(true);
+  });
+});
+
+/**
+ * Obietnica z ekranu startowego.
+ *
+ * Ekran wstepu mowi liczbe pytan przed pierwszym kliknieciem. Dla szesciu
+ * modulow liczba jest jedna, ale A0 pyta inaczej licealiste i inaczej kogos
+ * po studiach: w definicji stoi suma wszystkich wariantow i nikt jej nie
+ * zobaczy. Uczestnik ma dostac liczbe ze swojej sciezki, nie z bazy ekranow.
+ */
+describe("ile pytań obiecuje ekran startowy", () => {
+  it("A0 podaje zakres, bo ścieżki różnią się długością", () => {
+    const zakres = zakresPozycjiModulu("A0");
+    expect(zakres.min).toBeLessThan(zakres.max);
+    expect(zakres.max).toBeLessThan(liczbaPozycjiModulu("A0"));
+  });
+
+  it("żadna ścieżka A0 nie wychodzi poza podany zakres", () => {
+    const zakres = zakresPozycjiModulu("A0");
+    const wszystkie = CZESCI_MODULOW.A0.flatMap(
+      (c) => zbudujCzesc("A0", c, zbudujPlan("A0"), {}).ekrany,
+    );
+    const etapy = new Set(
+      wszystkie.flatMap((e) => e.warunek?.wartosci ?? []).filter((w) => typeof w === "string"),
+    );
+    expect(etapy.size).toBeGreaterThan(1);
+    for (const etap of etapy) {
+      const widoczne = wszystkie.filter(
+        (e) => !e.warunek || (e.warunek.pozycja === "etap" && e.warunek.wartosci.includes(etap)),
+      );
+      const ile = widoczne.reduce((s, e) => s + (e.pozycje ?? []).length, 0);
+      expect(ile, etap).toBeGreaterThanOrEqual(zakres.min);
+      expect(ile, etap).toBeLessThanOrEqual(zakres.max);
+    }
+  });
+
+  it("moduły bez pytań warunkowych podają jedną liczbę", () => {
+    for (const modul of MODULY.filter((m) => m !== "A0")) {
+      const zakres = zakresPozycjiModulu(modul);
+      expect(zakres.min, modul).toBe(zakres.max);
+      expect(zakres.max, modul).toBe(liczbaPozycjiModulu(modul));
+    }
+  });
+
+  it("czas jest oszacowany z najdłuższej ścieżki i nigdy nie schodzi poniżej dwóch minut", () => {
+    for (const modul of MODULY) {
+      expect(minutyModulu(modul), modul).toBeGreaterThanOrEqual(2);
+      expect(minutyModulu(modul), modul).toBeLessThanOrEqual(
+        Math.max(2, Math.ceil((zakresPozycjiModulu(modul).max * 8) / 60)),
+      );
+    }
   });
 });

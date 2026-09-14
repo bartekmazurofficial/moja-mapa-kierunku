@@ -119,6 +119,16 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
   { nazwa: "słaby na różowym rogu ukończenia", tekst: "#5b6480", tlo: "#fde3d6" },
   { nazwa: "odręczny na tle ukończenia", tekst: "#5b21b6", tlo: "#f3eefb" },
 
+  // Kasowanie modulu: czerwien na karcie dialogu i na kazdym przystanku tla,
+  // bo karta jest polprzezroczysta i przepuszcza rogi gradientu.
+  { nazwa: "kasowanie na karcie", tekst: "#c00030", tlo: "#ffffff" },
+  { nazwa: "kasowanie na tincie kasowania", tekst: "#c00030", tlo: "#ffe9ee" },
+  { nazwa: "kasowanie na tle ukończenia", tekst: "#c00030", tlo: "#eef0fc" },
+  { nazwa: "kasowanie na różowym rogu", tekst: "#c00030", tlo: "#fde3d6" },
+  { nazwa: "kasowanie na fioletowym rogu", tekst: "#c00030", tlo: "#f3eefb" },
+  { nazwa: "atrament na tincie kasowania", tekst: "#10132a", tlo: "#ffe9ee" },
+  { nazwa: "ściszony na tincie kasowania", tekst: "#3d4460", tlo: "#ffe9ee" },
+
   // Plyty raportu: tekst sciszony na tintach sekcji.
   { nazwa: "ściszony na tincie pomarańczu", tekst: "#3d4460", tlo: "#fff1e8" },
   { nazwa: "ściszony na tincie błękitu", tekst: "#3d4460", tlo: "#e9f0ff" },

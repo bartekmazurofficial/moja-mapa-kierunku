@@ -65,6 +65,15 @@
   --color-przyszlosc-tlo: #f0eefa;
 
   /*
+   * Kasowanie. Jedyne miejsce, w którym interfejs mówi czerwienią, bo jedyne
+   * działanie nieodwracalne. Makieta proponowała #ef6a6a (3,03:1) i #d4544f
+   * (4,05:1); oba są nieczytelne, więc zostaje głębsza czerwień kategorii,
+   * która wygląda tak samo stanowczo i przechodzi 5,2:1 na każdym tle strony.
+   */
+  --color-kasowanie: #c00030;
+  --color-kasowanie-tlo: #ffe9ee;
+
+  /*
    * Trzeci akcent: pomarańcz. Znak zapytania w nagłówku, adnotacje odręczne,
    * koniec gradientu. Jeden odcień na akcent (#b8460f), osobny na znaczenie
    * (--color-uwaga, --color-koszt), żeby ozdoba nie czytała się jak ostrzeżenie.
@@ -600,6 +609,21 @@ body::after {
   }
 }
 
+/**
+ * Połysk przechodzący przez duży przycisk startu. Jedyny element na ekranie
+ * wstępu, który rusza się sam z siebie: przycisk jest tam jedyną rzeczą do
+ * zrobienia i ma być widać, gdzie kliknąć.
+ */
+@keyframes polysk {
+  0% {
+    transform: translateX(-120%);
+  }
+  55%,
+  100% {
+    transform: translateX(220%);
+  }
+}
+
 @keyframes podkreslenie {
   from {
     stroke-dashoffset: 210;
@@ -615,7 +639,7 @@ body::after {
     animation-name: var(--ruch);
     animation-duration: var(--czas, 800ms);
     animation-delay: var(--zwloka, 0ms);
-    animation-timing-function: cubic-bezier(0.2, 0.8, 0.25, 1);
+    animation-timing-function: var(--krzywa, cubic-bezier(0.2, 0.8, 0.25, 1));
     animation-fill-mode: both;
     animation-iteration-count: var(--powtorzenia, 1);
   }

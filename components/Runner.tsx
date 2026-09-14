@@ -24,6 +24,7 @@ import { maObraz, paraMaObrazy } from "@/lib/ui/obrazy";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import { ZAPIS_SAM } from "@/lib/content/wspolne";
+import { minutyZPozycji, zakresPozycji } from "@/lib/moduly/miara";
 import type { CzescModulu, Ekran } from "@/lib/moduly/typy";
 
 const MARKER_ZAKONCZENIA = "__zakonczono";
@@ -58,6 +59,14 @@ export function Runner({
   liczbaModulow,
 }: Wlasciwosci) {
   const router = useRouter();
+  /**
+   * Ile pytań ma ta część i ile to potrwa. Liczone z definicji, którą Runner
+   * właśnie dostał, więc wstęp do drugiej części M1 mówi o drugiej części,
+   * a nie o całym module. W A0 ścieżki mają różną długość, stąd zakres.
+   */
+  const zakresPytan = useMemo(() => zakresPozycji(definicja.ekrany), [definicja.ekrany]);
+  const minuty = minutyZPozycji(zakresPytan.max);
+  const rownaSciezka = zakresPytan.min === zakresPytan.max;
   const [odpowiedzi, ustawOdpowiedzi] = useState<Record<string, unknown>>(zapisane);
   const [indeks, ustawIndeks] = useState(0);
   const [konczy, ustawKonczy] = useState(false);
@@ -344,9 +353,16 @@ export function Runner({
         przy dolnej krawędzi, i pojawia się tylko wtedy, gdy ekran nie ma
         własnego obrazu — dwie ilustracje naraz robią szum, nie motyw.
       */}
-      {zPlansza ? null : (
+      {zPlansza || ekran.typ === "wstep" ? null : (
         <Panorama klasa="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[34vh] w-full" moc={0.55} />
       )}
+      {/*
+        Wstęp dostaje własne tło na całą szerokość okna: pastelowy gradient
+        i dwie bardzo wolne plamy koloru, te same co ekran ukończenia. Moduł
+        zaczyna się i kończy tym samym obrazem, a między nimi tło jest spokojne,
+        żeby nie konkurowało z pytaniami.
+      */}
+      {ekran.typ === "wstep" ? <TloWstepu /> : null}
       {/*
         Nagłówek: znak programu, numer modułu z siedmiu i licznik ekranów.
         Pasek pokazuje, który to moduł, a nie ile ekranów zostało: pasek rosnący
@@ -387,7 +403,276 @@ export function Runner({
         key={ekran.klucz ?? bezpiecznyIndeks}
         className={`relative mt-6 flex-1 sm:mt-8 ${wychodzi ? "wyjscie-ekranu" : "wejscie-ekranu"}`}
       >
-        {ekran.typ === "wstep" || ekran.typ === "przerwa" ? (
+        {ekran.typ === "wstep" ? (
+          /**
+           * Ekran startowy modułu.
+           *
+           * Uczestnik ma przed sobą kilkadziesiąt pytań i przed kliknięciem
+           * musi wiedzieć trzy rzeczy: ile tego jest, ile to zajmie i że nic
+           * nie przepadnie, gdy wyjdzie w połowie. Stąd pierścień z liczbą,
+           * trzy znaczniki i zdanie o zapisie, a nie sam nagłówek.
+           *
+           * Czego tu nie ma: trzech kafli „co z tego będziesz miał". W makiecie
+           * są (opcjonalnie) i obiecują listę zawodów oraz profil w sześciu
+           * wymiarach. To jest obietnica wyniku całego programu, nie tego
+           * modułu, a wynik odsłania prowadzący na spotkaniu.
+           */
+          <div className="ukonczenie flex flex-1 flex-col items-center px-2 text-center">
+            <div className="flex flex-1 flex-col items-center justify-center">
+              {/* Pierścień: liczba pytań w szklanym krążku, obrys kręci się
+                  bardzo wolno, żeby ekran nie stał zupełnie w miejscu. */}
+              <div
+                data-ruch
+                className="relative mb-7 flex h-[8.25rem] w-[8.25rem] items-center justify-center"
+                style={{
+                  ["--ruch" as string]: "wyskok",
+                  ["--czas" as string]: "800ms",
+                  ["--zwloka" as string]: "120ms",
+                }}
+              >
+                <span
+                  aria-hidden
+                  data-ruch
+                  className="absolute h-[8.75rem] w-[8.75rem] rounded-full blur-[6px]"
+                  style={{
+                    background: "radial-gradient(circle, rgba(109,61,245,.3), rgba(109,61,245,0) 70%)",
+                    ["--ruch" as string]: "tetno",
+                    ["--czas" as string]: "4s",
+                    ["--powtorzenia" as string]: "infinite",
+                  }}
+                />
+                <svg
+                  aria-hidden
+                  data-ruch
+                  viewBox="0 0 132 132"
+                  className="absolute inset-0"
+                  fill="none"
+                  style={{
+                    ["--ruch" as string]: "obrot",
+                    ["--czas" as string]: "14s",
+                    ["--krzywa" as string]: "linear",
+                    ["--powtorzenia" as string]: "infinite",
+                  }}
+                >
+                  <circle cx="66" cy="66" r="61" stroke="rgba(120,126,180,.14)" strokeWidth="4" />
+                  <circle
+                    cx="66"
+                    cy="66"
+                    r="61"
+                    stroke="url(#start-pierscien)"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeDasharray="383"
+                    strokeDashoffset="290"
+                    transform="rotate(-90 66 66)"
+                  />
+                  <defs>
+                    <linearGradient id="start-pierscien" x1="5" y1="16" x2="127" y2="120">
+                      <stop stopColor="#1d5bff" />
+                      <stop offset=".55" stopColor="#6d3df5" />
+                      <stop offset="1" stopColor="#b8460f" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <span
+                  className="relative flex h-[6.75rem] w-[6.75rem] flex-col items-center justify-center rounded-full border border-white/95 backdrop-blur-[14px]"
+                  style={{
+                    background: "linear-gradient(150deg, rgba(255,255,255,.92), rgba(255,255,255,.58))",
+                    boxShadow: "0 20px 48px rgba(86,84,170,.2), inset 0 1px 0 rgba(255,255,255,.9)",
+                  }}
+                >
+                  <span
+                    className={`gradient-tytul font-extrabold leading-none tracking-[-0.04em] ${
+                      rownaSciezka ? "text-naglowek" : "text-naglowek-maly"
+                    }`}
+                  >
+                    {rownaSciezka ? zakresPytan.max : `do ${zakresPytan.max}`}
+                  </span>
+                  <span className="mt-1 text-[0.6rem] font-bold uppercase tracking-[0.16em] text-atrament-slaby">
+                    {odmianaPytan(zakresPytan.max)}
+                  </span>
+                </span>
+              </div>
+
+              {/* Nadpis nazywa moduł. W połowie modułów nazwa jest zarazem
+                  nagłówkiem wstępu (A3: „Jak naturalnie działam"), a ten sam
+                  napis dwa razy pod sobą wygląda jak usterka, więc wtedy go
+                  nie ma. */}
+              {nazwaModulu.toLowerCase() === (ekran.naglowek ?? "").toLowerCase() ? null : (
+                <p
+                  data-ruch
+                  className="text-drobne font-bold uppercase tracking-[0.22em] text-atrament-slaby"
+                  style={{ ["--ruch" as string]: "wschod", ["--czas" as string]: "700ms", ["--zwloka" as string]: "220ms" }}
+                >
+                  {nazwaModulu}
+                </p>
+              )}
+              {ekran.naglowek ? (
+                <h1
+                  data-ruch
+                  className="mt-4 max-w-[20ch] text-naglowek-duzy font-extrabold leading-[1.06] tracking-[-0.035em] text-atrament sm:text-tytul"
+                  style={{ ["--ruch" as string]: "wschod", ["--czas" as string]: "820ms", ["--zwloka" as string]: "300ms" }}
+                >
+                  <DwaTony tekst={ekran.naglowek} />
+                </h1>
+              ) : null}
+              <div
+                data-ruch
+                className="proza mt-5 max-w-[34rem] [&_p]:text-tresc-duza"
+                style={{ ["--ruch" as string]: "wschod", ["--czas" as string]: "780ms", ["--zwloka" as string]: "440ms" }}
+              >
+                {(ekran.akapity ?? []).map((a, i) => (
+                  <p key={i}>{a}</p>
+                ))}
+              </div>
+
+              {/* Trzy fakty o tym, w co uczestnik właśnie wchodzi. */}
+              <ul className="mt-6 flex flex-wrap justify-center gap-2.5">
+                {[
+                  {
+                    tekst: rownaSciezka
+                      ? `${zakresPytan.max} ${odmianaPytan(zakresPytan.max)}`
+                      : `od ${zakresPytan.min} do ${zakresPytan.max} pytań, zależnie od tego, gdzie jesteś`,
+                    kropka: "#1d5bff",
+                  },
+                  {
+                    tekst: `około ${minuty} ${odmiana(minuty, "minuta", "minuty", "minut")}`,
+                    kropka: "#6d3df5",
+                  },
+                  { tekst: "bez limitu czasu, możesz wrócić", kropka: "#b8460f" },
+                ].map((z, i) => (
+                  <li
+                    key={z.tekst}
+                    data-ruch
+                    className="flex items-center gap-2.5 rounded-full border border-white/90 bg-white/70 px-4 py-2.5 text-male font-semibold text-atrament-sciszony shadow-[0_10px_26px_rgba(86,84,170,0.1)]"
+                    style={{
+                      ["--ruch" as string]: "wschod",
+                      ["--czas" as string]: "700ms",
+                      ["--zwloka" as string]: `${540 + i * 70}ms`,
+                    }}
+                  >
+                    <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: z.kropka }} />
+                    {z.tekst}
+                  </li>
+                ))}
+              </ul>
+
+              {/* „Jak to działa": reszta instrukcji pod jednym kliknięciem.
+                  Na wstępie zostają dwa zdania, a kto chce więcej, rozwija. */}
+              {ekran.rozwiniecie ? (
+                <details
+                  data-ruch
+                  className="mt-6 w-full max-w-czytelna"
+                  style={{ ["--ruch" as string]: "rozjasnienie", ["--czas" as string]: "700ms", ["--zwloka" as string]: "760ms" }}
+                >
+                  <summary className="przejscie mx-auto flex w-fit cursor-pointer list-none items-center gap-2 rounded-full border border-white/90 bg-white/60 px-4 py-2.5 text-male font-semibold text-atrament-sciszony backdrop-blur-[12px] hover:bg-white/90 hover:text-akcent-jasny">
+                    <svg aria-hidden width="15" height="15" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="6.4" stroke="currentColor" strokeWidth="1.5" />
+                      <path d="M8 7.2v4M8 4.9v.1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    </svg>
+                    Jak to działa?
+                  </summary>
+                  <div className="proza mt-4 rounded-karta border border-white/90 bg-white/62 p-5 text-left backdrop-blur-[14px]">
+                    {ekran.rozwiniecie.map((a, i) => (
+                      <p key={i}>{a}</p>
+                    ))}
+                  </div>
+                </details>
+              ) : null}
+
+              {/* Jedno duże wejście. Przycisk z połyskiem jest jedyną rzeczą na
+                  tym ekranie, którą da się kliknąć. */}
+              <div
+                data-ruch
+                className="relative mt-8"
+                style={{ ["--ruch" as string]: "wschod", ["--czas" as string]: "760ms", ["--zwloka" as string]: "860ms" }}
+              >
+                <span
+                  aria-hidden
+                  data-ruch
+                  className="absolute -inset-x-2.5 -inset-y-3.5 rounded-full blur-[22px]"
+                  style={{
+                    background: "linear-gradient(96deg, #1d5bff, #6d3df5, #b8460f)",
+                    opacity: 0.45,
+                    ["--ruch" as string]: "tetno",
+                    ["--czas" as string]: "3400ms",
+                    ["--zwloka" as string]: "1400ms",
+                    ["--powtorzenia" as string]: "infinite",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => void dalej()}
+                  disabled={konczy}
+                  className="przejscie przycisk-gradient relative inline-flex min-h-[5rem] items-center gap-4 overflow-hidden rounded-full px-14 text-naglowek font-bold"
+                >
+                  {ekran.przyciskDalej ?? "Zaczynamy"}
+                  <svg aria-hidden width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M4 12h15M13 6l6 6-6 6"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span
+                    aria-hidden
+                    data-ruch
+                    className="absolute inset-y-0 left-0 w-[38%]"
+                    style={{
+                      background:
+                        "linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.5), rgba(255,255,255,0))",
+                      ["--ruch" as string]: "polysk",
+                      ["--czas" as string]: "3200ms",
+                      ["--zwloka" as string]: "1600ms",
+                      ["--powtorzenia" as string]: "infinite",
+                    }}
+                  />
+                </button>
+              </div>
+
+              <p
+                data-ruch
+                className="mt-5 max-w-czytelna text-male text-atrament-slaby"
+                style={{ ["--ruch" as string]: "rozjasnienie", ["--czas" as string]: "700ms", ["--zwloka" as string]: "1200ms" }}
+              >
+                {ZAPIS_SAM}
+              </p>
+            </div>
+
+            {/* Stopka wstępu: dopisek odręczny przy lewej krawędzi, znak
+                programu przy prawej. Tak samo jak w makiecie. */}
+            <div className="mt-10 flex w-full flex-wrap items-end justify-between gap-6">
+              <p
+                aria-hidden
+                data-ruch
+                className="odreczny max-w-[16rem] whitespace-pre-line text-left"
+                style={{ ["--ruch" as string]: "rozjasnienie", ["--czas" as string]: "900ms", ["--zwloka" as string]: "1300ms" }}
+              >
+                {DOPISEK[modul]}
+                <svg width="170" height="14" viewBox="0 0 180 14" fill="none" className="mt-0.5 block">
+                  <path
+                    data-ruch
+                    d="M3 9c38-6 108-8 174-4"
+                    stroke="currentColor"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeDasharray="210"
+                    style={{
+                      ["--ruch" as string]: "podkreslenie",
+                      ["--czas" as string]: "900ms",
+                      ["--zwloka" as string]: "1500ms",
+                    }}
+                  />
+                </svg>
+              </p>
+              <p className="pb-1.5 text-drobne font-bold uppercase tracking-[0.22em] text-atrament-slaby">
+                DreamWork
+              </p>
+            </div>
+          </div>
+        ) : ekran.typ === "przerwa" ? (
           <div className="szklo relative overflow-hidden p-6 sm:p-9">
             <Bramy klasa="pointer-events-none absolute -right-10 -top-6 hidden h-[13rem] w-[20rem] opacity-60 sm:block" />
             <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">{nazwaModulu}</p>
@@ -401,24 +686,6 @@ export function Runner({
                 <p key={i}>{a}</p>
               ))}
             </div>
-            {ekran.typ === "wstep" ? (
-              <p className="wskazowka mt-6 max-w-czytelna">
-                <span aria-hidden className="mt-0.5 text-akcent">✓</span>
-                <span>{ZAPIS_SAM}</span>
-              </p>
-            ) : null}
-            {ekran.rozwiniecie ? (
-              <details className="mt-5 max-w-czytelna">
-                <summary className="cursor-pointer list-none text-male text-atrament-sciszony underline decoration-linia-mocna underline-offset-4 hover:text-atrament">
-                  Więcej o tym ćwiczeniu
-                </summary>
-                <div className="proza mt-3 text-atrament-sciszony">
-                  {ekran.rozwiniecie.map((a, i) => (
-                    <p key={i}>{a}</p>
-                  ))}
-                </div>
-              </details>
-            ) : null}
           </div>
         ) : (
           <>
@@ -578,37 +845,42 @@ export function Runner({
         </div>
       ) : null}
 
-      <footer className="sticky bottom-0 z-20 -mx-4 mt-6 flex items-center justify-between gap-4 bg-gradient-to-t from-tlo via-tlo/85 to-transparent px-4 pb-3 pt-4 sm:static sm:z-auto sm:m-0 sm:mt-6 sm:bg-none sm:p-0">
-        <button
-          type="button"
-          onClick={() => {
-            ustawIndeks((i) => Math.max(0, i - 1));
-            ustawWychodzi(false);
-            if (window.scrollY > 8) window.scrollTo({ top: 0, behavior: "auto" });
-          }}
-          disabled={bezpiecznyIndeks === 0}
-          className="przejscie przycisk-pigulka min-h-12 rounded-2xl px-6 text-male font-semibold disabled:invisible"
-        >
-          <span aria-hidden className="mr-2">←</span>
-          Wstecz
-        </button>
+      {/* Ekran wstępu ma własny duży przycisk w środku kolumny, więc pasek
+          u dołu byłby drugim „Zaczynamy" w tym samym widoku. „Wstecz" i tak
+          jest tam niewidoczne: wstęp stoi na początku części. */}
+      {ekran.typ === "wstep" ? null : (
+        <footer className="sticky bottom-0 z-20 -mx-4 mt-6 flex items-center justify-between gap-4 bg-gradient-to-t from-tlo via-tlo/85 to-transparent px-4 pb-3 pt-4 sm:static sm:z-auto sm:m-0 sm:mt-6 sm:bg-none sm:p-0">
+          <button
+            type="button"
+            onClick={() => {
+              ustawIndeks((i) => Math.max(0, i - 1));
+              ustawWychodzi(false);
+              if (window.scrollY > 8) window.scrollTo({ top: 0, behavior: "auto" });
+            }}
+            disabled={bezpiecznyIndeks === 0}
+            className="przejscie przycisk-pigulka min-h-12 rounded-2xl px-6 text-male font-semibold disabled:invisible"
+          >
+            <span aria-hidden className="mr-2">←</span>
+            Wstecz
+          </button>
 
-        <button
-          type="button"
-          onClick={() => void dalej()}
-          disabled={!kompletny || konczy}
-          className={`przejscie min-h-[3.25rem] rounded-2xl px-8 text-tresc font-bold sm:min-w-[14rem] ${
-            !kompletny || konczy ? "border border-linia bg-panel text-atrament-sciszony" : "przycisk-gradient"
-          }`}
-        >
-          {konczy ? "Zapisuję…" : (ekran.przyciskDalej ?? "Dalej")}
-          {konczy ? null : (
-            <span aria-hidden className="ml-2">
-              →
-            </span>
-          )}
-        </button>
-      </footer>
+          <button
+            type="button"
+            onClick={() => void dalej()}
+            disabled={!kompletny || konczy}
+            className={`przejscie min-h-[3.25rem] rounded-2xl px-8 text-tresc font-bold sm:min-w-[14rem] ${
+              !kompletny || konczy ? "border border-linia bg-panel text-atrament-sciszony" : "przycisk-gradient"
+            }`}
+          >
+            {konczy ? "Zapisuję…" : (ekran.przyciskDalej ?? "Dalej")}
+            {konczy ? null : (
+              <span aria-hidden className="ml-2">
+                →
+              </span>
+            )}
+          </button>
+        </footer>
+      )}
     </div>
   );
 }
@@ -662,6 +934,65 @@ function Zarowka() {
         <path d="M9 18h6M10 21h4M12 3a6 6 0 0 1 3.5 10.9c-.6.5-1 1.2-1 2.1h-5c0-.9-.4-1.6-1-2.1A6 6 0 0 1 12 3Z" />
       </svg>
     </span>
+  );
+}
+
+/**
+ * Polska odmiana po liczbie: 1 pytanie, 2 pytania, 5 pytań. Reguła obejmuje
+ * też nastki („12 pytań", nie „12 pytania") i dziesiątki z końcówką 2-4.
+ */
+function odmiana(
+  ile: number,
+  jeden: string,
+  kilka: string,
+  wiele: string,
+): string {
+  const reszta = ile % 10;
+  const setka = ile % 100;
+  if (ile === 1) return jeden;
+  if (reszta >= 2 && reszta <= 4 && (setka < 12 || setka > 14)) return kilka;
+  return wiele;
+}
+
+const odmianaPytan = (ile: number) =>
+  odmiana(ile, "pytanie", "pytania", "pytań");
+
+/**
+ * Tło ekranu wstępu: pastelowy gradient na całe okno i dwie plamy koloru
+ * w bardzo wolnym ruchu. `fixed`, bo ma sięgać poza kolumnę treści, i `-z-10`
+ * wewnątrz `isolate` Runnera, żeby nie przykryło nagłówka.
+ */
+function TloWstepu() {
+  return (
+    <div aria-hidden className="ukonczenie pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(120% 90% at 78% 4%, #fde3d6 0%, rgba(253,227,214,0) 46%), radial-gradient(90% 70% at 12% 92%, #f3dcf6 0%, rgba(243,220,246,0) 52%), linear-gradient(168deg, #eef0fc 0%, #e7eafb 42%, #f3eefb 100%)",
+        }}
+      />
+      <div
+        data-ruch
+        className="absolute -right-[8%] -top-[14%] h-[38rem] w-[38rem] rounded-full blur-[14px]"
+        style={{
+          background: "radial-gradient(circle at 40% 40%, rgba(255,176,140,.5), rgba(255,176,140,0) 68%)",
+          ["--ruch" as string]: "plyniecie",
+          ["--czas" as string]: "18s",
+          ["--powtorzenia" as string]: "infinite",
+        }}
+      />
+      <div
+        data-ruch
+        className="absolute -bottom-[22%] -left-[10%] h-[42rem] w-[42rem] rounded-full blur-[16px]"
+        style={{
+          background: "radial-gradient(circle at 55% 45%, rgba(150,140,255,.4), rgba(150,140,255,0) 68%)",
+          ["--ruch" as string]: "plyniecie-wstecz",
+          ["--czas" as string]: "22s",
+          ["--powtorzenia" as string]: "infinite",
+        }}
+      />
+    </div>
   );
 }
 

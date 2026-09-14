@@ -46,6 +46,16 @@ describe("co zniknie", () => {
     expect(stan.zakonczoneCzesci).toEqual(["A", "B"]);
   });
 
+  it("podaje datę ostatniego zapisu, bo okno potwierdzenia nią mówi", async () => {
+    const stan = await coZniknie(uczestnikId, "A1");
+    const ostatnia = await prisma.odpowiedz.findFirst({
+      where: { uczestnikId, modul: "A1", zakonczona: { not: null } },
+      orderBy: { zakonczona: "desc" },
+      select: { zakonczona: true },
+    });
+    expect(stan.ostatniZapis?.getTime() ?? null).toBe(ostatnia?.zakonczona?.getTime() ?? null);
+  });
+
   it("nic nie kasuje", async () => {
     const przed = await prisma.odpowiedz.count({ where: { uczestnikId, modul: "A1" } });
     await coZniknie(uczestnikId, "A1");
@@ -67,6 +77,12 @@ describe("wyczyszczenie modułu", () => {
       await prisma.postepModulu.count({ where: { uczestnikId, kod: "A1" } }),
     ).toBe(0);
     expect(await prisma.odpowiedz.count({ where: { uczestnikId, modul: "A2" } })).toBe(innyPrzed);
+
+    // Po wyczyszczeniu nie ma czego pokazac w oknie potwierdzenia, wiec
+    // strona `od-nowa` wpuszcza wprost w modul zamiast pytac o zgode na nic.
+    const pusty = await coZniknie(uczestnikId, "A1");
+    expect(pusty.cokolwiek).toBe(false);
+    expect(pusty.ostatniZapis).toBeNull();
   });
 
   it("moduł wraca na pierwszą część i daje się wypełnić jeszcze raz", async () => {
