@@ -6,7 +6,7 @@ import { czytajPunkty, ulozKarte, wSlocie, type Blok, type Slot } from "@/lib/ka
 import { BlokKarty, Proza } from "@/components/karta/Bloki";
 import { POZIOM, STUDIA, KOSZT, ZAGROZENIE } from "@/lib/karty/etykiety";
 import { towarzyszeZKlastra } from "@/lib/karty/klastry";
-import { obrazDuzy, obrazPlanszy } from "@/lib/ui/obrazy";
+import { obrazDuzy, obrazPlanszy, zdjecieZawoduDuze } from "@/lib/ui/obrazy";
 
 export const dynamic = "force-dynamic";
 
@@ -48,8 +48,16 @@ export default async function Strona({
   const reszta = bloki.filter((b) => !b.slot || !ROZSTAWIONE.includes(b.slot));
 
   const streszczenie = w("streszczenie");
+  /**
+   * Zdjęcie tego zawodu, a dopiero w jego braku ilustracja obszaru. Własne
+   * zdjęcie przychodzi w 16:9 i idzie na ekran w całości; ilustracja obszaru
+   * jest kwadratowa i zostaje w kadrze 4:3, w którym stała dotąd.
+   */
   const ilustracja = karta.znakObszaru;
-  const zdjecieHero = ilustracja ? (obrazPlanszy(ilustracja) ?? obrazDuzy(ilustracja)) : null;
+  const wlasneZdjecie = zdjecieZawoduDuze(karta.kod);
+  const zdjecieHero =
+    wlasneZdjecie ?? (ilustracja ? (obrazPlanszy(ilustracja) ?? obrazDuzy(ilustracja)) : null);
+  const proporcjeHero = wlasneZdjecie ? "16 / 9" : "4 / 3";
 
   return (
     <article className="flex flex-col gap-5">
@@ -108,12 +116,12 @@ export default async function Strona({
                 alt=""
                 aria-hidden
                 className="h-full w-full object-cover"
-                style={{ aspectRatio: "4 / 3" }}
+                style={{ aspectRatio: proporcjeHero }}
                 loading="lazy"
                 decoding="async"
               />
             ) : (
-              <div aria-hidden style={{ aspectRatio: "4 / 3" }} />
+              <div aria-hidden style={{ aspectRatio: proporcjeHero }} />
             )}
           </div>
           <p aria-hidden className="odreczny mt-3 whitespace-pre-line text-right">

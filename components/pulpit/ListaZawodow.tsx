@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Plansza } from "@/components/Ikona";
+import { zdjecieZawodu } from "@/lib/ui/obrazy";
 import { Pasmo } from "@/components/raport/Sekcje";
 import { kolorKategorii } from "@/lib/ui/kolory";
 import { POZIOM, STUDIA } from "@/lib/karty/etykiety";
@@ -532,6 +533,7 @@ function KartaZawodu({
   naPorownanie: () => void;
 }) {
   const kolor = kolorKategorii(zawod.znakObszaru ?? `obszar-${zawod.obszarId}`);
+  const zdjecie = zdjecieZawodu(zawod.kod);
   const zCzolowki = numer > 0 && numer <= CZOLOWKA;
   return (
     <article
@@ -558,13 +560,26 @@ function KartaZawodu({
         <span className="sr-only">Dopasowanie, miejsce </span>
         {numer}
       </span>
-      <div>
-        {zawod.znakObszaru ? (
-          <Plansza klucz={zawod.znakObszaru} wysokosc={124} />
-        ) : (
-          <div className="h-[7.75rem] w-full" style={{ background: kolor.tlo }} />
-        )}
-      </div>
+      {/*
+        Zdjęcie zawodu w całości, w proporcji, w której przyszło. Bez zdjęcia
+        zostaje pas z ilustracją obszaru, czyli to, co było tu dotąd: zdjęcia
+        dochodzą partiami i lista ma wyglądać sensownie także w połowie drogi.
+      */}
+      {zdjecie ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={zdjecie}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          decoding="async"
+          className="aspect-[16/9] w-full object-cover"
+        />
+      ) : zawod.znakObszaru ? (
+        <Plansza klucz={zawod.znakObszaru} wysokosc={124} />
+      ) : (
+        <div className="aspect-[16/9] w-full" style={{ background: kolor.tlo }} />
+      )}
 
       <div className="px-4 pt-3.5">
         <div className="flex items-start justify-between gap-2">

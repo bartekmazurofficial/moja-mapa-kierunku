@@ -26,6 +26,8 @@
  *   - bieguny wymiarow M1: `m1w-CEN-A`, `m1w-CEN-B`, ... (12 po dwa)
  *   - plansze obszarow pod naglowek karty zawodu: `a1-1` ... `a1-24`
  */
+import { ZAWODY_ZE_ZDJECIEM } from "./zdjecia-zawodow";
+
 const Z_OBRAZEM = new Set<string>([
   ...Array.from({ length: 24 }, (_, i) => `a1-${i + 1}`),
   ...Array.from({ length: 30 }, (_, i) => `a2-${i + 1}`),
@@ -99,6 +101,28 @@ export function obrazKafla(klucz: string): string | null {
   if (!Z_OBRAZEM.has(klucz)) return null;
   const [modul, ...reszta] = klucz.split("-");
   return `/grafika/${modul}/${reszta.join("-")}.jpg`;
+}
+
+/**
+ * Zdjęcie konkretnego zawodu.
+ *
+ * Reszta tego pliku ilustruje **kategorie**, bo w assessmentach kategoria jest
+ * tym, o co pytamy. Karty zawodów są jedynym miejscem, gdzie to nie wystarcza:
+ * przy ilustracji obszaru „Kurator sądowy" i „Notariusz" wyglądały na liście
+ * identycznie, a to są dwa różne życia.
+ *
+ * Zdjęcia dochodzą partiami, więc null jest normalnym stanem, nie usterką:
+ * zawód bez zdjęcia pokazuje ilustrację obszaru, tak jak dotąd.
+ *
+ * Pliki są w 16:9, tak jak przyszły, i nigdzie ich nie przycinamy.
+ */
+export function zdjecieZawodu(kod: string): string | null {
+  return ZAWODY_ZE_ZDJECIEM.has(kod) ? `/grafika/zawody/${kod}.jpg` : null;
+}
+
+/** Wersja 1000 px, do nagłówka karty zawodu. */
+export function zdjecieZawoduDuze(kod: string): string | null {
+  return ZAWODY_ZE_ZDJECIEM.has(kod) ? `/grafika/zawody/${kod}-duzy.jpg` : null;
 }
 
 /** Adres większej wersji (768 px), do nagłówków i kart obszaru. */

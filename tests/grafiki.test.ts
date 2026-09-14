@@ -9,7 +9,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { maObraz, obrazDuzy, obrazKafla } from "@/lib/ui/obrazy";
+import {
+  maObraz,
+  obrazDuzy,
+  obrazKafla,
+  zdjecieZawodu,
+  zdjecieZawoduDuze,
+} from "@/lib/ui/obrazy";
+import { ZAWODY_ZE_ZDJECIEM } from "@/lib/ui/zdjecia-zawodow";
 import { OBSZARY_A1, WYMIARY_A3 } from "@/lib/domain/slowniki";
 import { GLIFY } from "@/lib/ui/glify";
 
@@ -61,5 +68,55 @@ describe("ilustracje kategorii", () => {
       if (!maObraz(klucz)) continue;
       expect(istnieje(obrazKafla(klucz)), klucz).toBe(true);
     }
+  });
+});
+
+/**
+ * Zdjęcia zawodów.
+ *
+ * Dochodzą partiami po kilkadziesiąt sztuk, więc zawód bez zdjęcia jest
+ * normalnym stanem. Sprawdzalne jest co innego: że lista kodów i dysk
+ * zgadzają się w obie strony, że kody z listy istnieją w bazie i że kafel
+ * listy nie przekracza wagi, którą telefon w szkole zniesie.
+ */
+describe("zdjęcia zawodów", () => {
+  const KATALOG = path.join(PUBLIC, "grafika", "zawody");
+
+  it("każdy zadeklarowany kod ma oba pliki na dysku", () => {
+    const bez: string[] = [];
+    for (const kod of ZAWODY_ZE_ZDJECIEM) {
+      if (!istnieje(zdjecieZawodu(kod))) bez.push(`${kod}.jpg`);
+      if (!istnieje(zdjecieZawoduDuze(kod))) bez.push(`${kod}-duzy.jpg`);
+    }
+    expect(bez).toEqual([]);
+  });
+
+  it("w katalogu nie leży zdjęcie, którego nikt nie pokaże", () => {
+    if (!fs.existsSync(KATALOG)) return;
+    const osierocone = fs
+      .readdirSync(KATALOG)
+      .filter((p) => p.endsWith(".jpg"))
+      .map((p) => p.replace(/-duzy\.jpg$|\.jpg$/, ""))
+      .filter((kod) => !ZAWODY_ZE_ZDJECIEM.has(kod));
+    expect([...new Set(osierocone)]).toEqual([]);
+  });
+
+  it("każdy kod z listy to zawód, który istnieje w bazie", async () => {
+    const { prisma } = await import("@/lib/db/klient");
+    const kody = new Set((await prisma.zawod.findMany({ select: { kod: true } })).map((z) => z.kod));
+    expect([...ZAWODY_ZE_ZDJECIEM].filter((k) => !kody.has(k))).toEqual([]);
+  });
+
+  it("kafel listy waży poniżej 90 kB, a nagłówek poniżej 260 kB", () => {
+    // Lista pokazuje kilkadziesiąt kafli naraz. Oryginały mają po 2 MB
+    // i nie wolno ich tam podawać; skrypt skaluje je do 480 i 1000 px.
+    const ciezkie: string[] = [];
+    for (const kod of ZAWODY_ZE_ZDJECIEM) {
+      const kafel = fs.statSync(path.join(KATALOG, `${kod}.jpg`)).size;
+      const duzy = fs.statSync(path.join(KATALOG, `${kod}-duzy.jpg`)).size;
+      if (kafel > 90_000) ciezkie.push(`${kod}.jpg: ${Math.round(kafel / 1024)} kB`);
+      if (duzy > 260_000) ciezkie.push(`${kod}-duzy.jpg: ${Math.round(duzy / 1024)} kB`);
+    }
+    expect(ciezkie).toEqual([]);
   });
 });
