@@ -24,7 +24,7 @@
  * Co czeka na pliki (spis tresci w GRAFIKI_DO_WYGENEROWANIA.md):
  *   - bieguny osi A3: `a3-INI-A`, `a3-INI-B`, ... (13 osi po dwa)
  *   - bieguny wymiarow M1: `m1w-CEN-A`, `m1w-CEN-B`, ... (12 po dwa)
- *   - warunki A5: `a5-F01` ... `a5-F43` albo same bloki `a5-1` ... `a5-7`
+ *   - plansze obszarow pod naglowek karty zawodu: `a1-1` ... `a1-24`
  */
 const Z_OBRAZEM = new Set<string>([
   ...Array.from({ length: 24 }, (_, i) => `a1-${i + 1}`),
@@ -46,7 +46,12 @@ const Z_OBRAZEM = new Set<string>([
  *
  * Spis tego, co ma być na których planszach: `GRAFIKI-KATEGORIE.md`.
  */
-const Z_PLANSZA = new Set<string>([]);
+const Z_PLANSZA = new Set<string>([
+  // Czterdziesci trzy warunki A5. Panel filtrow pokazuje wylacznie pas nad
+  // odpowiedziami, wiec te klucze nie maja kwadratowego kafla i nie potrzebuja
+  // go: `maObraz` uznaje sam pas.
+  ...Array.from({ length: 43 }, (_, i) => `a5-F${String(i + 1).padStart(2, "0")}`),
+]);
 
 export function obrazPlanszy(klucz: string): string | null {
   if (!Z_PLANSZA.has(klucz)) return null;

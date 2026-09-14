@@ -184,15 +184,18 @@ function main() {
     m1: biegunyM1(),
   };
 
-  const brakujeMin =
-    zestawy.a3bieguny.filter((p) => !jest(p)).length +
-    zestawy.m1.filter((p) => !jest(p)).length +
-    zestawy.a5bloki.filter((p) => !jest(p)).length +
-    zestawy.planszeA1.filter((p) => !jest(p)).length;
-  const brakujeMax =
-    brakujeMin -
-    zestawy.a5bloki.filter((p) => !jest(p)).length +
-    zestawy.a5warunki.filter((p) => !jest(p)).length;
+  const brakuje = (pozycje: Pozycja[]) => pozycje.filter((p) => !jest(p)).length;
+  /**
+   * A5 da sie obsluzyc dwojako: siedmioma obrazkami blokowymi albo
+   * czterdziestoma trzema warunkami. Gdy warunki sa komplet, bloki nie sa juz
+   * potrzebne - platforma bierze najpierw obrazek warunku.
+   */
+  const a5Minimum = brakuje(zestawy.a5warunki) === 0 ? 0 : brakuje(zestawy.a5bloki);
+  const a5Pelne = brakuje(zestawy.a5warunki);
+  const bezA5 =
+    brakuje(zestawy.a3bieguny) + brakuje(zestawy.m1) + brakuje(zestawy.planszeA1);
+  const brakujeMin = bezA5 + a5Minimum;
+  const brakujeMax = bezA5 + a5Pelne;
 
   const naglowek = `# Ilustracje do wygenerowania
 
@@ -210,15 +213,20 @@ ${[
   wierszPodsumowania("A3 · osie", "pas nad dwiema kartami wyboru", zestawy.a3osie),
   wierszPodsumowania("A3 · bieguny", "połowa pasa nad kartą wyboru", zestawy.a3bieguny),
   wierszPodsumowania("A4 · wartości", "połowa pasa nad kartą wyboru", zestawy.a4),
-  wierszPodsumowania("A5 · bloki warunków", "pas nad trzema odpowiedziami", zestawy.a5bloki),
-  wierszPodsumowania("A5 · pojedyncze warunki", "pas nad trzema odpowiedziami", zestawy.a5warunki),
+  // Bloki znikaja ze spisu, gdy warunki sa komplet: to alternatywa, nie dodatek.
+  ...(a5Pelne === 0
+    ? []
+    : [wierszPodsumowania("A5 · bloki warunków", "pas nad trzema odpowiedziami", zestawy.a5bloki)]),
+  wierszPodsumowania("A5 · warunki pracy", "pas nad trzema odpowiedziami", zestawy.a5warunki),
   wierszPodsumowania("M1 · bieguny wymiarów", "połowa pasa nad kartą wyboru", zestawy.m1),
   wierszPodsumowania("Plansze obszarów", "nagłówek karty zawodu", zestawy.planszeA1),
 ].join("\n")}
 
-**Minimum, żeby wszystkie panele miały komplet: ${brakujeMin} plików.**
-To wariant z siedmioma obrazkami blokowymi dla A5 zamiast czterdziestu trzech
-pojedynczych. Z pełnym A5 wychodzi ${brakujeMax}.
+**Do zrobienia zostało ${brakujeMin} plików.**${
+    a5Minimum === 0 && a5Pelne === 0
+      ? "\nA5 ma komplet czterdziestu trzech warunków, więc obrazki blokowe\nnie są już potrzebne."
+      : `\nTo wariant z siedmioma obrazkami blokowymi dla A5 zamiast czterdziestu\ntrzech pojedynczych. Z pełnym A5 wychodzi ${brakujeMax}.`
+  }
 
 ## Jak to wgrać
 
@@ -315,7 +323,7 @@ prostu ładniejsza od drugiej, przewagę odzyska obrazem.
       ].join(" "),
       zestawy.m1,
     ),
-    sekcja(
+    ...(brakuje(zestawy.a5warunki) === 0 ? [] : [sekcja(
       "A5 · Filtry rzeczywistości, siedem bloków",
       [
         "**Wariant zalecany.** Panel z trzema odpowiedziami ma nad pytaniem pas na",
@@ -325,7 +333,7 @@ prostu ładniejsza od drugiej, przewagę odzyska obrazem.
         "\n\nPas poziomy 16:9.",
       ].join(" "),
       zestawy.a5bloki,
-    ),
+    )]),
     sekcja(
       "Plansze obszarów, nagłówek karty zawodu",
       [
@@ -339,13 +347,19 @@ prostu ładniejsza od drugiej, przewagę odzyska obrazem.
       zestawy.planszeA1,
     ),
     sekcja(
-      "A5 · Filtry rzeczywistości, pojedyncze warunki",
-      [
-        "**Wariant pełny, zamiast siedmiu bloków albo po nich.** Czterdzieści trzy",
-        "konkretne warunki. Każdy dosłany warunek nadpisuje obrazek swojego bloku,",
-        "więc da się to robić partiami i nic się po drodze nie psuje.",
-        "\n\nPas poziomy 16:9.",
-      ].join(" "),
+      "A5 · Filtry rzeczywistości, czterdzieści trzy warunki",
+      brakuje(zestawy.a5warunki) === 0
+        ? [
+            "Komplet. Każdy warunek ma własny pas nad trzema odpowiedziami,",
+            "więc obrazki blokowe nie są już potrzebne. Spis dla porządku",
+            "i do podmiany pojedynczych plików.",
+          ].join(" ")
+        : [
+            "**Wariant pełny, zamiast siedmiu bloków albo po nich.** Czterdzieści trzy",
+            "konkretne warunki. Każdy dosłany warunek nadpisuje obrazek swojego bloku,",
+            "więc da się to robić partiami i nic się po drodze nie psuje.",
+            "\n\nPas poziomy 16:9.",
+          ].join(" "),
       zestawy.a5warunki,
     ),
     sekcja(

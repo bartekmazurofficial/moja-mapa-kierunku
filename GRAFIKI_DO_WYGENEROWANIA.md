@@ -13,14 +13,13 @@ kody i teksty zgadzają się co do znaku z tym, co widzi uczestnik, a kolumna
 | A3 · osie | pas nad dwiema kartami wyboru | 13 | komplet |
 | A3 · bieguny | połowa pasa nad kartą wyboru | 26 | **brakuje 26** |
 | A4 · wartości | połowa pasa nad kartą wyboru | 12 | komplet |
-| A5 · bloki warunków | pas nad trzema odpowiedziami | 7 | **brakuje 7** |
-| A5 · pojedyncze warunki | pas nad trzema odpowiedziami | 43 | **brakuje 43** |
+| A5 · warunki pracy | pas nad trzema odpowiedziami | 43 | komplet |
 | M1 · bieguny wymiarów | połowa pasa nad kartą wyboru | 24 | **brakuje 24** |
 | Plansze obszarów | nagłówek karty zawodu | 24 | **brakuje 24** |
 
-**Minimum, żeby wszystkie panele miały komplet: 81 plików.**
-To wariant z siedmioma obrazkami blokowymi dla A5 zamiast czterdziestu trzech
-pojedynczych. Z pełnym A5 wychodzi 117.
+**Do zrobienia zostało 74 plików.**
+A5 ma komplet czterdziestu trzech warunków, więc obrazki blokowe
+nie są już potrzebne.
 
 ## Jak to wgrać
 
@@ -164,24 +163,6 @@ Kwadrat 1:1.
 | `m1w/ROD-A.png` | Chciałbym mieć rodzinę stosunkowo wcześnie | **do zrobienia** |
 | `m1w/ROD-B.png` | Chciałbym najpierw pożyć inaczej | **do zrobienia** |
 
-## A5 · Filtry rzeczywistości, siedem bloków
-
-**Wariant zalecany.** Panel z trzema odpowiedziami ma nad pytaniem pas na całą szerokość i dziś jest pusty. Siedem obrazków blokowych obsłuży wszystkie czterdzieści trzy warunki: platforma bierze najpierw obrazek warunku, a gdy go nie ma, obrazek bloku.
-
-Pas poziomy 16:9.
-
-**Ile: 7, w tym 7 do zrobienia.**
-
-| Plik | Co ma być na obrazku | Stan |
-|---|---|---|
-| `plansze/a5-1.png` | Nauka i zdobywanie uprawnień (5 warunków w bloku) | **do zrobienia** |
-| `plansze/a5-2.png` | Miejsce (5 warunków w bloku) | **do zrobienia** |
-| `plansze/a5-3.png` | Czas (6 warunków w bloku) | **do zrobienia** |
-| `plansze/a5-4.png` | Warunki fizyczne (11 warunków w bloku) | **do zrobienia** |
-| `plansze/a5-5.png` | Ludzie (8 warunków w bloku) | **do zrobienia** |
-| `plansze/a5-6.png` | Pieniądze i ryzyko (4 warunki w bloku) | **do zrobienia** |
-| `plansze/a5-7.png` | Odpowiedzialność (4 warunki w bloku) | **do zrobienia** |
-
 ## Plansze obszarów, nagłówek karty zawodu
 
 Karta zawodu ma w nagłówku zdjęcie dochodzące do prawej i górnej krawędzi, zszyte z tekstem maską gradientową. Bierze obrazek obszaru, do którego należy zawód. Dziś nie ma ani jednej planszy, więc kadr jest kwadratowy i rozciągany. Te same dwadzieścia cztery sceny co w A1, ale **kadrowane poziomo**, z miejscem po lewej, gdzie wchodzi biała maska.
@@ -217,59 +198,57 @@ Pas poziomy 16:9. Ważna rzecz po prawej stronie kadru.
 | `plansze/a1-23.png` | Pieniądze i rozliczenia, kadr poziomy | **do zrobienia** |
 | `plansze/a1-24.png` | Planowanie i ogarnianie logistyki, kadr poziomy | **do zrobienia** |
 
-## A5 · Filtry rzeczywistości, pojedyncze warunki
+## A5 · Filtry rzeczywistości, czterdzieści trzy warunki
 
-**Wariant pełny, zamiast siedmiu bloków albo po nich.** Czterdzieści trzy konkretne warunki. Każdy dosłany warunek nadpisuje obrazek swojego bloku, więc da się to robić partiami i nic się po drodze nie psuje.
+Komplet. Każdy warunek ma własny pas nad trzema odpowiedziami, więc obrazki blokowe nie są już potrzebne. Spis dla porządku i do podmiany pojedynczych plików.
 
-Pas poziomy 16:9.
-
-**Ile: 43, w tym 43 do zrobienia.**
+**Ile: 43. Komplet leży w repozytorium.**
 
 | Plik | Co ma być na obrazku | Stan |
 |---|---|---|
-| `plansze/a5-F01.png` | Studia trwające pięć lat albo dłużej (blok: Nauka i zdobywanie uprawnień) | **do zrobienia** |
-| `plansze/a5-F02.png` | Studia, w jakiejkolwiek formie (blok: Nauka i zdobywanie uprawnień) | **do zrobienia** |
-| `plansze/a5-F03.png` | Trudne egzaminy zawodowe po studiach (blok: Nauka i zdobywanie uprawnień) | **do zrobienia** |
-| `plansze/a5-F04.png` | Dokształcanie się przez cały czas pracy (blok: Nauka i zdobywanie uprawnień) | **do zrobienia** |
-| `plansze/a5-F05.png` | Nauka po godzinach, obok pracy (blok: Nauka i zdobywanie uprawnień) | **do zrobienia** |
-| `plansze/a5-F06.png` | Przeprowadzka do innego miasta (blok: Miejsce) | **do zrobienia** |
-| `plansze/a5-F07.png` | Praca albo studia za granicą (blok: Miejsce) | **do zrobienia** |
-| `plansze/a5-F08.png` | Życie daleko od rodziny (blok: Miejsce) | **do zrobienia** |
-| `plansze/a5-F09.png` | Częste wyjazdy służbowe (blok: Miejsce) | **do zrobienia** |
-| `plansze/a5-F10.png` | Praca w jednym miejscu przez wiele lat (blok: Miejsce) | **do zrobienia** |
-| `plansze/a5-F11.png` | Praca w weekendy (blok: Czas) | **do zrobienia** |
-| `plansze/a5-F12.png` | Praca na zmiany, także nocne (blok: Czas) | **do zrobienia** |
-| `plansze/a5-F13.png` | Dyżury i bycie pod telefonem (blok: Czas) | **do zrobienia** |
-| `plansze/a5-F14.png` | Nadgodziny w gorących okresach (blok: Czas) | **do zrobienia** |
-| `plansze/a5-F15.png` | Nieregularne, zmienne godziny (blok: Czas) | **do zrobienia** |
-| `plansze/a5-F39.png` | Samodzielne zdobywanie klientów (blok: Czas) | **do zrobienia** |
-| `plansze/a5-F16.png` | Praca wieczorami, gdy dzień się kończy (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F17.png` | Praca fizyczna, wymagająca siły (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F18.png` | Praca na dworze w każdą pogodę (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F19.png` | Stanie albo chodzenie przez większość dnia (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F20.png` | Siedzenie przy komputerze przez większość dnia (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F21.png` | Brud, zapachy i nieprzyjemne warunki (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F34.png` | Agresja słowna albo fizyczna w pracy (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F33.png` | Praca w pojedynkę, bez zespołu (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F36.png` | Niepewny, zmienny dochód (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F37.png` | Prowadzenie własnej działalności (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F38.png` | Niskie zarobki przez pierwsze lata (blok: Warunki fizyczne) | **do zrobienia** |
-| `plansze/a5-F22.png` | Codzienny kontakt z krwią i ranami (blok: Ludzie) | **do zrobienia** |
-| `plansze/a5-F23.png` | Kontakt ze śmiercią i z umieraniem (blok: Ludzie) | **do zrobienia** |
-| `plansze/a5-F24.png` | Hałas taki, że trzeba nosić ochronniki (blok: Ludzie) | **do zrobienia** |
-| `plansze/a5-F25.png` | Ciasne przestrzenie, na przykład szachty (blok: Ludzie) | **do zrobienia** |
-| `plansze/a5-F26.png` | Praca na wysokości, na dachu albo rusztowaniu (blok: Ludzie) | **do zrobienia** |
-| `plansze/a5-F27.png` | Codzienny kontakt z chemikaliami (blok: Ludzie) | **do zrobienia** |
-| `plansze/a5-F35.png` | Słyszenie odmowy kilkadziesiąt razy w miesiącu (blok: Ludzie) | **do zrobienia** |
-| `plansze/a5-F42.png` | Dużo papierów i sprawozdań (blok: Ludzie) | **do zrobienia** |
-| `plansze/a5-F28.png` | Kontakt z ludźmi przez cały dzień (blok: Pieniądze i ryzyko) | **do zrobienia** |
-| `plansze/a5-F29.png` | Praca z małymi dziećmi (blok: Pieniądze i ryzyko) | **do zrobienia** |
-| `plansze/a5-F30.png` | Praca z osobami chorymi albo starszymi (blok: Pieniądze i ryzyko) | **do zrobienia** |
-| `plansze/a5-F40.png` | Odpowiedzialność za czyjeś zdrowie (blok: Pieniądze i ryzyko) | **do zrobienia** |
-| `plansze/a5-F31.png` | Obsługa niezadowolonych klientów (blok: Odpowiedzialność) | **do zrobienia** |
-| `plansze/a5-F32.png` | Częste wystąpienia przed grupą (blok: Odpowiedzialność) | **do zrobienia** |
-| `plansze/a5-F41.png` | Stała presja czasu i wyniku (blok: Odpowiedzialność) | **do zrobienia** |
-| `plansze/a5-F43.png` | Poprawianie swojej pracy po raz czwarty (blok: Odpowiedzialność) | **do zrobienia** |
+| `plansze/a5-F01.png` | Studia trwające pięć lat albo dłużej (blok: Nauka i zdobywanie uprawnień) | jest |
+| `plansze/a5-F02.png` | Studia, w jakiejkolwiek formie (blok: Nauka i zdobywanie uprawnień) | jest |
+| `plansze/a5-F03.png` | Trudne egzaminy zawodowe po studiach (blok: Nauka i zdobywanie uprawnień) | jest |
+| `plansze/a5-F04.png` | Dokształcanie się przez cały czas pracy (blok: Nauka i zdobywanie uprawnień) | jest |
+| `plansze/a5-F05.png` | Nauka po godzinach, obok pracy (blok: Nauka i zdobywanie uprawnień) | jest |
+| `plansze/a5-F06.png` | Przeprowadzka do innego miasta (blok: Miejsce) | jest |
+| `plansze/a5-F07.png` | Praca albo studia za granicą (blok: Miejsce) | jest |
+| `plansze/a5-F08.png` | Życie daleko od rodziny (blok: Miejsce) | jest |
+| `plansze/a5-F09.png` | Częste wyjazdy służbowe (blok: Miejsce) | jest |
+| `plansze/a5-F10.png` | Praca w jednym miejscu przez wiele lat (blok: Miejsce) | jest |
+| `plansze/a5-F11.png` | Praca w weekendy (blok: Czas) | jest |
+| `plansze/a5-F12.png` | Praca na zmiany, także nocne (blok: Czas) | jest |
+| `plansze/a5-F13.png` | Dyżury i bycie pod telefonem (blok: Czas) | jest |
+| `plansze/a5-F14.png` | Nadgodziny w gorących okresach (blok: Czas) | jest |
+| `plansze/a5-F15.png` | Nieregularne, zmienne godziny (blok: Czas) | jest |
+| `plansze/a5-F39.png` | Samodzielne zdobywanie klientów (blok: Czas) | jest |
+| `plansze/a5-F16.png` | Praca wieczorami, gdy dzień się kończy (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F17.png` | Praca fizyczna, wymagająca siły (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F18.png` | Praca na dworze w każdą pogodę (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F19.png` | Stanie albo chodzenie przez większość dnia (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F20.png` | Siedzenie przy komputerze przez większość dnia (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F21.png` | Brud, zapachy i nieprzyjemne warunki (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F34.png` | Agresja słowna albo fizyczna w pracy (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F33.png` | Praca w pojedynkę, bez zespołu (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F36.png` | Niepewny, zmienny dochód (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F37.png` | Prowadzenie własnej działalności (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F38.png` | Niskie zarobki przez pierwsze lata (blok: Warunki fizyczne) | jest |
+| `plansze/a5-F22.png` | Codzienny kontakt z krwią i ranami (blok: Ludzie) | jest |
+| `plansze/a5-F23.png` | Kontakt ze śmiercią i z umieraniem (blok: Ludzie) | jest |
+| `plansze/a5-F24.png` | Hałas taki, że trzeba nosić ochronniki (blok: Ludzie) | jest |
+| `plansze/a5-F25.png` | Ciasne przestrzenie, na przykład szachty (blok: Ludzie) | jest |
+| `plansze/a5-F26.png` | Praca na wysokości, na dachu albo rusztowaniu (blok: Ludzie) | jest |
+| `plansze/a5-F27.png` | Codzienny kontakt z chemikaliami (blok: Ludzie) | jest |
+| `plansze/a5-F35.png` | Słyszenie odmowy kilkadziesiąt razy w miesiącu (blok: Ludzie) | jest |
+| `plansze/a5-F42.png` | Dużo papierów i sprawozdań (blok: Ludzie) | jest |
+| `plansze/a5-F28.png` | Kontakt z ludźmi przez cały dzień (blok: Pieniądze i ryzyko) | jest |
+| `plansze/a5-F29.png` | Praca z małymi dziećmi (blok: Pieniądze i ryzyko) | jest |
+| `plansze/a5-F30.png` | Praca z osobami chorymi albo starszymi (blok: Pieniądze i ryzyko) | jest |
+| `plansze/a5-F40.png` | Odpowiedzialność za czyjeś zdrowie (blok: Pieniądze i ryzyko) | jest |
+| `plansze/a5-F31.png` | Obsługa niezadowolonych klientów (blok: Odpowiedzialność) | jest |
+| `plansze/a5-F32.png` | Częste wystąpienia przed grupą (blok: Odpowiedzialność) | jest |
+| `plansze/a5-F41.png` | Stała presja czasu i wyniku (blok: Odpowiedzialność) | jest |
+| `plansze/a5-F43.png` | Poprawianie swojej pracy po raz czwarty (blok: Odpowiedzialność) | jest |
 
 ## A1 · Co mnie ciągnie, dwadzieścia cztery obszary
 
