@@ -5,9 +5,14 @@
  * modułach. Test istnieje po to, żeby nie wyłapywać tego okiem przy każdej
  * kolejnej edycji treści.
  *
- * **Trzy moduły czekają na przepisanie** (pozycje rankingowe A2, pary A3
- * i pary A4). Do czasu podmiany są wyłączone z części sprawdzeń: lista
+ * **Dwa moduły czekają na przepisanie** (pozycje rankingowe A2 i brzmienia
+ * wartości A4). Do czasu podmiany są wyłączone z części sprawdzeń: lista
  * `CZEKA_NA_PRZEPISANIE` znika razem z nimi i wtedy reguły obowiązują wszędzie.
+ *
+ * A3 zeszło z tej listy po podmianie na drugą wersję banku, ale nie wchodzi
+ * pod regułę dziesięciu słów i pod dwa wzorce pisane dla zadań: pary A3 to
+ * całe zdania, nie nazwy czynności, i mierzy się je inaczej. Powody stoją
+ * przy `LIMIT_SLOW` i `POZA_WZORCAMI`.
  */
 
 import { describe, expect, it } from "vitest";
@@ -18,7 +23,32 @@ import { PARY_A4, BRZMIENIA_A4 } from "@/lib/content/a4";
 import { PARY_M1 } from "@/lib/content/m1";
 import { FILTRY_A5 } from "@/lib/domain/slowniki";
 
-const CZEKA_NA_PRZEPISANIE = new Set(["A2", "A3", "A4"]);
+const CZEKA_NA_PRZEPISANIE = new Set(["A2", "A4"]);
+
+/**
+ * Ile słów wolno pozycji.
+ *
+ * Dziesięć dla zadań („Ocenić, czy badanie jest wiarygodne"), bo dłuższe nie
+ * mieszczą się w kaflu rankingu. A3 i M1 to zdania dwubiegunowe i druga wersja
+ * banku A3 celowo nazywa sytuację w obu biegunach („Kiedy w ostatniej chwili
+ * zmienia się plan, …"), co kosztuje słowa i jest w tym miejscu zaletą:
+ * uczestnik nie musi jej sobie dopowiadać. Najdłuższy biegun ma dwanaście słów
+ * i to jest sufit, a nie zaproszenie do rozwlekania.
+ */
+const LIMIT_SLOW: Record<string, number> = { A3: 12, M1: 12 };
+const limit = (modul: string) => LIMIT_SLOW[modul] ?? 10;
+
+/**
+ * Moduły poza dwoma wzorcami pisanymi dla zadań.
+ *
+ * `POROWNANIE` łapie w A3 dwa bieguny („nawet gdy nikt tego nie sprawdza",
+ * „żeby wszyscy ich przestrzegali"), a `REZULTAT` dwa kolejne („żeby ktoś inny
+ * wyznaczył kierunek", „żeby ktoś zauważył, co zrobiłem"). Żaden z nich nie
+ * porównuje uczestnika z ludźmi ani nie uzależnia zadania od cudzej decyzji:
+ * to jest treść osi DEC i EFE, czyli dokładnie to, o co ten moduł pyta.
+ * Wzorce zostają ostre dla zadań, zamiast rozmiękczać je dla całego programu.
+ */
+const POZA_WZORCAMI = new Set(["A3"]);
 
 interface Pozycja {
   modul: string;
@@ -58,18 +88,18 @@ const REZULTAT = /(po którym|tak,? że ktoś|żeby ktoś|który sprawi)/i;
 const SKALA = /(przez lata|latami|przez wiele lat|całe życie)/i;
 
 describe("zasady redakcyjne banku pozycji", () => {
-  it("żadna pozycja nie ma więcej niż dziesięć słów", () => {
-    const winne = czynne.filter((p) => slowa(p.tekst) > 10);
-    expect(winne.map((p) => `${p.modul} ${p.klucz}: ${p.tekst}`)).toEqual([]);
+  it("żadna pozycja nie przekracza limitu słów swojego modułu", () => {
+    const winne = czynne.filter((p) => slowa(p.tekst) > limit(p.modul));
+    expect(winne.map((p) => `${p.modul} ${p.klucz} (${slowa(p.tekst)}): ${p.tekst}`)).toEqual([]);
   });
 
   it("żadna pozycja nie porównuje uczestnika z ludźmi ani z normą", () => {
-    const winne = czynne.filter((p) => POROWNANIE.test(p.tekst));
+    const winne = czynne.filter((p) => !POZA_WZORCAMI.has(p.modul) && POROWNANIE.test(p.tekst));
     expect(winne.map((p) => `${p.modul} ${p.klucz}: ${p.tekst}`)).toEqual([]);
   });
 
   it("żadna pozycja nie opisuje rezultatu zależnego od innych", () => {
-    const winne = czynne.filter((p) => REZULTAT.test(p.tekst));
+    const winne = czynne.filter((p) => !POZA_WZORCAMI.has(p.modul) && REZULTAT.test(p.tekst));
     expect(winne.map((p) => `${p.modul} ${p.klucz}: ${p.tekst}`)).toEqual([]);
   });
 
@@ -86,10 +116,28 @@ describe("zasady redakcyjne banku pozycji", () => {
 describe("symetria par", () => {
   const roznica = (a: string, b: string) => Math.abs(slowa(a) - slowa(b));
 
+  /**
+   * Jeden wyjątek, nazwany po imieniu zamiast wyłączania całej reguły.
+   * KON_3 przyszedł w drugiej wersji banku jako dwanaście słów kontra osiem
+   * i został w treści dokładnie tak, jak go napisano. Gdy biegun B urośnie
+   * o cztery słowa, wystarczy usunąć stąd ten kod.
+   */
+  const SYMETRIA_WYJATKI = new Set(["KON_3"]);
+
   it("pary A3 nie różnią się długością o więcej niż trzy słowa", () => {
-    if (CZEKA_NA_PRZEPISANIE.has("A3")) return;
-    const winne = PARY_A3.filter((p) => roznica(p.biegunA, p.biegunB) > 3);
+    const winne = PARY_A3.filter(
+      (p) => !SYMETRIA_WYJATKI.has(p.id) && roznica(p.biegunA, p.biegunB) > 3,
+    );
     expect(winne.map((p) => `${p.id}: ${p.biegunA} / ${p.biegunB}`)).toEqual([]);
+  });
+
+  it("wyjątek od symetrii jest jeden i nadal jest wyjątkiem", () => {
+    // Gdyby ktoś dopisał do listy kolejny kod, reguła cicho przestałaby
+    // obowiazywać. Test pilnuje, żeby lista nie rosła.
+    expect([...SYMETRIA_WYJATKI]).toEqual(["KON_3"]);
+    expect(PARY_A3.filter((p) => roznica(p.biegunA, p.biegunB) > 3).map((p) => p.id)).toEqual([
+      "KON_3",
+    ]);
   });
 
   it("pary A4 nie różnią się długością o więcej niż trzy słowa", () => {

@@ -358,6 +358,19 @@ function czescA3A(plan: PlanModulu): CzescModulu {
   return { kod: "A", nazwa: "Pary", ekrany };
 }
 
+/** Liczebnik slownie: ekran mowi „trzynastu osi", nie „13 osi". */
+function liczebnik(n: number): string {
+  const SLOWNIE: Record<number, string> = {
+    10: "dziesięciu",
+    11: "jedenastu",
+    12: "dwunastu",
+    13: "trzynastu",
+    14: "czternastu",
+    15: "piętnastu",
+  };
+  return SLOWNIE[n] ?? String(n);
+}
+
 function czescA3B(kontekst: KontekstModulu): CzescModulu {
   const bieguny = kontekst.a3Bieguny ?? {};
   const pozycje: Pozycja[] = KOTWICE_A3.map((k) => ({
@@ -375,8 +388,10 @@ function czescA3B(kontekst: KontekstModulu): CzescModulu {
         klucz: "A3_kotwice",
         typ: "pozycje",
         naglowek: INSTRUKCJA_A3.kotwiceNaglowek,
-        podpis:
-          "Wiemy już, gdzie jesteś na każdej z dwunastu osi. Teraz pytamy o coś innego: na ilu z nich naprawdę Ci zależy.",
+        // Liczba osi bierze sie z banku, a nie ze zdania wpisanego recznie:
+        // po dolozeniu osi EFE ekran przez caly czas mowil o dwunastu,
+        // pokazujac trzynascie kotwic.
+        podpis: `Wiemy już, gdzie jesteś na każdej z ${liczebnik(KOTWICE_A3.length)} osi. Teraz pytamy o coś innego: na ilu z nich naprawdę Ci zależy.`,
         pozycje,
         przyciskDalej: "Zakończ moduł",
       },

@@ -29,14 +29,14 @@ choć trafia do raportu jako opis stylu pracy.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Zaczynam działać, zanim ktoś mnie poprosi | Czekam, aż będzie jasne, czego się ode mnie oczekuje |
-| 2 | Sam zgłaszam pomysł na forum | Odzywam się, kiedy ktoś zapyta mnie o zdanie |
-| 3 | Kiedy widzę problem, biorę go na siebie | Kiedy widzę problem, zgłaszam go komuś |
-| 4 | Wolę wyznaczyć kierunek | Wolę dostać kierunek |
-| 5 | Pierwszy ruch należy do mnie | Wolę najpierw zobaczyć, co zrobią inni |
+| 1 | W grupowym zadaniu zaczynam robić swoje, zanim ktoś mi przydzieli rolę | W grupowym zadaniu czekam, aż ktoś powie, co mam robić |
+| 2 | Na spotkaniu grupy sam zgłaszam swój pomysł | Na spotkaniu grupy mówię swój pomysł, gdy ktoś mnie zapyta |
+| 3 | Kiedy widzę, że coś nie działa, sam się tym zajmuję | Kiedy widzę, że coś nie działa, zgłaszam to osobie odpowiedzialnej |
+| 4 | Wolę sam decydować, w którą stronę idzie wspólne zadanie | Wolę, żeby ktoś inny wyznaczył kierunek wspólnego zadania |
+| 5 | W nowej grupie odzywam się jako jeden z pierwszych | W nowej grupie czekam, aż odezwą się inni |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby móc sam wychodzić z inicjatywą” albo
-„Zależy mi na tym, żeby ktoś jasno mówił, czego oczekuje”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żebym mógł sam wychodzić z inicjatywą” albo
+„Zależy mi na tym, żeby ktoś jasno mówił, czego ode mnie oczekuje”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -51,14 +51,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Muszę mieć plan przed startem | Plan powstaje mi w trakcie |
-| 2 | Lubię wiedzieć, co będzie w przyszłym tygodniu | Wolę, żeby tydzień układał się na bieżąco |
-| 3 | Zapisuję i odhaczam | Trzymam w głowie i improwizuję |
-| 4 | Zmiana planu mnie irytuje | Zmiana planu mnie ożywia |
-| 5 | Wolę jasne zasady | Wolę móc naginać zasady |
+| 1 | Zanim zacznę pracę, chcę mieć rozpisane wszystkie kroki | Zaczynam pracę i układam kolejne kroki w trakcie |
+| 2 | Chcę wiedzieć w poniedziałek, co będę robił w piątek | Wolę, żeby plan tygodnia układał się z dnia na dzień |
+| 3 | Zapisuję swoje zadania na liście i odhaczam je po kolei | Trzymam swoje zadania w głowie i robię je, kiedy wypadnie |
+| 4 | Kiedy w ostatniej chwili zmienia się plan, irytuje mnie to | Kiedy w ostatniej chwili zmienia się plan, nabieram energii |
+| 5 | Wolę, żeby zasady były spisane i żeby wszyscy ich przestrzegali | Wolę, żeby zasady dało się nagiąć, gdy sytuacja tego wymaga |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby wiedzieć z góry, co się będzie działo” albo
-„Zależy mi na tym, żeby móc działać bez sztywnego planu”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żebym z góry wiedział, co będzie się działo” albo
+„Zależy mi na tym, żebym mógł działać bez sztywnego planu”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -73,14 +73,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Wolę skończyć szybko i poprawić później | Wolę zrobić raz, ale porządnie |
-| 2 | Lepiej coś niż nic | Lepiej nic niż byle co |
-| 3 | Nudzi mnie dopracowywanie | Dopracowywanie daje mi satysfakcję |
-| 4 | Decyduję szybko, na wyczucie | Decyduję po sprawdzeniu wszystkiego |
-| 5 | Wolę zdążyć | Wolę mieć pewność |
+| 1 | Wolę oddać swoją pracę szybko i poprawić ją, jeśli będzie trzeba | Wolę oddać swoją pracę później, za to bez potrzeby poprawek |
+| 2 | Wolę oddać pracę niedokończoną niż nie oddać jej wcale | Wolę nie oddać pracy wcale niż oddać ją zrobioną byle jak |
+| 3 | Nudzi mnie poprawianie szczegółów w czymś, co już działa | Poprawianie szczegółów aż do skutku daje mi satysfakcję |
+| 4 | Decyzję podejmuję szybko, opierając się na przeczuciu | Decyzję podejmuję po sprawdzeniu wszystkich za i przeciw |
+| 5 | Wolę oddać pracę w terminie, nawet jeśli nie jest idealna | Wolę spóźnić się z pracą, ale mieć pewność, że jest dobra |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby móc pracować szybko” albo
-„Zależy mi na tym, żeby mieć czas na dokładność”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żebym mógł pracować w szybkim tempie” albo
+„Zależy mi na tym, żebym miał czas zrobić rzecz dokładnie”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -95,14 +95,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Najlepiej pracuje mi się samemu | Najlepiej pracuje mi się w grupie |
-| 2 | Ludzie wokół mnie rozpraszają | Ludzie wokół mnie napędzają |
-| 3 | Wolę odpowiadać tylko za siebie | Wolę wspólną odpowiedzialność |
-| 4 | Rozwiązuję problem w głowie | Rozwiązuję problem, gadając o nim |
-| 5 | Cały dzień bez rozmów mi nie przeszkadza | Cały dzień bez rozmów mnie męczy |
+| 1 | Najlepiej pracuje mi się, kiedy jestem w pomieszczeniu sam | Najlepiej pracuje mi się, kiedy ktoś siedzi obok mnie |
+| 2 | Kiedy wokół mnie są ludzie, trudniej mi się skupić na zadaniu | Kiedy wokół mnie są ludzie, łatwiej mi zabrać się do zadania |
+| 3 | Wolę odpowiadać tylko za swoją część wspólnej pracy | Wolę, żeby cała grupa odpowiadała za wspólną pracę razem |
+| 4 | Trudny problem rozkładam na części w głowie, w ciszy | Trudny problem rozkładam na części, rozmawiając o nim z kimś |
+| 5 | Cały dzień pracy bez rozmowy z kimkolwiek mi nie przeszkadza | Cały dzień pracy bez rozmowy z kimkolwiek mnie męczy |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby móc pracować samodzielnie” albo
-„Zależy mi na tym, żeby mieć ludzi wokół siebie”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żebym mógł pracować samodzielnie” albo
+„Zależy mi na tym, żebym miał ludzi wokół siebie przez cały dzień”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -117,14 +117,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Wolę jedną rzecz doprowadzić do końca | Wolę mieć kilka rzeczy naraz |
-| 2 | Lubię wchodzić głęboko w jeden temat | Lubię poznać po trochu wiele tematów |
-| 3 | Przerwanie w połowie mnie frustruje | Przeskakiwanie mi nie przeszkadza |
-| 4 | Wolę być ekspertem od jednego | Wolę ogarniać wiele rzeczy |
-| 5 | Kilka spraw naraz mnie rozprasza | Jedna sprawa na raz mnie nudzi |
+| 1 | Wolę robić jedno zadanie, dopóki nie będzie skończone | Wolę prowadzić kilka zadań jednocześnie |
+| 2 | Lubię poznać jeden temat naprawdę dokładnie | Lubię poznać wiele różnych tematów po trochu |
+| 3 | Kiedy ktoś przerwie mi w połowie zadania, tracę wątek | Kiedy ktoś przerwie mi w połowie zadania, wracam bez trudu |
+| 4 | Wolę być bardzo dobry w jednej wąskiej dziedzinie | Wolę znać się przyzwoicie na wielu dziedzinach |
+| 5 | Kiedy mam kilka spraw naraz, zaczynam się w nich gubić | Kiedy mam jedną sprawę przez cały dzień, zaczynam się nudzić |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby móc skupić się na jednej rzeczy” albo
-„Zależy mi na tym, żeby mieć różnorodne zadania”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żebym mógł skupić się na jednej rzeczy naraz” albo
+„Zależy mi na tym, żebym miał w ciągu dnia różne zadania”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -139,14 +139,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Wolę spróbować i zobaczyć | Wolę najpierw się upewnić |
-| 2 | Niepewność mnie ekscytuje | Niepewność mnie męczy |
-| 3 | Postawiłbym na siebie | Wolę pewne rozwiązanie |
-| 4 | Porażka to koszt nauki | Porażki wolę unikać |
-| 5 | Wolę duży zysk z ryzykiem | Wolę mniejszy zysk, ale pewny |
+| 1 | Wolę spróbować czegoś nowego i przekonać się, jak wyjdzie | Wolę najpierw sprawdzić, czy coś zadziała, a potem próbować |
+| 2 | Kiedy nie wiem, jak coś się skończy, robi się dla mnie ciekawie | Kiedy nie wiem, jak coś się skończy, źle się z tym czuję |
+| 3 | Wybrałbym pracę z niepewnym, ale wysokim zarobkiem | Wybrałbym pracę ze stałym, ale niższym zarobkiem |
+| 4 | Kiedy coś mi nie wyjdzie, traktuję to jako cenę za naukę | Staram się działać tak, żeby nic mi nie wyszło źle |
+| 5 | Wolę trudny projekt, w którym mogę zrobić coś dużego | Wolę spokojny projekt, w którym wiem, że mi się uda |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby móc podejmować ryzyko” albo
-„Zależy mi na tym, żeby mieć poczucie bezpieczeństwa”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żebym mógł podejmować ryzyko i próbować nowych rzeczy” albo
+„Zależy mi na tym, żebym miał poczucie bezpieczeństwa i stały dochód”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -161,13 +161,13 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Chcę mieć wpływ na to, co się dzieje | Chcę wiedzieć, co mam zrobić |
-| 2 | Wolę decydować i odpowiadać | Wolę wykonać dobrze i nie martwić się resztą |
-| 3 | Denerwuje mnie, gdy decyduje ktoś inny | Czuję ulgę, gdy decyduje ktoś inny |
-| 4 | Chcę znać powód każdej decyzji | Wystarczy mi, że wiem, co robić |
-| 5 | Wolę kierować | Wolę wykonywać |
+| 1 | Chcę mieć wpływ na to, jak potoczy się wspólne zadanie | Chcę dostać jasną informację, co mam w zadaniu zrobić |
+| 2 | Wolę podejmować decyzje i odpowiadać za ich skutki | Wolę dobrze wykonać swoją część i nie odpowiadać za całość |
+| 3 | Kiedy ktoś inny decyduje za mnie, źle to znoszę | Kiedy ktoś inny bierze decyzję na siebie, czuję ulgę |
+| 4 | Chcę wiedzieć, dlaczego mamy zrobić coś akurat w ten sposób | Wystarczy mi wiedzieć, co konkretnie mam zrobić |
+| 5 | Wolę być osobą, która mówi grupie, co robimy dalej | Wolę być osobą, która dostaje zadanie i dobrze je wykonuje |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby móc decydować” albo
+**Kotwica (część B).** „Zależy mi na tym, żebym sam decydował, jak wykonać swoją pracę” albo
 „Zależy mi na tym, żeby ktoś inny brał decyzje na siebie”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
@@ -183,14 +183,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Mówię wprost, że się nie zgadzam | Wolę nie zaogniać |
-| 2 | Spór bywa potrzebny | Spór zwykle szkodzi |
-| 3 | Powiem komuś, że zrobił źle | Wolę to przemilczeć |
-| 4 | Wolę wyjaśnić na miejscu | Wolę odczekać, aż samo przejdzie |
-| 5 | Napięcie mi nie przeszkadza | Napięcie mnie blokuje |
+| 1 | Kiedy nie zgadzam się z czyimś pomysłem, mówię to wprost | Kiedy nie zgadzam się z czyimś pomysłem, zwykle tego nie mówię |
+| 2 | Uważam, że kłótnię w grupie czasem trzeba przeprowadzić do końca | Uważam, że kłótnia w grupie zwykle więcej psuje, niż daje |
+| 3 | Jeśli ktoś zrobił coś źle, powiem mu o tym prosto w oczy | Jeśli ktoś zrobił coś źle, raczej to przemilczę |
+| 4 | Nieporozumienie z kimś wolę wyjaśnić tego samego dnia | Nieporozumienie z kimś wolę przeczekać, zwykle samo mija |
+| 5 | Kiedy w grupie robi się nerwowo, mnie to nie przeszkadza | Kiedy w grupie robi się nerwowo, tracę ochotę do działania |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby móc mówić wprost” albo
-„Zależy mi na tym, żeby atmosfera była spokojna”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żebym mógł mówić wprost, co myślę” albo
+„Zależy mi na tym, żeby atmosfera wokół mnie była spokojna”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -205,14 +205,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Lubię próbować nieznanych rzeczy | Wolę to, co znam |
-| 2 | Nudzi mnie robienie tego samego | Powtarzalność mnie uspokaja |
-| 3 | Chętnie zmieniam sposób działania | Wolę trzymać się tego, co działa |
-| 4 | Nowe miejsce mnie ciekawi | Nowe miejsce mnie stresuje |
-| 5 | Wolę eksperyment | Wolę sprawdzoną receptę |
+| 1 | Lubię robić rzeczy, których wcześniej nigdy nie robiłem | Wolę robić rzeczy, które już dobrze znam |
+| 2 | Kiedy codziennie robię to samo, zaczynam się nudzić | Kiedy codziennie robię to samo, czuję się spokojnie |
+| 3 | Chętnie zmieniam sposób, w jaki wykonuję swoje zadania | Wolę trzymać się sposobu, który już mi się sprawdził |
+| 4 | Kiedy trafiam w nowe miejsce, czuję przede wszystkim ciekawość | Kiedy trafiam w nowe miejsce, czuję przede wszystkim napięcie |
+| 5 | Wolę wymyślić własny sposób zrobienia czegoś | Wolę zrobić coś dokładnie według gotowej instrukcji |
 
 **Kotwica (część B).** „Zależy mi na tym, żeby ciągle działo się coś nowego” albo
-„Zależy mi na tym, żeby dało się opanować rutynę”, na skali 1–5. Pokazywana jest ta
+„Zależy mi na tym, żebym mógł opanować swoją pracę do perfekcji”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -227,14 +227,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Robię swoje, choć nikt nie patrzy | Potrzebuję, żeby ktoś sprawdzał |
-| 2 | Sam wyznaczam sobie terminy | Bez terminu z zewnątrz odkładam |
-| 3 | Motywuje mnie sama rzecz | Motywuje mnie ocena albo nagroda |
-| 4 | Zaczynam wcześnie | Ruszam, gdy termin blisko |
-| 5 | Nie potrzebuję przypominania | Przypomnienia mi pomagają |
+| 1 | Robię swoje zadania, nawet gdy nikt tego nie sprawdza | Robię swoje zadania lepiej, gdy ktoś sprawdza postępy |
+| 2 | Sam wyznaczam sobie terminy i sam ich pilnuję | Bez terminu ustalonego przez kogoś odkładam sprawy na później |
+| 3 | Do pracy wystarcza mi to, że temat mnie interesuje | Do pracy potrzebuję oceny, zapłaty albo innej nagrody |
+| 4 | Za zadanie zabieram się na długo przed terminem | Za zadanie zabieram się, kiedy termin jest już blisko |
+| 5 | Pamiętam o swoich zadaniach bez żadnych przypomnień | Przypomnienia w telefonie realnie pomagają mi pamiętać |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby nikt nie stał nad Tobą” albo
-„Zależy mi na tym, żeby ktoś pilnował terminów”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żeby nikt nie stał nade mną i mnie nie kontrolował” albo
+„Zależy mi na tym, żeby ktoś pilnował terminów za mnie”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -249,14 +249,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Wolę równe tempo codziennie | Wolę usiąść raz i zrobić dużo naraz |
-| 2 | Krótkie sesje, ale regularnie | Długie sesje, ale rzadziej |
-| 3 | Nie lubię pracować po nocach | Najlepiej działam w nocnym zrywie |
-| 4 | Wolę rozłożyć na tygodnie | Wolę zrobić w dwa dni |
-| 5 | Rutyna mi służy | Rutyna mnie usypia |
+| 1 | Wolę pracować po trochu, ale każdego dnia | Wolę usiąść raz i zrobić wszystko za jednym razem |
+| 2 | Wolę pracować w krótkich odcinkach, za to regularnie | Wolę pracować w długich odcinkach, za to rzadziej |
+| 3 | Wieczorem i w nocy pracuje mi się gorzej niż rano | Wieczorem i w nocy pracuje mi się lepiej niż rano |
+| 4 | Duże zadanie wolę rozłożyć na kilka tygodni | Duże zadanie wolę zrobić w dwa intensywne dni |
+| 5 | Kiedy każdy dzień wygląda podobnie, mam więcej energii | Kiedy każdy dzień wygląda podobnie, zaczynam się nudzić |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby dało się pracować równym tempem” albo
-„Zależy mi na tym, żeby dało się pracować zrywami”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żebym mógł pracować równym tempem każdego dnia” albo
+„Zależy mi na tym, żebym mógł pracować zrywami, kiedy mam energię”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -271,14 +271,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Potrzebuję ciszy, żeby się skupić | Skupiam się mimo hałasu |
-| 2 | Bałagan wokół mi przeszkadza | Bałagan wokół nie robi mi różnicy |
-| 3 | Wolę pracować w jednym stałym miejscu | Wolę zmieniać miejsca |
-| 4 | Przerwy mnie wybijają | Przerwy mi nie przeszkadzają |
-| 5 | Wolę spokojne otoczenie | Wolę, żeby coś się działo wokół |
+| 1 | Żeby się skupić, potrzebuję zupełnej ciszy | Potrafię się skupić nawet przy głośnej rozmowie obok |
+| 2 | Bałagan na biurku utrudnia mi pracę | Bałagan na biurku nie robi mi żadnej różnicy |
+| 3 | Wolę pracować codziennie w tym samym miejscu | Wolę zmieniać miejsca, w których pracuję |
+| 4 | Wolę pracować przy biurku, które sam sobie urządziłem | Mogę pracować przy dowolnym biurku, byle było wolne |
+| 5 | Wolę pracować tam, gdzie jest cicho i spokojnie | Wolę pracować tam, gdzie ciągle coś się dzieje |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby było cicho i spokojnie” albo
-„Zależy mi na tym, żeby coś się działo wokół”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żeby wokół mnie było cicho i spokojnie” albo
+„Zależy mi na tym, żeby wokół mnie ciągle coś się działo”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
@@ -293,14 +293,14 @@ a nie w którą stronę.
 
 | # | Zdanie A | Zdanie B |
 |---|---|---|
-| 1 | Wolę pracę, po której na koniec dnia widać, co zrobiłem | Nie przeszkadza mi, że efekt mojej pracy będzie widać dopiero za rok |
-| 2 | Denerwuje mnie, kiedy długo nie wiem, czy to, co robię, ma sens | Potrafię długo pracować nad czymś, nie wiedząc, czy wyjdzie |
-| 3 | Lubię kończyć to, co zacząłem | Nie mam problemu z tym, że coś ciągnie się miesiącami |
-| 4 | Wolę zrobić dziesięć małych rzeczy niż jedną wielką | Wolę jedną dużą rzecz niż dziesięć drobnych |
-| 5 | Ważne jest dla mnie, żeby ktoś zauważył, co zrobiłem | Wystarczy mi, że sam wiem, że zrobiłem to dobrze |
+| 1 | Wolę pracę, po której na koniec dnia widzę, co zrobiłem | Nie przeszkadza mi praca, której efekt zobaczę dopiero za rok |
+| 2 | Źle znoszę, gdy długo nie wiem, czy moja praca ma sens | Potrafię długo pracować, nie wiedząc, czy coś z tego wyjdzie |
+| 3 | Lubię zamykać zadania i odhaczać je jako skończone | Nie przeszkadza mi, że jedno zadanie ciągnie się miesiącami |
+| 4 | Wolę skończyć dziesięć małych zadań niż jedno duże | Wolę skończyć jedno duże zadanie niż dziesięć małych |
+| 5 | Ważne jest dla mnie, żeby ktoś zauważył, co zrobiłem | Wystarczy mi, że sam wiem, że zrobiłem coś dobrze |
 
-**Kotwica (część B).** „Zależy mi na tym, żeby było widać efekt tego, co robię” albo
-„Zależy mi na tym, żeby dało się pracować nad czymś, czego efekt przyjdzie później”, na skali 1–5. Pokazywana jest ta
+**Kotwica (część B).** „Zależy mi na tym, żebym widział efekt tego, co robię, na bieżąco” albo
+„Zależy mi na tym, żebym mógł pracować nad czymś, czego efekt przyjdzie później”, na skali 1–5. Pokazywana jest ta
 strona, która wyszła z par. Kotwica mówi, **jak bardzo** to jest warunek,
 a nie w którą stronę.
 
