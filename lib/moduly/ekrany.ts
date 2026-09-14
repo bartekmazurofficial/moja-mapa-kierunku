@@ -88,7 +88,7 @@ export function liczbaPozycjiModulu(modul: KodModulu): number {
 
 /** Ile mniej wiecej zajmie caly modul, w minutach. Do listy modulow. */
 export function minutyModulu(modul: KodModulu): number {
-  return minutyZPozycji(zakresPozycjiModulu(modul).max);
+  return minutyZPozycji(zakresPozycjiModulu(modul).max, modul);
 }
 
 /**
@@ -179,8 +179,16 @@ function czescA0(): CzescModulu {
         opcje: pytanie.opcje?.map((o) => ({
           kod: o.kod,
           etykieta: o.etykieta,
+          nadpis: o.nadpis,
+          // Klucz obrazu jest zlozony z pytania i kodu, bo ten sam kod wraca
+          // w kilku pytaniach („matematyka" w rozszerzeniach i w mocnych
+          // przedmiotach) i ma tam znaczyc co innego.
+          ikona: `a0-${pytanie.id}-${o.kod}`,
           wylaczna: o.odmowa || o.kod === "brak" || o.kod === "nic" || o.kod === "nie_wiem",
         })),
+        // A0 pyta o sytuację życiową i tam obraz niesie treść, a nie ozdobę.
+        // Pole tekstowe kart nie ma.
+        uklad: pytanie.typ === "tekst" ? undefined : "karty",
         dokladnie: pytanie.typ === "dokladnie_trzy" ? 3 : undefined,
         opcjonalna: pytanie.opcjonalne,
         warunek: pytanie.tylkoEtapy ? { pozycja: "etap", wartosci: pytanie.tylkoEtapy } : undefined,

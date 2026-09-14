@@ -14,6 +14,7 @@ import {
   minutyModulu,
   zakresPozycjiModulu,
 } from "@/lib/moduly/ekrany";
+import { sekundNaPozycje } from "@/lib/moduly/miara";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import type { KodModulu } from "@/lib/moduly/typy";
 
@@ -194,8 +195,16 @@ describe("ile pytań obiecuje ekran startowy", () => {
     for (const modul of MODULY) {
       expect(minutyModulu(modul), modul).toBeGreaterThanOrEqual(2);
       expect(minutyModulu(modul), modul).toBeLessThanOrEqual(
-        Math.max(2, Math.ceil((zakresPozycjiModulu(modul).max * 8) / 60)),
+        Math.max(2, Math.ceil((zakresPozycjiModulu(modul).max * sekundNaPozycje(modul)) / 60)),
       );
     }
+  });
+
+  it("A0 liczy się wolniej niż moduły par", () => {
+    // Pytanie A0 to osiem albo dziesięć opcji do przeczytania, a para to dwa
+    // zdania. Wspólna stała dawała A0 „około dwie minuty" na czternaście
+    // pytań, czyli liczbę, której nikt nie osiągnie.
+    expect(sekundNaPozycje("A0")).toBeGreaterThan(sekundNaPozycje("A1"));
+    expect(minutyModulu("A0")).toBeGreaterThanOrEqual(6);
   });
 });

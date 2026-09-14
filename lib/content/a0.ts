@@ -17,6 +17,8 @@ export interface OpcjaA0 {
   etykieta: string;
   /** Opcja odmowy odpowiedzi. Nie ma zadnych konsekwencji dla wyniku. */
   odmowa?: boolean;
+  /** Nadpis grupy nad etykieta, gdy opcje dziela sie na dwie rodziny. */
+  nadpis?: string;
 }
 
 export interface PytanieA0 {
@@ -97,15 +99,15 @@ export const PYTANIA_A0: PytanieA0[] = [
     typ: "pojedynczy",
     tresc: "Na jakim etapie nauki jesteś?",
     opcje: [
-      { kod: "podstawowka", etykieta: "Ostatnia klasa szkoły podstawowej" },
-      { kod: "liceum_1_2", etykieta: "Liceum lub technikum, klasa pierwsza lub druga" },
-      { kod: "liceum_maturalna", etykieta: "Liceum lub technikum, klasa przedmaturalna lub maturalna" },
-      { kod: "branzowa", etykieta: "Szkoła branżowa" },
-      { kod: "po_maturze", etykieta: "Po maturze, przerwa albo szukam kierunku" },
-      { kod: "studiuje", etykieta: "Studiuję" },
-      { kod: "po_studiach", etykieta: "Po studiach" },
-      { kod: "pracuje_zmiana", etykieta: "Pracuję, rozważam zmianę" },
-      { kod: "nie_uczy_nie_pracuje", etykieta: "Nie uczę się i nie pracuję" },
+      { kod: "podstawowka", etykieta: "Ostatnia klasa szkoły podstawowej", nadpis: "Uczę się" },
+      { kod: "liceum_1_2", etykieta: "Liceum lub technikum, klasa pierwsza lub druga", nadpis: "Uczę się" },
+      { kod: "liceum_maturalna", etykieta: "Liceum lub technikum, klasa przedmaturalna lub maturalna", nadpis: "Uczę się" },
+      { kod: "branzowa", etykieta: "Szkoła branżowa", nadpis: "Uczę się" },
+      { kod: "po_maturze", etykieta: "Po maturze, przerwa albo szukam kierunku", nadpis: "Uczę się" },
+      { kod: "studiuje", etykieta: "Studiuję", nadpis: "Uczę się" },
+      { kod: "po_studiach", etykieta: "Po studiach", nadpis: "Po szkole" },
+      { kod: "pracuje_zmiana", etykieta: "Pracuję, rozważam zmianę", nadpis: "Po szkole" },
+      { kod: "nie_uczy_nie_pracuje", etykieta: "Nie uczę się i nie pracuję", nadpis: "Po szkole" },
     ],
   },
   {
@@ -407,6 +409,86 @@ export const PYTANIA_A0: PytanieA0[] = [
     ],
   },
 ];
+
+/**
+ * Piec sciezek przez A0.
+ *
+ * Etap nauki rozstrzyga, o co pytamy dalej, wiec uczestnik ma od razu
+ * zobaczyc, w ktora sciezke wszedl i ile pytan przed nim. „Nie zapytamy Cie
+ * o" jest liczone z `PYTANIA_A0`, a nie wpisane recznie: recznie rozjechaloby
+ * sie przy pierwszej zmianie pytan i nikt by tego nie zauwazyl.
+ */
+export const SCIEZKI_A0: Array<{ nr: number; nazwa: string; etapy: string[]; opis: string }> = [
+  {
+    nr: 1,
+    nazwa: "przed rozszerzeniami",
+    etapy: ETAPY_PRZED_ROZSZERZENIAMI,
+    opis: "Pytamy o to, co dopiero wybierzesz, i o to, co idzie Ci łatwo.",
+  },
+  {
+    nr: 2,
+    nazwa: "przed maturą",
+    etapy: ETAPY_PRZED_MATURA,
+    opis: "Pytamy o rozszerzenia, które już masz, i o plan na maturę.",
+  },
+  {
+    nr: 3,
+    nazwa: "studia",
+    etapy: ETAPY_PO_MATURZE,
+    opis: "Pytamy o maturę, kierunek i o to, czy się sprawdził.",
+  },
+  {
+    nr: 4,
+    nazwa: "nowy start",
+    etapy: ETAPY_ZMIANY,
+    opis: "Pytamy o to, co masz za sobą, co Cię blokuje i od czego chcesz zacząć.",
+  },
+  {
+    nr: 5,
+    nazwa: "szkoła branżowa",
+    etapy: ["branzowa"],
+    opis: "Pytamy o przedmioty, w których jesteś mocny, i o zaplecze na start.",
+  },
+];
+
+/** Ścieżka dla etapu. Null, dopóki uczestnik nie odpowie na pierwsze pytanie. */
+export function sciezkaA0(etap: string | null | undefined) {
+  if (!etap) return null;
+  return SCIEZKI_A0.find((s) => s.etapy.includes(etap)) ?? null;
+}
+
+/**
+ * Tematy, o które na tej ścieżce nie zapytamy.
+ *
+ * Liczone z pytań, nie z listy w treści: pytanie schowane za `tylkoEtapy`,
+ * którego ten etap nie obejmuje, jest dokładnie tym, czego uczestnik nie
+ * zobaczy. Nazwa tematu pochodzi z pytania, więc nie trzeba jej powtarzać.
+ */
+export const TEMATY_A0: Record<string, string> = {
+  rozszerzenia: "rozszerzenia",
+  rozszerzenia_mam: "rozszerzenia",
+  matura_plan: "maturę rozszerzoną",
+  matura_zdana: "zdaną maturę",
+  przedmioty_mocne: "przedmioty szkolne",
+  przedmioty_trudne: "przedmioty szkolne",
+  matematyka: "matematykę",
+  kierunek: "kierunek studiów",
+  kierunek_ocena: "kierunek studiów",
+  wyksztalcenie: "ukończoną szkołę",
+  wyksztalcenie_kierunek: "ukończoną szkołę",
+  branza: "branżę, w której pracujesz",
+  staz_pracy: "staż pracy",
+  powod_zmiany: "powód zmiany",
+  blokada: "to, co Cię blokuje",
+};
+
+export function czegoNieZapytamyA0(etap: string | null | undefined): string[] {
+  if (!etap) return [];
+  const pominiete = PYTANIA_A0.filter(
+    (p) => p.tylkoEtapy && !p.tylkoEtapy.includes(etap),
+  ).map((p) => TEMATY_A0[p.id]);
+  return [...new Set(pominiete.filter(Boolean))];
+}
 
 export const INSTRUKCJA_A0 = {
   naglowek: "Punkt startu",

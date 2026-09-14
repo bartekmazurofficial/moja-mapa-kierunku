@@ -24,6 +24,7 @@ import { maObraz, obrazPlanszy, paraMaObrazy } from "@/lib/ui/obrazy";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import { ZAPIS_SAM } from "@/lib/content/wspolne";
+import { czegoNieZapytamyA0, sciezkaA0 } from "@/lib/content/a0";
 import { minutyZPozycji, zakresPozycji } from "@/lib/moduly/miara";
 import type { CzescModulu, Ekran } from "@/lib/moduly/typy";
 
@@ -65,7 +66,7 @@ export function Runner({
    * a nie o całym module. W A0 ścieżki mają różną długość, stąd zakres.
    */
   const zakresPytan = useMemo(() => zakresPozycji(definicja.ekrany), [definicja.ekrany]);
-  const minuty = minutyZPozycji(zakresPytan.max);
+  const minuty = minutyZPozycji(zakresPytan.max, modul);
   const rownaSciezka = zakresPytan.min === zakresPytan.max;
   const [odpowiedzi, ustawOdpowiedzi] = useState<Record<string, unknown>>(zapisane);
   const [indeks, ustawIndeks] = useState(0);
@@ -352,6 +353,26 @@ export function Runner({
   const naSrodku = jednaPozycja && (typPozycji === "para" || typPozycji === "trzystopniowa");
   const postepModulu = Math.round((Math.max(0, numerModulu - 1) / Math.max(1, liczbaModulow)) * 100);
 
+  /**
+   * Licznik pytań dla części, w której pytania zależą od wcześniejszej
+   * odpowiedzi.
+   *
+   * W A0 „pytanie 2 z 11" musi znaczyć jedenaście pytań TEJ ścieżki, a nie
+   * dwadzieścia trzy z definicji modułu. `widoczne` jest już przefiltrowane
+   * odpowiedziami, więc liczymy prosto z niego i liczba rośnie razem z tym,
+   * co uczestnik odpowiedział.
+   */
+  const pytaniaWidoczne = widoczne.filter((e) => e.typ === "pozycje");
+  const numerPytania = pytaniaWidoczne.indexOf(ekran) + 1;
+  const postepPytan =
+    ekran.postep ??
+    (numerPytania > 0 && pytaniaWidoczne.length > 1
+      ? { nr: numerPytania, z: pytaniaWidoczne.length, slowo: "pytań" }
+      : null);
+
+  /** Ścieżka A0: którą gałęzią idzie uczestnik po odpowiedzi na pierwsze pytanie. */
+  const sciezka = modul === "A0" ? sciezkaA0(odpowiedzi.etap as string | undefined) : null;
+
   return (
     <div className="relative isolate mx-auto flex min-h-dvh w-full max-w-[60rem] flex-col px-4 pb-6 pt-4 sm:px-8 sm:pt-5">
       {/*
@@ -377,15 +398,24 @@ export function Runner({
       <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
         <Marka href={`/u/${kodUczestnika}/moduly`} />
         <div className="flex flex-col items-end gap-1.5 pt-1">
-          <p className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
-            Moduł {numerModulu} z {liczbaModulow}
-            {ekran.postep ? (
-              <span className="normal-case tracking-normal tabular-nums">
-                <span aria-hidden className="mx-2">·</span>
-                {ekran.postep.nr} z {ekran.postep.z}
+          <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
+            {/* Chip ścieżki: uczestnik ma widzieć, że pytania są dobrane pod
+                niego, a nie że część ekranów zniknęła bez powodu. */}
+            {sciezka ? (
+              <span className="rounded-full bg-akcent-tlo px-3 py-1 text-drobne font-semibold text-akcent-jasny">
+                Ścieżka {sciezka.nr} · {sciezka.nazwa}
               </span>
             ) : null}
-          </p>
+            <p className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
+              Moduł {numerModulu} z {liczbaModulow}
+              {postepPytan ? (
+                <span className="normal-case tracking-normal tabular-nums">
+                  <span aria-hidden className="mx-2">·</span>
+                  {postepPytan.nr} z {postepPytan.z}
+                </span>
+              ) : null}
+            </p>
+          </div>
           <div className="pasek-cienki w-40 sm:w-56" aria-hidden>
             <span style={{ width: `${Math.max(4, postepModulu)}%` }} />
           </div>
@@ -874,6 +904,44 @@ export function Runner({
                 </div>
               ))}
             </div>
+
+            {/*
+              Panel ścieżki pod pierwszym pytaniem A0.
+              Odpowiedź na etap rozstrzyga, o co zapytamy dalej, więc od razu
+              mówimy, ile pytań przed uczestnikiem i czego nie zapytamy.
+              Lista pominiętych tematów jest liczona z pytań, nie wpisana,
+              więc nie rozjedzie się przy następnej zmianie treści.
+            */}
+            {sciezka && ekran.klucz === "A0_etap" ? (
+              <div className="szklo mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-7 sm:p-6">
+                <div className="min-w-0 flex-1">
+                  <p className="text-drobne font-bold uppercase tracking-[0.18em] text-atrament-slaby">
+                    Twoja ścieżka
+                  </p>
+                  <p className="mt-1.5 text-tresc-duza font-extrabold leading-tight text-atrament">
+                    Ścieżka {sciezka.nr} · {sciezka.nazwa}
+                  </p>
+                  <p className="mt-1 text-male leading-snug text-atrament-sciszony">{sciezka.opis}</p>
+                </div>
+                <ul className="flex shrink-0 flex-wrap gap-2">
+                  <li className="rounded-full bg-akcent-tlo px-3.5 py-1.5 text-male font-semibold text-akcent-jasny">
+                    {pytaniaWidoczne.length} {odmiana(pytaniaWidoczne.length, "pytanie", "pytania", "pytań")}
+                  </li>
+                  <li className="rounded-full bg-akcent-tlo px-3.5 py-1.5 text-male font-semibold text-akcent-jasny">
+                    około {minutyZPozycji(pytaniaWidoczne.length, modul)}{" "}
+                    {odmiana(minutyZPozycji(pytaniaWidoczne.length, modul), "minuta", "minuty", "minut")}
+                  </li>
+                </ul>
+                {czegoNieZapytamyA0(odpowiedzi.etap as string | undefined).length > 0 ? (
+                  <p className="shrink-0 border-t border-linia pt-3 text-male text-atrament-sciszony sm:max-w-[16rem] sm:border-l sm:border-t-0 sm:pl-7 sm:pt-0">
+                    Nie zapytamy Cię o:{" "}
+                    <span className="font-semibold text-atrament">
+                      {czegoNieZapytamyA0(odpowiedzi.etap as string | undefined).join(", ")}
+                    </span>
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
 
             {ekranWyboru && wskazowka ? (
               <p className="wskazowka mt-5">

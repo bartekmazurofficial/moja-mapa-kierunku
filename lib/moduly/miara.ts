@@ -56,6 +56,21 @@ export function zakresPozycji(ekrany: readonly Ekran[]): { min: number; max: num
  */
 const SEKUND_NA_POZYCJE = 8;
 
-export function minutyZPozycji(pozycji: number): number {
-  return Math.max(2, Math.round((pozycji * SEKUND_NA_POZYCJE) / 60));
+/**
+ * A0 liczy sie inaczej niz reszta.
+ *
+ * Osiem sekund to tempo klikania par: dwa zdania, jedna decyzja. Pytanie A0
+ * to osiem albo dziesiec opcji do przeczytania, czasem pole tekstowe, a przy
+ * etapie zycia jeszcze chwila namyslu. Osiem sekund dawalo tam „okolo dwie
+ * minuty" na czternascie pytan, czego nikt nie zrobi. Trzydziesci piec sekund
+ * to nadal oszacowanie, ale rzedu wielkosci, ktory sie broni.
+ */
+const SEKUND_W_MODULE: Record<string, number> = { A0: 35 };
+
+export function sekundNaPozycje(modul?: string): number {
+  return (modul && SEKUND_W_MODULE[modul]) || SEKUND_NA_POZYCJE;
+}
+
+export function minutyZPozycji(pozycji: number, modul?: string): number {
+  return Math.max(2, Math.round((pozycji * sekundNaPozycje(modul)) / 60));
 }

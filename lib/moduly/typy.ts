@@ -30,6 +30,12 @@ export type TypPozycji =
 export interface OpcjaWyboru {
   kod: string;
   etykieta: string;
+  /**
+   * Nadpis nad etykieta, gdy opcje dziela sie na grupy. W A0 osiem etapow
+   * rozpada sie na „ucze sie" i „po szkole": bez tego uczestnik czyta osiem
+   * rownorzednych zdan i szuka swojego przez chwile dluzej, niz trzeba.
+   */
+  nadpis?: string;
   /** Druga linia pod etykieta. Zdanie wyjasniajace, nie druga nazwa. */
   podpis?: string;
   /** Klucz znaku kategorii, np. "a1-7". Ilustrujemy kategorie, nie pozycje. */
@@ -59,6 +65,15 @@ export interface Pozycja {
   podpis?: string;
   /** ranking4: cztery opcje do ustawienia w kolejnosci. */
   opcje?: OpcjaWyboru[];
+  /**
+   * Odpowiedzi jako karty z kadrem 16:9 nad tekstem, w siatce.
+   *
+   * Domyslnie opcje sa wierszami. W A0 pytamy o sytuacje zyciowa i tam obraz
+   * niesie tresc: „szkola branzowa" i „studiuje" rozniaca sie samym zdaniem
+   * czytaja sie jak formularz, a z kadrem jak wybor. Kadr jest pusty, dopoki
+   * nie ma pliku, i to jest stan docelowy do czasu doslania grafik.
+   */
+  uklad?: "karty";
   /**
    * para: dwie strony wyboru, juz po losowaniu strony.
    *

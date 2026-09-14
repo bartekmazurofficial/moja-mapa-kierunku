@@ -12,9 +12,9 @@
  */
 
 import { useId, useMemo } from "react";
-import type { Pozycja as PozycjaDef, StronaPary } from "@/lib/moduly/typy";
+import type { OpcjaWyboru, Pozycja as PozycjaDef, StronaPary } from "@/lib/moduly/typy";
 import { Ikona, Obraz } from "@/components/Ikona";
-import { kluczBieguna } from "@/lib/ui/obrazy";
+import { kluczBieguna, maObraz } from "@/lib/ui/obrazy";
 import { kolorWyboru, type Kolor } from "@/lib/ui/kolory";
 import { kolejnoscDoPokazania } from "@/lib/moduly/ranking";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
@@ -123,16 +123,19 @@ function ZnakWyboru({
   wybrana,
   kwadrat,
   naObrazie,
+  wRzedzie,
 }: {
   wybrana: boolean;
   kwadrat?: boolean;
   /** Znak lezy na zdjeciu: kryjaca biel pod pierscieniem, inaczej ginie. */
   naObrazie?: boolean;
+  /** Znak stoi w wierszu tekstu, nie w rogu karty. */
+  wRzedzie?: boolean;
 }) {
   return (
     <span
       aria-hidden
-      className={`absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center border-2 ${
+      className={`${wRzedzie ? "mt-0.5 shrink-0" : "absolute right-3 top-3"} z-10 flex h-7 w-7 items-center justify-center border-2 ${
         kwadrat ? "rounded-lg" : "rounded-full"
       } ${
         wybrana
@@ -176,6 +179,104 @@ function KolkoZnaku({ klucz, kolor, rozmiar = 56 }: { klucz: string; kolor: Kolo
  */
 function kolumnyOpcji(ile: number): string {
   return ile > 4 ? "grid sm:grid-cols-2" : "flex flex-col";
+}
+
+/**
+ * Siatka kart odpowiedzi: ile kolumn przy ilu opcjach.
+ *
+ * Liczby nie sa dowolne. Karta ma kadr 16:9 nad tekstem, wiec przy trzech
+ * kolumnach kadr ma okolo 330 px szerokosci, a przy pieciu 200 px. Ponizej
+ * tego obrazek przestaje cokolwiek mowic, wiec pieciu kolumn uzywamy dopiero
+ * przy dziesieciu opcjach, gdzie alternatywa jest przewijanie.
+ */
+function kolumnyKart(ile: number): string {
+  if (ile <= 3) return "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
+  if (ile === 4) return "grid gap-4 sm:grid-cols-2 lg:grid-cols-4";
+  if (ile <= 6) return "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
+  if (ile <= 8) return "grid gap-4 sm:grid-cols-2 lg:grid-cols-4";
+  return "grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5";
+}
+
+/**
+ * Jedna karta odpowiedzi z kadrem.
+ *
+ * Kadr jest zawsze, takze wtedy, gdy pliku nie ma: pusty kadr trzyma układ
+ * i pokazuje, gdzie grafika stanie, a karty bez kadru obok kart z kadrem
+ * wyglądałyby jak dwie różne odpowiedzi na to samo pytanie. Wybór JEST
+ * pomiarem, więc wszystkie karty mają ten sam kształt.
+ */
+function KartaOdpowiedzi({
+  opcja,
+  wybrana,
+  kwadrat,
+  zablokowana,
+  kolor,
+  onClick,
+}: {
+  opcja: OpcjaWyboru;
+  wybrana: boolean;
+  /** Zaznaczenie wielokrotne ma kwadrat, pojedyncze pierścień. */
+  kwadrat?: boolean;
+  /** Limit wyborów osiągnięty: karta nie reaguje, ale nie gaśnie. */
+  zablokowana?: boolean;
+  kolor: Kolor | null;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={wybrana}
+      disabled={zablokowana}
+      className={`przejscie relative flex h-full flex-col overflow-hidden rounded-karta border-2 text-left active:scale-[0.995] ${
+        wybrana
+          ? "border-akcent"
+          : zablokowana
+            ? "cursor-not-allowed border-dashed border-linia"
+            : "border-linia hover:border-linia-mocna"
+      }`}
+    >
+      {/*
+        Kadr jest neutralny, nie w kolorze miejsca. Osiem kart w ośmiu tintach
+        czyta się jak osiem kategorii, a to są warianty jednej odpowiedzi.
+        Kolor wróci wtedy, gdy w kadrze stanie zdjęcie.
+      */}
+      <span
+        aria-hidden
+        className="flex aspect-[16/9] w-full items-center justify-center overflow-hidden bg-plyta text-atrament-slaby"
+      >
+        {opcja.ikona && maObraz(opcja.ikona) ? (
+          <Obraz klucz={opcja.ikona} pelny wybor kolor={kolor} />
+        ) : (
+          <svg viewBox="0 0 24 24" className="h-7 w-7 opacity-30" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <rect x="3" y="5" width="18" height="14" rx="2.5" />
+            <path d="m6 16 4-4 3 3 2.5-2.5L18 15" />
+            <circle cx="9" cy="9.5" r="1.2" />
+          </svg>
+        )}
+      </span>
+      <span
+        className={`relative flex flex-1 items-start gap-3 px-4 py-3.5 ${wybrana ? "bg-akcent-tlo/60" : "bg-panel"}`}
+      >
+        <ZnakWyboru wybrana={wybrana} kwadrat={kwadrat} wRzedzie />
+        <span className="min-w-0 flex-1">
+          {opcja.nadpis ? (
+            <span className="block text-drobne font-bold uppercase tracking-[0.14em] text-atrament-slaby">
+              {opcja.nadpis}
+            </span>
+          ) : null}
+          <span className="block font-boksowy text-tresc font-semibold leading-snug text-atrament">
+            {opcja.etykieta}
+          </span>
+          {opcja.podpis ? (
+            <span className="mt-0.5 block text-male font-normal leading-snug text-atrament-sciszony">
+              {opcja.podpis}
+            </span>
+          ) : null}
+        </span>
+      </span>
+    </button>
+  );
 }
 
 // =====================================================================
@@ -651,6 +752,19 @@ function Pojedynczy({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPozy
       {pozycja.podpis ? (
         <p className="mb-3 max-w-czytelna text-male text-atrament-sciszony">{pozycja.podpis}</p>
       ) : null}
+      {pozycja.uklad === "karty" ? (
+        <div className={`mt-4 ${kolumnyKart(pozycja.opcje?.length ?? 0)}`}>
+          {(pozycja.opcje ?? []).map((o, miejsce) => (
+            <KartaOdpowiedzi
+              key={o.kod}
+              opcja={o}
+              wybrana={wartosc === o.kod}
+              kolor={kolorWyboru(kluczKoloru, miejsce)}
+              onClick={() => naZmiane(o.kod)}
+            />
+          ))}
+        </div>
+      ) : (
       <div className={`mt-3 gap-2.5 ${kolumnyOpcji(pozycja.opcje?.length ?? 0)}`}>
         {(pozycja.opcje ?? []).map((o, miejsce) => {
           const kolor = kolorWyboru(kluczKoloru, miejsce);
@@ -675,6 +789,7 @@ function Pojedynczy({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPozy
           );
         })}
       </div>
+      )}
     </fieldset>
   );
 }
@@ -712,6 +827,27 @@ function Wielokrotny({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPoz
       {limit ? (
         <p className="mb-3 text-drobne tabular-nums text-atrament-slaby">Wybrano {limit}</p>
       ) : null}
+      {pozycja.uklad === "karty" ? (
+        <div className={`mt-4 ${kolumnyKart(pozycja.opcje?.length ?? 0)}`}>
+          {(pozycja.opcje ?? []).map((o, miejsce) => {
+            const zaznaczona = wybrane.includes(o.kod);
+            const zablokowana =
+              !zaznaczona && Boolean(maks) && wybrane.length >= (maks ?? 0) && !o.wylaczna;
+            return (
+              <div key={o.kod} className={o.wylaczna ? "sm:col-span-2 lg:col-span-full" : undefined}>
+                <KartaOdpowiedzi
+                  opcja={o}
+                  wybrana={zaznaczona}
+                  kwadrat
+                  zablokowana={zablokowana}
+                  kolor={kolorWyboru(o.ikona ?? kluczKoloru, miejsce)}
+                  onClick={() => przelacz(o.kod, o.wylaczna)}
+                />
+              </div>
+            );
+          })}
+        </div>
+      ) : (
       <div className={`mt-2 gap-2.5 ${kolumnyOpcji(pozycja.opcje?.length ?? 0)}`}>
         {(pozycja.opcje ?? []).map((o, miejsce) => {
           const zaznaczona = wybrane.includes(o.kod);
@@ -724,8 +860,11 @@ function Wielokrotny({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPoz
               onClick={() => przelacz(o.kod, o.wylaczna)}
               aria-pressed={zaznaczona}
               disabled={zablokowana}
+              // Zablokowana karta bez przezroczystosci: `opacity-40` zabiera
+              // tekstowi kontrast ponizej progu. Stan niesie kursor i to, ze
+              // przycisk nie reaguje, a nie przygaszony napis.
               className={`${klasyKarty(zaznaczona)} flex min-h-[3.5rem] items-center gap-3 py-3 pl-4 pr-12 ${
-                zablokowana ? "opacity-40" : ""
+                zablokowana ? "cursor-not-allowed border-dashed" : ""
               }`}
               style={stylKarty(kolor, zaznaczona)}
             >
@@ -741,6 +880,7 @@ function Wielokrotny({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPoz
           );
         })}
       </div>
+      )}
     </fieldset>
   );
 }
