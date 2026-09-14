@@ -38,7 +38,7 @@ const Z_OBRAZEM = new Set<string>([
 ]);
 
 /**
- * Plansze pytań: poziomy pas nad blokami odpowiedzi, proporcja około 3,7:1.
+ * Plansze pytań: kadr nad blokami odpowiedzi, proporcja 16:9 (1200 na 675).
  *
  * Lista jest pusta, dopóki plansz nie ma. Wtedy pas pokazuje duży znak
  * kategorii, a w A3 kwadratową ilustrację pośrodku. Po dosłaniu plików

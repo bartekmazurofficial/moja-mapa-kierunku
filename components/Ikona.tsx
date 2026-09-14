@@ -177,6 +177,10 @@ export function Obraz({
  * Dostarczone pliki są kwadratowe, więc wchodzą w pas w całości, bez
  * przycinania, a tło pasa dopełnia rozmyta kopia tego samego obrazu.
  * Grafika w proporcji pasa wypełni go od krawędzi do krawędzi.
+ *
+ * `pelnaProporcja` zdejmuje sztywną wysokość i oddaje ramkę proporcji 16:9,
+ * czyli tej, w której przychodzą plansze pytań. Bez tego pas o stałej
+ * wysokości przycinał im górę i dół.
  */
 /**
  * Pas ilustracji pary: dwie połowy, jedna biała linia między nimi.
@@ -224,6 +228,7 @@ export function Plansza({
   wysokosc = 176,
   wybor,
   kolor,
+  pelnaProporcja,
 }: {
   klucz: KluczGlifu;
   wysokosc?: number;
@@ -231,6 +236,14 @@ export function Plansza({
   wybor?: boolean;
   /** Kolor ekranu wyboru. Bez niego pas jest neutralny. */
   kolor?: Kolor | null;
+  /**
+   * Cała grafika, nie wycinek. Plansze pytań są w 16:9 i przy sztywnej
+   * wysokości pasa `object-cover` zabierał im górę i dół: na ekranie
+   * zostawał środkowy pasek zdjęcia. Tutaj ramka bierze proporcję obrazu,
+   * więc nie ma czego przycinać. Kafle zawodów zostają przy sztywnej
+   * wysokości, bo tam pas jest miniaturą w siatce, a nie ilustracją pytania.
+   */
+  pelnaProporcja?: boolean;
 }) {
   const k = paleta(klucz, wybor, kolor);
   const plansza = obrazPlanszy(klucz);
@@ -240,8 +253,14 @@ export function Plansza({
   return (
     <span
       aria-hidden
-      className="relative block w-full overflow-hidden rounded-2xl border"
-      style={{ height: wysokosc, borderColor: k.obwod, background: k.tlo }}
+      className={`relative block w-full overflow-hidden border ${
+        pelnaProporcja ? "aspect-[16/9] rounded-xl" : "rounded-2xl"
+      }`}
+      style={{
+        height: pelnaProporcja ? undefined : wysokosc,
+        borderColor: k.obwod,
+        background: k.tlo,
+      }}
     >
       {plansza ? (
         /* Plansza ma proporcje pasa, więc wypełnia go od krawędzi do krawędzi. */
@@ -251,7 +270,7 @@ export function Plansza({
           alt=""
           loading="lazy"
           decoding="async"
-          className="h-full w-full object-cover"
+          className={`h-full w-full ${pelnaProporcja ? "object-contain" : "object-cover"}`}
         />
       ) : obraz ? (
         <>

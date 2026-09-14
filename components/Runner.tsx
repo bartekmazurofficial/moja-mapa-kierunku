@@ -20,7 +20,7 @@ import { Marka } from "./pulpit/Marka";
 import { Bramy } from "./pulpit/Bramy";
 import { Panorama } from "./pulpit/Panorama";
 import { DOPISEK, PODTYTUL, WSKAZOWKA } from "@/lib/moduly/opisy";
-import { maObraz, paraMaObrazy } from "@/lib/ui/obrazy";
+import { maObraz, obrazPlanszy, paraMaObrazy } from "@/lib/ui/obrazy";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import { ZAPIS_SAM } from "@/lib/content/wspolne";
@@ -341,6 +341,10 @@ export function Runner({
   );
   const zPlanszaPary = jednaPozycja && typPozycji === "para" && paraZObrazami;
   const zPlansza = jednaPozycja && Boolean(kluczPlanszy) && !zPlanszaPary;
+  // Plansza narysowana pod pytanie jest w 16:9 i idzie na ekran w całości.
+  // Kwadratowy kafel kategorii zostaje w pasie o stałej wysokości: rozciągnięty
+  // do 16:9 miałby po bokach więcej rozmycia niż obrazu.
+  const pelnaPlansza = zPlansza && Boolean(obrazPlanszy(kluczPlanszy as string));
   // Pytanie z jedną decyzją stoi na środku ekranu, jak w makiecie panelu
   // wyboru. Siatki pozycji i ranking zostają wyrównane do lewej.
   const naSrodku = jednaPozycja && (typPozycji === "para" || typPozycji === "trzystopniowa");
@@ -700,7 +704,7 @@ export function Runner({
               <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">{etykietaNadTytulem}</p>
               <h1
                 className={`mt-3 font-extrabold leading-[1.04] tracking-[-0.02em] text-atrament ${
-                  naSrodku ? "mx-auto max-w-[20ch]" : "max-w-[22ch] sm:max-w-[18ch]"
+                  naSrodku ? "mx-auto max-w-[24ch]" : "max-w-[22ch] sm:max-w-[18ch]"
                 } ${
                   tytulEkranu.length > 46
                     ? "text-naglowek sm:text-naglowek-duzy"
@@ -745,7 +749,16 @@ export function Runner({
                   wysokosc={220}
                 />
               </div>
+            ) : zPlansza && pelnaPlansza ? (
+              /* Gotowa plansza pytania: cały kadr w 16:9, bez przycinania.
+                 Kolumna węższa niż bloki odpowiedzi, bo przy pełnej szerokości
+                 pytanie i odpowiedzi zeszłyby pod krawędź ekranu. */
+              <div className="mx-auto mt-6 w-full max-w-[44rem]">
+                <Plansza klucz={kluczPlanszy as string} wybor pelnaProporcja />
+              </div>
             ) : zPlansza ? (
+              /* Kwadratowy kafel kategorii: pas o stałej wysokości, obraz
+                 pośrodku, rozmyta kopia dopełnia boki. */
               <div className={`mt-7 ${naSrodku ? "mx-auto w-full max-w-[52rem]" : ""}`}>
                 <Plansza klucz={kluczPlanszy as string} wybor wysokosc={naSrodku ? 220 : 168} />
               </div>

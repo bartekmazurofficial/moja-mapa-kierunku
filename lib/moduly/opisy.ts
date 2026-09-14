@@ -63,7 +63,8 @@ export const WSKAZOWKA: Record<string, string> = {
   para: "Jedno pytanie naraz. Wybieraj intuicyjnie, nie ma dobrych ani złych odpowiedzi.",
   pojedynczy: "Wybierz jedną odpowiedź, tę najbliższą prawdy o Tobie dzisiaj.",
   wielokrotny: "Możesz zaznaczyć kilka. Liczy się to, co jest prawdą, nie to, co dobrze brzmi.",
-  trzystopniowa: "„Zależy” jest pełnoprawną odpowiedzią, nie unikiem.",
+  // Trzystopniowa (A5) celowo bez wskazowki: trzy odpowiedzi nazywaja sie
+  // same, a pasek pod nimi tylko powtarzal to, co widac na srodkowym kaflu.
 };
 
 /**
