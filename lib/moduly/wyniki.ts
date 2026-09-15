@@ -11,7 +11,7 @@
 
 import "server-only";
 import { zbierzOdpowiedzi } from "./zbieranie";
-import { policzA1, policzA2, policzA3, policzA4, policzA5, policzM1 } from "../engine/moduly";
+import { policzA1, policzA2, policzA3, policzA4, policzA5, policzA6, policzM1 } from "../engine/moduly";
 import {
   OBSZARY_A1,
   KOMPETENCJE_A2,
@@ -21,6 +21,7 @@ import {
   FILTRY_A5,
 } from "../domain/slowniki";
 import { OBSZARY_M1 } from "../content/m1";
+import { INWESTYCJA_A6, OSIE_A6 } from "../content/a6";
 import { etykietaM1, NAZWY_M1 } from "./ekrany";
 import { CWIARTKI } from "../content/a2";
 import type { KodModulu } from "./typy";
@@ -192,6 +193,44 @@ export async function planszaWynikow(
           mocne: w.weta.includes(f.kod),
         })),
       })),
+    };
+  }
+
+  if (modul === "A6") {
+    const w = policzA6(o.a6);
+    return {
+      modul,
+      gotowy: Object.keys(o.a6.czescA ?? {}).length > 0,
+      sekcje: [
+        {
+          tytul: "Pięć osi uczenia się",
+          wstep: "Żadna strona nie jest lepsza. Człowiek, który uczy się rękami, nie jest gorszym uczniem od tego, który uczy się z książki.",
+          kafle: OSIE_A6.filter((os) => w.osie[os.kod] !== null).map((os) => {
+            const poz = w.osie[os.kod] ?? 50;
+            return {
+              klucz: `a6-${os.kod}`,
+              ikona: `a6-${os.kod}`,
+              tytul: `${os.biegunA} albo ${os.biegunB}`,
+              odpowiedz: poz >= 50 ? os.biegunA : os.biegunB,
+              podpis: poz >= 40 && poz <= 60 ? "bez wyraźnej strony" : undefined,
+              mocne: poz >= 75 || poz <= 25,
+            };
+          }),
+        },
+        {
+          tytul: "Ile w to wkładasz",
+          kafle: INWESTYCJA_A6.map((p) => {
+            const kod = (o.a6.czescB ?? {})[p.id];
+            const opcja = p.opcje.find((x) => x.kod === kod);
+            return {
+              klucz: `a6-${p.id}`,
+              tytul: p.tresc,
+              odpowiedz: opcja?.etykieta ?? "jeszcze nie wypełnione",
+              mocne: Boolean(opcja) && kod !== "nie_wiem",
+            };
+          }),
+        },
+      ],
     };
   }
 

@@ -19,7 +19,12 @@ function odmiana(ile: number, jeden: string, kilka: string, wiele: string): stri
 
 export const dynamic = "force-dynamic";
 
-const MODULY: KodModulu[] = ["A0", "A1", "A2", "A3", "A4", "A5", "M1"];
+/**
+ * Lista modulow pochodzi z KOLEJNOSC_MODULOW, a nie z wlasnej kopii.
+ * Kopia przezyla dolozenie osmego modulu i strona odpowiadala 404 na adres,
+ * ktory reszta aplikacji uznawala za poprawny.
+ */
+const MODULY = KOLEJNOSC_MODULOW;
 
 export default async function Strona({
   params,

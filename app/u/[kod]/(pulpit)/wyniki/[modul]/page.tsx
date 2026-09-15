@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly } from "@/lib/moduly/otwarcie";
 import { planszaWynikow } from "@/lib/moduly/wyniki";
-import { NAZWY_MODULOW } from "@/lib/moduly/ekrany";
+import { KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { Ikona } from "@/components/Ikona";
 import { kolorKategorii } from "@/lib/ui/kolory";
 import { Bramy } from "@/components/pulpit/Bramy";
@@ -11,7 +11,8 @@ import type { KodModulu } from "@/lib/moduly/typy";
 
 export const dynamic = "force-dynamic";
 
-const MODULY: KodModulu[] = ["A0", "A1", "A2", "A3", "A4", "A5", "M1"];
+/** Ta sama zasada co na stronie modulu: jedna lista, nie kopia. */
+const MODULY = KOLEJNOSC_MODULOW;
 
 /**
  * Wyniki jednego modułu na jednej planszy: wszystkie kategorie naraz,
