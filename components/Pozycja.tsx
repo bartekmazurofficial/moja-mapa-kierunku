@@ -124,6 +124,7 @@ function ZnakWyboru({
   kwadrat,
   naObrazie,
   wRzedzie,
+  male,
 }: {
   wybrana: boolean;
   kwadrat?: boolean;
@@ -131,11 +132,15 @@ function ZnakWyboru({
   naObrazie?: boolean;
   /** Znak stoi w wierszu tekstu, nie w rogu karty. */
   wRzedzie?: boolean;
+  /** Mniejszy znak w gestej siatce: oddaje szerokosc etykiecie. */
+  male?: boolean;
 }) {
   return (
     <span
       aria-hidden
-      className={`${wRzedzie ? "mt-0.5 shrink-0" : "absolute right-3 top-3"} z-10 flex h-7 w-7 items-center justify-center border-2 ${
+      className={`${wRzedzie ? "mt-0.5 shrink-0" : "absolute right-3 top-3"} z-10 flex items-center justify-center border-2 ${
+        male ? "h-5 w-5" : "h-7 w-7"
+      } ${
         kwadrat ? "rounded-lg" : "rounded-full"
       } ${
         wybrana
@@ -194,9 +199,34 @@ function kolumnyOpcji(ile: number): string {
  * tak wysoka, jak jej wlasny tekst, i rzad wyglada na poszarpany.
  */
 function kolumnyKart(ile: number): string {
+  // Liczba kolumn jest dobrana tak, żeby ekran zmieścił się w oknie bez
+  // przewijania: do czterech odpowiedzi jeden rząd, do dziesięciu dwa,
+  // czternaście przedmiotów szkolnych w sześć kolumn i trzy rzędy.
+  //
+  // Siedem kolumn mieściłoby przedmioty w dwóch rzędach, ale przy 147 px
+  // szerokości etykiety łamią się w środku wyrazu („matema/tyka") i to jest
+  // gorsze niż jeden rząd więcej.
   const kolumny =
-    ile <= 3 ? "lg:grid-cols-3" : ile === 4 ? "lg:grid-cols-4" : ile <= 6 ? "lg:grid-cols-3" : ile <= 9 ? "lg:grid-cols-4" : "lg:grid-cols-4 xl:grid-cols-5";
-  return `grid auto-rows-fr gap-4 sm:grid-cols-2 ${kolumny}`;
+    ile <= 2
+      ? "lg:grid-cols-2"
+      : ile === 3
+        ? "lg:grid-cols-3"
+        : ile === 4
+          ? "lg:grid-cols-4"
+          : ile <= 6
+            ? "lg:grid-cols-3"
+            : ile <= 8
+              ? "lg:grid-cols-4"
+              : ile <= 10
+                ? "lg:grid-cols-4 xl:grid-cols-5"
+                : "lg:grid-cols-4 xl:grid-cols-6";
+  // Gęsta siatka dostaje ciaśniejsze odstępy: przy trzech rzędach każde
+  // cztery piksele przerwy to dwanaście pikseli wysokości ekranu.
+  // Przy trzech i czterech odpowiedziach siatka dostaje sufit szerokości.
+  // Bez niego kafel ma 360 px, a kadr 16:9 z niego 202 px wysokości i ekran
+  // rośnie bez powodu: zdjęcie nie mówi więcej dlatego, że jest większe.
+  const sufit = ile <= 4 ? "mx-auto w-full max-w-[62rem] " : "";
+  return `${sufit}grid auto-rows-fr ${ile > 10 ? "gap-3" : "gap-4"} sm:grid-cols-2 ${kolumny}`;
 }
 
 /**
@@ -233,6 +263,7 @@ function KartyOdpowiedzi({
             opcja={o}
             wybrana={zaznaczona(o)}
             kwadrat={kwadrat}
+            gesty={zKadrem.length > 10}
             zablokowana={zablokowana?.(o)}
             kolor={kolorWyboru(o.ikona ?? kluczKoloru, miejsce)}
             onClick={() => onClick(o)}
@@ -270,6 +301,7 @@ function KartaOdpowiedzi({
   wybrana,
   kwadrat,
   zablokowana,
+  gesty,
   kolor,
   onClick,
 }: {
@@ -279,6 +311,11 @@ function KartaOdpowiedzi({
   kwadrat?: boolean;
   /** Limit wyborów osiągnięty: karta nie reaguje, ale nie gaśnie. */
   zablokowana?: boolean;
+  /**
+   * Gęsta siatka, od jedenastu odpowiedzi w górę. Kafel ma wtedy 173 px
+   * i etykieta w pełnym stopniu łamała się w środku wyrazu („matematyk/a").
+   */
+  gesty?: boolean;
   kolor: Kolor | null;
   onClick: () => void;
 }) {
@@ -288,11 +325,15 @@ function KartaOdpowiedzi({
       onClick={onClick}
       aria-pressed={wybrana}
       disabled={zablokowana}
-      // `min-w-0` na samej karcie: bez tego długa etykieta („klasa
-      // przedmaturalna lub maturalna") rozpycha kafel ponad szerokość kolumny
-      // i wychodzi poza jego krawędź, bo element siatki ma domyślnie
-      // `min-width: auto`.
-      className={`przejscie relative flex h-full min-w-0 flex-col overflow-hidden rounded-karta border-2 text-left active:scale-[0.995] ${
+      /*
+        Karta ma własne, kryjące tło. Wcześniej była przezroczysta, a biel
+        dawała tylko stopka: przy krótkiej etykiecie obok tekstu prześwitywało
+        tło strony i wyglądało to jak szary prostokąt w prawym dolnym rogu.
+
+        `min-w-0`, bo element siatki ma domyślnie `min-width: auto` i długa
+        etykieta rozpychała kafel ponad szerokość kolumny.
+      */
+      className={`przejscie relative flex h-full min-w-0 flex-col overflow-hidden rounded-karta border-2 bg-panel p-2 text-left active:scale-[0.995] ${
         wybrana
           ? "border-akcent"
           : zablokowana
@@ -309,10 +350,19 @@ function KartaOdpowiedzi({
         To jest wyjście z pytania, nie jedna z odpowiedzi, i kadr stawiałby ją
         na równi z treścią.
       */}
+      {/*
+        Zdjęcie stoi w karcie, nie na jej krawędzi: własna zaokrąglona ramka
+        w proporcji 16:9, czyli tej, w której przychodzą wszystkie ilustracje.
+        `object-contain` zamiast `object-cover`, żeby nawet źródło o innej
+        proporcji weszło w całości, a nie wycinkiem.
+
+        Opcja wyłączna („nie wiem", „nic z tego", odmowa) ramki nie dostaje.
+        To jest wyjście z pytania, nie jedna z odpowiedzi.
+      */}
       {opcja.ikona ? (
         <span
           aria-hidden
-          className="flex aspect-[16/9] w-full shrink-0 items-center justify-center overflow-hidden bg-plyta text-atrament-slaby"
+          className="flex aspect-[16/9] w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-plyta text-atrament-slaby"
         >
           {maObraz(opcja.ikona) ? (
             <Obraz klucz={opcja.ikona} pelny wybor kolor={kolor} />
@@ -326,16 +376,22 @@ function KartaOdpowiedzi({
         </span>
       ) : null}
       <span
-        className={`relative flex flex-1 items-start gap-3 px-4 py-3.5 ${wybrana ? "bg-akcent-tlo/60" : "bg-panel"}`}
+        className={`relative flex flex-1 items-start gap-2.5 rounded-lg px-2.5 pb-0.5 pt-2.5 ${
+          wybrana ? "bg-akcent-tlo/60" : ""
+        }`}
       >
-        <ZnakWyboru wybrana={wybrana} kwadrat={kwadrat} wRzedzie />
+        <ZnakWyboru wybrana={wybrana} kwadrat={kwadrat} wRzedzie male={gesty} />
         <span className="min-w-0 flex-1">
           {opcja.nadpis ? (
             <span className="block text-drobne font-bold uppercase tracking-[0.14em] text-atrament-slaby">
               {opcja.nadpis}
             </span>
           ) : null}
-          <span className="block font-boksowy text-tresc font-semibold leading-snug text-atrament [overflow-wrap:anywhere]">
+          <span
+            className={`block break-words font-boksowy font-semibold leading-snug text-atrament ${
+              gesty ? "text-male" : "text-tresc"
+            }`}
+          >
             {opcja.etykieta}
           </span>
           {opcja.podpis ? (

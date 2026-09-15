@@ -49,7 +49,10 @@ export const PRZEDMIOTY_A0: OpcjaA0[] = [
   { kod: "artystyczne", etykieta: "przedmioty artystyczne" },
   { kod: "wf", etykieta: "wychowanie fizyczne" },
   { kod: "zawodowe", etykieta: "przedmioty zawodowe" },
-  { kod: "warsztat", etykieta: "praca w warsztacie lub pracowni" },
+  // Krócej niż „praca w warsztacie lub pracowni": w siatce kafli ta jedna
+  // etykieta łamała się na trzy wiersze i przez `auto-rows-fr` podnosiła
+  // wysokość wszystkich czternastu kart.
+  { kod: "warsztat", etykieta: "praca w warsztacie" },
 ];
 
 /**
@@ -99,15 +102,18 @@ export const PYTANIA_A0: PytanieA0[] = [
     typ: "pojedynczy",
     tresc: "Na jakim etapie nauki jesteś?",
     opcje: [
-      { kod: "podstawowka", etykieta: "Ostatnia klasa szkoły podstawowej", nadpis: "Uczę się" },
-      { kod: "liceum_1_2", etykieta: "Liceum lub technikum, klasa pierwsza lub druga", nadpis: "Uczę się" },
-      { kod: "liceum_maturalna", etykieta: "Liceum lub technikum, klasa przedmaturalna lub maturalna", nadpis: "Uczę się" },
+      // Etykiety skrócone do brzmienia z makiety. Dłuższe łamały się na trzy
+      // wiersze, przez co kafle rosły i pierwszy ekran modułu nie mieścił się
+      // bez przewijania.
+      { kod: "podstawowka", etykieta: "Ostatnia klasa podstawówki", nadpis: "Uczę się" },
+      { kod: "liceum_1_2", etykieta: "Liceum lub technikum, klasa 1 lub 2", nadpis: "Uczę się" },
+      { kod: "liceum_maturalna", etykieta: "Klasa przedmaturalna lub maturalna", nadpis: "Uczę się" },
       { kod: "branzowa", etykieta: "Szkoła branżowa", nadpis: "Uczę się" },
-      { kod: "po_maturze", etykieta: "Po maturze, przerwa albo szukam kierunku", nadpis: "Uczę się" },
+      { kod: "po_maturze", etykieta: "Po maturze, szukam kierunku", nadpis: "Uczę się" },
       { kod: "studiuje", etykieta: "Studiuję", nadpis: "Uczę się" },
-      { kod: "po_studiach", etykieta: "Po studiach", nadpis: "Po szkole" },
-      { kod: "pracuje_zmiana", etykieta: "Pracuję, rozważam zmianę", nadpis: "Po szkole" },
-      { kod: "nie_uczy_nie_pracuje", etykieta: "Nie uczę się i nie pracuję", nadpis: "Po szkole" },
+      { kod: "po_studiach", etykieta: "Skończyłem studia", nadpis: "Po szkole" },
+      { kod: "pracuje_zmiana", etykieta: "Pracuję i rozważam zmianę", nadpis: "Po szkole" },
+      { kod: "nie_uczy_nie_pracuje", etykieta: "Teraz się nie uczę i nie pracuję", nadpis: "Po szkole" },
     ],
   },
   {
@@ -402,8 +408,11 @@ export const PYTANIA_A0: PytanieA0[] = [
     nazwaBloku: "Zdrowie, dobrowolnie",
     typ: "wielokrotny",
     tresc: "Czy jest coś, o czym warto wiedzieć przy dobieraniu ścieżek?",
+    // Krócej o jeden wiersz: przy dwóch wierszach ostatnia odpowiedź schodziła
+    // trzydzieści pikseli pod krawędź okna. Sens zostaje ten sam: nikt tego
+    // nie sprawdza, można pominąć, i po co pytamy.
     podpis:
-      "To nie jest badanie, nikt tego nie sprawdzi i możesz to pominąć. Chodzi wyłącznie o to, żeby nie proponować Ci drogi, która jest dla Ciebie zamknięta.",
+      "Nikt tego nie sprawdza i możesz pominąć. Pytamy, żeby nie proponować Ci drogi zamkniętej.",
     opcjonalne: true,
     opcje: [
       { kod: "alergie_wziewne", etykieta: "Alergie wziewne, na przykład na mąkę, pył, sierść" },

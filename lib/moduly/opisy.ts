@@ -57,15 +57,20 @@ export const DOPISEK: Record<string, string> = {
  * Jedno zdanie pod pytaniem: przypomnienie zasady tego typu ekranu.
  * Stwierdzenie, nie zachęta.
  */
-export const WSKAZOWKA: Record<string, string> = {
-  ranking4:
-    "Każdemu zadaniu przypisz miejsce od 1 do 4. Każde miejsce możesz użyć tylko raz, więc kliknięcie zajętego numeru zamienia zadania miejscami. Ostatni numer dopisuje się sam.",
-  para: "Jedno pytanie naraz. Wybieraj intuicyjnie, nie ma dobrych ani złych odpowiedzi.",
-  pojedynczy: "Wybierz jedną odpowiedź, tę najbliższą prawdy o Tobie dzisiaj.",
-  wielokrotny: "Możesz zaznaczyć kilka. Liczy się to, co jest prawdą, nie to, co dobrze brzmi.",
-  // Trzystopniowa (A5) celowo bez wskazowki: trzy odpowiedzi nazywaja sie
-  // same, a pasek pod nimi tylko powtarzal to, co widac na srodkowym kaflu.
-};
+/**
+ * Wskazowki pod odpowiedziami: juz ich nie ma.
+ *
+ * Kazdy ekran mial pod blokiem odpowiedzi ramke z jednym zdaniem instrukcji
+ * („Wybierz jedna odpowiedz, te najblizsza prawdy o Tobie dzisiaj"). Przy
+ * kilkudziesieciu ekranach z rzedu to samo zdanie przestaje cokolwiek
+ * znaczyc, a zabiera wysokosc, przez ktora ekran nie miesci sie w oknie.
+ * Zasada modulu stoi we wstepie i w podpisie pod pytaniem, czyli tam, gdzie
+ * uczestnik ja czyta.
+ *
+ * Stala zostaje pusta, a nie usunieta: Runner pyta o nia po typie pozycji
+ * i pusty slownik jest tu jasniejszy niz usuwanie odwolan w kilku miejscach.
+ */
+export const WSKAZOWKA: Record<string, string> = {};
 
 /**
  * Zdanie pod pytaniem na ekranie wyboru. Powtarza zasadę modułu z instrukcji,

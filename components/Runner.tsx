@@ -353,10 +353,22 @@ export function Runner({
   // Plansza narysowana pod pytanie jest w 16:9 i idzie na ekran w całości.
   // Kwadratowy kafel kategorii zostaje w pasie o stałej wysokości: rozciągnięty
   // do 16:9 miałby po bokach więcej rozmycia niż obrazu.
-  const pelnaPlansza = zPlansza && Boolean(obrazPlanszy(kluczPlanszy as string));
+  /*
+    Pełny kadr 16:9 dostaje każda ilustracja pytania, nie tylko gotowa plansza.
+    Wcześniej zwykła ilustracja szła w pas o stałej wysokości z rozmytą kopią
+    w tle, przez co po bokach zdjęcia stały szare, rozmyte pola. Zdjęcie ma być
+    pokazane w całości, w swojej proporcji, z lekko zaokrąglonymi rogami.
+  */
+  const pelnaPlansza = zPlansza && Boolean(kluczPlanszy);
   // Pytanie z jedną decyzją stoi na środku ekranu, jak w makiecie panelu
   // wyboru. Siatki pozycji i ranking zostają wyrównane do lewej.
-  const naSrodku = jednaPozycja && (typPozycji === "para" || typPozycji === "trzystopniowa");
+  /** Ekran, na którym odpowiedzi są kaflami z kadrem, a nie wierszami. */
+  const zKartami = widocznePozycje.some((p) => p.uklad === "karty");
+  // Pytanie stoi na środku wszędzie tam, gdzie pod nim jest siatka albo jedna
+  // decyzja. Wyrównane do lewej zostaje tylko tam, gdzie pod spodem jest
+  // kolumna wierszy i nagłówek ma się z nią zgrać.
+  const naSrodku =
+    (jednaPozycja && (typPozycji === "para" || typPozycji === "trzystopniowa")) || zKartami;
   const postepModulu = Math.round((Math.max(0, numerModulu - 1) / Math.max(1, liczbaModulow)) * 100);
 
   /**
@@ -375,9 +387,6 @@ export function Runner({
     (numerPytania > 0 && pytaniaWidoczne.length > 1
       ? { nr: numerPytania, z: pytaniaWidoczne.length, slowo: "pytań" }
       : null);
-
-  /** Ekran, na którym odpowiedzi są kaflami z kadrem, a nie wierszami. */
-  const zKartami = widocznePozycje.some((p) => p.uklad === "karty");
 
   /** Ścieżka A0: którą gałęzią idzie uczestnik po odpowiedzi na pierwsze pytanie. */
   const sciezka = modul === "A0" ? sciezkaA0(odpowiedzi.etap as string | undefined) : null;
@@ -456,7 +465,11 @@ export function Runner({
 
       <main
         key={ekran.klucz ?? bezpiecznyIndeks}
-        className={`relative mt-6 flex-1 sm:mt-8 ${wychodzi ? "wyjscie-ekranu" : "wejscie-ekranu"}`}
+        // Ekran z kaflami ma ciaśniej nad pytaniem: te trzydzieści dwa
+        // piksele decydują, czy ostatni rząd odpowiedzi wchodzi w okno.
+        className={`relative flex-1 ${zKartami ? "mt-4" : "mt-6 sm:mt-8"} ${
+          wychodzi ? "wyjscie-ekranu" : "wejscie-ekranu"
+        }`}
       >
         {ekran.typ === "wstep" ? (
           /**
@@ -816,14 +829,21 @@ export function Runner({
                   {ekran.dopisek ?? DOPISEK[modul]}
                 </p>
               )}
-              <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">{etykietaNadTytulem}</p>
+              <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">
+                {etykietaNadTytulem}
+              </p>
               <h1
                 className={`mt-3 font-extrabold leading-[1.04] tracking-[-0.02em] text-atrament ${
                   naSrodku ? "mx-auto max-w-[24ch]" : "max-w-[22ch] sm:max-w-[18ch]"
                 } ${
-                  tytulEkranu.length > 46
+                  // Ekran z kaflami ma nagłówek o stopień mniejszy: pod nim
+                  // stoi siatka zdjęć i cały ekran ma się zmieścić w oknie
+                  // bez przewijania.
+                  zKartami
                     ? "text-naglowek sm:text-naglowek-duzy"
-                    : "text-naglowek-duzy sm:text-tytul"
+                    : tytulEkranu.length > 46
+                      ? "text-naglowek sm:text-naglowek-duzy"
+                      : "text-naglowek-duzy sm:text-tytul"
                 }`}
               >
                 <DwaTony tekst={tytulEkranu} pomaranczowy={ekran.akcent === "pomarancz"} />

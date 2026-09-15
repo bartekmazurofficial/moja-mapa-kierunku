@@ -133,7 +133,7 @@ export function Obraz({
         aria-hidden
         loading="lazy"
         decoding="async"
-        className="przejscie h-full w-full object-cover"
+        className="przejscie h-full w-full object-contain"
         style={{ opacity: aktywna ? 1 : 0.94, background: k.tlo }}
       />
     );
