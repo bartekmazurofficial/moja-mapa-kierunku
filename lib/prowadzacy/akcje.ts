@@ -11,20 +11,51 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "../db/klient";
-import { hasloPoprawne, zalogowany, zbudujCiasteczko, NAZWA_CIASTECZKA } from "./sesja";
+import { hasloPoprawne, rolaSesji, zbudujCiasteczko, NAZWA_CIASTECZKA } from "./sesja";
+import { pokazWlaczony } from "../pokaz";
 import { otworzModul, otworzSpotkanie } from "../moduly/otwarcie";
 import { odblokujWarstwe } from "../raport/dostep";
 import type { KodModulu } from "../moduly/typy";
 import type { KodWarstwy } from "../raport/sekcje";
 
+/**
+ * Sesja z prawem zapisu.
+ *
+ * Sesja pokazowa jest **wyłącznie do czytania**. Powód nie jest ostrożnością
+ * na wyrost: akcje biorą `grupaId` z formularza, więc sesja pokazowa z prawem
+ * zapisu mogłaby otworzyć moduł albo odsłonić warstwę raportu w dowolnej,
+ * prawdziwej grupie. Filtr widoku tego nie zatrzyma, bo zapis nie przechodzi
+ * przez zapytania z `dane.ts`.
+ */
 async function wymagajSesji() {
-  if (!(await zalogowany())) throw new Error("brak sesji prowadzącego");
+  const rola = await rolaSesji();
+  if (rola === null) throw new Error("brak sesji prowadzącego");
+  if (rola === "pokaz") throw new Error("sesja pokazowa nie zmienia danych");
 }
 
 export async function zaloguj(_stan: string | null, dane: FormData): Promise<string | null> {
   const haslo = String(dane.get("haslo") ?? "");
   if (!hasloPoprawne(haslo)) return "Hasło się nie zgadza.";
   const c = zbudujCiasteczko();
+  (await cookies()).set(c.nazwa, c.wartosc, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: c.maxAge,
+  });
+  redirect("/prowadzacy");
+}
+
+/**
+ * Wejscie w panel prowadzacego bez hasla, w roli pokazowej.
+ *
+ * Dziala tylko przy `POKAZ_DEMO=1`. Sesja widzi jedna grupe pokazowa i nie ma
+ * prawa zapisu, wiec nie jest obejsciem hasla, tylko osobnym, wezszym wejsciem.
+ */
+export async function zalogujPokaz() {
+  if (!pokazWlaczony()) throw new Error("pokaz demonstracyjny jest wyłączony");
+  const c = zbudujCiasteczko(Date.now(), "pokaz");
   (await cookies()).set(c.nazwa, c.wartosc, {
     httpOnly: true,
     sameSite: "lax",

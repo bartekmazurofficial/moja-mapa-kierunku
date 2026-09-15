@@ -16,6 +16,8 @@ import { policzRozjazdy, type Rozjazd } from "../panel/rozjazdy";
 import { otwarteModuly } from "../moduly/otwarcie";
 import { stanDostepu } from "../raport/dostep";
 import { OPIS_ETAPU } from "../engine/layer0-start";
+import { KOD_GRUPY_POKAZ } from "../pokaz";
+import { rolaSesji } from "./sesja";
 import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "../moduly/ekrany";
 import { OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_A3, FILTRY_A5 } from "../domain/slowniki";
 import { OBSZARY_M1 } from "../content/m1";
@@ -63,7 +65,20 @@ export interface WidokGrupy {
   otwarteWarstwy: KodWarstwy[];
 }
 
+/**
+ * Czy biezaca sesja moze zobaczyc te grupe.
+ *
+ * Filtr stoi tutaj, w warstwie danych, a nie w stronach. Strona moze zapomniec
+ * sprawdzic i nikt tego nie zauwazy, dopoki ktos nie wklei adresu cudzej grupy;
+ * zapytanie nie zapomni, bo kazda droga do danych prowadzacego przechodzi
+ * przez jedna z trzech funkcji nizej.
+ */
+async function wolnoZobaczyc(kodGrupy: string): Promise<boolean> {
+  return (await rolaSesji()) === "pokaz" ? kodGrupy === KOD_GRUPY_POKAZ : true;
+}
+
 export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null> {
+  if (!(await wolnoZobaczyc(kodGrupy))) return null;
   const grupa = await prisma.grupa.findUnique({
     where: { kod: kodGrupy },
     include: {
@@ -225,6 +240,7 @@ export async function pobierzKarteUczestnika(kodDostepu: string): Promise<KartaU
     include: { grupa: true, oceny: true, pytanie: true, korekty: true, sesja: true },
   });
   if (!uczestnik) return null;
+  if (!(await wolnoZobaczyc(uczestnik.grupa.kod))) return null;
 
   const [odpowiedzi, baza] = await Promise.all([
     zbierzOdpowiedzi(uczestnik.id),
@@ -320,7 +336,9 @@ export async function pobierzKarteUczestnika(kodDostepu: string): Promise<KartaU
 }
 
 export async function listaGrup() {
+  const tylkoPokaz = (await rolaSesji()) === "pokaz";
   const grupy = await prisma.grupa.findMany({
+    where: tylkoPokaz ? { kod: KOD_GRUPY_POKAZ } : undefined,
     orderBy: { utworzona: "desc" },
     include: { _count: { select: { uczestnicy: true } } },
   });

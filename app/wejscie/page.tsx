@@ -4,6 +4,7 @@ import { Bramy } from "@/components/pulpit/Bramy";
 import { Znak } from "@/components/pulpit/Znak";
 import { trybTestowy } from "@/lib/tryb";
 import { ListaTestowa } from "@/components/ListaTestowa";
+import { PokazDemo } from "@/components/PokazDemo";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Wejście dla uczestnika" };
@@ -16,7 +17,7 @@ export default function Strona() {
       <div className="szklo relative w-full overflow-hidden p-8 sm:p-12">
         <Bramy klasa="pointer-events-none absolute -right-10 bottom-0 hidden h-[20rem] w-[28rem] opacity-70 lg:block" />
 
-        <div className="relative max-w-[34rem]">
+        <div className="relative max-w-[48rem]">
           <Link
             href="/"
             className="przejscie inline-flex items-center gap-2 text-male text-atrament-slaby hover:text-atrament"
@@ -47,6 +48,8 @@ export default function Strona() {
           <div className="mt-8">
             <WejscieKodem />
           </div>
+
+          <PokazDemo />
 
           {testowy ? <ListaTestowa /> : null}
         </div>

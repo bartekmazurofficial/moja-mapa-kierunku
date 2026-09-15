@@ -26,9 +26,11 @@
  *   - bieguny wymiarow M1: `m1w-CEN-A`, `m1w-CEN-B`, ... (12 po dwa)
  *   - plansze obszarow pod naglowek karty zawodu: `a1-1` ... `a1-24`
  */
+import { OBRAZY_A0 } from "./obrazy-a0";
 import { ZAWODY_ZE_ZDJECIEM } from "./zdjecia-zawodow";
 
 const Z_OBRAZEM = new Set<string>([
+  ...OBRAZY_A0,
   ...Array.from({ length: 24 }, (_, i) => `a1-${i + 1}`),
   ...Array.from({ length: 30 }, (_, i) => `a2-${i + 1}`),
   ...["INI", "STR", "TEM", "SAM", "GLE", "RYZ", "DEC", "KON", "NOW", "NAP", "RYT", "OTO", "EFE"].map(

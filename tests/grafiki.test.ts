@@ -17,6 +17,7 @@ import {
   zdjecieZawoduDuze,
 } from "@/lib/ui/obrazy";
 import { ZAWODY_ZE_ZDJECIEM } from "@/lib/ui/zdjecia-zawodow";
+import { OBRAZY_A0 } from "@/lib/ui/obrazy-a0";
 import { OBSZARY_A1, WYMIARY_A3 } from "@/lib/domain/slowniki";
 import { GLIFY } from "@/lib/ui/glify";
 
@@ -118,5 +119,47 @@ describe("zdjęcia zawodów", () => {
       if (duzy > 260_000) ciezkie.push(`${kod}-duzy.jpg: ${Math.round(duzy / 1024)} kB`);
     }
     expect(ciezkie).toEqual([]);
+  });
+});
+
+/**
+ * Ilustracje odpowiedzi A0.
+ *
+ * Lista kluczy i katalog muszą zgadzać się w obie strony: klucz bez pliku to
+ * pusta ramka na ekranie, a plik bez klucza to grafika, której nikt nie
+ * zobaczy. Dochodzą partiami, więc odpowiedź bez ilustracji jest normalna.
+ */
+describe("ilustracje A0", () => {
+  const KATALOG = path.join(PUBLIC, "grafika", "a0");
+
+  it("każdy zadeklarowany klucz ma kafel i wersję dużą", () => {
+    const bez: string[] = [];
+    for (const klucz of OBRAZY_A0) {
+      if (!istnieje(obrazKafla(klucz))) bez.push(`${klucz} (kafel)`);
+      if (!istnieje(obrazDuzy(klucz))) bez.push(`${klucz} (duży)`);
+    }
+    expect(bez).toEqual([]);
+  });
+
+  it("w katalogu nie leży ilustracja, której nikt nie deklaruje", () => {
+    if (!fs.existsSync(KATALOG)) return;
+    const osierocone = fs
+      .readdirSync(KATALOG)
+      .filter((p) => p.endsWith(".jpg"))
+      .map((p) => `a0-${p.replace(/-duzy\.jpg$|\.jpg$/, "")}`)
+      .filter((klucz) => !OBRAZY_A0.has(klucz));
+    expect([...new Set(osierocone)]).toEqual([]);
+  });
+
+  it("każdy klucz odpowiedzi wskazuje na opcję, która istnieje w pytaniach", async () => {
+    // Klucz `a0-pytanie-*` ilustruje całe pytanie, reszta pojedynczą odpowiedź.
+    const { PYTANIA_A0, PRZEDMIOTY_A0 } = await import("@/lib/content/a0");
+    const dozwolone = new Set<string>();
+    for (const p of PRZEDMIOTY_A0) dozwolone.add(`a0-przedmiot-${p.kod}`);
+    for (const p of PYTANIA_A0) {
+      dozwolone.add(`a0-pytanie-${p.id}`);
+      for (const o of p.opcje ?? []) dozwolone.add(`a0-${p.id}-${o.kod}`);
+    }
+    expect([...OBRAZY_A0].filter((k) => !dozwolone.has(k))).toEqual([]);
   });
 });

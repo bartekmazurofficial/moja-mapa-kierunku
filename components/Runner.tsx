@@ -343,7 +343,13 @@ export function Runner({
     widocznePozycje[0]?.stronaB?.ikona,
   );
   const zPlanszaPary = jednaPozycja && typPozycji === "para" && paraZObrazami;
-  const zPlansza = jednaPozycja && Boolean(kluczPlanszy) && !zPlanszaPary;
+  // Kadr nad odpowiedziami: przy jednej decyzji (para, trzy stopnie, ranking)
+  // albo wtedy, gdy ekran sam wskazal obraz. To drugie robi A0 tam, gdzie
+  // kadr ilustruje pytanie, a nie odpowiedzi.
+  const zPlansza =
+    (jednaPozycja || (Boolean(ekran.obraz) && widocznePozycje.length === 1)) &&
+    Boolean(kluczPlanszy) &&
+    !zPlanszaPary;
   // Plansza narysowana pod pytanie jest w 16:9 i idzie na ekran w całości.
   // Kwadratowy kafel kategorii zostaje w pasie o stałej wysokości: rozciągnięty
   // do 16:9 miałby po bokach więcej rozmycia niż obrazu.

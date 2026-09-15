@@ -177,9 +177,28 @@ const PRZEDMIOTY_PO_KODZIE = new Set(PRZEDMIOTY_A0.map((p) => p.kod));
  */
 function kluczObrazuA0(idPytania: string, kod: string, wylaczna: boolean): string | undefined {
   if (wylaczna) return undefined;
+  // Pytanie z jednym kadrem nad odpowiedziami nie daje kadru kazdej z nich:
+  // piec identycznych zdjec obok siebie nie niesie zadnej roznicy.
+  if (PYTANIA_Z_KADREM_WSPOLNYM.has(idPytania)) return undefined;
   if (PRZEDMIOTY_PO_KODZIE.has(kod)) return `a0-przedmiot-${kod}`;
   return `a0-${idPytania}-${kod}`;
 }
+
+/**
+ * Pytania, ktore maja jeden kadr nad wszystkimi odpowiedziami.
+ *
+ * „Gdzie mieszkasz" ma piec odpowiedzi roznicacych sie wielkoscia miejscowosci
+ * i jeden obraz miasta; „na co Cie stac" trzy progi i jeden obraz pieniedzy.
+ * Tam kadr ilustruje pytanie, a nie odpowiedz, wiec stoi raz, u gory.
+ */
+const PYTANIA_Z_KADREM_WSPOLNYM = new Set([
+  "miejsce",
+  "mobilnosc",
+  "dojazd",
+  "zasoby",
+  "staz_pracy",
+  "kierunek_ocena",
+]);
 
 function czescA0(): CzescModulu {
   const ekrany: Ekran[] = [wstep("A0", INSTRUKCJA_A0)];
@@ -219,6 +238,7 @@ function czescA0(): CzescModulu {
         klucz: `A0_${pytanie.id}`,
         typ: "pozycje",
         naglowek: pytanie.nazwaBloku,
+        obraz: PYTANIA_Z_KADREM_WSPOLNYM.has(pytanie.id) ? `a0-pytanie-${pytanie.id}` : undefined,
         kolor: ZNAKI_A0[blok] ?? `a0-${blok}`,
         pozycje: [pozycja],
         warunek: pozycja.warunek,
