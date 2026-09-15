@@ -109,9 +109,13 @@ export function Obraz({
   /** Kolor miejsca na ekranie wyboru. Bez niego ilustracja jest neutralna. */
   kolor?: Kolor | null;
   /**
-   * Obraz na cala szerokosc karty, przyciety do 4:3, bez wlasnej ramki —
-   * krawedzie daje karta. Dla kart odpowiedzi, gdzie obraz JEST decyzja,
-   * a nie miniaturka przy tekscie.
+   * Obraz wypelniajacy ramke, ktora dala karta, bez wlasnej proporcji.
+   *
+   * Wczesniej narzucal tu 4:3 i przycinal do niego kazde zrodlo. Wszystkie
+   * ilustracje odpowiedzi przychodza w 16:9, wiec z kazdej znikal gora i dol,
+   * a do tego ramka 16:9 karty dostawala dziecko o innej proporcji i kafle
+   * w jednym rzedzie mialy rozne wysokosci. Proporcje ustala teraz wylacznie
+   * karta i nic sie nie przycina.
    */
   pelny?: boolean;
 }) {
@@ -121,22 +125,17 @@ export function Obraz({
   if (!zrodlo) return <Ikona klucz={klucz} rozmiar={rozmiar} aktywna={aktywna} wybor={wybor} kolor={kolor} />;
 
   if (pelny) {
+    // eslint-disable-next-line @next/next/no-img-element
     return (
-      <span
+      <img
+        src={zrodlo}
+        alt=""
         aria-hidden
-        className="relative block w-full overflow-hidden"
-        style={{ aspectRatio: "4 / 3", background: k.tlo }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={zrodlo}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="przejscie absolute inset-0 h-full w-full object-cover"
-          style={{ opacity: aktywna ? 1 : 0.94 }}
-        />
-      </span>
+        loading="lazy"
+        decoding="async"
+        className="przejscie h-full w-full object-cover"
+        style={{ opacity: aktywna ? 1 : 0.94, background: k.tlo }}
+      />
     );
   }
 

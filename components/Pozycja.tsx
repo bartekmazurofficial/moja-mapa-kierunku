@@ -184,17 +184,77 @@ function kolumnyOpcji(ile: number): string {
 /**
  * Siatka kart odpowiedzi: ile kolumn przy ilu opcjach.
  *
- * Liczby nie sa dowolne. Karta ma kadr 16:9 nad tekstem, wiec przy trzech
- * kolumnach kadr ma okolo 330 px szerokosci, a przy pieciu 200 px. Ponizej
- * tego obrazek przestaje cokolwiek mowic, wiec pieciu kolumn uzywamy dopiero
- * przy dziesieciu opcjach, gdzie alternatywa jest przewijanie.
+ * Liczby sa przepisane z makiet, a nie dobrane na oko: cztery odpowiedzi ida
+ * w cztery kolumny, piec i szesc w trzy, siedem do dziewieciu w cztery,
+ * dziesiec i wiecej w piec. Kadr ma wtedy od 200 do 330 px szerokosci;
+ * ponizej tego obrazek przestaje cokolwiek mowic, a powyzej karta rozciaga
+ * sie na cala szerokosc i przestaje byc kafelkiem.
+ *
+ * `auto-rows-fr` wyrownuje wysokosc kart w rzedzie. Bez tego kazda karta jest
+ * tak wysoka, jak jej wlasny tekst, i rzad wyglada na poszarpany.
  */
 function kolumnyKart(ile: number): string {
-  if (ile <= 3) return "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
-  if (ile === 4) return "grid gap-4 sm:grid-cols-2 lg:grid-cols-4";
-  if (ile <= 6) return "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
-  if (ile <= 8) return "grid gap-4 sm:grid-cols-2 lg:grid-cols-4";
-  return "grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5";
+  const kolumny =
+    ile <= 3 ? "lg:grid-cols-3" : ile === 4 ? "lg:grid-cols-4" : ile <= 6 ? "lg:grid-cols-3" : ile <= 9 ? "lg:grid-cols-4" : "lg:grid-cols-4 xl:grid-cols-5";
+  return `grid auto-rows-fr gap-4 sm:grid-cols-2 ${kolumny}`;
+}
+
+/**
+ * Siatka kart odpowiedzi plus paski opcji wyłącznych pod nią.
+ *
+ * Rozdzielenie jest konieczne, nie kosmetyczne: `auto-rows-fr` wyrównuje
+ * wysokość kafli w rzędzie, więc opcja bez kadru wstawiona do siatki rośnie
+ * do wysokości sąsiadów i zostaje z niej wysoka pusta ramka.
+ */
+function KartyOdpowiedzi({
+  opcje,
+  kluczKoloru,
+  kwadrat,
+  zaznaczona,
+  zablokowana,
+  onClick,
+}: {
+  opcje: OpcjaWyboru[];
+  kluczKoloru?: string;
+  kwadrat?: boolean;
+  zaznaczona: (o: OpcjaWyboru) => boolean;
+  zablokowana?: (o: OpcjaWyboru) => boolean;
+  onClick: (o: OpcjaWyboru) => void;
+}) {
+  const zKadrem = opcje.filter((o) => !o.wylaczna);
+  const wyjscia = opcje.filter((o) => o.wylaczna);
+
+  return (
+    <>
+      <div className={`mt-4 ${kolumnyKart(zKadrem.length)}`}>
+        {zKadrem.map((o, miejsce) => (
+          <KartaOdpowiedzi
+            key={o.kod}
+            opcja={o}
+            wybrana={zaznaczona(o)}
+            kwadrat={kwadrat}
+            zablokowana={zablokowana?.(o)}
+            kolor={kolorWyboru(o.ikona ?? kluczKoloru, miejsce)}
+            onClick={() => onClick(o)}
+          />
+        ))}
+      </div>
+      {wyjscia.length > 0 ? (
+        <div className="mt-3 flex flex-col gap-2.5">
+          {wyjscia.map((o) => (
+            <KartaOdpowiedzi
+              key={o.kod}
+              opcja={o}
+              wybrana={zaznaczona(o)}
+              kwadrat={kwadrat}
+              kolor={null}
+              onClick={() => onClick(o)}
+            />
+          ))}
+        </div>
+      ) : null}
+    </>
+  );
 }
 
 /**
@@ -228,7 +288,11 @@ function KartaOdpowiedzi({
       onClick={onClick}
       aria-pressed={wybrana}
       disabled={zablokowana}
-      className={`przejscie relative flex h-full flex-col overflow-hidden rounded-karta border-2 text-left active:scale-[0.995] ${
+      // `min-w-0` na samej karcie: bez tego długa etykieta („klasa
+      // przedmaturalna lub maturalna") rozpycha kafel ponad szerokość kolumny
+      // i wychodzi poza jego krawędź, bo element siatki ma domyślnie
+      // `min-width: auto`.
+      className={`przejscie relative flex h-full min-w-0 flex-col overflow-hidden rounded-karta border-2 text-left active:scale-[0.995] ${
         wybrana
           ? "border-akcent"
           : zablokowana
@@ -248,7 +312,7 @@ function KartaOdpowiedzi({
       {opcja.ikona ? (
         <span
           aria-hidden
-          className="flex aspect-[16/9] w-full items-center justify-center overflow-hidden bg-plyta text-atrament-slaby"
+          className="flex aspect-[16/9] w-full shrink-0 items-center justify-center overflow-hidden bg-plyta text-atrament-slaby"
         >
           {maObraz(opcja.ikona) ? (
             <Obraz klucz={opcja.ikona} pelny wybor kolor={kolor} />
@@ -271,7 +335,7 @@ function KartaOdpowiedzi({
               {opcja.nadpis}
             </span>
           ) : null}
-          <span className="block font-boksowy text-tresc font-semibold leading-snug text-atrament">
+          <span className="block font-boksowy text-tresc font-semibold leading-snug text-atrament [overflow-wrap:anywhere]">
             {opcja.etykieta}
           </span>
           {opcja.podpis ? (
@@ -759,17 +823,12 @@ function Pojedynczy({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPozy
         <p className="mb-3 max-w-czytelna text-male text-atrament-sciszony">{pozycja.podpis}</p>
       ) : null}
       {pozycja.uklad === "karty" ? (
-        <div className={`mt-4 ${kolumnyKart(pozycja.opcje?.length ?? 0)}`}>
-          {(pozycja.opcje ?? []).map((o, miejsce) => (
-            <KartaOdpowiedzi
-              key={o.kod}
-              opcja={o}
-              wybrana={wartosc === o.kod}
-              kolor={kolorWyboru(kluczKoloru, miejsce)}
-              onClick={() => naZmiane(o.kod)}
-            />
-          ))}
-        </div>
+        <KartyOdpowiedzi
+          opcje={pozycja.opcje ?? []}
+          kluczKoloru={kluczKoloru}
+          zaznaczona={(o) => wartosc === o.kod}
+          onClick={(o) => naZmiane(o.kod)}
+        />
       ) : (
       <div className={`mt-3 gap-2.5 ${kolumnyOpcji(pozycja.opcje?.length ?? 0)}`}>
         {(pozycja.opcje ?? []).map((o, miejsce) => {
@@ -834,25 +893,22 @@ function Wielokrotny({ pozycja, wartosc, naZmiane, kluczKoloru }: WlasciwosciPoz
         <p className="mb-3 text-drobne tabular-nums text-atrament-slaby">Wybrano {limit}</p>
       ) : null}
       {pozycja.uklad === "karty" ? (
-        <div className={`mt-4 ${kolumnyKart(pozycja.opcje?.length ?? 0)}`}>
-          {(pozycja.opcje ?? []).map((o, miejsce) => {
-            const zaznaczona = wybrane.includes(o.kod);
-            const zablokowana =
-              !zaznaczona && Boolean(maks) && wybrane.length >= (maks ?? 0) && !o.wylaczna;
-            return (
-              <div key={o.kod} className={o.wylaczna ? "sm:col-span-2 lg:col-span-full" : undefined}>
-                <KartaOdpowiedzi
-                  opcja={o}
-                  wybrana={zaznaczona}
-                  kwadrat
-                  zablokowana={zablokowana}
-                  kolor={kolorWyboru(o.ikona ?? kluczKoloru, miejsce)}
-                  onClick={() => przelacz(o.kod, o.wylaczna)}
-                />
-              </div>
-            );
-          })}
-        </div>
+        /*
+          Opcje wyłączne („nie wiem", „nic z tego", odmowa) stoją pod siatką
+          jako osobne, szerokie paski. W siatce dostawałyby wysokość rzędu
+          wyrównanego do kafli z kadrem, czyli wysoką pustą ramkę; a poza nią
+          są tym, czym są: wyjściem z pytania, nie jedną z odpowiedzi.
+        */
+        <KartyOdpowiedzi
+          opcje={pozycja.opcje ?? []}
+          kluczKoloru={kluczKoloru}
+          kwadrat
+          zaznaczona={(o) => wybrane.includes(o.kod)}
+          zablokowana={(o) =>
+            !wybrane.includes(o.kod) && Boolean(maks) && wybrane.length >= (maks ?? 0) && !o.wylaczna
+          }
+          onClick={(o) => przelacz(o.kod, o.wylaczna)}
+        />
       ) : (
       <div className={`mt-2 gap-2.5 ${kolumnyOpcji(pozycja.opcje?.length ?? 0)}`}>
         {(pozycja.opcje ?? []).map((o, miejsce) => {

@@ -376,11 +376,24 @@ export function Runner({
       ? { nr: numerPytania, z: pytaniaWidoczne.length, slowo: "pytań" }
       : null);
 
+  /** Ekran, na którym odpowiedzi są kaflami z kadrem, a nie wierszami. */
+  const zKartami = widocznePozycje.some((p) => p.uklad === "karty");
+
   /** Ścieżka A0: którą gałęzią idzie uczestnik po odpowiedzi na pierwsze pytanie. */
   const sciezka = modul === "A0" ? sciezkaA0(odpowiedzi.etap as string | undefined) : null;
 
   return (
-    <div className="relative isolate mx-auto flex min-h-dvh w-full max-w-[60rem] flex-col px-4 pb-6 pt-4 sm:px-8 sm:pt-5">
+    <div
+      /*
+        Kolumna treści ma 60rem, bo tyle wynosi wygodna długość wiersza. Ekran
+        z kartami odpowiedzi jest wyjątkiem: tam nie ma długich wierszy, tylko
+        siatka kafli, a przy 60rem cztery kafle mają po 212 px i etykieta łamie
+        się na cztery linie. Szersza kolumna daje 273 px i dwie linie.
+      */
+      className={`relative isolate mx-auto flex min-h-dvh w-full flex-col px-4 pb-6 pt-4 sm:px-8 sm:pt-5 ${
+        zKartami ? "max-w-[74rem]" : "max-w-[60rem]"
+      }`}
+    >
       {/*
         Ilustracja modułu: droga, horyzont, wschód słońca. Stoi pod treścią,
         przy dolnej krawędzi, i pojawia się tylko wtedy, gdy ekran nie ma

@@ -164,7 +164,10 @@ export const PYTANIA_A0: PytanieA0[] = [
     blok: 2,
     nazwaBloku: "Co Ci idzie",
     typ: "dokladnie_trzy",
-    tresc: "Z czym radzisz sobie w szkole najlepiej? Wskaż trzy.",
+    // Polecenie schodzi pod pytanie. Sklejone z nim łamało nagłówek na trzy
+    // linie i „Wskaż trzy" czytało się jak część pytania, a nie jak zasada.
+    tresc: "Z czym radzisz sobie najlepiej?",
+    podpis: "Wskaż trzy. Chodzi o to, co idzie Ci łatwo, nie o same oceny.",
     tylkoEtapy: ETAPY_SZKOLNE,
     opcje: PRZEDMIOTY_A0,
   },
@@ -173,7 +176,8 @@ export const PYTANIA_A0: PytanieA0[] = [
     blok: 2,
     nazwaBloku: "Co Ci idzie",
     typ: "dokladnie_trzy",
-    tresc: "Co sprawia Ci największą trudność? Wskaż trzy.",
+    tresc: "Co sprawia Ci największą trudność?",
+    podpis: "Wskaż trzy. To nie jest ocena, tylko informacja, czego lepiej nie zakładać.",
     tylkoEtapy: ETAPY_SZKOLNE,
     opcje: PRZEDMIOTY_A0,
   },
@@ -310,7 +314,8 @@ export const PYTANIA_A0: PytanieA0[] = [
     blok: 3,
     nazwaBloku: "Co już robiłeś",
     typ: "wielokrotny",
-    tresc: "Co z tego już robiłeś? Zaznacz wszystko, co pasuje.",
+    tresc: "Co z tego już robiłeś?",
+    podpis: "Zaznacz wszystko, co pasuje. Liczy się także to, co robiłeś poza szkołą.",
     opcje: [
       { kod: "praca_doryw", etykieta: "Praca dorywcza albo wakacyjna" },
       { kod: "praca_stala", etykieta: "Praca stała" },
@@ -378,8 +383,12 @@ export const PYTANIA_A0: PytanieA0[] = [
     blok: 5,
     nazwaBloku: "Pieniądze na drogę",
     typ: "pojedynczy",
-    tresc:
-      "Część dróg zawodowych wymaga opłacenia kursów, uprawnień albo sprzętu. Bywa to od kilku tysięcy do kilkudziesięciu. Na ile realne jest to w Twojej sytuacji w ciągu najbliższych lat?",
+    // Pytanie w nagłówku, wyjaśnienie pod nim. Sto osiemdziesiąt znaków
+    // w nagłówku łamało się na pięć linii i nie dawało się przeczytać
+    // jako pytanie.
+    tresc: "Na co Cię dziś realnie stać?",
+    podpis:
+      "Część dróg wymaga opłacenia kursów, uprawnień albo sprzętu, od kilku tysięcy do kilkudziesięciu. Pytamy, żeby nie pokazywać Ci dróg, których nie da się dziś opłacić. Zawsze pokażemy też wariant za zero złotych.",
     opcje: [
       { kod: "realne", etykieta: "Realne, gdyby to była dobra droga" },
       { kod: "raty", etykieta: "Trudne, ale przy rozłożeniu na raty albo dofinansowaniu możliwe" },
