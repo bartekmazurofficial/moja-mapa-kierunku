@@ -648,7 +648,25 @@ body::after {
   }
 }
 
-/** Ruch tylko dla tych, którzy go chcą. Reszta widzi gotowy ekran od razu. */
+/**
+ * Błysk w chwili domknięcia ptaszka.
+ *
+ * Jedno mgnienie bieli z środka ekranu, nie stroboskop: szczyt na 18% czasu
+ * i łagodne zejście do zera. Czysta ozdoba, więc znika przy „ogranicz ruch".
+ */
+@keyframes blysk {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/** Pełna sekwencja: pierścień, ptaszek, iskry, błysk i dopiero potem tekst. */
 @media (prefers-reduced-motion: no-preference) {
   .ukonczenie [data-ruch] {
     animation-name: var(--ruch);
@@ -657,6 +675,34 @@ body::after {
     animation-timing-function: var(--krzywa, cubic-bezier(0.2, 0.8, 0.25, 1));
     animation-fill-mode: both;
     animation-iteration-count: var(--powtorzenia, 1);
+  }
+}
+
+/**
+ * Wersja dla „ogranicz ruch" w systemie.
+ *
+ * Wcześniej ten ekran nie robił wtedy nic: cała sekwencja siedziała w
+ * `no-preference`, więc przy włączonym ograniczeniu ruchu uczestnik po
+ * kilkudziesięciu minutach pracy dostawał gotowy, nieruchomy panel. A ruchu
+ * ma tu unikać błędnik, nie oko: przesuwanie, wirowanie i iskry znikają,
+ * ale samo pojawianie się kolejnych elementów zostaje.
+ *
+ * Zostaje więc rozjaśnianie, bez przesunięć i bez pętli, a kolejność jest ta
+ * sama, tylko trzy razy szybsza: dwie i pół sekundy czekania na przycisk,
+ * kiedy nic się nie rusza, czyta się jak zawieszenie strony.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .ukonczenie [data-ozdoba] {
+    display: none;
+  }
+
+  .ukonczenie [data-ruch] {
+    animation-name: rozjasnienie;
+    animation-duration: 380ms;
+    animation-delay: calc(var(--zwloka, 0ms) / 3);
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-iteration-count: 1;
   }
 }
 

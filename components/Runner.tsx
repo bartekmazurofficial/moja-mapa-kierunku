@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Pozycja } from "./Pozycja";
 import { Plansza, PlanszaPary } from "./Ikona";
+import { podzielNaglowek } from "@/lib/ui/naglowek";
 import { Marka } from "./pulpit/Marka";
 import { Bramy } from "./pulpit/Bramy";
 import { Panorama } from "./pulpit/Panorama";
@@ -303,11 +304,14 @@ export function Runner({
   // wyboru. Siatki pozycji i ranking zostają wyrównane do lewej.
   /** Ekran, na którym odpowiedzi są kaflami z kadrem, a nie wierszami. */
   const zKartami = widocznePozycje.some((p) => p.uklad === "karty");
-  // Pytanie stoi na środku wszędzie tam, gdzie pod nim jest siatka albo jedna
-  // decyzja. Wyrównane do lewej zostaje tylko tam, gdzie pod spodem jest
-  // kolumna wierszy i nagłówek ma się z nią zgrać.
-  const naSrodku =
-    (jednaPozycja && (typPozycji === "para" || typPozycji === "trzystopniowa")) || zKartami;
+  /**
+   * Podział nagłówka na dwie linie: ciemną i gradientową.
+   *
+   * Stopień pisma dobieramy po dłuższej z nich, a nie po długości całego
+   * zdania: po podziale każda linia ma mniej więcej połowę znaków, więc miara
+   * z całości schodziła o stopień niżej tam, gdzie nie było takiej potrzeby.
+   */
+  const podzialTytulu = podzielNaglowek(tytulEkranu);
   const postepModulu = Math.round((Math.max(0, numerModulu - 1) / Math.max(1, liczbaModulow)) * 100);
 
   /**
@@ -762,37 +766,30 @@ export function Runner({
           <>
             {/* Pytanie jest największym tekstem na ekranie, a ostatnie słowo
                 dostaje gradient. Pod nim jedno zdanie z zasadą tego modułu. */}
-            <div className={naSrodku ? "relative text-center" : "relative sm:pr-[13rem]"}>
-              {naSrodku ? null : (
-                <p aria-hidden className="odreczny absolute right-0 top-1 hidden max-w-[11rem] whitespace-pre-line text-right sm:block">
-                  {ekran.dopisek ?? DOPISEK[modul]}
-                </p>
-              )}
+            {/* Pytanie stoi na środku w każdym module. Wyrównane do lewej
+                zostawiało nagłówek i siatkę odpowiedzi na dwóch różnych osiach,
+                a dopisek przy prawej krawędzi zabierał mu szerokość i łamał go
+                na trzeci wiersz. Dopisek siedzi teraz w stopce, między
+                przyciskami. */}
+            <div className="relative text-center">
               <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">
                 {etykietaNadTytulem}
               </p>
               <h1
-                className={`mt-3 font-extrabold leading-[1.04] tracking-[-0.02em] text-atrament ${
-                  naSrodku ? "mx-auto max-w-[24ch]" : "max-w-[22ch] sm:max-w-[18ch]"
-                } ${
+                className={`mx-auto mt-3 max-w-[34ch] font-extrabold leading-[1.04] tracking-[-0.02em] text-atrament ${
                   // Ekran z kaflami ma nagłówek o stopień mniejszy: pod nim
                   // stoi siatka zdjęć i cały ekran ma się zmieścić w oknie
-                  // bez przewijania.
-                  zKartami
+                  // bez przewijania. Tak samo długi nagłówek, który w pełnym
+                  // stopniu nie zmieściłby się w dwóch wierszach.
+                  zKartami || podzialTytulu.najdluzsza > 26
                     ? "text-naglowek sm:text-naglowek-duzy"
-                    : tytulEkranu.length > 46
-                      ? "text-naglowek sm:text-naglowek-duzy"
-                      : "text-naglowek-duzy sm:text-tytul"
+                    : "text-naglowek-duzy sm:text-tytul"
                 }`}
               >
                 <DwaTony tekst={tytulEkranu} pomaranczowy={ekran.akcent === "pomarancz"} />
               </h1>
               {podtytul ? (
-                <p
-                  className={`mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony ${
-                    naSrodku ? "mx-auto" : ""
-                  }`}
-                >
+                <p className="mx-auto mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
                   {podtytul}
                 </p>
               ) : null}
@@ -840,8 +837,8 @@ export function Runner({
             ) : zPlansza ? (
               /* Kwadratowy kafel kategorii: pas o stałej wysokości, obraz
                  pośrodku, rozmyta kopia dopełnia boki. */
-              <div className={`mt-7 ${naSrodku ? "mx-auto w-full max-w-[52rem]" : ""}`}>
-                <Plansza klucz={kluczPlanszy as string} wybor wysokosc={naSrodku ? 220 : 168} />
+              <div className="mx-auto mt-7 w-full max-w-[52rem]">
+                <Plansza klucz={kluczPlanszy as string} wybor wysokosc={220} />
               </div>
             ) : null}
 
@@ -858,7 +855,7 @@ export function Runner({
             <div
               className={`${siatka ? "grid gap-3 sm:grid-cols-2" : "flex flex-col gap-6"} ${
                 ekranWyboru ? (poleceniePrzyOdpowiedziach ? "mt-4" : "mt-7") : "szklo mt-6 p-5 sm:p-7"
-              } ${naSrodku ? "w-full text-left" : ""}`}
+              } w-full text-left`}
             >
               {widocznePozycje.map((p, i, lista) => (
                 <div
@@ -981,11 +978,11 @@ export function Runner({
             Wstecz
           </button>
 
-          {/* Ekran wyśrodkowany nie ma miejsca na dopisek przy prawej krawędzi,
-              bo tam nic nie stoi. W makiecie siedzi on między przyciskami. */}
-          {naSrodku && ekran.dopisek ? (
-            <p aria-hidden className="odreczny hidden flex-1 text-center sm:block">
-              {ekran.dopisek}
+          {/* Nagłówek stoi na środku, więc przy prawej krawędzi nie ma już
+              miejsca na dopisek. W makiecie siedzi on między przyciskami. */}
+          {(ekran.dopisek ?? DOPISEK[modul]) ? (
+            <p aria-hidden className="odreczny hidden flex-1 whitespace-pre-line text-center sm:block">
+              {ekran.dopisek ?? DOPISEK[modul]}
             </p>
           ) : null}
 
@@ -1011,39 +1008,26 @@ export function Runner({
 }
 
 /**
- * Nagłówek dwutonowy: pierwsza połowa ciemna, druga w gradiencie, a znak
- * zapytania osobno w pomarańczu. Rozbicie po spacji, pozostałe znaki
- * interpunkcyjne zostają przy słowie.
+ * Nagłówek dwutonowy: pierwsza linia ciemna, druga w gradiencie, a znak
+ * zapytania osobno w pomarańczu. Gdzie wypada podział, liczy
+ * `podzielNaglowek`: obie linie mają wyjść możliwie równe, żeby dłuższa się
+ * sama nie łamała i nagłówek miał dokładnie dwa wiersze.
  */
 function DwaTony({ tekst, pomaranczowy }: { tekst: string; pomaranczowy?: boolean }) {
   // Ekran zmiany zasady ma własny gradient, pomarańczowy: cały ten ekran
   // mówi „tu jest inaczej", więc niebieski tytuł by mu przeczył.
   const gradient = pomaranczowy ? "gradient-tytul-pomarancz" : "gradient-tytul";
-  const pelny = tekst.trim();
-  // Znak zapytania jest trzecim akcentem, nie częścią gradientu, więc
-  // odcinamy go, zanim podzielimy nagłówek na część ciemną i gradientową.
-  const dopasowanie = /([?!]+)$/.exec(pelny);
-  const znak = dopasowanie ? dopasowanie[1] : "";
-  const bezZnaku = znak ? pelny.slice(0, -znak.length).trimEnd() : pelny;
+  const { poczatek, koniec, znak } = podzielNaglowek(tekst);
   const ogon = znak ? <span className="znak-pytania">{znak}</span> : null;
 
-  const slowa = bezZnaku.split(/\s+/).filter(Boolean);
-  if (slowa.length < 2) {
+  if (!poczatek) {
     return (
       <>
-        <span className={gradient}>{bezZnaku}</span>
+        <span className={gradient}>{koniec}</span>
         {ogon}
       </>
     );
   }
-  // Podział pada w łamaniu wiersza, nie w środku linii: w referencjach
-  // pierwsza linia jest ciemna, druga gradientowa. Bez tego gradient zaczyna
-  // się w połowie wiersza i przestaje czytać się jako druga linia.
-  // Gradient dostaje 25-45% słów nagłówka: przy czterech jedno, przy pięciu
-  // dwa, przy siedmiu trzy. Ciemna część jest zawsze dłuższa od gradientowej.
-  const ile = Math.max(1, Math.floor(slowa.length * 0.45));
-  const poczatek = slowa.slice(0, -ile).join(" ");
-  const koniec = slowa.slice(-ile).join(" ");
   return (
     <>
       <span className="block">{poczatek}</span>

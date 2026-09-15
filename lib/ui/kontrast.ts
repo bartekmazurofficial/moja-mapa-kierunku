@@ -62,6 +62,18 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
   { nazwa: "biały na gradiencie, fiolet", tekst: "#ffffff", tlo: "#6d3df5" },
   { nazwa: "biały na gradiencie, róż", tekst: "#ffffff", tlo: "#c2185b" },
 
+  // Trzy stopnie w A5: „dam rade", „zalezy", „to nie dla mnie". Kazda karta
+  // ma wlasne tlo, wlasny znak i wlasny pierscien wyboru. Trzeci stopien jest
+  // ceglasty, nie czerwony: to jedyna odpowiedz, ktora usuwa zawody
+  // bezwarunkowo, i nie wolno jej dokladac ladunku emocjonalnego.
+  { nazwa: "znak zielony na karcie", tekst: "#067a45", tlo: "#ffffff" },
+  { nazwa: "znak niebieski na karcie", tekst: "#0a3ac9", tlo: "#ffffff" },
+  { nazwa: "znak ceglasty na karcie", tekst: "#b8460f", tlo: "#ffffff" },
+  { nazwa: "atrament na bloku ceglastym", tekst: "#10132a", tlo: "#fff1e8" },
+  { nazwa: "ściszony na bloku zielonym", tekst: "#3d4460", tlo: "#e3faed" },
+  { nazwa: "ściszony na bloku niebieskim", tekst: "#3d4460", tlo: "#e9f0ff" },
+  { nazwa: "ściszony na bloku ceglastym", tekst: "#3d4460", tlo: "#fff1e8" },
+
   // Trzeci akcent: pomaranycz. Znak zapytania, adnotacje, koniec gradientu
   // naglowka. Jasne pomarancze (#ff7a1a, #ff9500, #f97316, #ea580c) nie
   // przechodza ani jako tekst, ani pod bialym napisem, wiec ich tu nie ma.

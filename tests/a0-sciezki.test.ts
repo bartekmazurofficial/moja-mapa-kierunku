@@ -54,13 +54,21 @@ const PUSTY: PunktStartu = {
 };
 
 describe("A0: pytania szkolne tylko dla uczniów", () => {
-  it("etapy szkolne dostają przedmioty mocne, trudne i matematykę", () => {
+  it("etapy szkolne dostają przedmioty mocne i trudne", () => {
     for (const etap of ETAPY_SZKOLNE) {
       const w = widoczne(etap);
       expect(w, etap).toContain("przedmioty_mocne");
       expect(w, etap).toContain("przedmioty_trudne");
-      expect(w, etap).toContain("matematyka");
     }
+  });
+
+  /**
+   * Osobnego pytania o matematykę już nie ma. Pole `matematyka` zostaje
+   * w `PunktStartu`, bo czyta je reguła K2 silnika, ale od tej zmiany nie ma
+   * sposobu, żeby uczestnik je wypełnił, więc jest zawsze puste.
+   */
+  it("nie ma już osobnego pytania o matematykę", () => {
+    expect(PYTANIA_A0.map((p) => p.id)).not.toContain("matematyka");
   });
 
   it("etapy pozaszkolne nie dostają ani jednego pytania o szkołę", () => {

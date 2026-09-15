@@ -19,6 +19,12 @@ export interface OpcjaA0 {
   odmowa?: boolean;
   /** Nadpis grupy nad etykieta, gdy opcje dziela sie na dwie rodziny. */
   nadpis?: string;
+  /**
+   * Kafel na dwie kolumny siatki. Dla wyjscia z pytania („jeszcze nie
+   * zdecydowalem"), ktore stoi na koncu listy przedmiotow i bez kadru
+   * wygladaloby przy nich jak niedokonczona karta.
+   */
+  szeroka?: boolean;
 }
 
 export interface PytanieA0 {
@@ -49,11 +55,26 @@ export const PRZEDMIOTY_A0: OpcjaA0[] = [
   { kod: "artystyczne", etykieta: "przedmioty artystyczne" },
   { kod: "wf", etykieta: "wychowanie fizyczne" },
   { kod: "zawodowe", etykieta: "przedmioty zawodowe" },
-  // Krócej niż „praca w warsztacie lub pracowni": w siatce kafli ta jedna
-  // etykieta łamała się na trzy wiersze i przez `auto-rows-fr` podnosiła
-  // wysokość wszystkich czternastu kart.
+  // Krócej niż „praca w warsztacie lub pracowni": dłuższa etykieta łamała się
+  // w siatce na trzy wiersze i przez `auto-rows-fr` podnosiła wysokość
+  // wszystkich kart w rzędzie.
+  //
+  // Dziś żadne pytanie tej pozycji nie pokazuje (patrz BEZ_ZAWODOWYCH), ale
+  // kod zostaje w słowniku: silnik czyta go z zapisanych odpowiedzi
+  // wcześniejszych uczestników.
   { kod: "warsztat", etykieta: "praca w warsztacie" },
 ];
+
+/**
+ * Czego nie ma na listach przedmiotow.
+ *
+ * `warsztat` i `zawodowe` nie sa przedmiotami ogolnymi: nie da sie z nich
+ * zrobic rozszerzenia ani matury, wiec zostaja tylko tam, gdzie pytamy
+ * o plany ucznia technikum. Na maturze rozszerzonej nie ma takze przedmiotow
+ * artystycznych ani wychowania fizycznego.
+ */
+const BEZ_ZAWODOWYCH = new Set(["warsztat", "zawodowe"]);
+const BEZ_MATURALNYCH = new Set(["warsztat", "zawodowe", "artystyczne", "wf"]);
 
 /**
  * Cztery scieczki przez modul.
@@ -113,7 +134,6 @@ export const PYTANIA_A0: PytanieA0[] = [
       { kod: "studiuje", etykieta: "Studiuję", nadpis: "Uczę się" },
       { kod: "po_studiach", etykieta: "Skończyłem studia", nadpis: "Po szkole" },
       { kod: "pracuje_zmiana", etykieta: "Pracuję i rozważam zmianę", nadpis: "Po szkole" },
-      { kod: "nie_uczy_nie_pracuje", etykieta: "Teraz się nie uczę i nie pracuję", nadpis: "Po szkole" },
     ],
   },
   {
@@ -136,7 +156,7 @@ export const PYTANIA_A0: PytanieA0[] = [
     tresc: "Jakie masz rozszerzenia?",
     podpis: "To już jest fakt, nie plan. Od tego zależy, które kierunki są dla Ciebie otwarte.",
     tylkoEtapy: ETAPY_PRZED_MATURA,
-    opcje: PRZEDMIOTY_A0.filter((p) => p.kod !== "warsztat"),
+    opcje: PRZEDMIOTY_A0.filter((p) => !BEZ_ZAWODOWYCH.has(p.kod)),
   },
   {
     id: "matura_plan",
@@ -148,8 +168,8 @@ export const PYTANIA_A0: PytanieA0[] = [
       "Rozszerzenie w szkole i matura rozszerzona to nie zawsze to samo. Przy rekrutacji liczy się to drugie.",
     tylkoEtapy: ETAPY_PRZED_MATURA,
     opcje: [
-      ...PRZEDMIOTY_A0.filter((p) => p.kod !== "warsztat" && p.kod !== "zawodowe"),
-      { kod: "nie_wiem", etykieta: "Jeszcze nie zdecydowałem" },
+      ...PRZEDMIOTY_A0.filter((p) => !BEZ_MATURALNYCH.has(p.kod)),
+      { kod: "nie_wiem", etykieta: "Jeszcze nie zdecydowałem", szeroka: true },
     ],
   },
   {
@@ -161,8 +181,8 @@ export const PYTANIA_A0: PytanieA0[] = [
     podpis: "To decyduje o tym, które kierunki są dla Ciebie realnie dostępne.",
     tylkoEtapy: ETAPY_PO_MATURZE,
     opcje: [
-      ...PRZEDMIOTY_A0.filter((p) => p.kod !== "warsztat" && p.kod !== "zawodowe"),
-      { kod: "brak", etykieta: "Nie zdawałem żadnego rozszerzenia" },
+      ...PRZEDMIOTY_A0.filter((p) => !BEZ_MATURALNYCH.has(p.kod)),
+      { kod: "brak", etykieta: "Nie zdawałem żadnego rozszerzenia", szeroka: true },
     ],
   },
   {
@@ -175,7 +195,7 @@ export const PYTANIA_A0: PytanieA0[] = [
     tresc: "Z czym radzisz sobie najlepiej?",
     podpis: "Wskaż trzy. Chodzi o to, co idzie Ci łatwo, nie o same oceny.",
     tylkoEtapy: ETAPY_SZKOLNE,
-    opcje: PRZEDMIOTY_A0,
+    opcje: PRZEDMIOTY_A0.filter((p) => !BEZ_ZAWODOWYCH.has(p.kod)),
   },
   {
     id: "przedmioty_trudne",
@@ -185,21 +205,7 @@ export const PYTANIA_A0: PytanieA0[] = [
     tresc: "Co sprawia Ci największą trudność?",
     podpis: "Wskaż trzy. To nie jest ocena, tylko informacja, czego lepiej nie zakładać.",
     tylkoEtapy: ETAPY_SZKOLNE,
-    opcje: PRZEDMIOTY_A0,
-  },
-  {
-    id: "matematyka",
-    blok: 2,
-    nazwaBloku: "Co Ci idzie",
-    typ: "pojedynczy",
-    tresc: "Jak wygląda u Ciebie matematyka?",
-    tylkoEtapy: ETAPY_SZKOLNE,
-    opcje: [
-      { kod: "dobrze", etykieta: "Idzie dobrze, myślę o rozszerzeniu" },
-      { kod: "radze_sobie", etykieta: "Radzę sobie, ale bez entuzjazmu" },
-      { kod: "trudna", etykieta: "Jest trudna, ale daję radę" },
-      { kod: "najwiekszy_problem", etykieta: "To mój największy problem" },
-    ],
+    opcje: PRZEDMIOTY_A0.filter((p) => !BEZ_ZAWODOWYCH.has(p.kod)),
   },
   // --- SCIEZKA 3: po maturze albo w trakcie studiow ---
   {
@@ -333,7 +339,6 @@ export const PYTANIA_A0: PytanieA0[] = [
       { kod: "praktyki", etykieta: "Praktyki, staż albo praca studencka" },
       { kod: "kursy", etykieta: "Kursy albo szkolenia poza szkołą" },
       { kod: "konkursy", etykieta: "Konkursy, olimpiady, zawody" },
-      { kod: "nic", etykieta: "Nic z tego" },
     ],
   },
   {
@@ -421,9 +426,6 @@ export const PYTANIA_A0: PytanieA0[] = [
       { kod: "wzrok", etykieta: "Wada wzroku, której nie da się w pełni skorygować" },
       { kod: "sluch", etykieta: "Ubytek słuchu" },
       { kod: "wysokosc", etykieta: "Lęk wysokości" },
-      { kod: "inne", etykieta: "Coś innego, o czym chcę powiedzieć prowadzącemu" },
-      { kod: "nie_chce", etykieta: "Nie chcę odpowiadać na to pytanie", odmowa: true },
-      { kod: "brak", etykieta: "Nic z powyższych" },
     ],
   },
 ];
@@ -489,7 +491,6 @@ export const TEMATY_A0: Record<string, string> = {
   matura_zdana: "zdaną maturę",
   przedmioty_mocne: "przedmioty szkolne",
   przedmioty_trudne: "przedmioty szkolne",
-  matematyka: "matematykę",
   kierunek: "kierunek studiów",
   kierunek_ocena: "kierunek studiów",
   wyksztalcenie: "ukończoną szkołę",

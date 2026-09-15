@@ -225,6 +225,7 @@ function czescA0(): CzescModulu {
             nadpis: o.nadpis,
             ikona: kluczObrazuA0(pytanie.id, o.kod, wylaczna),
             wylaczna,
+            szeroka: o.szeroka,
           };
         }),
         // A0 pyta o sytuację życiową i tam obraz niesie treść, a nie ozdobę.

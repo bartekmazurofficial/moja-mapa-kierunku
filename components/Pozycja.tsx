@@ -222,10 +222,11 @@ function kolumnyKart(ile: number): string {
                 : "lg:grid-cols-4 xl:grid-cols-6";
   // Gęsta siatka dostaje ciaśniejsze odstępy: przy trzech rzędach każde
   // cztery piksele przerwy to dwanaście pikseli wysokości ekranu.
-  // Przy trzech i czterech odpowiedziach siatka dostaje sufit szerokości.
-  // Bez niego kafel ma 360 px, a kadr 16:9 z niego 202 px wysokości i ekran
-  // rośnie bez powodu: zdjęcie nie mówi więcej dlatego, że jest większe.
-  const sufit = ile <= 4 ? "mx-auto w-full max-w-[62rem] " : "";
+  // Do sześciu odpowiedzi siatka dostaje sufit szerokości. Bez niego kafel
+  // ma 362 px, a kadr 16:9 z niego 204 px wysokości: dwa rzędy takich kafli
+  // schodziły pod krawędź okna, a zdjęcie nie mówi więcej dlatego, że jest
+  // większe.
+  const sufit = ile <= 6 ? "mx-auto w-full max-w-[62rem] " : "";
   return `${sufit}grid auto-rows-fr ${ile > 10 ? "gap-3" : "gap-4"} sm:grid-cols-2 ${kolumny}`;
 }
 
@@ -244,7 +245,7 @@ function kolumnyKart(ile: number): string {
  */
 function szerokoscKadru(ile: number): number {
   const kolumny = ile <= 2 ? 2 : ile <= 4 ? ile : ile <= 6 ? 3 : ile <= 10 ? 5 : 6;
-  const siatka = ile <= 4 ? 992 : 1120;
+  const siatka = ile <= 6 ? 992 : 1120;
   const przerwa = ile > 10 ? 12 : 16;
   return Math.round((siatka - przerwa * (kolumny - 1)) / kolumny) - 20;
 }
@@ -279,16 +280,20 @@ function KartyOdpowiedzi({
   // Kafel bez kadru ma wysokość rzędu, ale tekst siedzi w nim wyśrodkowany,
   // więc nie zostaje po nim pusta ramka.
 
+  // Siatkę układamy z pól, nie z odpowiedzi: kafel na dwie kolumny zajmuje
+  // dwa pola i bez tego ostatni rząd wychodziłby poza siatkę.
+  const pola = opcje.length + opcje.filter((o) => o.szeroka).length;
+
   return (
-    <div className={`mt-4 ${kolumnyKart(opcje.length)}`}>
+    <div className={`mt-4 ${kolumnyKart(pola)}`}>
       {opcje.map((o, miejsce) => (
         <KartaOdpowiedzi
           key={o.kod}
           opcja={o}
           wybrana={zaznaczona(o)}
           kwadrat={kwadrat}
-          gesty={opcje.length > 10}
-          kadr={szerokoscKadru(opcje.length)}
+          gesty={pola > 10}
+          kadr={szerokoscKadru(pola)}
           zablokowana={zablokowana?.(o)}
           kolor={kolorWyboru(o.ikona ?? kluczKoloru, miejsce)}
           onClick={() => onClick(o)}
@@ -355,6 +360,8 @@ function KartaOdpowiedzi({
         kończył się w połowie i wyglądał jak szara plama obok etykiety.
       */
       className={`przejscie relative flex h-full min-w-0 flex-col overflow-hidden rounded-karta border-2 p-2 text-left active:scale-[0.995] ${
+        opcja.szeroka ? "sm:col-span-2" : ""
+      } ${
         wybrana
           ? "border-akcent bg-akcent-tlo/45"
           : zablokowana
@@ -670,24 +677,38 @@ function Para({ pozycja, wartosc, naZmiane, naDomkniecie, akcent }: WlasciwosciP
 }
 
 /** Pierścień wyboru: pusty przed, wypełniony gradientem po wybraniu. */
-function KolkoWyboru({ wybrana, cieply }: { wybrana: boolean; cieply?: boolean }) {
+function KolkoWyboru({
+  wybrana,
+  cieply,
+  barwa,
+}: {
+  wybrana: boolean;
+  cieply?: boolean;
+  /** Kolor pierścienia, gdy odpowiedź ma własną barwę (trzy stopnie A5). */
+  barwa?: string;
+}) {
   return (
     <span
       aria-hidden
       className={`przejscie relative flex h-8 w-8 shrink-0 rounded-full border-2 ${
-        wybrana ? (cieply ? "border-pomarancz" : "border-akcent") : "border-linia-mocna"
+        barwa ? "" : wybrana ? (cieply ? "border-pomarancz" : "border-akcent") : "border-linia-mocna"
       }`}
+      style={barwa ? { borderColor: wybrana ? barwa : "var(--color-linia-mocna)" } : undefined}
     >
       {wybrana ? (
         <span
           className="absolute inset-1 rounded-full"
           style={{
-            background: cieply
-              ? "linear-gradient(120deg, #b8460f, #c2185b)"
-              : undefined,
+            background: barwa
+              ? barwa
+              : cieply
+                ? "linear-gradient(120deg, #b8460f, #c2185b)"
+                : undefined,
           }}
         >
-          {cieply ? null : <span className="przycisk-gradient block h-full w-full rounded-full" />}
+          {barwa || cieply ? null : (
+            <span className="przycisk-gradient block h-full w-full rounded-full" />
+          )}
         </span>
       ) : null}
     </span>
@@ -808,6 +829,7 @@ function Trzystopniowa({
       <div className="grid gap-4 lg:grid-cols-3">
         {opcje.map((o, i) => {
           const wybrana = wartosc === o.kod;
+          const barwa = BARWY_STOPNI[i] ?? BARWY_STOPNI[1];
           return (
             <button
               key={o.kod}
@@ -817,14 +839,16 @@ function Trzystopniowa({
                 naDomkniecie?.();
               }}
               aria-pressed={wybrana}
-              className={`przejscie relative flex min-h-[7rem] items-center gap-5 rounded-karta border-2 px-5 py-5 text-left sm:px-6 ${
-                wybrana
-                  ? "border-akcent bg-akcent-tlo/70"
-                  : "border-transparent bg-panel/80 hover:bg-panel"
-              }`}
-              style={wybrana ? undefined : { boxShadow: "0 8px 24px rgba(46, 60, 120, 0.07)" }}
+              className="przejscie relative flex min-h-[7rem] items-center gap-5 rounded-karta border-2 px-5 py-5 text-left sm:px-6"
+              style={{
+                background: barwa.tlo,
+                borderColor: wybrana ? barwa.pelny : "transparent",
+                boxShadow: wybrana
+                  ? `0 10px 30px ${barwa.pelny}2e`
+                  : "0 8px 24px rgba(46, 60, 120, 0.07)",
+              }}
             >
-              <ZnakStopnia ktory={i} wybrana={wybrana} />
+              <ZnakStopnia ktory={i} wybrana={wybrana} barwa={barwa} />
               <span className="min-w-0 flex-1">
                 <span className="block text-tresc-duza font-bold leading-tight text-atrament">
                   {o.etykieta}
@@ -835,7 +859,7 @@ function Trzystopniowa({
                   </span>
                 ) : null}
               </span>
-              <KolkoWyboru wybrana={wybrana} />
+              <KolkoWyboru wybrana={wybrana} barwa={barwa.pelny} />
             </button>
           );
         })}
@@ -870,8 +894,34 @@ function Trzystopniowa({
   );
 }
 
+/**
+ * Trzy barwy trzech stopni: zielona, niebieska, ciepła.
+ *
+ * Trzy identyczne karty czytały się jak jedna odpowiedź powtórzona trzy razy;
+ * kolor daje im od razu rozróżnienie, jeszcze zanim ktoś przeczyta etykiety.
+ *
+ * Trzeci stopień jest ceglasty, nie czerwony, i to nie jest kosmetyka:
+ * „To nie dla mnie" jest w tym module jedyną odpowiedzią, która usuwa zawody
+ * bezwarunkowo, więc nie wolno jej dokładać ładunku emocjonalnego. Wszystkie
+ * trzy pary (pełny kolor pod białym znakiem, atrament na tle karty) stoją
+ * w PARY_KOLOROW i przechodzą 4,5:1.
+ */
+const BARWY_STOPNI = [
+  { tlo: "#e3faed", pelny: "#067a45" },
+  { tlo: "#e9f0ff", pelny: "#0a3ac9" },
+  { tlo: "#fff1e8", pelny: "#b8460f" },
+];
+
 /** Trzy stopnie: ptaszek, fala, krzyżyk. Znak, nie ocena: żaden nie jest czerwony. */
-function ZnakStopnia({ ktory, wybrana }: { ktory: number; wybrana: boolean }) {
+function ZnakStopnia({
+  ktory,
+  wybrana,
+  barwa,
+}: {
+  ktory: number;
+  wybrana: boolean;
+  barwa: { tlo: string; pelny: string };
+}) {
   const SCIEZKI = [
     "M5 12.5 9.5 17 19 7",
     "M4 12c2.5-4 5-4 8 0s5.5 4 8 0",
@@ -880,9 +930,14 @@ function ZnakStopnia({ ktory, wybrana }: { ktory: number; wybrana: boolean }) {
   return (
     <span
       aria-hidden
-      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
-        wybrana ? "przycisk-gradient" : "bg-akcent-tlo text-akcent-jasny"
-      }`}
+      className="przejscie flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
+      style={{
+        // Zaznaczenie odwraca znak: biały na pełnym kolorze zamiast koloru
+        // na bieli. Widać je z drugiego końca ekranu i nie zależy od samego
+        // obramowania karty.
+        background: wybrana ? barwa.pelny : "#ffffff",
+        color: wybrana ? "#ffffff" : barwa.pelny,
+      }}
     >
       <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
         <path d={SCIEZKI[ktory] ?? SCIEZKI[1]} />

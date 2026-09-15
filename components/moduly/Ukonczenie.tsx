@@ -52,6 +52,7 @@ export function Ukonczenie({
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
           data-ruch
+          data-ozdoba
           className="absolute -right-[8%] -top-[14%] h-[38rem] w-[38rem] rounded-full blur-[14px]"
           style={{
             background:
@@ -63,6 +64,7 @@ export function Ukonczenie({
         />
         <div
           data-ruch
+          data-ozdoba
           className="absolute -bottom-[22%] -left-[10%] h-[42rem] w-[42rem] rounded-full blur-[16px]"
           style={{
             background:
@@ -72,7 +74,35 @@ export function Ukonczenie({
             ["--powtorzenia" as string]: "infinite",
           }}
         />
+        <div
+          data-ruch
+          data-ozdoba
+          className="absolute left-[44%] top-[26%] h-[32rem] w-[32rem] rounded-full blur-[18px]"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(255,150,205,.26), rgba(255,150,205,0) 70%)",
+            ["--ruch" as string]: "plyniecie",
+            ["--czas" as string]: "26s",
+            ["--powtorzenia" as string]: "infinite",
+          }}
+        />
       </div>
+
+      {/* Błysk: jedno mgnienie bieli dokładnie wtedy, gdy domyka się ptaszek. */}
+      <div
+        aria-hidden
+        data-ruch
+        data-ozdoba
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(46% 40% at 50% 40%, rgba(255,255,255,.95), rgba(255,255,255,0) 70%)",
+          ["--ruch" as string]: "blysk",
+          ["--czas" as string]: "1100ms",
+          ["--zwloka" as string]: "980ms",
+          ["--krzywa" as string]: "ease-out",
+        }}
+      />
 
       <p
         data-ruch
@@ -94,6 +124,7 @@ export function Ukonczenie({
               key={i}
               aria-hidden
               data-ruch
+              data-ozdoba
               className="absolute h-[11.25rem] w-[11.25rem] rounded-full border-[1.5px]"
               style={{
                 borderColor: i === 0 ? "rgba(109,61,245,.45)" : "rgba(184,70,15,.3)",
@@ -107,6 +138,7 @@ export function Ukonczenie({
           <span
             aria-hidden
             data-ruch
+            data-ozdoba
             className="absolute h-[10.75rem] w-[10.75rem] rounded-full blur-[6px]"
             style={{
               background: "radial-gradient(circle, rgba(109,61,245,.35), rgba(109,61,245,0) 70%)",
@@ -243,6 +275,7 @@ export function Ukonczenie({
           <span
             aria-hidden
             data-ruch
+            data-ozdoba
             className="absolute -inset-x-2.5 -inset-y-3.5 rounded-full blur-[22px]"
             style={{
               background: "linear-gradient(96deg, #1d5bff, #6d3df5, #b8460f)",
@@ -255,10 +288,27 @@ export function Ukonczenie({
           />
           <Link
             href={zObszarami ? `/u/${kodUczestnika}/wyniki/${modul}` : `/u/${kodUczestnika}/moduly`}
-            className="przejscie przycisk-gradient relative inline-flex min-h-[3.75rem] items-center gap-3.5 rounded-full px-10 text-tresc-duza font-bold"
+            className="przejscie przycisk-gradient relative inline-flex min-h-[3.75rem] items-center gap-3.5 overflow-hidden rounded-full px-10 text-tresc-duza font-bold"
           >
             {zObszarami ? "Zobacz swoje odpowiedzi" : "Wróć do listy"}
             <span aria-hidden>→</span>
+            {/* Połysk przechodzący przez przycisk: to jedyna rzecz do zrobienia
+                na tym ekranie i ma być widać, gdzie kliknąć. */}
+            <span
+              aria-hidden
+              data-ruch
+              data-ozdoba
+              className="absolute inset-y-0 left-0 w-2/5"
+              style={{
+                background:
+                  "linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0))",
+                ["--ruch" as string]: "polysk",
+                ["--czas" as string]: "3000ms",
+                ["--zwloka" as string]: "2500ms",
+                ["--krzywa" as string]: "ease-in-out",
+                ["--powtorzenia" as string]: "infinite",
+              }}
+            />
           </Link>
         </div>
 
@@ -291,6 +341,22 @@ export function Ukonczenie({
         Poznaj siebie.
         <br />
         Wybierz świadomie.
+        <svg viewBox="0 0 180 14" className="mt-0.5 block h-3.5 w-[11rem]" fill="none">
+          <path
+            data-ruch
+            d="M3 9c38-6 108-8 174-4"
+            stroke="currentColor"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeDasharray="210"
+            style={{
+              ["--ruch" as string]: "podkreslenie",
+              ["--czas" as string]: "900ms",
+              ["--zwloka" as string]: "2700ms",
+              ["--krzywa" as string]: "ease-out",
+            }}
+          />
+        </svg>
       </p>
 
       <p className="absolute bottom-12 right-14 hidden text-drobne font-bold uppercase tracking-[0.22em] text-atrament-slaby lg:block">
@@ -336,6 +402,7 @@ function Iskry() {
     <span
       aria-hidden
       data-ruch
+      data-ozdoba
       className="pointer-events-none absolute inset-0"
       style={{
         ["--ruch" as string]: "obrot",

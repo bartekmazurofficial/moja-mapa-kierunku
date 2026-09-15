@@ -42,6 +42,14 @@ export interface OpcjaWyboru {
   ikona?: string;
   /** Opcja wykluczajaca sie z pozostalymi, np. "nic z tego". */
   wylaczna?: boolean;
+  /**
+   * Kafel na dwie kolumny siatki.
+   *
+   * Dla wyjscia z pytania, ktore stoi na koncu dlugiej listy przedmiotow.
+   * Bez kadru i w jednej kolumnie czyta sie tam jak karta, ktorej zabraklo
+   * zdjecia; na dwoch kolumnach widac, ze to inny rodzaj odpowiedzi.
+   */
+  szeroka?: boolean;
 }
 
 export interface StronaPary {
