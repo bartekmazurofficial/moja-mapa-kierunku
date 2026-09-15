@@ -57,6 +57,22 @@ const Z_PLANSZA = new Set<string>([
   ...Array.from({ length: 43 }, (_, i) => `a5-F${String(i + 1).padStart(2, "0")}`),
 ]);
 
+/**
+ * Szerokosci plikow, ktore wypuszcza `scripts/grafiki.ts`: kafel i wersja
+ * szeroka. Przegladarka dostaje obie w `srcSet` i sama bierze te, ktora na
+ * danym ekranie wypada ostro, a skrypt skaluje do tych samych liczb. Jedna
+ * tablica, zeby te dwa miejsca nigdy sie nie rozjechaly.
+ *
+ * A0 ma wlasne, wieksze: tam zdjecie **jest** odpowiedzia i zajmuje cala
+ * szerokosc karty, a nie miniaturke przy zdaniu.
+ */
+export const SZEROKOSCI_DOMYSLNE: [number, number] = [256, 768];
+export const SZEROKOSCI_MODULU: Record<string, [number, number]> = { a0: [560, 1280] };
+
+export function szerokosciObrazu(klucz: string): [number, number] {
+  return SZEROKOSCI_MODULU[klucz.split("-")[0]] ?? SZEROKOSCI_DOMYSLNE;
+}
+
 export function obrazPlanszy(klucz: string): string | null {
   if (!Z_PLANSZA.has(klucz)) return null;
   return `/grafika/plansze/${klucz}.jpg`;

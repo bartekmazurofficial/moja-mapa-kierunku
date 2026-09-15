@@ -30,15 +30,6 @@ import type { CzescModulu, Ekran } from "@/lib/moduly/typy";
 
 const MARKER_ZAKONCZENIA = "__zakonczono";
 
-/**
- * Jak dlugo po przejsciu dalej widac przycisk cofniecia.
- *
- * Pieć sekund, nie trzy: przycisk, ktory znika szybciej, nie daje sie
- * zauwazyc i siegnac po niego osobie, ktora czyta wolniej. Nie chowamy go
- * takze wtedy, gdy stoi na nim fokus klawiatury.
- */
-const WIDOCZNOSC_COFNIECIA = 5000;
-
 interface Wlasciwosci {
   kodUczestnika: string;
   modul: string;
@@ -80,10 +71,6 @@ export function Runner({
   const [zablokowane, ustawZablokowane] = useState(false);
   /** `domknij` powstaje przed `dalej`, więc sięga po nie referencją. */
   const dalejRef = useRef<null | (() => Promise<void>)>(null);
-  /** Ostatnie przejście dalej: pozwala cofnąć jedną decyzję zaraz po niej. */
-  const [cofniecie, ustawCofniecie] = useState<{ indeks: number; pozycje: string[] } | null>(null);
-  const licznikCofniecia = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const przyciskCofniecia = useRef<HTMLButtonElement | null>(null);
 
   const kolejka = useRef<KolejkaZapisu | null>(null);
   if (kolejka.current === null) {
@@ -184,55 +171,8 @@ export function Runner({
     [zapisz],
   );
 
-  /**
-   * Pokazuje przycisk cofnięcia i chowa go po chwili. Przycisk z fokusem
-   * zostaje: zniknięcie celu spod palca jest gorsze niż chwilę dłuższy przycisk.
-   */
-  const zaproponujCofniecie = useCallback((indeksEkranu: number, pozycje: string[]) => {
-    if (licznikCofniecia.current) clearTimeout(licznikCofniecia.current);
-    ustawCofniecie({ indeks: indeksEkranu, pozycje });
-    const sprobujSchowac = () => {
-      if (przyciskCofniecia.current && document.activeElement === przyciskCofniecia.current) {
-        licznikCofniecia.current = setTimeout(sprobujSchowac, 2000);
-        return;
-      }
-      ustawCofniecie(null);
-    };
-    licznikCofniecia.current = setTimeout(sprobujSchowac, WIDOCZNOSC_COFNIECIA);
-  }, []);
-
-  /**
-   * Cofnięcie jednej decyzji: wraca na poprzedni ekran i kasuje to, co na nim
-   * padło. Nie jest to nawigacja wstecz — odpowiedź trzeba dać jeszcze raz,
-   * więc „Dalej” jest znowu zablokowane. Kasowanie idzie też na serwer, bo
-   * inaczej po powrocie do modułu wróciłaby stara odpowiedź.
-   */
-  const cofnij = useCallback(() => {
-    if (!cofniecie) return;
-    const { indeks: doKtorego, pozycje } = cofniecie;
-    ustawIndeks(doKtorego);
-    ustawOdpowiedzi((poprzednie) => {
-      const nowe = { ...poprzednie };
-      for (const id of pozycje) delete nowe[id];
-      return nowe;
-    });
-    for (const id of pozycje) {
-      const odroczony = odroczone.current.get(id);
-      if (odroczony) {
-        clearTimeout(odroczony);
-        odroczone.current.delete(id);
-      }
-      kolejka.current?.zapisz(id, null);
-    }
-    if (licznikCofniecia.current) clearTimeout(licznikCofniecia.current);
-    ustawCofniecie(null);
-    if (window.scrollY > 8) window.scrollTo({ top: 0, behavior: "auto" });
-  }, [cofniecie]);
-
   const dalej = useCallback(async () => {
     if (indeks < widoczne.length - 1) {
-      const zEkranu = (widoczne[indeks]?.pozycje ?? []).map((p) => p.id);
-      if (zEkranu.length > 0) zaproponujCofniecie(indeks, zEkranu);
       ustawIndeks((i) => i + 1);
       ustawWychodzi(false);
       // Przewijamy tylko wtedy, gdy strona faktycznie jest przewinięta.
@@ -242,7 +182,6 @@ export function Runner({
     }
     ustawKonczy(true);
     ustawZablokowane(false);
-    ustawCofniecie(null);
     // Odroczone pola tekstowe wysyłamy od razu, bez czekania na 700 ms.
     for (const [id, timeout] of odroczone.current) {
       clearTimeout(timeout);
@@ -266,7 +205,7 @@ export function Runner({
       return;
     }
     router.refresh();
-  }, [indeks, odpowiedzi, router, widoczne, zaproponujCofniecie]);
+  }, [indeks, odpowiedzi, router, widoczne]);
 
   dalejRef.current = dalej;
 
@@ -887,8 +826,15 @@ export function Runner({
             ) : zPlansza && pelnaPlansza ? (
               /* Gotowa plansza pytania: cały kadr w 16:9, bez przycinania.
                  Kolumna węższa niż bloki odpowiedzi, bo przy pełnej szerokości
-                 pytanie i odpowiedzi zeszłyby pod krawędź ekranu. */
-              <div className="mx-auto mt-6 w-full max-w-[44rem]">
+                 pytanie i odpowiedzi zeszłyby pod krawędź ekranu.
+
+                 Drugi sufit liczy się od wysokości okna, bo kadr w 16:9 rośnie
+                 razem z szerokością: przy 704 px ma 396 px wysokości i na
+                 ekranie 950 px pytanie „Na co Cię dziś realnie stać?" schodziło
+                 93 px pod krawędź. 57vh szerokości to 32vh wysokości, więc kadr
+                 sam ustępuje tam, gdzie okna jest mało, a na wysokim ekranie
+                 wraca do pełnych 44rem. */
+              <div className="mx-auto mt-5 w-full max-w-[min(44rem,57vh)]">
                 <Plansza klucz={kluczPlanszy as string} wybor pelnaProporcja />
               </div>
             ) : zPlansza ? (
@@ -1015,22 +961,6 @@ export function Runner({
           </>
         )}
       </main>
-
-      {/* Cofnięcie jednej decyzji, zaraz po niej. Kto stuknął odruchowo nie
-          tam, gdzie chciał, ma to jak naprawić, nie szukając nawigacji. */}
-      {cofniecie ? (
-        <div className="mt-3 flex justify-end">
-          <button
-            ref={przyciskCofniecia}
-            type="button"
-            onClick={cofnij}
-            className="przejscie wejscie-ekranu przycisk-pigulka inline-flex min-h-11 items-center gap-2 rounded-2xl px-4 text-male font-semibold"
-          >
-            <span aria-hidden>↩</span>
-            Cofnij ostatnią odpowiedź
-          </button>
-        </div>
-      ) : null}
 
       {/* Ekran wstępu ma własny duży przycisk w środku kolumny, więc pasek
           u dołu byłby drugim „Zaczynamy" w tym samym widoku. „Wstecz" i tak

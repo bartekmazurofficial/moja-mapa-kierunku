@@ -22,13 +22,50 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
-const ROZMIARY: Array<{ px: number; jakosc: number; przyrostek: string }> = [
-  { px: 256, jakosc: 70, przyrostek: "" },
-  { px: 768, jakosc: 72, przyrostek: "-duzy" },
+import { SZEROKOSCI_DOMYSLNE, SZEROKOSCI_MODULU } from "../lib/ui/obrazy";
+
+type Rozmiar = { px: number; jakosc: number; przyrostek: string };
+
+/**
+ * Kafel przy tekscie i naglowek. Dla A1 do A4 obrazek stoi obok zdania
+ * i 256 px wystarcza z zapasem.
+ */
+const ROZMIARY: Rozmiar[] = [
+  { px: SZEROKOSCI_DOMYSLNE[0], jakosc: 70, przyrostek: "" },
+  { px: SZEROKOSCI_DOMYSLNE[1], jakosc: 72, przyrostek: "-duzy" },
 ];
 
 /** Plansze pytan sa poziome i idą w jednej wersji, szerokiej. */
-const ROZMIARY_PLANSZ: typeof ROZMIARY = [{ px: 1200, jakosc: 74, przyrostek: "" }];
+const ROZMIARY_PLANSZ: Rozmiar[] = [{ px: 1200, jakosc: 74, przyrostek: "" }];
+
+/**
+ * A0 liczy sie inaczej: zdjecie JEST odpowiedzia, a nie miniaturka przy niej.
+ *
+ * Kafel ma na ekranie od 170 do 270 px, wiec na ekranie o podwojonej gestosci
+ * potrzebuje do 540 px; 256 px dawalo tam widoczne rozmycie. Wersja szeroka
+ * idzie pod kadr nad odpowiedziami, ktory ma okolo 700 px, wiec 768 px bylo
+ * dokladnie na styk i tez bylo widac.
+ *
+ * Jakosc 80 zamiast 72: to sa zdjecia ludzi, a nie ikony, i artefakty widac
+ * na twarzach.
+ */
+const ROZMIARY_A0: Rozmiar[] = [
+  { px: SZEROKOSCI_MODULU.a0[0], jakosc: 80, przyrostek: "" },
+  { px: SZEROKOSCI_MODULU.a0[1], jakosc: 80, przyrostek: "-duzy" },
+];
+
+/**
+ * Kadr nad pytaniem A0 idzie na cala szerokosc kolumny, do 832 px, wiec na
+ * ekranie o podwojonej gestosci potrzebuje 1664 px; 1280 px bylo tam widocznie
+ * miekkie. Zrodla maja 1672 px, wiec nic sie nie rozciaga.
+ *
+ * Dotyczy szesciu plikow `pytanie-*` — reszta zostaje przy 1280 px, bo w
+ * `srcSet` kafla i tak nigdy nie zejdzie nizej niz dwa piksele na piksel.
+ */
+const ROZMIARY_A0_KADR: Rozmiar[] = [
+  { px: SZEROKOSCI_MODULU.a0[0], jakosc: 80, przyrostek: "" },
+  { px: 1664, jakosc: 74, przyrostek: "-duzy" },
+];
 
 function main() {
   const [zrodla, modul = "a1"] = process.argv.slice(2);
@@ -56,7 +93,15 @@ function main() {
       continue;
     }
     const klucz = m[1];
-    for (const r of modul === "plansze" ? ROZMIARY_PLANSZ : ROZMIARY) {
+    const rozmiary =
+      modul === "plansze"
+        ? ROZMIARY_PLANSZ
+        : modul !== "a0"
+          ? ROZMIARY
+          : klucz.startsWith("pytanie-")
+            ? ROZMIARY_A0_KADR
+            : ROZMIARY_A0;
+    for (const r of rozmiary) {
       execFileSync("sips", [
         "-Z", String(r.px),
         "-s", "format", "jpeg",

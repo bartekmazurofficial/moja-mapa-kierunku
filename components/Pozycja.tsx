@@ -230,11 +230,33 @@ function kolumnyKart(ile: number): string {
 }
 
 /**
- * Siatka kart odpowiedzi plus paski opcji wyłącznych pod nią.
+ * Szerokosc kadru w jednej karcie na szerokim ekranie, w pikselach CSS.
  *
- * Rozdzielenie jest konieczne, nie kosmetyczne: `auto-rows-fr` wyrównuje
- * wysokość kafli w rzędzie, więc opcja bez kadru wstawiona do siatki rośnie
- * do wysokości sąsiadów i zostaje z niej wysoka pusta ramka.
+ * Idzie do `sizes` przy zdjeciu: przegladarka dopiero z tej liczby wie, ktory
+ * plik z `srcSet` wziac. Bez niej zakladala pelna szerokosc okna i w kazdy
+ * kafel wkladala wersje szeroka, a przy dwoch kolumnach odwrotnie: kafel
+ * 560 px szedl w kadr o szerokosci 480 px i na ekranie 2x bylo widac rozmycie.
+ *
+ * Liczby wychodza z `kolumnyKart`: kolumna tresci ma 74rem minus marginesy,
+ * czyli 1120 px (przy czterech kartach siatka dostaje sufit 992 px), od tego
+ * odchodza odstepy miedzy kolumnami i po 10 px na obramowanie i wyscielenie
+ * z kazdej strony karty.
+ */
+function szerokoscKadru(ile: number): number {
+  const kolumny = ile <= 2 ? 2 : ile <= 4 ? ile : ile <= 6 ? 3 : ile <= 10 ? 5 : 6;
+  const siatka = ile <= 4 ? 992 : 1120;
+  const przerwa = ile > 10 ? 12 : 16;
+  return Math.round((siatka - przerwa * (kolumny - 1)) / kolumny) - 20;
+}
+
+/**
+ * Jedna siatka kart odpowiedzi, razem z opcjami wyłącznymi.
+ *
+ * Wcześniej opcja wyłączna szła pod siatkę jako szeroki pasek, bo
+ * `auto-rows-fr` wyrównuje wysokość kafli w rzędzie i kafel bez kadru zostawał
+ * wysoką, pustą ramką. Pasek robił jednak z „nic z tego" coś innego niż
+ * odpowiedź, a to nadal jest odpowiedź. Kafel bez kadru dostaje więc tekst
+ * wyśrodkowany w pionie i wypełnia wysokość rzędu treścią, nie pustką.
  */
 function KartyOdpowiedzi({
   opcje,
@@ -251,50 +273,41 @@ function KartyOdpowiedzi({
   zablokowana?: (o: OpcjaWyboru) => boolean;
   onClick: (o: OpcjaWyboru) => void;
 }) {
-  const zKadrem = opcje.filter((o) => !o.wylaczna);
-  const wyjscia = opcje.filter((o) => o.wylaczna);
+  // Opcja wyłączna stoi w tej samej siatce co reszta, tylko bez kadru.
+  // Osobny, szeroki pasek pod spodem robił z niej coś innego niż odpowiedź,
+  // a to nadal jest odpowiedź: „nic z tego" jest równie prawdziwe jak reszta.
+  // Kafel bez kadru ma wysokość rzędu, ale tekst siedzi w nim wyśrodkowany,
+  // więc nie zostaje po nim pusta ramka.
 
   return (
-    <>
-      <div className={`mt-4 ${kolumnyKart(zKadrem.length)}`}>
-        {zKadrem.map((o, miejsce) => (
-          <KartaOdpowiedzi
-            key={o.kod}
-            opcja={o}
-            wybrana={zaznaczona(o)}
-            kwadrat={kwadrat}
-            gesty={zKadrem.length > 10}
-            zablokowana={zablokowana?.(o)}
-            kolor={kolorWyboru(o.ikona ?? kluczKoloru, miejsce)}
-            onClick={() => onClick(o)}
-          />
-        ))}
-      </div>
-      {wyjscia.length > 0 ? (
-        <div className="mt-3 flex flex-col gap-2.5">
-          {wyjscia.map((o) => (
-            <KartaOdpowiedzi
-              key={o.kod}
-              opcja={o}
-              wybrana={zaznaczona(o)}
-              kwadrat={kwadrat}
-              kolor={null}
-              onClick={() => onClick(o)}
-            />
-          ))}
-        </div>
-      ) : null}
-    </>
+    <div className={`mt-4 ${kolumnyKart(opcje.length)}`}>
+      {opcje.map((o, miejsce) => (
+        <KartaOdpowiedzi
+          key={o.kod}
+          opcja={o}
+          wybrana={zaznaczona(o)}
+          kwadrat={kwadrat}
+          gesty={opcje.length > 10}
+          kadr={szerokoscKadru(opcje.length)}
+          zablokowana={zablokowana?.(o)}
+          kolor={kolorWyboru(o.ikona ?? kluczKoloru, miejsce)}
+          onClick={() => onClick(o)}
+        />
+      ))}
+    </div>
   );
 }
 
 /**
- * Jedna karta odpowiedzi z kadrem.
+ * Jedna karta odpowiedzi.
  *
- * Kadr jest zawsze, takze wtedy, gdy pliku nie ma: pusty kadr trzyma układ
- * i pokazuje, gdzie grafika stanie, a karty bez kadru obok kart z kadrem
- * wyglądałyby jak dwie różne odpowiedzi na to samo pytanie. Wybór JEST
- * pomiarem, więc wszystkie karty mają ten sam kształt.
+ * Kadr dostaje każda zwykła odpowiedź, także ta, do której pliku jeszcze nie
+ * ma: pusty kadr trzyma układ i pokazuje, gdzie grafika stanie, a karta bez
+ * kadru obok karty z kadrem wyglądałaby jak inny rodzaj odpowiedzi.
+ *
+ * Wyjątkiem jest opcja wyłączna („nie wiem", „nic z tego", odmowa). To jest
+ * wyjście z pytania, nie jedna z odpowiedzi, więc kadru nie dostaje, a jej
+ * tekst staje na środku karty.
  */
 function KartaOdpowiedzi({
   opcja,
@@ -302,6 +315,7 @@ function KartaOdpowiedzi({
   kwadrat,
   zablokowana,
   gesty,
+  kadr,
   kolor,
   onClick,
 }: {
@@ -316,6 +330,8 @@ function KartaOdpowiedzi({
    * i etykieta w pełnym stopniu łamała się w środku wyrazu („matematyk/a").
    */
   gesty?: boolean;
+  /** Szerokosc kadru w pikselach CSS: po niej przegladarka wybiera plik. */
+  kadr?: number;
   kolor: Kolor | null;
   onClick: () => void;
 }) {
@@ -333,12 +349,17 @@ function KartaOdpowiedzi({
         `min-w-0`, bo element siatki ma domyślnie `min-width: auto` i długa
         etykieta rozpychała kafel ponad szerokość kolumny.
       */
-      className={`przejscie relative flex h-full min-w-0 flex-col overflow-hidden rounded-karta border-2 bg-panel p-2 text-left active:scale-[0.995] ${
+      /*
+        Zaznaczenie barwi całą kartę, nie prostokąt pod tekstem. Tinta na samej
+        stopce rysowała wewnątrz karty drugi, zaokrąglony prostokąt, który
+        kończył się w połowie i wyglądał jak szara plama obok etykiety.
+      */
+      className={`przejscie relative flex h-full min-w-0 flex-col overflow-hidden rounded-karta border-2 p-2 text-left active:scale-[0.995] ${
         wybrana
-          ? "border-akcent"
+          ? "border-akcent bg-akcent-tlo/45"
           : zablokowana
-            ? "cursor-not-allowed border-dashed border-linia"
-            : "border-linia hover:border-linia-mocna"
+            ? "cursor-not-allowed border-dashed border-linia bg-panel"
+            : "border-linia bg-panel hover:border-linia-mocna"
       }`}
     >
       {/*
@@ -365,7 +386,7 @@ function KartaOdpowiedzi({
           className="flex aspect-[16/9] w-full shrink-0 items-center justify-center overflow-hidden rounded-xl bg-plyta text-atrament-slaby"
         >
           {maObraz(opcja.ikona) ? (
-            <Obraz klucz={opcja.ikona} pelny wybor kolor={kolor} />
+            <Obraz klucz={opcja.ikona} pelny kadr={kadr} wybor kolor={kolor} />
           ) : (
             <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.4">
               <rect x="3" y="5" width="18" height="14" rx="2.5" />
@@ -375,9 +396,14 @@ function KartaOdpowiedzi({
           )}
         </span>
       ) : null}
+      {/*
+        W gestej siatce stopka ma ciasniejsze wyscielenie: przy szesciu
+        kolumnach na etykiete zostawalo 107 px, a „spoleczenstwie" ma 111 px
+        i lamalo sie w srodku wyrazu na „spoleczenstwi/e".
+      */}
       <span
-        className={`relative flex flex-1 items-start gap-2.5 rounded-lg px-2.5 pb-0.5 pt-2.5 ${
-          wybrana ? "bg-akcent-tlo/60" : ""
+        className={`relative flex flex-1 ${gesty ? "gap-1.5 px-1.5" : "gap-2.5 px-2.5"} ${
+          opcja.ikona ? "items-start pb-0.5 pt-2.5" : "items-center py-3"
         }`}
       >
         <ZnakWyboru wybrana={wybrana} kwadrat={kwadrat} wRzedzie male={gesty} />

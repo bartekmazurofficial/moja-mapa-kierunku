@@ -1,6 +1,6 @@
 import { GLIFY, type KluczGlifu } from "@/lib/ui/glify";
 import { kolorKategorii, type Kolor } from "@/lib/ui/kolory";
-import { obrazDuzy, obrazKafla, obrazPlanszy } from "@/lib/ui/obrazy";
+import { obrazDuzy, obrazKafla, obrazPlanszy, szerokosciObrazu } from "@/lib/ui/obrazy";
 
 /**
  * Paleta znaku. Na ekranie wyboru znak nie zdradza kategorii: wszystkie
@@ -100,6 +100,7 @@ export function Obraz({
   wybor,
   kolor,
   pelny,
+  kadr,
 }: {
   klucz: KluczGlifu;
   rozmiar?: number;
@@ -118,17 +119,31 @@ export function Obraz({
    * karta i nic sie nie przycina.
    */
   pelny?: boolean;
+  /**
+   * Szerokosc kadru w karcie, w CSS-owych pikselach. Przegladarka bierze z
+   * `srcSet` ten plik, ktory na danym ekranie wypada ostro: przy czterech
+   * kolumnach wystarcza kafel, przy dwoch schodzi po wersje szeroka.
+   * Bez tego kafel 560 px szedl w kadr o szerokosci 480 px na ekranie 2x i
+   * zdjecie bylo miekkie.
+   */
+  kadr?: number;
 }) {
   const k = paleta(klucz, wybor, kolor);
-  const zrodlo = pelny || rozmiar > 200 ? (obrazDuzy(klucz) ?? obrazKafla(klucz)) : obrazKafla(klucz);
+  const duzy = obrazDuzy(klucz);
+  const kafel = obrazKafla(klucz);
+  const [szerokoscKafla, szerokoscDuzego] = szerokosciObrazu(klucz);
+  const zrodlo = rozmiar > 200 ? (duzy ?? kafel) : (kafel ?? duzy);
 
   if (!zrodlo) return <Ikona klucz={klucz} rozmiar={rozmiar} aktywna={aktywna} wybor={wybor} kolor={kolor} />;
 
   if (pelny) {
+    const zestaw = kafel && duzy ? `${kafel} ${szerokoscKafla}w, ${duzy} ${szerokoscDuzego}w` : undefined;
     // eslint-disable-next-line @next/next/no-img-element
     return (
       <img
         src={zrodlo}
+        srcSet={zestaw}
+        sizes={zestaw && kadr ? `(min-width: 1024px) ${kadr}px, (min-width: 640px) 48vw, 94vw` : undefined}
         alt=""
         aria-hidden
         loading="lazy"
