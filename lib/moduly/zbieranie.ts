@@ -167,6 +167,10 @@ export async function zbierzOdpowiedzi(uczestnikId: string): Promise<KompletOdpo
       czescB: (cz("A5", "B")["weta"] as string[]) ?? [],
       czescC: (cz("A5", "C")["zdania"] as string[]) ?? [],
     },
+    a6: {
+      czescA: cz("A6", "A") as Record<string, "A" | "B">,
+      czescB: cz("A6", "B") as Record<string, string>,
+    },
     m1: {
       czescA: cz("M1", "A") as Record<string, "A" | "B">,
       czescB: Object.fromEntries(

@@ -11,6 +11,7 @@ import {
   policzA4,
   policzA5,
   policzM1,
+  policzA6,
   zlozWynikiModulow,
   type OdpowiedziA1,
   type OdpowiedziA2,
@@ -19,7 +20,8 @@ import { BLOKI_A1 } from "@/lib/content/a1";
 import { BLOKI_A2 } from "@/lib/content/a2";
 import { PARY_A3 } from "@/lib/content/a3";
 import { PARY_A4, BRZMIENIA_A4 } from "@/lib/content/a4";
-import { PARY_M1 } from "@/lib/content/m1";
+import { PARY_M1, PARY_MIEKKIE_M1, PYTANIA_WPROST_M1, WYMIARY_WPROST_M1 } from "@/lib/content/m1";
+import { OSIE_A6, PARY_A6 } from "@/lib/content/a6";
 import { OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_A3, WYMIARY_M1 } from "@/lib/domain/slowniki";
 
 /** Losowe, ale deterministyczne wypelnienie rankingu bloku. */
@@ -99,11 +101,18 @@ describe("plany bloków są zbilansowane", () => {
     expect(Object.keys(BRZMIENIA_A4)).toHaveLength(12);
   });
 
-  it("M1: 48 par, po cztery na każdy z dwunastu wymiarów", () => {
+  /**
+   * Bank ma nadal 48 par, po cztery na kazdy z dwunastu wymiarow. Do modulu
+   * wchodzi z niego 36: trzy wymiary twarde sa pytane wprost i ich pary
+   * zostaja w banku nieuzyte, zeby nie stracic tresci przy ewentualnym
+   * powrocie do poprzedniego ukladu.
+   */
+  it("M1: 48 par w banku, po cztery na każdy z dwunastu wymiarów", () => {
     expect(PARY_M1).toHaveLength(48);
     for (const w of WYMIARY_M1) {
       expect(PARY_M1.filter((p) => p.wymiar === w.kod), w.kod).toHaveLength(4);
     }
+    expect(PARY_MIEKKIE_M1).toHaveLength(36);
   });
 });
 
@@ -256,16 +265,63 @@ describe("A5: algorytm liczenia", () => {
 });
 
 describe("M1: algorytm liczenia", () => {
-  it("położenie liczy się jako udział wyborów bieguna A z czterech par", () => {
-    const czescA: Record<string, "A" | "B"> = {};
-    for (const p of PARY_M1) czescA[p.id] = p.id.endsWith("_1") || p.id.endsWith("_2") ? "A" : "B";
+  it("położenie wymiaru miękkiego liczy się jako udział wyborów bieguna A", () => {
+    const czescA: Record<string, string> = {};
+    for (const p of PARY_MIEKKIE_M1) {
+      czescA[p.id] = p.id.endsWith("_1") || p.id.endsWith("_2") ? "A" : "B";
+    }
     const w = policzM1({ czescA, czescB: {} });
-    for (const wym of WYMIARY_M1) expect(w.shape[wym.kod], wym.kod).toBe(50);
+    for (const wym of WYMIARY_M1) {
+      if ((WYMIARY_WPROST_M1 as readonly string[]).includes(wym.kod)) continue;
+      expect(w.shape[wym.kod], wym.kod).toBe(50);
+    }
   });
 
   it("wymiar bez odpowiedzi zostaje pominięty jako null", () => {
     const w = policzM1({ czescA: {}, czescB: {} });
     for (const wym of WYMIARY_M1) expect(w.shape[wym.kod]).toBeNull();
+  });
+
+  /**
+   * Sedno zmiany: trzy wymiary, ktore realnie wycinaja zawody, nie sa juz
+   * zgadywane z czterech par. Jedna odpowiedz wprost, z „nie wiem", ktore
+   * nie przycina niczego.
+   */
+  describe("M1: trzy wymiary twarde pytane wprost", () => {
+    it("wymiary twarde nie mają już par", () => {
+      const twarde = PARY_MIEKKIE_M1.filter((p) =>
+        (WYMIARY_WPROST_M1 as readonly string[]).includes(p.wymiar),
+      );
+      expect(twarde).toEqual([]);
+      expect(PARY_MIEKKIE_M1).toHaveLength(36);
+    });
+
+    it("odpowiedź wprost ustawia położenie na osi", () => {
+      const w = policzM1({
+        czescA: { wprost_GOD: "duzo", wprost_MIE: "z_domu", wprost_KOR: "region" },
+        czescB: {},
+      });
+      expect(w.shape.GOD).toBe(100);
+      expect(w.shape.MIE).toBe(0);
+      expect(w.shape.KOR).toBe(50);
+    });
+
+    it("„nie wiem” daje null, czyli nie przycina niczego", () => {
+      const w = policzM1({
+        czescA: { wprost_GOD: "nie_wiem", wprost_MIE: "nie_wiem", wprost_KOR: "nie_wiem" },
+        czescB: {},
+      });
+      for (const kod of WYMIARY_WPROST_M1) expect(w.shape[kod], kod).toBeNull();
+    });
+
+    it("każda opcja poza „nie wiem” ma miejsce na osi", () => {
+      for (const p of PYTANIA_WPROST_M1) {
+        for (const o of p.opcje) {
+          if (o.kod === "nie_wiem") expect(o.pozycja, `${p.wymiar}/${o.kod}`).toBeNull();
+          else expect(o.pozycja, `${p.wymiar}/${o.kod}`).not.toBeNull();
+        }
+      }
+    });
   });
 });
 
@@ -289,7 +345,19 @@ describe("złożenie wyników w wejście silnika", () => {
         czescB: ["F21"],
         czescC: ["", "", ""],
       },
-      m1: { czescA: Object.fromEntries(PARY_M1.map((p) => [p.id, "A" as const])), czescB: {} },
+      a6: {
+        czescA: Object.fromEntries(PARY_A6.map((p) => [p.id, "A" as const])),
+        czescB: { lata: "piec_wiecej", wieczorami: "tak", przeprowadzka_nauka: "tak" },
+      },
+      m1: {
+        czescA: {
+          ...Object.fromEntries(PARY_MIEKKIE_M1.map((p) => [p.id, "A" as const])),
+          wprost_GOD: "duzo",
+          wprost_MIE: "na_miejscu",
+          wprost_KOR: "osiasc",
+        },
+        czescB: {},
+      },
     });
     expect(Object.keys(wyniki.z)).toHaveLength(24);
     expect(Object.keys(wyniki.k)).toHaveLength(30);
@@ -297,5 +365,55 @@ describe("złożenie wyników w wejście silnika", () => {
     expect(wyniki.a4Top5).toHaveLength(5);
     expect(wyniki.weta).toEqual(["F21"]);
     expect(Object.values(wyniki.shape).every((v) => v === 100)).toBe(true);
+    // Piec par na piec po stronie A plus deklaracja pieciu lat nauki:
+    // jedyny uklad, przy ktorym werdykt moze wyjsc na studia.
+    expect(wyniki.nauka?.werdykt).toBe("studia");
+  });
+});
+
+describe("A6: jak się uczę", () => {
+  it("pięć osi, każda z czterech par", () => {
+    const czescA = Object.fromEntries(PARY_A6.map((p) => [p.id, "A" as const]));
+    const w = policzA6({ czescA, czescB: {} });
+    expect(Object.keys(w.osie)).toHaveLength(5);
+    for (const os of OSIE_A6) expect(w.osie[os.kod], os.kod).toBe(100);
+  });
+
+  /**
+   * Milczenie nie jest odmowa studiow. Pusty modul i same „nie wiem" musza
+   * dawac ten sam wynik: brak werdyktu, a nie werdykt „krotka droga".
+   */
+  it("pusty moduł nie daje werdyktu", () => {
+    const w = policzA6({ czescA: {}, czescB: {} });
+    expect(w.werdykt).toBeNull();
+    expect(w.lata).toBeNull();
+    for (const os of OSIE_A6) expect(w.osie[os.kod], os.kod).toBeNull();
+  });
+
+  it("same „nie wiem” w części B nie przycinają niczego", () => {
+    const w = policzA6({
+      czescA: {},
+      czescB: { lata: "nie_wiem", wieczorami: "nie_wiem", przeprowadzka_nauka: "nie_wiem" },
+    });
+    expect(w.werdykt).toBeNull();
+    expect(w.wieczorami).toBeNull();
+    expect(w.przeprowadzka).toBeNull();
+  });
+
+  it("uczenie się rękami i zero lat nauki daje krótką drogę", () => {
+    const czescA: Record<string, "A" | "B"> = {};
+    for (const p of PARY_A6) czescA[p.id] = "B";
+    const w = policzA6({ czescA, czescB: { lata: "zero" } });
+    expect(w.werdykt).toBe("krotka_droga");
+    expect(w.wnioski.length).toBe(5);
+  });
+
+  it("wynik nie usuwa ani nie dodaje żadnego zawodu", () => {
+    const czescA = Object.fromEntries(PARY_A6.map((p) => [p.id, "A" as const]));
+    const w = policzA6({ czescA, czescB: { lata: "piec_wiecej" } });
+    // Kontrakt modulu: zwraca wylacznie osie, deklaracje i werdykt.
+    expect(Object.keys(w).sort()).toEqual(
+      ["lata", "osie", "przeprowadzka", "werdykt", "wieczorami", "wnioski"],
+    );
   });
 });

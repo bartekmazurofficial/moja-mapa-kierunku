@@ -1,0 +1,652 @@
+{
+  "INI_A": {
+    "os": "INI",
+    "strona": "A",
+    "nazwa": "Inicjatywa",
+    "co_to_o_tobie_mowi": "Widzisz, że coś trzeba zrobić, i po prostu zaczynasz. Nie czekasz, aż ktoś przydzieli Ci rolę albo wyda polecenie.",
+    "prace_ktore_to_szanuja": [
+      "własna działalność",
+      "praca w terenie bez nadzoru",
+      "usprawnianie tego, co nie działa",
+      "koordynacja zleceń",
+      "praca projektowa",
+      "sprzedaż i szukanie klientów",
+      "młoda firma"
+    ],
+    "prace_ktore_to_lamia": [
+      "linia produkcyjna z normą",
+      "obsługa według gotowego skryptu",
+      "praca ściśle według instrukcji",
+      "duża instytucja z długą drogą decyzji",
+      "stanowisko pod stałą kontrolą",
+      "praca, w której czeka się na polecenie"
+    ],
+    "co_to_kosztuje": "Są miejsca, w których najpierw pyta się o zgodę. Tam Twoje ruchy bywają odbierane jako wchodzenie komuś w drogę. To męczy bardziej niż sama robota."
+  },
+  "INI_B": {
+    "os": "INI",
+    "strona": "B",
+    "nazwa": "Reagowanie",
+    "co_to_o_tobie_mowi": "Ruszasz wtedy, gdy wiesz, czego ktoś od Ciebie oczekuje. Wolisz dostać jasne zadanie, niż zgadywać, co jest teraz ważne.",
+    "prace_ktore_to_szanuja": [
+      "praca według zleceń",
+      "serwis na wezwanie",
+      "obsługa zgłoszeń",
+      "wykonawstwo według projektu",
+      "produkcja z grafikiem",
+      "praca w zespole z jasnym podziałem",
+      "dyżur i reagowanie na to, co przyjdzie"
+    ],
+    "prace_ktore_to_lamia": [
+      "własna działalność od zera",
+      "stanowisko tworzone od nowa",
+      "praca bez zleceń i bez opiekuna",
+      "szukanie klientów od podstaw",
+      "wolny zawód",
+      "rola, w której sam ustalasz, co dalej"
+    ],
+    "co_to_kosztuje": "Są miejsca, w których nikt nie mówi, co dalej. Tam łatwo stracić dużo czasu na czekanie. Bywa to brane za brak chęci."
+  },
+  "STR_A": {
+    "os": "STR",
+    "strona": "A",
+    "nazwa": "Potrzeba struktury",
+    "co_to_o_tobie_mowi": "Chcesz w poniedziałek wiedzieć, co będziesz robić w piątek. Pracujesz najlepiej wtedy, gdy kroki są rozpisane z góry.",
+    "prace_ktore_to_szanuja": [
+      "produkcja z grafikiem",
+      "przeglądy okresowe",
+      "serwis planowany",
+      "laboratorium",
+      "administracja techniczna",
+      "kontrola jakości",
+      "praca z procedurami",
+      "praca biurowa ze stałym rytmem"
+    ],
+    "prace_ktore_to_lamia": [
+      "ratownictwo",
+      "gastronomia w szczycie",
+      "praca eventowa",
+      "serwis awaryjny na telefon",
+      "sprzedaż",
+      "własna działalność usługowa",
+      "praca, w której dzień układa się sam"
+    ],
+    "co_to_kosztuje": "Za nieprzewidywalność płaci się osobno. Dyżury, awarie i bycie pod telefonem podnoszą stawkę. Spokojny grafik oznacza więc spokojniejsze pieniądze."
+  },
+  "STR_B": {
+    "os": "STR",
+    "strona": "B",
+    "nazwa": "Elastyczność",
+    "co_to_o_tobie_mowi": "Nie potrzebujesz planu na cały tydzień. Dzień układasz sobie na bieżąco. Zmiana w ostatniej chwili Cię nie wytrąca.",
+    "prace_ktore_to_szanuja": [
+      "serwis awaryjny",
+      "praca eventowa",
+      "praca w terenie",
+      "gastronomia",
+      "sprzedaż",
+      "własna działalność",
+      "praca projektowa",
+      "ratownictwo i opieka"
+    ],
+    "prace_ktore_to_lamia": [
+      "linia produkcyjna z normą",
+      "praca ściśle według harmonogramu",
+      "przeglądy według kalendarza",
+      "biuro z tym samym dniem od lat",
+      "rola rozpisana co do godziny",
+      "praca z drobiazgową procedurą"
+    ],
+    "co_to_kosztuje": "Bez narzuconego planu rzeczy łatwo zostają na ostatnią chwilę. Wtedy koniec tygodnia bywa dużo cięższy, niż musiał być."
+  },
+  "TEM_A": {
+    "os": "TEM",
+    "strona": "A",
+    "nazwa": "Tempo i przybliżenie",
+    "co_to_o_tobie_mowi": "Wolisz oddać szybko i potem poprawić. Trzymanie rzeczy u siebie, aż będzie idealna, to nie Twój sposób.",
+    "prace_ktore_to_szanuja": [
+      "praca na zlecenia",
+      "gastronomia",
+      "handel",
+      "obsługa zgłoszeń",
+      "logistyka",
+      "montaż na czas",
+      "media i treści",
+      "prace sezonowe"
+    ],
+    "prace_ktore_to_lamia": [
+      "metrologia",
+      "laboratorium badawcze",
+      "kontrola jakości",
+      "prace precyzyjne",
+      "dokumentacja techniczna",
+      "księgowość",
+      "prace, w których błąd kosztuje czyjeś zdrowie"
+    ],
+    "co_to_kosztuje": "Są prace, w których liczy się każdy szczegół. Tam Twoje tempo bywa brane za niedokładność, nawet gdy robota jest zrobiona."
+  },
+  "TEM_B": {
+    "os": "TEM",
+    "strona": "B",
+    "nazwa": "Wolniej i dokładnie",
+    "co_to_o_tobie_mowi": "Nie oddajesz rzeczy, dopóki nie jest zrobiona porządnie. Wolisz dać jej więcej czasu, niż potem wracać do poprawek.",
+    "prace_ktore_to_szanuja": [
+      "metrologia",
+      "kontrola jakości",
+      "laboratorium",
+      "prace precyzyjne",
+      "rzemiosło",
+      "dokumentacja techniczna",
+      "księgowość",
+      "renowacja i konserwacja"
+    ],
+    "prace_ktore_to_lamia": [
+      "gastronomia w szczycie",
+      "obsługa zgłoszeń pod zegar",
+      "handel",
+      "praca akordowa",
+      "media i szybkie treści",
+      "praca pod zegar każdego dnia"
+    ],
+    "co_to_kosztuje": "Są miejsca, w których liczy się czas oddania. Tam Twoja dokładność bywa brana za powolność. To kosztuje nerwy, choć robota jest dobra."
+  },
+  "SAM_A": {
+    "os": "SAM",
+    "strona": "A",
+    "nazwa": "Samodzielnie",
+    "co_to_o_tobie_mowi": "Najlepiej pracujesz, gdy nikt nie siedzi obok. Trudny problem wolisz rozłożyć na części w ciszy, a nie przegadać go z kimś.",
+    "prace_ktore_to_szanuja": [
+      "diagnostyka i serwis",
+      "programowanie",
+      "laboratorium",
+      "analiza danych",
+      "własny warsztat",
+      "kontrola jakości",
+      "geodezja",
+      "utrzymanie ruchu nocą"
+    ],
+    "prace_ktore_to_lamia": [
+      "obsługa klienta",
+      "sprzedaż w punkcie",
+      "przedszkole i szkoła",
+      "opieka nad chorymi",
+      "gastronomia na linii",
+      "recepcja",
+      "praca w otwartym biurze",
+      "ratownictwo"
+    ],
+    "co_to_kosztuje": "Każdy krok w górę struktury to więcej rozmów, a mniej roboty. Twoja droga w górę prowadzi raczej przez wąską specjalizację albo pracę na swoje."
+  },
+  "SAM_B": {
+    "os": "SAM",
+    "strona": "B",
+    "nazwa": "Z ludźmi",
+    "co_to_o_tobie_mowi": "Ludzie dodają Ci energii. Cały dzień w pojedynkę robi się pusty, nawet gdy sama robota jest ciekawa.",
+    "prace_ktore_to_szanuja": [
+      "obsługa klienta",
+      "sprzedaż",
+      "szkoła i przedszkole",
+      "opieka i pielęgniarstwo",
+      "gastronomia",
+      "recepcja i hotelarstwo",
+      "szkolenia i animacja",
+      "praca w stałym zespole"
+    ],
+    "prace_ktore_to_lamia": [
+      "praca zdalna w pojedynkę",
+      "nocne zmiany w utrzymaniu ruchu",
+      "laboratorium",
+      "magazyn",
+      "programowanie w pojedynkę",
+      "geodezja w terenie",
+      "jednoosobowy warsztat"
+    ],
+    "co_to_kosztuje": "W każdej pracy przychodzą okresy siedzenia samemu nad jedną rzeczą. Takie tygodnie będą Cię kosztować więcej wysiłku."
+  },
+  "GLE_A": {
+    "os": "GLE",
+    "strona": "A",
+    "nazwa": "Głębia, jedno do końca",
+    "co_to_o_tobie_mowi": "Wolisz robić jedno zadanie, dopóki nie będzie skończone. Lubisz poznać jeden temat naprawdę dokładnie, a nie pobieżnie.",
+    "prace_ktore_to_szanuja": [
+      "specjalizacja techniczna",
+      "diagnostyka jednego typu maszyn",
+      "programowanie",
+      "metrologia",
+      "rzemiosło",
+      "laboratorium",
+      "prace, które mają poziom mistrzowski"
+    ],
+    "prace_ktore_to_lamia": [
+      "koordynacja",
+      "dyspozytura",
+      "obsługa klienta",
+      "rola od wszystkiego w małej firmie",
+      "asystentura",
+      "prowadzenie kilku projektów naraz"
+    ],
+    "co_to_kosztuje": "Wąska działka jest bezpieczna, dopóki dana technologia istnieje. Kiedy ta się zmienia, naukę trzeba zacząć prawie od początku."
+  },
+  "GLE_B": {
+    "os": "GLE",
+    "strona": "B",
+    "nazwa": "Szerokość, wiele naraz",
+    "co_to_o_tobie_mowi": "Przy jednej rzeczy szybko robi Ci się nudno. Dobrze czujesz się wtedy, gdy w ciągu dnia przeskakujesz między kilkoma sprawami.",
+    "prace_ktore_to_szanuja": [
+      "koordynacja",
+      "dyspozytura",
+      "rola od wszystkiego w małej firmie",
+      "prowadzenie projektów",
+      "obsługa klienta",
+      "administracja",
+      "młoda firma",
+      "asystentura"
+    ],
+    "prace_ktore_to_lamia": [
+      "metrologia",
+      "jedna maszyna przez cały dzień",
+      "wąska specjalizacja techniczna",
+      "praca badawcza nad jednym tematem",
+      "konserwacja jednego typu sprzętu",
+      "prace liczone w latach nad tą samą rzeczą"
+    ],
+    "co_to_kosztuje": "Poziom mistrza w jednej rzeczy wymaga lat przy tej samej rzeczy. To właśnie za takie mistrzostwo płaci się najlepiej."
+  },
+  "RYZ_A": {
+    "os": "RYZ",
+    "strona": "A",
+    "nazwa": "Gotowość na ryzyko",
+    "co_to_o_tobie_mowi": "Nie musisz wiedzieć z góry, jak się skończy. Wolisz spróbować, niż siedzieć bezpiecznie przy czymś, co Cię nudzi.",
+    "prace_ktore_to_szanuja": [
+      "własna działalność",
+      "sprzedaż prowizyjna",
+      "młoda firma",
+      "praca projektowa",
+      "zawody twórcze",
+      "praca za granicą",
+      "wolny zawód",
+      "prace sezonowe"
+    ],
+    "prace_ktore_to_lamia": [
+      "etat bez zmian przez wiele lat",
+      "urząd",
+      "praca z góry ustaloną ścieżką awansu",
+      "duża instytucja z długą drogą decyzji",
+      "praca wyłącznie według procedury",
+      "stanowisko, na którym nic nowego się nie dzieje"
+    ],
+    "co_to_kosztuje": "Na tej drodze zdarzają się miesiące bez pewnych pieniędzy. To zwykła cena tego wyboru, a nie straszenie."
+  },
+  "RYZ_B": {
+    "os": "RYZ",
+    "strona": "B",
+    "nazwa": "Potrzeba pewności",
+    "co_to_o_tobie_mowi": "Wolisz najpierw sprawdzić, czy coś zadziała. Stały, choć niższy zarobek jest dla Ciebie wart więcej niż niepewny i wysoki.",
+    "prace_ktore_to_szanuja": [
+      "etat w dużym zakładzie",
+      "budżetówka",
+      "utrzymanie ruchu",
+      "serwis w firmie",
+      "zawody, w których stale brakuje ludzi",
+      "zawód z uprawnieniami, które nie tracą wartości",
+      "administracja"
+    ],
+    "prace_ktore_to_lamia": [
+      "własna działalność w pierwszych latach",
+      "sprzedaż prowizyjna",
+      "branże sezonowe",
+      "młode firmy",
+      "wolny zawód",
+      "zawody twórcze",
+      "praca z niepewnym dochodem"
+    ],
+    "co_to_kosztuje": "Pewne miejsca płacą spokojem, a nie pieniędzmi. To, co zyskujesz na spokoju, często oddajesz na wypłacie."
+  },
+  "DEC_A": {
+    "os": "DEC",
+    "strona": "A",
+    "nazwa": "Chcę decydować",
+    "co_to_o_tobie_mowi": "Chcesz mieć wpływ na to, co i jak się robi. Wykonywanie cudzych decyzji, z którymi się nie zgadzasz, szybko Cię męczy.",
+    "prace_ktore_to_szanuja": [
+      "własna działalność",
+      "prowadzenie zespołu",
+      "prowadzenie projektów",
+      "mała firma",
+      "wolny zawód",
+      "samodzielny specjalista",
+      "praca w terenie bez nadzoru"
+    ],
+    "prace_ktore_to_lamia": [
+      "praca na linii z normą",
+      "obsługa według skryptu",
+      "wykonawstwo według cudzego projektu",
+      "stanowisko na końcu łańcucha poleceń",
+      "duża instytucja z długą drogą decyzji",
+      "praca ściśle według procedury"
+    ],
+    "co_to_kosztuje": "Kto decyduje, ten odpowiada, kiedy wyjdzie źle. Tej części nie da się od decydowania odczepić."
+  },
+  "DEC_B": {
+    "os": "DEC",
+    "strona": "B",
+    "nazwa": "Chcę jasne zadanie",
+    "co_to_o_tobie_mowi": "Wolisz wiedzieć dokładnie, co należy do Ciebie. Spokojnie robisz swoje i nie chcesz rozstrzygać, jak ma pracować ktoś inny.",
+    "prace_ktore_to_szanuja": [
+      "wykonawstwo według projektu",
+      "produkcja",
+      "serwis według zlecenia",
+      "laboratorium",
+      "administracja",
+      "duży zakład",
+      "praca z jasnym zakresem obowiązków"
+    ],
+    "prace_ktore_to_lamia": [
+      "własna działalność",
+      "prowadzenie zespołu",
+      "stanowisko tworzone od nowa",
+      "młoda firma bez ustalonych zasad",
+      "wolny zawód",
+      "rola, w której sam ustalasz swój zakres"
+    ],
+    "co_to_kosztuje": "Wyższe stanowiska polegają głównie na decydowaniu za innych. Droga w górę będzie więc dla Ciebie mniej naturalna niż robota w swoim zakresie."
+  },
+  "KON_A": {
+    "os": "KON",
+    "strona": "A",
+    "nazwa": "Konfrontacja",
+    "co_to_o_tobie_mowi": "Kiedy się z czymś nie zgadzasz, mówisz to wprost. Nieporozumienia wolisz wyjaśnić tego samego dnia, a nie odkładać na później.",
+    "prace_ktore_to_szanuja": [
+      "kontrola jakości",
+      "nadzór i odbiory",
+      "audyt",
+      "negocjacje",
+      "windykacja",
+      "prowadzenie zespołu",
+      "służby mundurowe",
+      "sprzedaż wymagająca twardych rozmów"
+    ],
+    "prace_ktore_to_lamia": [
+      "obsługa trudnego klienta z uśmiechem przez cały dzień",
+      "miejsce, w którym o problemach się nie mówi",
+      "duża instytucja z bardzo ostrożną kulturą",
+      "role polegające na ciągłym łagodzeniu sporów",
+      "opieka wymagająca łagodnego tonu od rana do wieczora",
+      "sprzedaż oparta na zgadzaniu się z klientem"
+    ],
+    "co_to_kosztuje": "Mówienie wprost kosztuje w relacjach. Nie każdy usłyszy w tym rzeczową uwagę, a nie atak na siebie."
+  },
+  "KON_B": {
+    "os": "KON",
+    "strona": "B",
+    "nazwa": "Utrzymanie zgody",
+    "co_to_o_tobie_mowi": "Zależy Ci na dobrej atmosferze. Wolisz znaleźć wspólne zdanie, niż postawić na swoim za cenę kłótni z ludźmi obok.",
+    "prace_ktore_to_szanuja": [
+      "opieka i pielęgniarstwo",
+      "praca z dziećmi",
+      "szkoła",
+      "doradztwo",
+      "obsługa klienta",
+      "hotelarstwo",
+      "praca w stałym, zgranym zespole",
+      "mała firma rodzinna"
+    ],
+    "prace_ktore_to_lamia": [
+      "windykacja",
+      "nadzór i odbiory",
+      "kontrola jakości",
+      "twarde negocjacje",
+      "sprzedaż pod presją wyniku",
+      "służby porządkowe",
+      "praca, w której codziennie mówi się komuś, że coś jest źle"
+    ],
+    "co_to_kosztuje": "Rzeczy niewypowiedziane zbierają się w środku. Po jakimś czasie wychodzą naraz. Zgoda na zewnątrz bywa kupiona Twoim spokojem."
+  },
+  "NOW_A": {
+    "os": "NOW",
+    "strona": "A",
+    "nazwa": "Nowe i nieznane",
+    "co_to_o_tobie_mowi": "Ciągnie Cię to, czego jeszcze nie znasz. Kiedy opanujesz rzecz do końca, przestaje Cię ona trzymać.",
+    "prace_ktore_to_szanuja": [
+      "nowe technologie",
+      "praca projektowa",
+      "wdrożenia",
+      "badania i rozwój",
+      "młoda firma",
+      "doradztwo",
+      "praca za granicą",
+      "media i reklama"
+    ],
+    "prace_ktore_to_lamia": [
+      "linia produkcyjna",
+      "ta sama procedura przez lata",
+      "obsługa jednego typu sprzętu",
+      "archiwum",
+      "praca urzędowa bez zmian",
+      "stanowisko, na którym wszystko już wiadomo"
+    ],
+    "co_to_kosztuje": "Ciągłe zaczynanie od nowa ma swoją cenę. W żadnej z tych rzeczy nie dochodzi się tak daleko, jak przy latach przy jednym temacie."
+  },
+  "NOW_B": {
+    "os": "NOW",
+    "strona": "B",
+    "nazwa": "Sprawdzone",
+    "co_to_o_tobie_mowi": "Dobrze czujesz się wtedy, gdy wiesz, jak coś zrobić. Wolisz rzecz znaną na wylot niż nową, robioną po omacku.",
+    "prace_ktore_to_szanuja": [
+      "produkcja",
+      "utrzymanie ruchu",
+      "księgowość",
+      "praca urzędowa",
+      "administracja",
+      "magazyn",
+      "obsługa stałego sprzętu",
+      "zawody z procedurami"
+    ],
+    "prace_ktore_to_lamia": [
+      "wdrożenia nowych systemów",
+      "młoda firma",
+      "praca projektowa",
+      "doradztwo przy nowych tematach",
+      "start czegoś od zera",
+      "branże, w których narzędzia zmieniają się co rok"
+    ],
+    "co_to_kosztuje": "Technologia w każdej branży prędzej czy później się zmienia. Pierwszy rok nauki od nowa będzie wtedy dla Ciebie ciężki."
+  },
+  "NAP_A": {
+    "os": "NAP",
+    "strona": "A",
+    "nazwa": "Napęd własny",
+    "co_to_o_tobie_mowi": "Robisz swoje nawet wtedy, gdy nikt tego nie sprawdza. Sam wyznaczasz sobie kolejne kroki i sam ich pilnujesz.",
+    "prace_ktore_to_szanuja": [
+      "praca zdalna",
+      "praca w terenie",
+      "własna działalność",
+      "serwis samodzielny",
+      "wolny zawód",
+      "praca bez zaglądania przez ramię",
+      "praca, w której sam układasz sobie dzień"
+    ],
+    "prace_ktore_to_lamia": [
+      "drobiazgowa kontrola",
+      "raportowanie co godzinę",
+      "praca na linii z normą",
+      "stanowisko z ciągłym zaglądaniem przez ramię",
+      "miejsce, w którym nikomu się nie ufa"
+    ],
+    "co_to_kosztuje": "Przy takim napędzie rzadko prosi się o pomoc. Także wtedy, gdy pomoc naprawdę by się przydała."
+  },
+  "NAP_B": {
+    "os": "NAP",
+    "strona": "B",
+    "nazwa": "Napęd z zewnątrz",
+    "co_to_o_tobie_mowi": "Ruszasz mocno wtedy, gdy ktoś czeka na efekt. Bez nacisku z zewnątrz trudniej Ci się zabrać nawet do rzeczy, które chcesz zrobić.",
+    "prace_ktore_to_szanuja": [
+      "praca w zespole",
+      "produkcja z normą",
+      "stały grafik",
+      "praca z klientem, który czeka",
+      "kontrola jakości",
+      "służby",
+      "praca pod okiem przełożonego"
+    ],
+    "prace_ktore_to_lamia": [
+      "praca zdalna w pojedynkę",
+      "własna działalność od zera",
+      "wolny zawód",
+      "praca bez nadzoru i bez rozliczenia",
+      "praca, której nikt nie rozlicza",
+      "rola, w której sam ustalasz sobie tempo"
+    ],
+    "co_to_kosztuje": "Praca na swoje będzie dla Ciebie trudniejsza. Tam nikt nie przypomina, a tempo trzeba sobie postawić samemu."
+  },
+  "RYT_A": {
+    "os": "RYT",
+    "strona": "A",
+    "nazwa": "Równe tempo",
+    "co_to_o_tobie_mowi": "Wolisz pracować podobnie każdego dnia. Nie chcesz tygodni po dwanaście godzin ani tygodni, w których nie ma prawie nic.",
+    "prace_ktore_to_szanuja": [
+      "produkcja",
+      "administracja",
+      "utrzymanie ruchu",
+      "szkoła",
+      "serwis planowany",
+      "magazyn",
+      "laboratorium",
+      "praca biurowa poza szczytem"
+    ],
+    "prace_ktore_to_lamia": [
+      "praca eventowa",
+      "budowa przed terminem oddania",
+      "księgowość w okresie rozliczeń",
+      "branże sezonowe",
+      "kampanie i premiery",
+      "rolnictwo",
+      "projekty z twardym dniem końca"
+    ],
+    "co_to_kosztuje": "W gorących okresach płaci się najwięcej. Równy rytm oznacza więc mniejsze pieniądze i to jest jego cena."
+  },
+  "RYT_B": {
+    "os": "RYT",
+    "strona": "B",
+    "nazwa": "Praca zrywami",
+    "co_to_o_tobie_mowi": "Potrafisz ciągnąć po kilkanaście godzin, kiedy trzeba. Potem potrzebujesz zejść z tempa i przez chwilę nie robić nic.",
+    "prace_ktore_to_szanuja": [
+      "praca projektowa",
+      "budowa",
+      "praca eventowa",
+      "branże sezonowe",
+      "kampanie i premiery",
+      "rolnictwo",
+      "własna działalność",
+      "prace z twardym dniem oddania"
+    ],
+    "prace_ktore_to_lamia": [
+      "linia produkcyjna z równą normą",
+      "biuro od ósmej do szesnastej przez lata",
+      "ten sam grafik co tydzień",
+      "praca bez okresów szczytu",
+      "stanowisko, na którym tempo nigdy się nie zmienia"
+    ],
+    "co_to_kosztuje": "Po zrywie zawsze przychodzi zjazd. Kolejny zryw często zaczyna się wcześniej, niż uda się odpocząć."
+  },
+  "OTO_A": {
+    "os": "OTO",
+    "strona": "A",
+    "nazwa": "Cisza i porządek",
+    "co_to_o_tobie_mowi": "Pracujesz najlepiej tam, gdzie jest cicho i wszystko ma swoje miejsce. Hałas i bałagan zjadają Ci energię szybciej niż sama robota.",
+    "prace_ktore_to_szanuja": [
+      "laboratorium",
+      "pracownia projektowa",
+      "praca zdalna",
+      "metrologia",
+      "warsztat precyzyjny",
+      "archiwum i biblioteka",
+      "programowanie",
+      "księgowość"
+    ],
+    "prace_ktore_to_lamia": [
+      "hala produkcyjna",
+      "gastronomia",
+      "budowa",
+      "otwarte biuro",
+      "sklep i galeria handlowa",
+      "szkoła i przedszkole",
+      "praca przy głośnych maszynach"
+    ],
+    "co_to_kosztuje": "Część dobrze płatnych prac technicznych toczy się w hałasie i w brudzie. Ta potrzeba zawęża wybór bardziej, niż się na początku wydaje."
+  },
+  "OTO_B": {
+    "os": "OTO",
+    "strona": "B",
+    "nazwa": "Ruch i bodźce",
+    "co_to_o_tobie_mowi": "W cichym pokoju robisz się senny. Dobrze pracuje Ci się tam, gdzie coś się dzieje i ciągle ktoś się rusza.",
+    "prace_ktore_to_szanuja": [
+      "gastronomia",
+      "hala produkcyjna",
+      "budowa",
+      "sklep i handel",
+      "szkoła",
+      "służby ratunkowe",
+      "logistyka",
+      "praca w terenie"
+    ],
+    "prace_ktore_to_lamia": [
+      "praca zdalna w pojedynkę",
+      "archiwum",
+      "laboratorium",
+      "ciche biuro",
+      "nocna zmiana bez ludzi",
+      "prace precyzyjne w pełnym skupieniu"
+    ],
+    "co_to_kosztuje": "W każdej pracy są zadania na wiele godzin ciszy i skupienia. Takie godziny kosztują Cię sporo wysiłku."
+  },
+  "EFE_A": {
+    "os": "EFE",
+    "strona": "A",
+    "nazwa": "Efekt szybki",
+    "co_to_o_tobie_mowi": "Potrzebujesz na koniec dnia widzieć, co udało się zrobić. Długie czekanie na to, czy Twoja praca ma sens, znosisz źle.",
+    "prace_ktore_to_szanuja": [
+      "serwis i naprawy",
+      "rzemiosło",
+      "instalacje",
+      "montaż",
+      "gastronomia",
+      "diagnostyka",
+      "praca na zlecenia",
+      "prace, po których coś działa albo nie działa"
+    ],
+    "prace_ktore_to_lamia": [
+      "badania naukowe",
+      "prace badawczo-rozwojowe",
+      "projektowanie długich inwestycji",
+      "urbanistyka",
+      "część administracji publicznej",
+      "nauczanie",
+      "praca, której efekt widać po latach"
+    ],
+    "co_to_kosztuje": "Zawody z szybkim efektem mają zwykle niższy pułap niż te, w których wynik widać po latach. To uczciwy kompromis, a nie wada."
+  },
+  "EFE_B": {
+    "os": "EFE",
+    "strona": "B",
+    "nazwa": "Efekt odroczony",
+    "co_to_o_tobie_mowi": "Potrafisz pracować długo nad czymś, czego efektu jeszcze nie widać. Wystarczy Ci, że wiesz, dokąd to prowadzi.",
+    "prace_ktore_to_szanuja": [
+      "badania naukowe",
+      "projektowanie",
+      "prace badawczo-rozwojowe",
+      "urbanistyka",
+      "nauczanie",
+      "opieka i terapia",
+      "długie projekty inżynierskie",
+      "prawo"
+    ],
+    "prace_ktore_to_lamia": [
+      "serwis na zgłoszenia",
+      "gastronomia",
+      "handel",
+      "montaż",
+      "praca płatna od sztuki",
+      "praca, w której liczy się tylko dzisiejszy utarg"
+    ],
+    "co_to_kosztuje": "Miesiącami pracujesz bez żadnego znaku, że idzie dobrze. Bliscy i znajomi często nie widzą, co Ty właściwie robisz."
+  }
+}

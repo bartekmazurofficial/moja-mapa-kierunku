@@ -8,6 +8,7 @@
 
 import { BLOKI_A1, INSTRUKCJA_A1 } from "../content/a1";
 import { BLOKI_A2, DOWODY_A2, INSTRUKCJA_A2 } from "../content/a2";
+import { INSTRUKCJA_A6, INWESTYCJA_A6, PARY_A6 } from "../content/a6";
 import { KOTWICE_A3, PARY_A3, INSTRUKCJA_A3 } from "../content/a3";
 import {
   BRZMIENIA_A4,
@@ -21,7 +22,7 @@ import {
   type ParaA4,
 } from "../content/a4";
 import { INSTRUKCJA_A5, ODPOWIEDZI_A5, ZDANIA_A5 } from "../content/a5";
-import { INSTRUKCJA_M1, OBSZARY_M1, PARY_M1 } from "../content/m1";
+import { INSTRUKCJA_M1, OBSZARY_M1, PARY_MIEKKIE_M1, PYTANIA_WPROST_M1 } from "../content/m1";
 import { PRZEDMIOTY_A0, PYTANIA_A0, INSTRUKCJA_A0 } from "../content/a0";
 import { ODDECHY } from "../content/wspolne";
 import { FILTRY_A5, OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_M1 } from "../domain/slowniki";
@@ -50,6 +51,7 @@ export const NAZWY_MODULOW: Record<KodModulu, string> = {
   A3: "Jak naturalnie działam",
   A4: "Co jest dla mnie ważne",
   A5: "Filtry rzeczywistości",
+  A6: "Jak się uczę",
   M1: "Jakiego życia chcesz",
 };
 
@@ -59,7 +61,7 @@ export const NAZWY_MODULOW: Record<KodModulu, string> = {
  * po M1, bo jego wlasna instrukcja zaczyna sie od „Przed chwila opisales,
  * jak chcesz zyc".
  */
-export const KOLEJNOSC_MODULOW: KodModulu[] = ["A0", "A1", "A3", "A2", "A4", "M1", "A5"];
+export const KOLEJNOSC_MODULOW: KodModulu[] = ["A0", "A1", "A3", "A2", "A4", "M1", "A5", "A6"];
 
 /**
  * Ile pozycji ma caly modul. Do paska postepu na liscie modulow.
@@ -719,9 +721,17 @@ function czescA5C(): CzescModulu {
 // M1
 // =====================================================================
 
+/**
+ * Czesc A modulu M1: dziewiec wymiarow miekkich z par, trzy twarde wprost.
+ *
+ * Pytania wprost stoja NA KONCU, a nie na poczatku. Uczestnik ma najpierw
+ * przejsc przez pary i zobaczyc, o czym w ogole jest ten modul; trzy pytania
+ * o godziny, miejsce i przeprowadzke postawione na wejsciu brzmialyby jak
+ * formularz rekrutacyjny, a nie jak rozmowa o zyciu.
+ */
 function czescM1A(plan: PlanModulu): CzescModulu {
   const ekrany: Ekran[] = [wstep("M1", INSTRUKCJA_M1)];
-  const poId = new Map(PARY_M1.map((p) => [p.id, p]));
+  const poId = new Map(PARY_MIEKKIE_M1.map((p) => [p.id, p]));
 
   plan.kolejnosc.forEach((id, i) => {
     const para = poId.get(id);
@@ -738,7 +748,38 @@ function czescM1A(plan: PlanModulu): CzescModulu {
       postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
     });
   });
-  return { kod: "A", nazwa: "Dwanaście kompromisów", ekrany };
+
+  for (const [i, p] of PYTANIA_WPROST_M1.entries()) {
+    ekrany.push({
+      klucz: `M1_wprost_${p.wymiar}`,
+      typ: "pozycje",
+      naglowek: i === 0 ? "Trzy rzeczy wprost" : undefined,
+      podpis:
+        i === 0
+          ? "Te trzy naprawdę przycinają listę zawodów, więc nie zgadujemy ich z par. „Jeszcze nie wiem” jest pełnoprawną odpowiedzią i nie przycina niczego."
+          : undefined,
+      ikona: `m1w-${p.wymiar}`,
+      pozycje: [
+        {
+          id: `wprost_${p.wymiar}`,
+          typ: "pojedynczy",
+          tresc: p.tresc,
+          podpis: p.podpis,
+          uklad: "karty",
+          opcje: p.opcje.map((o) => ({
+            kod: o.kod,
+            etykieta: o.etykieta,
+            podpis: o.podpis,
+            ikona: `m1w-${p.wymiar}`,
+            wylaczna: o.kod === "nie_wiem",
+          })),
+        },
+      ],
+      przyciskDalej: i === PYTANIA_WPROST_M1.length - 1 ? "Zakończ część" : undefined,
+    });
+  }
+
+  return { kod: "A", nazwa: "Kompromisy", ekrany };
 }
 
 function czescM1B(kontekst: KontekstModulu): CzescModulu {
@@ -808,6 +849,77 @@ function czescM1B(kontekst: KontekstModulu): CzescModulu {
 // SKLADANIE
 // =====================================================================
 
+/**
+ * Czesc A modulu A6: dwadziescia par o tym, jak czlowiek sie uczy.
+ *
+ * Ten sam uklad co w A3 i M1, celowo. Uczestnik zna juz te mechanike z dwoch
+ * poprzednich modulow, wiec nie traci czasu na uczenie sie ekranu, a modul
+ * ma byc krotki: cztery minuty na koniec czwartego spotkania.
+ */
+function czescA6A(plan: PlanModulu): CzescModulu {
+  const ekrany: Ekran[] = [wstep("A6", INSTRUKCJA_A6)];
+  const poId = new Map(PARY_A6.map((p) => [p.id, p]));
+
+  plan.kolejnosc.forEach((id, i) => {
+    const para = poId.get(id);
+    if (!para) return;
+    const odwrocona = plan.odwrocone[id] ?? false;
+    // Ilustracja osi, nie bieguna: jeden znak na cztery pary tej samej osi.
+    const znak = `a6-${para.os}`;
+    const a = { kod: "A", tekst: para.biegunA, ikona: znak };
+    const b = { kod: "B", tekst: para.biegunB, ikona: znak };
+    ekrany.push({
+      klucz: `A6_${id}`,
+      typ: "pozycje",
+      polecenie: INSTRUKCJA_A6.polecenieBloku,
+      ikona: znak,
+      pozycje: [
+        { id, typ: "para", stronaA: odwrocona ? b : a, stronaB: odwrocona ? a : b },
+      ],
+      postep: { nr: i + 1, z: plan.kolejnosc.length, slowo: "par" },
+    });
+  });
+  return { kod: "A", nazwa: "Pary", ekrany };
+}
+
+/**
+ * Czesc B: trzy pytania wprost o gotowosc do inwestycji czasowej.
+ *
+ * Wprost, a nie z par, bo te trzy odpowiedzi realnie przesuwaja cala grupe
+ * drog. Przy czterech parach jedna zmieniona odpowiedz przesuwa wynik o
+ * dwadziescia piec punktow, a to zbyt mocna konsekwencja ze zbyt slabej
+ * podstawy. Kazde pytanie ma „jeszcze nie wiem" i ta odpowiedz nie przycina
+ * niczego: brak zdania nie jest zdaniem.
+ */
+function czescA6B(): CzescModulu {
+  return {
+    kod: "B",
+    nazwa: "Ile w to wkładam",
+    ekrany: INWESTYCJA_A6.map((p, i) => ({
+      klucz: `A6_${p.id}`,
+      typ: "pozycje" as const,
+      naglowek: i === 0 ? INSTRUKCJA_A6.inwestycjaNaglowek : undefined,
+      podpis: i === 0 ? INSTRUKCJA_A6.inwestycjaPodpis : undefined,
+      pozycje: [
+        {
+          id: p.id,
+          typ: "pojedynczy" as const,
+          tresc: p.tresc,
+          podpis: p.podpis,
+          uklad: "karty" as const,
+          opcje: p.opcje.map((o) => ({
+            kod: o.kod,
+            etykieta: o.etykieta,
+            podpis: o.podpis,
+            wylaczna: o.kod === "nie_wiem",
+          })),
+        },
+      ],
+      przyciskDalej: i === INWESTYCJA_A6.length - 1 ? "Zakończ moduł" : undefined,
+    })),
+  };
+}
+
 /** Wszystkie czesci modulu, w kolejnosci. */
 export const CZESCI_MODULOW: Record<KodModulu, string[]> = {
   A0: ["A"],
@@ -816,6 +928,7 @@ export const CZESCI_MODULOW: Record<KodModulu, string[]> = {
   A3: ["A", "B"],
   A4: ["A", "B", "C"],
   A5: ["A", "B", "C"],
+  A6: ["A", "B"],
   M1: ["A", "B"],
 };
 
@@ -853,6 +966,10 @@ export function zbudujCzesc(
       return czescA5B(kontekst);
     case "A5C":
       return czescA5C();
+    case "A6A":
+      return czescA6A(plan);
+    case "A6B":
+      return czescA6B();
     case "M1A":
       return czescM1A(plan);
     case "M1B":

@@ -13,7 +13,8 @@ import { BLOKI_A1 } from "../content/a1";
 import { BLOKI_A2 } from "../content/a2";
 import { PARY_A3 } from "../content/a3";
 import { PARY_A4 } from "../content/a4";
-import { PARY_M1 } from "../content/m1";
+import { PARY_MIEKKIE_M1, PYTANIA_WPROST_M1 } from "../content/m1";
+import { INWESTYCJA_A6, PARY_A6 } from "../content/a6";
 import { FILTRY_A5 } from "../domain/slowniki";
 import { OBSZARY_M1 } from "../content/m1";
 import { OBSZARY_A1, KOMPETENCJE_A2 } from "../domain/slowniki";
@@ -51,6 +52,37 @@ const A4_TOP: Record<Profil, string[]> = {
   spoleczny: ["SEN", "REL", "ZAS", "CZA", "STA"],
   analityczny: ["ROZ", "MIS", "PIE", "WOL", "STA"],
   plaski: [],
+};
+
+/**
+ * A6: jak sie ucze. Rzemieslnik uczy sie robiac i nie chce dlugiej szkoly,
+ * analityk odwrotnie. Profil plaski zostawia wszystko na „nie wiem", zeby
+ * test mial przypadek, w ktorym werdykt nie powstaje.
+ */
+const A6_BIEGUNY: Record<Profil, Record<string, "A" | "B">> = {
+  rzemieslniczy: { TEO: "B", EGZ: "B", PRO: "A", CZY: "B", JED: "A" },
+  spoleczny: { TEO: "A", EGZ: "B", PRO: "B", CZY: "A", JED: "B" },
+  analityczny: { TEO: "A", EGZ: "A", PRO: "A", CZY: "A", JED: "A" },
+  plaski: {},
+};
+
+const A6_INWESTYCJA: Record<Profil, Record<string, string>> = {
+  rzemieslniczy: { lata: "do_dwoch", wieczorami: "tak", przeprowadzka_nauka: "region" },
+  spoleczny: { lata: "trzy_cztery", wieczorami: "zalezy", przeprowadzka_nauka: "tak" },
+  analityczny: { lata: "piec_wiecej", wieczorami: "tak", przeprowadzka_nauka: "tak" },
+  plaski: { lata: "nie_wiem", wieczorami: "nie_wiem", przeprowadzka_nauka: "nie_wiem" },
+};
+
+/**
+ * Trzy wymiary twarde: odpowiedzi wprost. Profil plaski odpowiada „nie wiem"
+ * na wszystkie trzy, zeby fikstura miala przypadek, w ktorym te wymiary nie
+ * przycinaja niczego.
+ */
+const M1_WPROST: Record<Profil, Record<string, string>> = {
+  rzemieslniczy: { GOD: "osiem", MIE: "na_miejscu", KOR: "osiasc" },
+  spoleczny: { GOD: "osiem", MIE: "na_miejscu", KOR: "region" },
+  analityczny: { GOD: "duzo", MIE: "mieszanie", KOR: "gdziekolwiek" },
+  plaski: { GOD: "nie_wiem", MIE: "nie_wiem", KOR: "nie_wiem" },
 };
 
 const M1_BIEGUNY: Record<Profil, Record<string, "A" | "B">> = {
@@ -260,11 +292,15 @@ export async function wypelnijUczestnika(
 
   // --- M1 ---
   await utrwalPlan(id, "M1");
-  for (const [i, para] of PARY_M1.entries()) {
+  for (const [i, para] of PARY_MIEKKIE_M1.entries()) {
     // Profil plaski nie ma zadeklarowanych biegunow: odpowiedzi na przemian,
     // zeby wizja zycia tez wyszla nieostra, a nie sztucznie zdecydowana.
     const domyslny = profil === "plaski" ? (i % 2 === 0 ? "A" : "B") : "A";
     await zapisz(id, "M1", "A", para.id, M1_BIEGUNY[profil][para.wymiar] ?? domyslny, czas() / 4);
+  }
+  // Trzy wymiary twarde: jedna odpowiedz wprost zamiast czterech par.
+  for (const p of PYTANIA_WPROST_M1) {
+    await zapisz(id, "M1", "A", `wprost_${p.wymiar}`, M1_WPROST[profil][p.wymiar], czas() / 8);
   }
   await zapisz(id, "M1", "A", MARKER_ZAKONCZENIA, true, 0);
   for (const obszar of OBSZARY_M1) {
@@ -280,6 +316,22 @@ export async function wypelnijUczestnika(
     await zapisz(id, "M1", "B", `obszar_${obszar.nr}`, wartosc, 60000);
   }
   await zapisz(id, "M1", "B", MARKER_ZAKONCZENIA, true, 0);
+
+  // --- A6 ---
+  await utrwalPlan(id, "A6");
+  for (const [i, para] of PARY_A6.entries()) {
+    const wybor = A6_BIEGUNY[profil][para.os];
+    if (!wybor) continue;
+    // Co czwarta odpowiedz idzie pod prad, zeby os nie wychodzila zawsze
+    // piec na piec: profil bez ani jednego wahania nie istnieje.
+    const domyslny = i % 4 === 3 ? (wybor === "A" ? "B" : "A") : wybor;
+    await zapisz(id, "A6", "A", para.id, domyslny, czas() / 4);
+  }
+  await zapisz(id, "A6", "A", MARKER_ZAKONCZENIA, true, 0);
+  for (const p of INWESTYCJA_A6) {
+    await zapisz(id, "A6", "B", p.id, A6_INWESTYCJA[profil][p.id] ?? "nie_wiem", 8000);
+  }
+  await zapisz(id, "A6", "B", MARKER_ZAKONCZENIA, true, 0);
 
   return prisma.odpowiedz.count({ where: { uczestnikId: id } });
 }

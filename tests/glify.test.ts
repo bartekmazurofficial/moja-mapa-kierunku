@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 import { GLIFY, odcien } from "@/lib/ui/glify";
 import { OBSZARY_A1, KOMPETENCJE_A2, WYMIARY_A3, WARTOSCI_A4, FILTRY_A5 } from "@/lib/domain/slowniki";
 import { OBSZARY_M1 } from "@/lib/content/m1";
+import { OSIE_A6 } from "@/lib/content/a6";
 import { BLOKI_A1 } from "@/lib/content/a1";
 import { BLOKI_A2 } from "@/lib/content/a2";
 
@@ -23,6 +24,7 @@ describe("znaki kategorii", () => {
     for (const v of WARTOSCI_A4) sprawdz(`a4-${v.kod}`);
     for (const b of new Set(FILTRY_A5.map((f) => f.blok))) sprawdz(`a5-${b}`);
     for (const m of OBSZARY_M1) sprawdz(`m1-${m.nr}`);
+    for (const o of OSIE_A6) sprawdz(`a6-${o.kod}`);
     expect(brakujace).toEqual([]);
   });
 

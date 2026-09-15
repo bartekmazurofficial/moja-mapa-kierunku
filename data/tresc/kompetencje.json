@@ -1,0 +1,182 @@
+{
+  "1": {
+    "nazwa": "Rozwiązywanie problemów",
+    "na_czym_polega": "Coś przestaje działać. Ty szukasz przyczyny, zamiast zgadywać. Doprowadzasz to do końca, nawet bez instrukcji.",
+    "gdzie_to_widac": "Liczy się tam, gdzie coś się psuje. Ktoś musi powiedzieć, dlaczego przestało działać.",
+    "czego_nie_daje": "To nie to samo co cierpliwość do spraw ciągnących się miesiącami. Nie zastępuje też wiedzy, którą trzeba po prostu mieć."
+  },
+  "2": {
+    "nazwa": "Analiza informacji",
+    "na_czym_polega": "Z dużej sterty informacji wyciągasz to, co ważne. Potem mówisz krótko, co z tego wynika.",
+    "gdzie_to_widac": "Liczy się tam, gdzie trzeba przeczytać dużo materiału. Na końcu ma z tego być jedna jasna odpowiedź.",
+    "czego_nie_daje": "Nie daje odwagi do decyzji. Można wiedzieć bardzo dużo i dalej stać w miejscu."
+  },
+  "3": {
+    "nazwa": "Rachunki i szacowanie",
+    "na_czym_polega": "Liczysz w pamięci. Oceniasz na oko, ile czegoś potrzeba. Od razu czujesz, kiedy kwota jest podejrzana.",
+    "gdzie_to_widac": "Liczy się tam, gdzie ktoś wycenia robotę. Chodzi o to, żeby zlecenie naprawdę się opłaciło.",
+    "czego_nie_daje": "Szacowanie z głowy to nie to samo co porządne policzenie. Oferta i kosztorys wymagają tego drugiego."
+  },
+  "4": {
+    "nazwa": "Myślenie systemowe",
+    "na_czym_polega": "Ruszasz jeden element i widzisz, co stanie się z całością. Zauważasz też, że dwie usterki mają wspólne źródło.",
+    "gdzie_to_widac": "Liczy się tam, gdzie awaria w jednym miejscu zatrzymuje cały zakład.",
+    "czego_nie_daje": "Widzenie całości potrafi zatrzymać w miejscu. Wskazanie jednego miejsca na start to już osobna umiejętność."
+  },
+  "5": {
+    "nazwa": "Praca z regułami i przepisami",
+    "na_czym_polega": "Czytasz zasady do końca i wiesz, co z nich wynika. W długim dokumencie znajdujesz ten jeden ważny zapis.",
+    "gdzie_to_widac": "Liczy się tam, gdzie ktoś odpowiada za zgodność z wymaganiami i papierami.",
+    "czego_nie_daje": "Nie daje umiejętności mówienia komuś trudnych rzeczy. Taka robota zwykle tego wymaga."
+  },
+  "6": {
+    "nazwa": "Szybkie uczenie się nowego",
+    "na_czym_polega": "Wchodzisz w temat, o którym nic nie wiesz. Po krótkim czasie zaczynasz w nim naprawdę działać.",
+    "gdzie_to_widac": "Liczy się tam, gdzie narzędzia i technologie zmieniają się co kilka lat.",
+    "czego_nie_daje": "Szybkie wejście w temat to nie to samo co opanowanie go. Za bycie naprawdę dobrym płacą dopiero po latach."
+  },
+  "7": {
+    "nazwa": "Zapamiętywanie i przywoływanie",
+    "na_czym_polega": "Trzymasz w głowie szczegóły, nazwy i liczby. Wracasz do nich wtedy, kiedy są potrzebne.",
+    "gdzie_to_widac": "Liczy się tam, gdzie trzeba opanować bardzo dużo materiału. Ma być pod ręką, bez zaglądania.",
+    "czego_nie_daje": "Pamiętanie to nie to samo co rozumienie. W pracy pytają zwykle o to drugie."
+  },
+  "8": {
+    "nazwa": "Wymyślanie nowych rozwiązań",
+    "na_czym_polega": "Oczywisty sposób nie działa. Wtedy szukasz innego. Wpadasz na rozwiązanie, o którym reszta nie pomyślała.",
+    "gdzie_to_widac": "Liczy się tam, gdzie ktoś ulepsza sposób pracy. Nie tylko wykonuje to, co już ustalone.",
+    "czego_nie_daje": "Pomysł to dopiero początek. Doprowadzenie go do końca wymaga cierpliwości, a to osobna rzecz."
+  },
+  "9": {
+    "nazwa": "Wyczucie formy i estetyki",
+    "na_czym_polega": "Patrzysz na rzecz i od razu widzisz, co w niej nie gra. Wiesz też, co konkretnie zmienić.",
+    "gdzie_to_widac": "Liczy się tam, gdzie klient najpierw patrzy. Dopiero potem pyta o wszystko inne.",
+    "czego_nie_daje": "Ładne nie zawsze znaczy działające. W większości prac najpierw sprawdzają, czy rzecz robi swoje."
+  },
+  "10": {
+    "nazwa": "Wyobraźnia przestrzenna",
+    "na_czym_polega": "Widzisz w głowie gotową rzecz, zanim powstanie. Z rysunku od razu wiesz, jak będzie wyglądać naprawdę.",
+    "gdzie_to_widac": "Liczy się w technice i w budowlance. Wszędzie tam, gdzie pracuje się na rysunku.",
+    "czego_nie_daje": "Wyobrażenie sobie czegoś to jeszcze nie wykonanie. Do wykonania potrzebne są ręce i wprawa."
+  },
+  "11": {
+    "nazwa": "Wyrażanie się słowem",
+    "na_czym_polega": "Ujmujesz rzecz w jedno zdanie. Druga osoba od razu wie, o co chodzi.",
+    "gdzie_to_widac": "Liczy się wszędzie, gdzie pisze się protokół, raport albo wiadomość do klienta.",
+    "czego_nie_daje": "Można pisać bardzo ładnie i nie mieć nic do powiedzenia. Treść bierze się z wiedzy, nie ze słów."
+  },
+  "12": {
+    "nazwa": "Wyjaśnianie i uczenie innych",
+    "na_czym_polega": "Tłumaczysz tak, że druga osoba naprawdę rozumie. Widzisz w trakcie, w którym miejscu ktoś się gubi.",
+    "gdzie_to_widac": "Liczy się tam, gdzie wdraża się nową osobę. Także tam, gdzie pokazuje się komuś, jak czegoś używać.",
+    "czego_nie_daje": "Tłumaczenie nie zastępuje wiedzy o samej rzeczy. Najpierw trzeba ją dobrze znać."
+  },
+  "13": {
+    "nazwa": "Wystąpienia przed grupą",
+    "na_czym_polega": "Stajesz przed wieloma osobami i mówisz do nich. Trzymasz wątek, choć wszyscy patrzą tylko na Ciebie.",
+    "gdzie_to_widac": "Liczy się tam, gdzie raz na jakiś czas przedstawia się swoją pracę komisji albo klientowi.",
+    "czego_nie_daje": "Dobre mówienie do sali to jedno. Rozmowa z jedną osobą o czymś trudnym to drugie."
+  },
+  "14": {
+    "nazwa": "Przekonywanie",
+    "na_czym_polega": "Układasz argumenty tak, że ktoś naprawdę zmienia zdanie. Robisz to spokojnie, bez podnoszenia głosu.",
+    "gdzie_to_widac": "Liczy się tam, gdzie zdobywa się klienta. Także tam, gdzie przeprowadza się swój pomysł przez firmę.",
+    "czego_nie_daje": "Przekonanie kogoś nie znaczy, że masz rację. Trzeba jeszcze dowieźć to, co obiecane."
+  },
+  "15": {
+    "nazwa": "Negocjowanie",
+    "na_czym_polega": "Ustalasz warunki, na które obie strony mogą się zgodzić. Pierwszej propozycji nie bierzesz za ostateczną.",
+    "gdzie_to_widac": "Liczy się tam, gdzie dwie strony muszą dogadać warunki. Także wtedy, gdy pracuje się na swoim.",
+    "czego_nie_daje": "Dogadanie warunków to jeszcze nie wykonanie roboty. Ludzie zapamiętują głównie to drugie."
+  },
+  "16": {
+    "nazwa": "Wyczuwanie ludzi",
+    "na_czym_polega": "Widzisz po drugiej osobie, co się z nią dzieje. Wiesz to, zanim cokolwiek powie.",
+    "gdzie_to_widac": "Liczy się tam, gdzie praca to rozmowa z ludźmi. Często z takimi, którym coś dolega.",
+    "czego_nie_daje": "Wyczucie to jeszcze nie pomoc. Żeby komuś realnie pomóc, trzeba też wiedzieć, co zrobić."
+  },
+  "17": {
+    "nazwa": "Cierpliwość i opiekuńczość",
+    "na_czym_polega": "Zostajesz przy kimś, kto potrzebuje więcej czasu. Powtarzasz to samo dziesiąty raz, spokojnie.",
+    "gdzie_to_widac": "Liczy się tam, gdzie pracuje się z osobami chorymi, starszymi albo z małymi dziećmi.",
+    "czego_nie_daje": "Cierpliwość nie chroni przed zmęczeniem. Praca przy ludziach wymaga też umiejętności odcięcia się po godzinach."
+  },
+  "18": {
+    "nazwa": "Rozbrajanie napięć",
+    "na_czym_polega": "Robi się nieprzyjemnie i ludzie zaczynają na siebie krzyczeć. Ty obniżasz temperaturę. Doprowadzasz do spokojnej rozmowy.",
+    "gdzie_to_widac": "Liczy się tam, gdzie codziennie trafiają niezadowoleni klienci. Także tam, gdzie zespół musi wytrzymać ze sobą latami.",
+    "czego_nie_daje": "Uspokojenie sytuacji nie rozwiązuje sprawy, która ją wywołała. To dwie różne rzeczy."
+  },
+  "19": {
+    "nazwa": "Uprzejmość pod presją",
+    "na_czym_polega": "Zachowujesz się kulturalnie, choć druga strona jest niemiła. Odpowiadasz na treść, a nie na ton.",
+    "gdzie_to_widac": "Liczy się tam, gdzie przez cały dzień obsługuje się klientów. Także tych zdenerwowanych.",
+    "czego_nie_daje": "Uprzejmość nie załatwia sprawy klienta. On przyszedł po rozwiązanie, nie po miłą rozmowę."
+  },
+  "20": {
+    "nazwa": "Prowadzenie grupy",
+    "na_czym_polega": "Ustawiasz grupę wokół jednego celu i dzielisz robotę. Decydujesz wtedy, gdy nikt inny nie chce.",
+    "gdzie_to_widac": "Liczy się tam, gdzie ktoś odpowiada za pracę kilku osób. Także za to, czy zdążą.",
+    "czego_nie_daje": "Prowadzenie ludzi nie zastępuje znajomości roboty. Zespół szybko poznaje, kto naprawdę się na tym zna."
+  },
+  "21": {
+    "nazwa": "Organizowanie i planowanie",
+    "na_czym_polega": "Rozpisujesz robotę na etapy i wiesz, co po czym idzie. Nic nie spada Ci nagle na głowę.",
+    "gdzie_to_widac": "Liczy się tam, gdzie kilka spraw musi zejść się w jednym czasie i miejscu.",
+    "czego_nie_daje": "Dobry plan to jeszcze nie wykonanie. Plany rozbijają się o rzeczywistość częściej, niż się wydaje."
+  },
+  "22": {
+    "nazwa": "Dokładność",
+    "na_czym_polega": "Patrzysz na swoją robotę jeszcze raz przed oddaniem. Wyłapujesz błąd, którego inni nie zauważyli.",
+    "gdzie_to_widac": "Liczy się tam, gdzie pomyłka słono kosztuje. Przy kontroli jakości, przy pomiarach, przy dokumentach.",
+    "czego_nie_daje": "Sama dokładność nie wystarczy. W większości prac liczy się też to, żeby zdążyć."
+  },
+  "23": {
+    "nazwa": "Wytrwałość w powtarzalnym",
+    "na_czym_polega": "Robisz tę samą czynność przez wiele godzin. Setna sztuka wychodzi tak samo dobrze jak pierwsza.",
+    "gdzie_to_widac": "Liczy się tam, gdzie praca wraca codziennie w tym samym rytmie. Na produkcji i przy obsłudze maszyn.",
+    "czego_nie_daje": "Wytrzymanie nudy to jedno. Nagła zmiana, przy której trzeba działać inaczej, to drugie."
+  },
+  "24": {
+    "nazwa": "Prowadzenie wielu spraw naraz",
+    "na_czym_polega": "Trzymasz kilka spraw równolegle i żadna nie ginie. Ktoś przerywa Ci w połowie roboty, a ty do niej wracasz.",
+    "gdzie_to_widac": "Liczy się tam, gdzie telefon dzwoni w trakcie roboty. Jedno i drugie musi być zrobione.",
+    "czego_nie_daje": "Wiele spraw naraz nie daje głębi. Opanowanie jednej rzeczy do końca wymaga skupienia."
+  },
+  "25": {
+    "nazwa": "Samodzielność bez nadzoru",
+    "na_czym_polega": "Dostajesz zadanie i robisz je bez przypominania. Przez dwa tygodnie nikt nie pyta o postępy, a robota idzie.",
+    "gdzie_to_widac": "Liczy się tam, gdzie pracuje się w pojedynkę. W terenie, na swoim, zdalnie.",
+    "czego_nie_daje": "Samodzielność nie zastępuje proszenia o pomoc. Robienie wszystkiego samemu kosztuje mnóstwo czasu."
+  },
+  "26": {
+    "nazwa": "Sprawność manualna",
+    "na_czym_polega": "Ręce robią dokładnie to, co im każesz. Rzecz z małych części wychodzi równo za pierwszym razem.",
+    "gdzie_to_widac": "Liczy się w całym rzemiośle. Wszędzie tam, gdzie narzędzie wymaga wprawy.",
+    "czego_nie_daje": "Same ręce nie wystarczą. Bez czytania rysunku i przepisów trudno sięgnąć po trudniejsze zlecenia."
+  },
+  "27": {
+    "nazwa": "Obsługa sprzętu i techniki",
+    "na_czym_polega": "Siadasz do nieznanego urządzenia i klikasz przez menu. Po chwili wiesz, co robi każda opcja.",
+    "gdzie_to_widac": "Liczy się tam, gdzie coś trzeba uruchomić, ustawić i utrzymać w ruchu.",
+    "czego_nie_daje": "Sama obsługa nie mówi, dlaczego maszyna stanęła. Za odpowiedź na to pytanie płacą wyraźnie więcej."
+  },
+  "28": {
+    "nazwa": "Wytrzymałość fizyczna",
+    "na_czym_polega": "Wytrzymujesz wysiłek, zimno i niewygodę przez cały dzień. Ósma godzina pracy wygląda jak pierwsza.",
+    "gdzie_to_widac": "Liczy się tam, gdzie pracuje się rękami, na dworze i w ciągłym ruchu.",
+    "czego_nie_daje": "To jedyna rzecz z tej listy, która z latami słabnie. Sama nie wystarcza na całe życie zawodowe."
+  },
+  "29": {
+    "nazwa": "Opanowanie pod presją",
+    "na_czym_polega": "Sytuacja się sypie, a ty dalej myślisz jasno. Zadajesz pytania i decydujesz, choć czasu jest mało.",
+    "gdzie_to_widac": "Liczy się tam, gdzie ktoś jedzie do awarii. Także tam, gdzie przy zgłoszeniu liczą się minuty.",
+    "czego_nie_daje": "Spokój w danej chwili nie chroni przed zmęczeniem. Ciągła praca przy kryzysach męczy."
+  },
+  "30": {
+    "nazwa": "Odporność na odmowę i porażkę",
+    "na_czym_polega": "Słyszysz nie i wracasz do sprawy jeszcze raz. Ostra krytyka Cię irytuje, ale nie zatrzymuje.",
+    "gdzie_to_widac": "Liczy się na początku własnej działalności. Także tam, gdzie po drodze są trudne egzaminy.",
+    "czego_nie_daje": "Wracanie do przegranej sprawy pomaga tylko wtedy, gdy robisz to inaczej. Samo powtarzanie mocniej nie działa."
+  }
+}

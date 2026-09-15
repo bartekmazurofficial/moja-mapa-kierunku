@@ -29,9 +29,9 @@ const KONTEKST = {
 
 describe("wszystkie moduły dają się złożyć", () => {
   it("siedem modułów, każdy z co najmniej jedną częścią", () => {
-    expect(MODULY).toHaveLength(7);
-    expect(KOLEJNOSC_MODULOW).toHaveLength(7);
-    expect(new Set(KOLEJNOSC_MODULOW).size).toBe(7);
+    expect(MODULY).toHaveLength(8);
+    expect(KOLEJNOSC_MODULOW).toHaveLength(8);
+    expect(new Set(KOLEJNOSC_MODULOW).size).toBe(8);
     for (const m of MODULY) expect(NAZWY_MODULOW[m].length).toBeGreaterThan(3);
   });
 
@@ -112,8 +112,12 @@ describe("plan losowy", () => {
     for (const opcje of Object.values(plan.wewnatrz)) expect(opcje).toHaveLength(4);
   });
 
-  it("A3, A4 i M1 losują stronę wyświetlania każdej pary", () => {
-    for (const [modul, ile] of [["A3", 65], ["A4", 36], ["M1", 48]] as const) {
+  /**
+   * M1 ma tu 36 par, nie 48: trzy wymiary twarde (GOD, MIE, KOR) sa pytane
+   * wprost, jednym pytaniem kazdy, i nie maja par do mieszania.
+   */
+  it("A3, A4, M1 i A6 losują stronę wyświetlania każdej pary", () => {
+    for (const [modul, ile] of [["A3", 65], ["A4", 36], ["M1", 36], ["A6", 20]] as const) {
       const plan = zbudujPlan(modul);
       expect(plan.kolejnosc, modul).toHaveLength(ile);
       expect(Object.keys(plan.odwrocone), modul).toHaveLength(ile);

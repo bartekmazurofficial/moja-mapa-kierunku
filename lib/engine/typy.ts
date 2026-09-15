@@ -109,6 +109,25 @@ export interface WynikiModulow {
 
   /** M1 czesc A: polozenie na 12 osiach ksztaltu zycia. Null = pominiete. */
   shape: Record<string, number | null>;
+
+  /**
+   * A6: jak sie ucze. Null, gdy modul nie zostal wypelniony.
+   *
+   * Nie usuwa zawodow i nie zmienia rankingu obszarow. Rozstrzyga jedna
+   * rzecz: czy droga przez dluga szkole ma dla tego czlowieka sens, czyli
+   * ktora grupa drog idzie w raporcie pierwsza.
+   */
+  nauka?: WynikNauki | null;
+}
+
+/** Ksztalt wyniku modulu A6. Pelna definicja stoi w lib/engine/moduly.ts. */
+export interface WynikNauki {
+  osie: Record<string, number | null>;
+  lata: 0 | 2 | 4 | 5 | null;
+  wieczorami: boolean | null;
+  przeprowadzka: "gdziekolwiek" | "region" | "nie" | null;
+  werdykt: "studia" | "obie_drogi" | "krotka_droga" | null;
+  wnioski: string[];
 }
 
 // =====================================================================

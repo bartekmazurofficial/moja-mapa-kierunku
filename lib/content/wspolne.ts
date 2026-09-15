@@ -52,4 +52,5 @@ export const ZAMKNIECIE: Record<string, string> = {
   A4: "Gotowe. Wiemy już, co wygrywa u Ciebie, kiedy trzeba wybierać. To jest część profilu, której nie da się odczytać z ocen w szkole.",
   M1: "Gotowe. To jedyna część, której nikt nie policzy. Twój tekst trafia do raportu dosłownie, bez skracania.",
   A5: "Gotowe. Te warunki są filtrem: zawody, których nie chcesz, znikną z Twojego wyniku, a nie zjadą niżej.",
+  A6: "Gotowe. To była ostatnia część. Teraz prowadzący otwiera Twój raport.",
 };

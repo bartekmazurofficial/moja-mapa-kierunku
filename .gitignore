@@ -23,3 +23,7 @@ prisma/*.db
 .agents/
 skills-lock.json
 .claude/skills/
+
+# Materialy zrodlowe od klienta: paczki raportow i makiet. Wejscie do pracy,
+# nie kod produktu. Waza kilkaset kilobajtow i nie maja czego szukac w historii.
+materialy/

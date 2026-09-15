@@ -6,7 +6,7 @@
  * rankingowy, jedna para, jeden zestaw pozycji na skali.
  */
 
-export type KodModulu = "A0" | "A1" | "A2" | "A3" | "A4" | "A5" | "M1";
+export type KodModulu = "A0" | "A1" | "A2" | "A3" | "A4" | "A5" | "A6" | "M1";
 
 /**
  * Marker zamkniecia czesci modulu. Czesci zlozone z samych pol

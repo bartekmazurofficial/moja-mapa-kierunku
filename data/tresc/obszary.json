@@ -1,0 +1,146 @@
+{
+  "1": {
+    "nazwa": "Naprawianie i rozgryzanie, jak coś działa",
+    "czym_to_jest": "Nie chodzi o samo naprawianie. Chodzi o moment, w którym rozumiesz, dlaczego coś się zepsuło. Zepsuta rzecz jest dla Ciebie pytaniem.",
+    "gdzie_to_wpada": "Łatwo zostać tym, kto zawsze naprawi. Wszyscy Cię wołają. Po latach robisz to samo za te same pieniądze.",
+    "nie_myl_z": "To nie to samo co lubienie samochodów. Można je kochać i nie znosić szukania usterki."
+  },
+  "2": {
+    "nazwa": "Robienie rzeczy własnymi rękami",
+    "czym_to_jest": "Chcesz na koniec dnia dotknąć czegoś, czego wcześniej nie było. Liczy się rzecz, którą można postawić na stole.",
+    "gdzie_to_wpada": "Łatwo robić rzeczy, których nikt nie zamówił. Umiejętność jest, pieniędzy z niej nie ma. Nikt wcześniej nie zapytał, czego ludzie potrzebują.",
+    "nie_myl_z": "To nie to samo co naprawianie. Tam szukasz przyczyny. Tu budujesz od zera."
+  },
+  "3": {
+    "nazwa": "Zwierzęta, rośliny, przyroda",
+    "czym_to_jest": "Praca z czymś żywym. Ono rośnie i choruje we własnym tempie. Dzień układa Ci sezon i pogoda, nie grafik.",
+    "gdzie_to_wpada": "Żywe rzeczy nie mają wolnych weekendów. W sezonie nie ma urlopu. W hodowli są też choroby, upadki i trudne decyzje.",
+    "nie_myl_z": "To nie to samo co lubienie zwierząt albo spacerów po lesie."
+  },
+  "4": {
+    "nazwa": "Ruch, teren, praca ciałem",
+    "czym_to_jest": "Praca, po której ciało jest zmęczone. I to jest w porządku. Ruch, zmienna pogoda, cały dzień na nogach, czasem ciężar.",
+    "gdzie_to_wpada": "Ciało się zużywa. Same zawody fizyczne mają swój wiek. Po latach trudniej przejść z nich do innej pracy.",
+    "nie_myl_z": "To nie to samo co lubienie sportu. Sport kończy się, kiedy chcesz. Praca trwa osiem godzin."
+  },
+  "5": {
+    "nazwa": "Technologia i programowanie",
+    "czym_to_jest": "Sprawiasz, że maszyna robi coś, czego wcześniej nie robiła. Potem robi to dalej sama, bez Ciebie.",
+    "gdzie_to_wpada": "Wielu ludzi wchodzi tu dla pieniędzy, nie dla samej roboty. Odpadają po roku. Prawie cały dzień to szukanie błędu.",
+    "nie_myl_z": "To nie to samo co dobra znajomość komputera ani granie."
+  },
+  "6": {
+    "nazwa": "Dociekanie, jak działa świat",
+    "czym_to_jest": "Sprawdzasz doświadczeniem, czy coś jest prawdą. Powtarzasz próbę tak długo, aż wiadomo, dlaczego wyszło inaczej.",
+    "gdzie_to_wpada": "Droga do pierwszych pieniędzy jest tu najdłuższa. Większość prób nie wychodzi. Efekt widać po miesiącach, nie wieczorem.",
+    "nie_myl_z": "To nie to samo co ciekawość świata. Ciekawość wiedzę zjada. Dociekanie ją produkuje."
+  },
+  "7": {
+    "nazwa": "Zdrowie i ludzkie ciało",
+    "czym_to_jest": "Rozumiesz, jak działa ludzkie ciało. Rozpoznajesz objawy i szukasz przyczyny. To trochę jak szukanie usterki, tylko w człowieku.",
+    "gdzie_to_wpada": "Kontakt z ludźmi w złym stanie trwa cały dzień. Są dyżury i noce. Odpowiedzialność za czyjeś zdrowie nie kończy się po wyjściu.",
+    "nie_myl_z": "To nie to samo co zainteresowanie zdrowiem albo sportem."
+  },
+  "8": {
+    "nazwa": "Liczby i wyciąganie wniosków z danych",
+    "czym_to_jest": "Patrzysz na kolumnę liczb i widzisz w niej prawidłowość. Albo coś, co się nie trzyma kupy. Nagrodą jest wniosek, którego wcześniej nie było widać.",
+    "gdzie_to_wpada": "Większość dnia to porządkowanie niekompletnych liczb przy ekranie. Sam wniosek zajmuje ostatnie dwadzieścia minut. Poza Tobą nikt go nie widzi.",
+    "nie_myl_z": "To nie to samo co bycie dobrym z matematyki w szkole."
+  },
+  "9": {
+    "nazwa": "Obraz, wygląd, projektowanie",
+    "czym_to_jest": "Decydujesz, jak rzecz ma wyglądać. Widzisz, kiedy coś w układzie nie gra. Inni potrafią powiedzieć tylko, że teraz jest dobrze.",
+    "gdzie_to_wpada": "Robisz dziesięć wersji i dziewięć wyrzucasz. Ocenia ktoś inny, według swojego gustu. Chętnych na wejście jest tu bardzo wielu.",
+    "nie_myl_z": "To nie to samo co dobry gust albo umiejętność rysowania."
+  },
+  "10": {
+    "nazwa": "Pisanie i praca ze słowem",
+    "czym_to_jest": "Produktem tej pracy jest zdanie. Nie chodzi o ładny styl. Chodzi o to, żeby ktoś przeczytał i zrobił, co miał zrobić.",
+    "gdzie_to_wpada": "Siedzenie przed pustym ekranem to zwykła część tej pracy. Duża część dnia schodzi na wyrzucanie wczorajszych zdań. Efekt widać po tygodniach.",
+    "nie_myl_z": "To nie to samo co szkolne wypracowania ani ładny styl."
+  },
+  "11": {
+    "nazwa": "Dźwięk i muzyka",
+    "czym_to_jest": "Praca z dźwiękiem. Nagranie, miksowanie, nagłośnienie. I wyłapanie tego jednego miejsca, które brzmi nie tak.",
+    "gdzie_to_wpada": "Praca idzie wieczorami i w weekendy, bo wtedy są wydarzenia. Dochód jest nierówny. Ucho po czterech godzinach przestaje słyszeć różnice.",
+    "nie_myl_z": "To nie to samo co lubienie muzyki. Ten sam utwór słucha się tu sto razy."
+  },
+  "12": {
+    "nazwa": "Scena, film, występowanie",
+    "czym_to_jest": "Ludzie na Ciebie patrzą. Występ, rola, prowadzenie wydarzenia, materiał przed kamerą. To, że patrzą, jest tu główną robotą.",
+    "gdzie_to_wpada": "Dużo przygotowania idzie na krótki moment przed ludźmi. Ocena jest natychmiastowa, publiczna i często niesprawiedliwa. Dochód bywa nierówny.",
+    "nie_myl_z": "To nie to samo co bycie duszą towarzystwa."
+  },
+  "13": {
+    "nazwa": "Opiekowanie się drugim człowiekiem",
+    "czym_to_jest": "Zajmujesz się kimś, kto sam sobie nie poradzi. Towarzyszenie, mycie, karmienie. Bycie obok w dniu, który jest dla tej osoby trudny.",
+    "gdzie_to_wpada": "Praca jest ciężka ciałem i głową. Jest bliski kontakt z czyimś ciałem. Nagrodą jest cudzy spokój, nie własny efekt.",
+    "nie_myl_z": "To nie to samo co współczucie. Tu liczy się codzienna obecność przy kimś."
+  },
+  "14": {
+    "nazwa": "Uczenie i tłumaczenie innym",
+    "czym_to_jest": "Tłumaczysz tak, że druga osoba wreszcie rozumie. Nagrodą jest moment, w którym widzisz, że jej się zapaliło.",
+    "gdzie_to_wpada": "To kontakt z ludźmi przez cały dzień. Powtarzasz to samo w kolejnych wersjach, bo pierwsza nie zadziałała. Efekt bywa widoczny po latach.",
+    "nie_myl_z": "To nie to samo co dobre znanie tematu. Najlepsi specjaliści często uczą najgorzej."
+  },
+  "15": {
+    "nazwa": "Rozmowa i wspieranie w trudnościach",
+    "czym_to_jest": "Rozmawiasz z ludźmi o tym, co przeżywają. Pytasz o rzeczy trudne. Wytrzymujesz ciszę, która przychodzi po takim pytaniu.",
+    "gdzie_to_wpada": "Kilka takich rozmów dziennie wyczerpuje. Efektu często nie widać wcale. Duża część pracy to słuchanie bez rozwiązywania.",
+    "nie_myl_z": "To nie to samo co bycie dobrym słuchaczem wśród znajomych."
+  },
+  "16": {
+    "nazwa": "Wspólnota i robienie czegoś dla innych",
+    "czym_to_jest": "Organizujesz ludzi wokół wspólnej sprawy. Zbiórki, akcje w okolicy, wolontariat. Po nich zmienia się coś u innych, nie u Ciebie.",
+    "gdzie_to_wpada": "To rzadko bywa zawodem. Zawodowo oznacza organizacje społeczne. Zarobki są tam niskie, a wypalenie zdarza się często.",
+    "nie_myl_z": "To nie to samo co pomaganie jednej osobie. Tu chodzi o organizowanie."
+  },
+  "17": {
+    "nazwa": "Przekonywanie ludzi",
+    "czym_to_jest": "Sprawiasz, że ktoś zmienia zdanie i mówi tak. Oferty, rozmowy handlowe, utrzymywanie klientów. Oni mogli pójść gdzie indziej.",
+    "gdzie_to_wpada": "Słyszysz odmowę wiele razy dziennie i dzwonisz dalej. To, ile sprzedasz, jest widoczne dla całej firmy. Nikt tego nie ukryje.",
+    "nie_myl_z": "To nie to samo co bycie gadatliwym. Najlepsi sprzedawcy więcej słuchają, niż mówią."
+  },
+  "18": {
+    "nazwa": "Prowadzenie ludzi i decydowanie",
+    "czym_to_jest": "Podejmujesz decyzje za grupę. Odpowiadasz za to, co z tego wyjdzie. Także wtedy, gdy zawiódł ktoś inny, a nie Ty.",
+    "gdzie_to_wpada": "Przestajesz robić swoją robotę. Pilnujesz, żeby inni zrobili swoją. Wielu ludzi awansuje tutaj i odkrywa, że straciło to, co lubiło.",
+    "nie_myl_z": "To nie to samo co chęć decydowania o sobie."
+  },
+  "19": {
+    "nazwa": "Własne przedsięwzięcia i ryzyko",
+    "czym_to_jest": "Robisz coś swojego, na własny koszt. Nie ma gotowego wzorca. Nie ma pewności, że to się kiedykolwiek zwróci.",
+    "gdzie_to_wpada": "Połowa dnia to nie ta robota, którą umiesz. To faktury, klienci i szukanie zleceń. Dochód przez pierwsze lata bywa nierówny.",
+    "nie_myl_z": "To nie to samo co chęć bycia szefem ani pewność dobrych zarobków."
+  },
+  "20": {
+    "nazwa": "Argumentowanie, spór, negocjacje",
+    "czym_to_jest": "Ustalasz, kto ma rację, na podstawie zasad. Czytasz umowy i pokazujesz, co może pójść źle. Doprowadzasz dwie strony do porozumienia.",
+    "gdzie_to_wpada": "Czytasz długie dokumenty, żeby znaleźć jeden zapis. Jest dużo pisania, a spór jest tu codziennością. Efekt widać po miesiącach.",
+    "nie_myl_z": "To nie to samo co lubienie sprzeczek w rozmowie."
+  },
+  "21": {
+    "nazwa": "Porządkowanie i układanie w system",
+    "czym_to_jest": "Bierzesz chaos i wychodzisz z systemem. Każda rzecz ma w nim swoje miejsce. Następny raz zajmuje pięć minut zamiast godziny.",
+    "gdzie_to_wpada": "Łatwo zbudować system dla samej elegancji. Jeśli nikt poza Tobą go nie używa, zostaje z tego hobby.",
+    "nie_myl_z": "To nie to samo co posprzątany własny pokój."
+  },
+  "22": {
+    "nazwa": "Precyzja i wyłapywanie błędów",
+    "czym_to_jest": "Widzisz, że coś się nie zgadza, kiedy inni tego nie widzą. Drobna różnica między wersjami. Kwota nie na miejscu. Milimetr za dużo.",
+    "gdzie_to_wpada": "Bez granicy czasu sprawdzanie zamienia się w poprawianie bez końca. Wyłapywanie cudzych błędów bywa odbierane jako czepianie się.",
+    "nie_myl_z": "To nie to samo co bycie pedantem w życiu prywatnym."
+  },
+  "23": {
+    "nazwa": "Pieniądze i rozliczenia",
+    "czym_to_jest": "Pilnujesz, żeby liczby się zgadzały. Kalkulacje, faktury, budżety. Nagrodą jest zamknięty miesiąc, w którym wszystko się spina.",
+    "gdzie_to_wpada": "Odpowiedzialność jest tu formalna i osobista. Błąd ma konsekwencje. Nikt nie chwali za poprawnie zamknięty miesiąc.",
+    "nie_myl_z": "To nie to samo co lubienie pieniędzy. Tu pilnujesz cudzych, nie swoich."
+  },
+  "24": {
+    "nazwa": "Planowanie i ogarnianie logistyki",
+    "czym_to_jest": "Sprawiasz, że rzeczy i ludzie są w odpowiednim miejscu o odpowiedniej porze. Nagrodą jest to, że nic się nie zawaliło.",
+    "gdzie_to_wpada": "Wina za cudze opóźnienia spada na Ciebie. Kiedy wszystko idzie dobrze, wygląda to tak, jakby nikt nic nie robił.",
+    "nie_myl_z": "To nie to samo co bycie zorganizowanym. Tu planujesz pracę innych ludzi."
+  }
+}

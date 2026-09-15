@@ -1,0 +1,277 @@
+{
+  "wartosci": {
+    "PIE": {
+      "nazwa": "Pieniądze i poziom życia",
+      "co_to_znaczy_w_praktyce": "Chcesz, żeby praca dawała realne pieniądze, a nie samą satysfakcję. Nie chodzi o luksus, tylko o to, żeby przy zwykłych decyzjach nie liczyć każdej złotówki.",
+      "zawody_ktore_to_spelniaja": [
+        "zawody z uprawnieniami, na które brakuje ludzi",
+        "spawalnictwo i prace specjalistyczne",
+        "automatyka i utrzymanie ruchu",
+        "informatyka i praca z danymi",
+        "sprzedaż z prowizją od wyniku",
+        "własna działalność po kilku latach nauki"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "budżetówka na pierwszym stanowisku",
+        "fundacje i organizacje pomocowe",
+        "zawody twórcze na początku drogi",
+        "opieka i praca socjalna",
+        "handel detaliczny przy kasie"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, która ciekawie brzmi, a po roku nadal nie pozwala niczego odłożyć."
+    },
+    "STA": {
+      "nazwa": "Stabilność i bezpieczeństwo",
+      "co_to_znaczy_w_praktyce": "Chcesz wiedzieć, że ta praca będzie za pięć lat. Spokój o jutro jest dla Ciebie wart więcej niż nagły skok w górę.",
+      "zawody_ktore_to_spelniaja": [
+        "praca w szkole",
+        "urzędy i administracja",
+        "służby mundurowe",
+        "duże zakłady z długą historią",
+        "kolej i energetyka",
+        "zawody medyczne z etatem w szpitalu"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "własna działalność na starcie",
+        "młoda firma, która dopiero rusza",
+        "praca od zlecenia do zlecenia",
+        "sprzedaż na samej prowizji",
+        "praca sezonowa"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, przy której co kilka miesięcy nie wiadomo, czy jeszcze będzie."
+    },
+    "WOL": {
+      "nazwa": "Wolność i decydowanie o sobie",
+      "co_to_znaczy_w_praktyce": "Chcesz sam ustalać, jak i kiedy pracujesz. Nie chodzi o brak obowiązków. Chodzi o to, żeby nikt nie stał Ci nad głową przy każdym ruchu.",
+      "zawody_ktore_to_spelniaja": [
+        "własna działalność",
+        "rzemiosło na swoim",
+        "serwis w terenie",
+        "praca zdalna",
+        "zawody, w których brakuje ludzi, więc to Ty wybierasz miejsce",
+        "wolne zawody z własną praktyką"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "praca na linii z normą godzinową",
+        "stanowiska z raportem co godzinę",
+        "służby mundurowe",
+        "duże firmy na pierwszym stanowisku",
+        "praca z procedurą na każdy ruch"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, w której każdy Twój ruch ktoś musi najpierw zatwierdzić. Nawet jeśli płaci dobrze."
+    },
+    "ROZ": {
+      "nazwa": "Rozwój i uczenie się",
+      "co_to_znaczy_w_praktyce": "Chcesz, żeby praca ciągle czegoś Cię uczyła. Robota, w której po roku umiesz już wszystko, szybko Ci zbrzydnie.",
+      "zawody_ktore_to_spelniaja": [
+        "informatyka i nowe technologie",
+        "serwis nowego sprzętu",
+        "medycyna i ratownictwo",
+        "zawody z drabiną uprawnień",
+        "laboratorium i badania",
+        "doradztwo techniczne"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "produkcja seryjna na jednym stanowisku",
+        "praca przy kasie",
+        "proste prace magazynowe",
+        "stanowiska, na których wszystko opisuje instrukcja",
+        "ochrona obiektu"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, po której za trzy lata będziesz umieć dokładnie to samo, co dziś."
+    },
+    "WPL": {
+      "nazwa": "Wpływ",
+      "co_to_znaczy_w_praktyce": "Chcesz, żeby Twoje decyzje coś zmieniały. Wykonywanie cudzych poleceń przez cały dzień będzie Cię uwierać.",
+      "zawody_ktore_to_spelniaja": [
+        "prowadzenie zespołu",
+        "własna firma",
+        "samorząd i praca dla miasta",
+        "prowadzenie projektów",
+        "doradztwo dla firm",
+        "organizacje, które coś zmieniają w okolicy"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "stanowiska wykonawcze na starcie",
+        "praca na linii produkcyjnej",
+        "obsługa zgłoszeń według gotowego skryptu",
+        "proste prace biurowe",
+        "praca z procedurą na wszystko"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, w której nikt nigdy nie pyta Cię o zdanie."
+    },
+    "SEN": {
+      "nazwa": "Sens i pomaganie ludziom",
+      "co_to_znaczy_w_praktyce": "Chcesz widzieć, komu konkretnie Twoja praca pomaga. Sama pensja bez tego nie wystarczy, żeby Ci się chciało wstawać rano.",
+      "zawody_ktore_to_spelniaja": [
+        "ratownictwo medyczne",
+        "pielęgniarstwo i opieka",
+        "nauczanie",
+        "terapia i praca z ludźmi",
+        "straż pożarna",
+        "fundacje i pomoc społeczna"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "praca przy tabelkach, bez kontaktu z ludźmi",
+        "windykacja",
+        "reklama produktu, którego nie znasz",
+        "pośrednictwo w sprzedaży",
+        "administrowanie systemem w tle"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, o której nie da się powiedzieć, komu ona realnie pomaga."
+    },
+    "UZN": {
+      "nazwa": "Uznanie",
+      "co_to_znaczy_w_praktyce": "Chcesz, żeby Twoja praca była widoczna i żeby ktoś ją zauważył. Będzie Cię męczyć robota, o której mówi się tylko wtedy, gdy coś pójdzie źle.",
+      "zawody_ktore_to_spelniaja": [
+        "trener i praca w sporcie",
+        "media i wystąpienia",
+        "sprzedaż z widocznym wynikiem",
+        "zawody artystyczne",
+        "szkolenia i nauczanie",
+        "praca z klientem, który dziękuje twarzą w twarz"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "praca w tle, o której nikt nie wie",
+        "kontrola i nadzór",
+        "księgowość",
+        "utrzymanie ruchu na nocnej zmianie",
+        "bezpieczeństwo systemów informatycznych"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, w której dobrze zrobiona robota jest niewidoczna, a widać tylko błędy."
+    },
+    "REL": {
+      "nazwa": "Bliskie relacje w pracy",
+      "co_to_znaczy_w_praktyce": "Chcesz pracować z ludźmi, których lubisz. Dobry zespół jest dla Ciebie powodem, żeby przyjść do pracy, a nie miłym dodatkiem.",
+      "zawody_ktore_to_spelniaja": [
+        "praca w stałym, niedużym zespole",
+        "gastronomia",
+        "szkoła i świetlica",
+        "zespoły ratownicze",
+        "warsztat, w którym pracuje kilka osób",
+        "kluby sportowe i praca z grupą"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "praca zdalna w pojedynkę",
+        "serwis w terenie w pojedynkę",
+        "nocne zmiany w pustym zakładzie",
+        "kierowca w długiej trasie",
+        "praca w ciągle zmieniającym się składzie"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, przy której przez osiem godzin nie masz z kim zamienić słowa."
+    },
+    "CZA": {
+      "nazwa": "Czas dla siebie i bliskich",
+      "co_to_znaczy_w_praktyce": "Chcesz mieć życie poza pracą. Wieczory i weekendy mają być Twoje, a nie firmy.",
+      "zawody_ktore_to_spelniaja": [
+        "etat ze stałym grafikiem",
+        "praca w szkole",
+        "urzędy i administracja",
+        "produkcja z twardym planem zmian",
+        "serwis planowany, bez nocnych awarii",
+        "biuro od ósmej do szesnastej"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "własna działalność w pierwszych latach",
+        "gastronomia",
+        "serwis awaryjny pod telefonem",
+        "praca sezonowa w szczycie",
+        "zawody z dyżurami i nocami",
+        "handel w weekendy"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, która zabiera wieczory i weekendy, nawet gdyby płaciła dużo więcej."
+    },
+    "MIS": {
+      "nazwa": "Mistrzostwo",
+      "co_to_znaczy_w_praktyce": "Chcesz być w czymś naprawdę dobry, a nie przyzwoity w dziesięciu rzeczach naraz. Praca, w której po trzech miesiącach umiesz już wszystko, przestanie Cię trzymać.",
+      "zawody_ktore_to_spelniaja": [
+        "rzemiosło z długą drogą do wprawy",
+        "serwis specjalistyczny",
+        "automatyka i diagnostyka",
+        "zawody medyczne z wąską specjalizacją",
+        "stolarstwo, lutnictwo, zegarmistrzostwo",
+        "programowanie"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "role, w których co rok robi się coś innego",
+        "stanowiska opanowane w tydzień",
+        "proste prace biurowe",
+        "produkcja seryjna na jednym ruchu",
+        "praca, w której wynik zależy głównie od szczęścia"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, która płaci dobrze, a nie ma w sobie nic do opanowania."
+    },
+    "ZMI": {
+      "nazwa": "Zmienność i wyzwania",
+      "co_to_znaczy_w_praktyce": "Chcesz, żeby się działo. Tydzień, który wygląda dokładnie jak poprzedni, zmęczy Cię szybciej niż ciężka robota.",
+      "zawody_ktore_to_spelniaja": [
+        "ratownictwo",
+        "serwis awaryjny w terenie",
+        "praca przy projektach",
+        "gastronomia",
+        "turystyka i organizacja imprez",
+        "sprzedaż i praca z nowymi klientami"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "praca przy jednej maszynie przez lata",
+        "archiwum i porządkowanie dokumentów",
+        "ochrona obiektu",
+        "stały grafik bez niespodzianek",
+        "praca urzędnicza z powtarzalnym obiegiem spraw"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, w której każdy dzień jest kopią poprzedniego."
+    },
+    "ZAS": {
+      "nazwa": "Zgodność z własnymi zasadami",
+      "co_to_znaczy_w_praktyce": "Chcesz pracować bez robienia rzeczy wbrew sobie. Nie szukasz misji. Chodzi o to, żeby nie było Ci wstyd za to, co robisz.",
+      "zawody_ktore_to_spelniaja": [
+        "zawody medyczne",
+        "nauczanie",
+        "prawo i pomoc prawna",
+        "praca w fundacji",
+        "rzemiosło, w którym sam odpowiadasz za jakość",
+        "kontrola jakości i nadzór"
+      ],
+      "zawody_ktore_tego_nie_daja": [
+        "sprzedaż pod presją wyniku",
+        "windykacja",
+        "reklama produktu, w który nie wierzysz",
+        "praca, w której liczy się tylko wynik miesiąca",
+        "pośrednictwo, w którym klient nie zna prawdziwych kosztów"
+      ],
+      "czego_nie_przyjmiesz": "Nie przyjmiesz pracy, w której trzeba mówić klientowi coś, co nie jest prawdą."
+    }
+  },
+  "napiecia": {
+    "WOL_STA": {
+      "nazwa": "Wolność kontra pewność jutra",
+      "na_czym_polega": "Te dwie rzeczy ciągną w przeciwne strony. Praca na swoim daje wolność. Zabiera za to pewność dochodu. Na etacie jest odwrotnie: pieniądze przychodzą regularnie, a o Twoim dniu decyduje ktoś inny.",
+      "jak_z_tym_zyc": "Wielu ludzi bierze to po kolei, a nie naraz. Najpierw kilka lat na etacie, potem swoje. To jest wybór, nie przymus."
+    },
+    "PIE_CZA": {
+      "nazwa": "Pieniądze kontra wolny czas",
+      "na_czym_polega": "Te dwie rzeczy ciągną w przeciwne strony. Najwyższe zarobki prawie zawsze kosztują godziny. Dodatek płaci się za dyżury, nadgodziny i wyjazdy.",
+      "jak_z_tym_zyc": "Wybór wygląda tak. Mniej pieniędzy i spokojne wieczory albo więcej pieniędzy za oddany czas. Wiele osób bierze jedno na kilka lat, a potem drugie."
+    },
+    "MIS_ZMI": {
+      "nazwa": "Bycie w czymś najlepszym kontra ciągła zmiana",
+      "na_czym_polega": "Te dwie rzeczy się biją. Do prawdziwej wprawy dochodzi się latami przy jednej rzeczy. Ciągła zmiana tych lat nie daje. Za każdym razem zaczynasz od nowa.",
+      "jak_z_tym_zyc": "Są zawody, w których podstawa jest stała, a sytuacje za każdym razem inne. To trzecia możliwość obok tamtych dwóch."
+    },
+    "WPL_CZA": {
+      "nazwa": "Decydowanie kontra wolny czas",
+      "na_czym_polega": "Te dwie rzeczy się biją. Kto decyduje, ten odpowiada. Odpowiedzialność nie kończy się o szesnastej. Telefon dzwoni wtedy, kiedy coś pójdzie źle.",
+      "jak_z_tym_zyc": "Do wyboru są dwie prace. W jednej masz coś do powiedzenia i mniej spokoju. W drugiej masz spokój i mniej do powiedzenia."
+    },
+    "SEN_PIE": {
+      "nazwa": "Pomaganie ludziom kontra pieniądze",
+      "na_czym_polega": "Te dwie rzeczy ciągną w przeciwne strony. W niektórych zawodach od razu widać, komu pomagasz. Takie zawody są w Polsce gorzej płatne.",
+      "jak_z_tym_zyc": "Da się mieć jedno i drugie. Zwykle prowadzi do tego własna praktyka albo wąska specjalizacja. To wybór na kilka dodatkowych lat nauki."
+    },
+    "REL_WOL": {
+      "nazwa": "Ludzie obok kontra robienie po swojemu",
+      "na_czym_polega": "Te dwie rzeczy się biją. Praca na swoim daje swobodę. Zabiera za to codzienny zespół. Na swoim nie ma z kim zjeść obiadu i pogadać o wczorajszym meczu.",
+      "jak_z_tym_zyc": "Wybór jest taki. Albo zespół, z którym trzeba się dogadywać. Albo swoboda, przy której siedzi się częściej samemu."
+    }
+  }
+}

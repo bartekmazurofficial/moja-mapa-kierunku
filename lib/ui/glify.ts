@@ -77,6 +77,13 @@ export const GLIFY: Record<KluczGlifu, string[]> = {
   "a2-29": ["M12 4.5 5 7.5v5c0 4 3 6.5 7 7.5 4-1 7-3.5 7-7.5v-5z", "m9.5 12 2 2 3.5-4"], // opanowanie
   "a2-30": ["M12 4.5a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15Z", "m8.5 15.5 7-7"], // odporność na odmowę
 
+  // --- A6: 5 osi uczenia sie ---
+  "a6-TEO": ["M4 5.5h6a2 2 0 0 1 2 2v11a2 2 0 0 0-2-2H4z", "M20 5.5h-6a2 2 0 0 0-2 2v11a2 2 0 0 1 2-2h6z"], // teoria kontra praktyka
+  "a6-EGZ": ["M6.5 3.5h8l4 4v13h-12z", "M14.5 3.5v4h4", "m9 13.5 2 2 4-4"], // egzamin kontra projekt
+  "a6-PRO": ["M12 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z", "M6.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5", "M3.5 8.5h2M18.5 8.5h2"], // sam kontra z prowadzacym
+  "a6-CZY": ["M5 4.5h9v15H5z", "M8 8.5h3M8 12h3", "m17.5 10 3 3-3 3"], // czytanie kontra robienie
+  "a6-JED": ["M12 4v16", "M7 20.5h10", "M4.5 9h2.5M17 9h2.5", "M4.5 14h2.5M17 14h2.5"], // jedna dziedzina kontra wiele
+
   // --- A3: 13 osi stylu działania ---
   "a3-INI": ["M12 19V6", "m7 11 5-5 5 5"],
   "a3-STR": ["M4.5 6.5h15v13h-15z", "M4.5 10.5h15M4.5 15h15", "M9.5 6.5v13M14.5 6.5v13"],

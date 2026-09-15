@@ -21,11 +21,15 @@ import type { KodModulu } from "./typy";
 export const MODULY_SPOTKANIA: Record<number, KodModulu[]> = {
   1: ["A0", "A1", "A3"],
   2: ["A2"],
-  3: ["A4", "M1", "A5"],
+  3: ["A4", "M1"],
+  // Spotkanie czwarte otwiera dwa ostatnie moduly i konczy sie raportem.
+  // A6 stoi po A5 celowo: filtry mowia, na co czlowiek sie godzi w pracy,
+  // a dopiero potem pytamy, ile nauki jest gotow w to wlozyc.
+  4: ["A5", "A6"],
 };
 
 export const SPOTKANIE_MODULU: Record<KodModulu, number> = {
-  A0: 1, A1: 1, A3: 1, A2: 2, M1: 3, A4: 3, A5: 3,
+  A0: 1, A1: 1, A3: 1, A2: 2, M1: 3, A4: 3, A5: 4, A6: 4,
 };
 
 export async function otwarteModuly(grupaId: string): Promise<Set<KodModulu>> {

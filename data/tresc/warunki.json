@@ -1,0 +1,260 @@
+{
+  "F01": {
+    "tekst": "Studia trwające pięć lat albo dłużej",
+    "czego_to_dotyczy": "Medycyna, prawo, psychologia, weterynaria, farmacja i architektura. To kierunki, na których nie da się skończyć po trzech latach. Krótsza droga nie daje tam uprawnień.",
+    "co_zostaje": "Zostaje ogromna reszta: studia trzyletnie, technikum plus uprawnienia, szkoły policealne, kursy zawodowe. Większość zawodów w Polsce nie wymaga pięciu lat nauki.",
+    "przewaga": "Kto jest gotów na pięć lat, wchodzi do zawodów chronionych przepisami. Nikt tam nie wejdzie z boku, a chętnych jest mało."
+  },
+  "F02": {
+    "tekst": "Studia, w jakiejkolwiek formie",
+    "czego_to_dotyczy": "Zawody, w których dyplom jest wymagany przepisami: nauczyciel, inżynier, lekarz, prawnik, psycholog, fizjoterapeuta. Bez papieru nie wolno tam pracować.",
+    "co_zostaje": "Zostaje cały świat zawodów z uprawnieniami zamiast dyplomu: technik, elektryk, operator maszyn, programista, kucharz, fryzjer, kierowca zawodowy. Tam liczy się to, co umiesz zrobić.",
+    "przewaga": "Zgoda na studia otwiera zawody, do których nikt nie wejdzie bez dyplomu. Takiego miejsca pracy nie zabierze Ci ktoś z ulicy."
+  },
+  "F03": {
+    "tekst": "Trudne egzaminy zawodowe po studiach",
+    "czego_to_dotyczy": "Aplikacje prawnicze, egzaminy lekarskie, uprawnienia budowlane, egzaminy dla doradców podatkowych i biegłych rewidentów. Zdaje się je po studiach, czasem kilka razy.",
+    "co_zostaje": "Zostaje mnóstwo zawodów, w których po szkole po prostu idziesz do pracy i uczysz się w niej. Żaden egzamin nie stoi Ci na drodze.",
+    "przewaga": "Kto przejdzie taki egzamin, dostaje zawód z twardym progiem na wejściu. Chętnych jest wtedy mniej, a miejsce na rynku pracy mocniejsze."
+  },
+  "F04": {
+    "tekst": "Dokształcanie się przez cały czas pracy",
+    "czego_to_dotyczy": "Informatyka, medycyna, księgowość, prawo i technika. Przepisy i narzędzia zmieniają się tam co rok, więc nauka nie kończy się razem ze szkołą.",
+    "co_zostaje": "Zostają zawody, gdzie raz nauczone rzemiosło działa latami: stolarstwo, gastronomia, transport, rolnictwo, opieka, wiele prac technicznych. Uczysz się raz porządnie, potem pracujesz.",
+    "przewaga": "Kto lubi się uczyć przez całe życie, nigdy nie zostaje w tyle. To zwykle on tłumaczy nowe rzeczy reszcie zespołu."
+  },
+  "F05": {
+    "tekst": "Nauka po godzinach, obok pracy",
+    "czego_to_dotyczy": "Studia zaoczne, kursy wieczorowe, uprawnienia zdobywane w trakcie pracy. Tak się awansuje w firmach, w których zaczyna się od niższego stanowiska.",
+    "co_zostaje": "Zostaje droga, na której najpierw kończysz szkołę, a potem tylko pracujesz. Wieczory masz wolne i to też jest normalny plan na życie.",
+    "przewaga": "Kto uczy się po godzinach, zarabia i zdobywa papiery naraz. Po kilku latach ma jedno i drugie."
+  },
+  "F06": {
+    "tekst": "Przeprowadzka do innego miasta",
+    "czego_to_dotyczy": "Zawody, których nie da się wykonywać w małej miejscowości: lotnictwo, marynarka, wielki przemysł, praca w laboratoriach badawczych, telewizja, duże szpitale kliniczne.",
+    "co_zostaje": "Zostaje wszystko, co jest potrzebne wszędzie: zdrowie, szkoła, budowa, jedzenie, naprawy, handel, transport. To są zawody, które istnieją w każdym mieście.",
+    "przewaga": "Kto może się ruszyć, wybiera spośród ofert z całego kraju, a nie z jednego powiatu. Zwykle trafia wtedy na lepsze pieniądze."
+  },
+  "F07": {
+    "tekst": "Praca albo studia za granicą",
+    "czego_to_dotyczy": "Marynarka, lotnictwo, duże firmy międzynarodowe, montaż maszyn u klienta, praca sezonowa, badania naukowe. Wyjazd jest tam częścią umowy, nie dodatkiem.",
+    "co_zostaje": "Zostaje cały rynek w Polsce, a on jest duży. Prawie każdy zawód da się robić tutaj, bez paszportu w kieszeni.",
+    "przewaga": "Kto wyjedzie, wraca z doświadczeniem, jakiego w kraju mało kto ma. Widać to w każdym późniejszym życiorysie."
+  },
+  "F08": {
+    "tekst": "Życie daleko od rodziny",
+    "czego_to_dotyczy": "Praca na statkach, na platformach, na budowach w delegacji, w wojsku i w służbach mundurowych. Wracasz do domu co kilka tygodni, nie codziennie.",
+    "co_zostaje": "Zostaje ogromna większość zawodów, w których wieczorem jesteś u siebie. Bliskość rodziny to dobry powód, żeby wybrać właśnie taką pracę.",
+    "przewaga": "Kto to wytrzyma, dostaje stawki, jakich nie ma w pracy na miejscu. Firmy płacą właśnie za te tygodnie z dala od domu."
+  },
+  "F09": {
+    "tekst": "Częste wyjazdy służbowe",
+    "czego_to_dotyczy": "Serwis maszyn u klienta, handel, montaż, szkolenia, kontrola jakości w kilku zakładach. Praca dzieje się tam u ludzi, a nie w jednym biurze.",
+    "co_zostaje": "Zostają wszystkie zawody wykonywane w jednym miejscu: warsztat, szpital, szkoła, zakład, biuro, sklep. Rano przychodzisz, wieczorem wychodzisz.",
+    "przewaga": "Kto jeździ, poznaje dziesiątki firm w rok. Zwykle najszybciej wie, gdzie warto przejść dalej."
+  },
+  "F10": {
+    "tekst": "Praca w jednym miejscu przez wiele lat",
+    "czego_to_dotyczy": "Zakłady produkcyjne, szkoły, szpitale, urzędy, rodzinne warsztaty. Doświadczenie zbiera się tam latami i właśnie ono daje człowiekowi wartość.",
+    "co_zostaje": "Zostają zawody, które da się robić w wielu miejscach i zmieniać co kilka lat: budowa, gastronomia, informatyka, handel, praca na kontraktach.",
+    "przewaga": "Kto zostaje na dłużej, po kilku latach zna zakład lepiej niż ktokolwiek. Staje się osobą, której się nie wymienia."
+  },
+  "F11": {
+    "tekst": "Praca w weekendy",
+    "czego_to_dotyczy": "Handel, gastronomia, hotele, zdrowie, transport, kultura, sport i służby. Ludzie korzystają z tych miejsc właśnie w sobotę i w niedzielę.",
+    "co_zostaje": "Zostają zawody z wolnym weekendem: przemysł, biura, budowa, szkoła, urzędy, większość techniki. Piątek naprawdę kończy tam tydzień.",
+    "przewaga": "Kto pracuje w weekendy, ma wolne w tygodniu, kiedy nigdzie nie ma kolejek. Za te dni zwykle dostaje wyższą stawkę."
+  },
+  "F12": {
+    "tekst": "Praca na zmiany, także nocne",
+    "czego_to_dotyczy": "Fabryki pracujące bez przerwy, szpitale, energetyka, kolej, ochrona, serwis awaryjny. Te miejsca nie mogą się zatrzymać na noc.",
+    "co_zostaje": "Zostają wszystkie zawody od rana do popołudnia: biura, szkoły, warsztaty, budowa, sklepy, większość usług. Śpisz w nocy jak zwykle.",
+    "przewaga": "Kto bierze nocki, dostaje dodatek do pensji. Takie zakłady szukają ludzi przez cały rok, bo mało kto się zgadza."
+  },
+  "F13": {
+    "tekst": "Dyżury i bycie pod telefonem",
+    "czego_to_dotyczy": "Utrzymanie ruchu, informatyka, energetyka, zdrowie, weterynaria, serwis awaryjny. Telefon może zadzwonić wieczorem i trzeba wtedy ruszyć z domu.",
+    "co_zostaje": "Zostają zawody, w których po wyjściu z pracy nikt Cię nie szuka. Telefon milczy i wieczór jest tylko Twój.",
+    "przewaga": "Za dyżury płaci się osobno. Kto je bierze, zarabia więcej na tym samym stanowisku."
+  },
+  "F14": {
+    "tekst": "Nadgodziny w gorących okresach",
+    "czego_to_dotyczy": "Księgowość przy zamknięciu roku, budowa przed odbiorem, handel przed świętami, rolnictwo w żniwa, informatyka przed uruchomieniem nowego systemu.",
+    "co_zostaje": "Zostają zawody z równym rytmem przez cały rok: szkoła, urząd, przychodnia, serwis, produkcja seryjna. Każdy tydzień wygląda tam podobnie.",
+    "przewaga": "Kto wytrzyma kilka gorących tygodni w roku, jest w firmie widoczny. To zwykle jego pamiętają przy podwyżkach."
+  },
+  "F15": {
+    "tekst": "Nieregularne, zmienne godziny",
+    "czego_to_dotyczy": "Film, wydarzenia, gastronomia, transport, opieka, fotografia, praca na zlecenia. Grafik układa się tam pod klienta, a nie pod kalendarz.",
+    "co_zostaje": "Zostają zawody ze stałymi godzinami: urzędy, szkoły, biura, produkcja, warsztaty. W poniedziałek już wiesz, co robisz w czwartek.",
+    "przewaga": "Kto pracuje elastycznie, bierze zlecenia, których nikt inny nie może przyjąć. Często sam decyduje, kiedy ma wolne."
+  },
+  "F39": {
+    "tekst": "Samodzielne zdobywanie klientów",
+    "czego_to_dotyczy": "Własny warsztat, fryzjerstwo, fotografia, szkolenia, doradztwo, handel, usługi remontowe. Nikt nie przyprowadza tam klienta za rękę.",
+    "co_zostaje": "Zostaje praca na etacie, gdzie klientów przyprowadza firma. Ty robisz tam swoje: zakład, szpital, szkoła, biuro, serwis, produkcja.",
+    "przewaga": "Kto umie zdobyć klienta sam, nie zostaje bez pracy. Nie zależy od jednej firmy ani od jednego szefa."
+  },
+  "F16": {
+    "tekst": "Praca wieczorami, gdy dzień się kończy",
+    "czego_to_dotyczy": "Gastronomia, kultura, sport, korepetycje, ochrona, sklepy otwarte do późna, transport. Ludzie przychodzą tam po swojej własnej pracy.",
+    "co_zostaje": "Zostają zawody, które kończą się po południu: przemysł, budowa, biura, szkoły, serwis. Wieczór zaczyna się wtedy, gdy schodzisz.",
+    "przewaga": "Kto pracuje wieczorami, ma dzień wolny na swoje sprawy. Wchodzi też tam, gdzie zawsze brakuje rąk."
+  },
+  "F17": {
+    "tekst": "Praca fizyczna, wymagająca siły",
+    "czego_to_dotyczy": "Budowa, magazyn, montaż, rolnictwo, leśnictwo, przeprowadzki, ratownictwo. Dźwiga się tam i nosi przez sporą część dnia.",
+    "co_zostaje": "Zostaje ogromna część rynku, gdzie ciężar bierze na siebie maszyna albo nikt: biura, laboratoria, warsztaty precyzyjne, zdrowie, handel, informatyka.",
+    "przewaga": "Kto to udźwignie, wchodzi do zawodów z ciągłym brakiem rąk. Tam stawki idą w górę same."
+  },
+  "F18": {
+    "tekst": "Praca na dworze w każdą pogodę",
+    "czego_to_dotyczy": "Budowa, drogownictwo, geodezja, rolnictwo, leśnictwo, energetyka, serwis w terenie. Zimą i w deszczu robota idzie tam dalej.",
+    "co_zostaje": "Zostaje wszystko pod dachem: hale, warsztaty, biura, sklepy, szpitale, kuchnie, laboratoria. Pogoda nie zmienia tam nic.",
+    "przewaga": "Kto nie boi się pogody, dostaje pracę w terenie, gdzie chętnych jest mało. Płaci się tam lepiej niż za to samo w hali."
+  },
+  "F19": {
+    "tekst": "Stanie albo chodzenie przez większość dnia",
+    "czego_to_dotyczy": "Gastronomia, handel, produkcja, fryzjerstwo, zdrowie, magazyn, ochrona. Krzesło pojawia się tam właściwie tylko na przerwie.",
+    "co_zostaje": "Zostają zawody wykonywane na siedząco: biura, projektowanie, informatyka, księgowość, transport, laboratoria, serwis przy stole.",
+    "przewaga": "Kto wytrzyma cały dzień na nogach, ma otwarte zawody od ludzi i od produkcji. To tysiące miejsc pracy."
+  },
+  "F20": {
+    "tekst": "Siedzenie przy komputerze przez większość dnia",
+    "czego_to_dotyczy": "Informatyka, projektowanie, księgowość, analiza danych, biura, obsługa zamówień. Praca dzieje się tam na ekranie od rana do końca dnia.",
+    "co_zostaje": "Zostają zawody, w których jesteś w ruchu: budowa, serwis, zdrowie, gastronomia, transport, rolnictwo, praca z ludźmi.",
+    "przewaga": "Kto wytrzyma przy ekranie, wchodzi do zawodów, które da się robić z każdego miejsca. W technice płacą one najlepiej."
+  },
+  "F21": {
+    "tekst": "Brud, zapachy i nieprzyjemne warunki",
+    "czego_to_dotyczy": "Warsztat, kanalizacja, przetwórstwo, rolnictwo, weterynaria, sprzątanie, odpady i część zdrowia. Rękawice i ubranie robocze są tam codziennością.",
+    "co_zostaje": "Zostają zawody czyste od rana do wieczora: biura, szkoły, laboratoria, sklepy, informatyka, projektowanie, serwis elektroniki.",
+    "przewaga": "Kto się tym nie brzydzi, wchodzi tam, gdzie większość odpada na starcie. Pracę znajduje szybko i trzyma ją tyle lat, ile chce."
+  },
+  "F34": {
+    "tekst": "Agresja słowna albo fizyczna w pracy",
+    "czego_to_dotyczy": "Policja, ochrona, straż, ratownictwo, izba przyjęć, opieka nad osobami chorymi psychicznie, część szkół i urzędów. Trudne zachowania są tam częścią dnia.",
+    "co_zostaje": "Zostaje ogromna część rynku, gdzie nikt na Ciebie nie krzyczy: warsztat, laboratorium, biuro, projektowanie, produkcja, praca z rzeczami zamiast z tłumem.",
+    "przewaga": "Kto umie zostać spokojny, gdy ktoś się awanturuje, jest w służbach i w opiece na wagę złota. Takich ludzi brakuje wszędzie."
+  },
+  "F33": {
+    "tekst": "Praca w pojedynkę, bez zespołu",
+    "czego_to_dotyczy": "Kierowca, leśnik, serwisant w trasie, stróż, programista na zleceniach, rzemieślnik w swoim warsztacie. Cały dzień schodzi tam bez rozmów z kolegami.",
+    "co_zostaje": "Zostaje wszystko, co robi się w zespole: budowa, hala, szpital, kuchnia, szkoła, sklep, straż. Ludzie są tam obok przez cały dzień.",
+    "przewaga": "Kto dobrze znosi samotność w pracy, bierze zadania, których nikt nie chce. Zwykle sam decyduje o swoim tempie."
+  },
+  "F36": {
+    "tekst": "Niepewny, zmienny dochód",
+    "czego_to_dotyczy": "Własna działalność, handel z prowizją, rzemiosło na zlecenia, fotografia, budowa na akord, sezonowa praca w turystyce. Miesiąc od miesiąca różni się tam mocno.",
+    "co_zostaje": "Zostaje cały świat stałej pensji: etat w zakładzie, szpital, szkoła, urząd, duże firmy. Ta sama kwota co miesiąc, niezależnie od pogody i od sezonu.",
+    "przewaga": "Kto wytrzyma chudszy miesiąc, może pójść na swoje. Sufit zarobków jest tam dużo wyżej niż na etacie."
+  },
+  "F37": {
+    "tekst": "Prowadzenie własnej działalności",
+    "czego_to_dotyczy": "Warsztat, salon, gabinet, firma budowlana, sklep, usługi. Poza samą robotą są tam papiery, podatki, klienci i odpowiedzialność za wszystko.",
+    "co_zostaje": "Zostaje praca u kogoś, gdzie robisz swoje, a papierami zajmuje się firma. Większość dobrych fachowców pracuje właśnie tak.",
+    "przewaga": "Kto prowadzi swoje, decyduje sam o cenach i o tym, dla kogo pracuje. Tego nie da się kupić za żadną pensję."
+  },
+  "F38": {
+    "tekst": "Niskie zarobki przez pierwsze lata",
+    "czego_to_dotyczy": "Zdrowie, gastronomia, kultura, opieka, część rzemiosła i praca naukowa. Zaczyna się tam nisko, bo najpierw trzeba się nauczyć zawodu.",
+    "co_zostaje": "Zostają zawody, które płacą przyzwoicie od początku: technika, budowa, transport, informatyka, przemysł, prace z uprawnieniami.",
+    "przewaga": "Kto przetrzyma chude lata, wchodzi do zawodów, z których inni odchodzą po roku. Później ma tam miejsce prawie dla siebie."
+  },
+  "F22": {
+    "tekst": "Codzienny kontakt z krwią i ranami",
+    "czego_to_dotyczy": "Chirurgia, ratownictwo, pielęgniarstwo zabiegowe, pobieranie krwi, weterynaria, część fizjoterapii. Krew jest tam codziennością, a nie wyjątkiem.",
+    "co_zostaje": "Zostaje cała reszta zdrowia: serwis sprzętu medycznego, technik radiolog, optyka, technik dentystyczny, farmacja, dietetyka. Praca z aparaturą, nie z raną.",
+    "przewaga": "Kto to znosi spokojnie, wchodzi na salę operacyjną i do ratownictwa. Tam zespół zawsze jest za mały."
+  },
+  "F23": {
+    "tekst": "Kontakt ze śmiercią i z umieraniem",
+    "czego_to_dotyczy": "Medycyna szpitalna, ratownictwo, opieka nad osobami u kresu życia, dom opieki, medycyna sądowa, weterynaria. Śmierć jest tam częścią pracy.",
+    "co_zostaje": "Zostaje cała reszta zdrowia: serwis sprzętu medycznego, technik radiolog, optyka, technik dentystyczny, analityka medyczna, dietetyka. Praca z aparaturą, nie z pacjentem.",
+    "przewaga": "Kto umie być obok człowieka w takiej chwili, robi coś, czego prawie nikt nie umie. W opiece jest nie do zastąpienia."
+  },
+  "F24": {
+    "tekst": "Hałas taki, że trzeba nosić ochronniki",
+    "czego_to_dotyczy": "Hale produkcyjne, obróbka metalu i drewna, budowa, lotnisko, kopalnia, tartak. Bez ochronników na uszach nie wolno tam wejść.",
+    "co_zostaje": "Zostają zawody w ciszy: biura, laboratoria, serwis elektroniki, projektowanie, szkoła, zdrowie, handel, informatyka.",
+    "przewaga": "Kto pracuje w hałasie, wchodzi do przemysłu. Przemysł płaci wyraźnie lepiej niż spokojne biuro obok."
+  },
+  "F25": {
+    "tekst": "Ciasne przestrzenie, na przykład szachty",
+    "czego_to_dotyczy": "Instalacje, wentylacja, kanalizacja, serwis maszyn od środka, statki, kopalnia, część budowy. Wchodzi się tam w miejsca, gdzie ledwo się mieścisz.",
+    "co_zostaje": "Zostaje cała technika na otwartej przestrzeni: hale, warsztaty, place budowy, serwis przy stole, projektowanie, energetyka na zewnątrz.",
+    "przewaga": "Kto wchodzi tam, gdzie ciasno, jest w ekipie nie do zastąpienia. Chętnych jest bardzo mało."
+  },
+  "F26": {
+    "tekst": "Praca na wysokości, na dachu albo rusztowaniu",
+    "czego_to_dotyczy": "Dekarstwo, rusztowania, montaż wiatraków i anten, energetyka, prace wysokościowe, mycie elewacji. Robota dzieje się tam wysoko nad ziemią.",
+    "co_zostaje": "Zostaje cała budowa i cała technika na ziemi: instalacje wewnątrz, warsztat, hala, wykończenia, drogi, serwis maszyn.",
+    "przewaga": "Kto pracuje wysoko, ma zawód z uprawnieniami, do którego prawie nikt nie staje. Stawki dzienne są tam wyraźnie wyższe niż na dole."
+  },
+  "F27": {
+    "tekst": "Codzienny kontakt z chemikaliami",
+    "czego_to_dotyczy": "Lakiernictwo, galwanizacja, laboratoria, przemysł chemiczny, sprzątanie, fryzjerstwo, rolnictwo przy opryskach. Środki chemiczne są tam narzędziem pracy.",
+    "co_zostaje": "Zostaje mnóstwo zawodów bez chemii: mechanika, elektryka, informatyka, budowa, handel, transport, projektowanie, praca z ludźmi.",
+    "przewaga": "Kto się na to godzi, wchodzi do przemysłu i do laboratoriów. Sama umiejętność bezpiecznej pracy jest tam osobnym zawodem."
+  },
+  "F35": {
+    "tekst": "Słyszenie odmowy kilkadziesiąt razy w miesiącu",
+    "czego_to_dotyczy": "Sprzedaż, telemarketing, pozyskiwanie klientów, zbiórki na cele społeczne, agencje, własna firma na początku. Słowo „nie” pada tam codziennie.",
+    "co_zostaje": "Zostają zawody, w których klient przychodzi sam albo nie ma go wcale: warsztat, produkcja, biuro, zdrowie, szkoła, serwis, technika.",
+    "przewaga": "Kto się odmową nie przejmuje, zarabia na prowizji tyle, ile sobie wypracuje. Takich ludzi firmy szukają przez cały rok."
+  },
+  "F42": {
+    "tekst": "Dużo papierów i sprawozdań",
+    "czego_to_dotyczy": "Urzędy, zdrowie, szkoła, odbiory na budowie, opieka społeczna, projekty z dofinansowaniem. Za każdą wykonaną pracą idzie tam dokument.",
+    "co_zostaje": "Zostają zawody, gdzie liczy się zrobiona robota, a nie jej opis: warsztat, produkcja, gastronomia, montaż, transport, część informatyki.",
+    "przewaga": "Kto ogarnia papiery, szybko dostaje pod siebie cały projekt. W każdym zespole brakuje kogoś, kto doprowadzi to do końca."
+  },
+  "F28": {
+    "tekst": "Kontakt z ludźmi przez cały dzień",
+    "czego_to_dotyczy": "Handel, gastronomia, zdrowie, szkoła, urząd, hotel, obsługa klienta. Rozmowa z kimś nowym zaczyna się tam co kilka minut.",
+    "co_zostaje": "Zostają zawody z małą liczbą rozmów: warsztat, laboratorium, magazyn, transport, programowanie, projektowanie, serwis, rolnictwo.",
+    "przewaga": "Kto wytrzyma ludzi przez cały dzień, ma otwarty największy kawałek rynku pracy. Usługi są wszędzie i zawsze szukają ludzi."
+  },
+  "F29": {
+    "tekst": "Praca z małymi dziećmi",
+    "czego_to_dotyczy": "Żłobek, przedszkole, edukacja wczesnoszkolna, animacja, opieka, część zdrowia i terapii. Dzieci są tam z Tobą przez całą zmianę.",
+    "co_zostaje": "Zostaje praca z dorosłymi i z młodzieżą: szkoła średnia, szkolenia, doradztwo, sport, zdrowie dorosłych i cała reszta rynku.",
+    "przewaga": "Kto umie być z małymi dziećmi, ma pracę w każdej miejscowości w Polsce. Żłobków i przedszkoli ciągle brakuje."
+  },
+  "F30": {
+    "tekst": "Praca z osobami chorymi albo starszymi",
+    "czego_to_dotyczy": "Opieka, pielęgniarstwo, domy opieki, rehabilitacja, asystentura osobista, część zdrowia i pomocy społecznej. Chory człowiek jest tam głównym zadaniem dnia.",
+    "co_zostaje": "Zostaje cała reszta zdrowia, bez łóżka pacjenta: apteka, laboratorium, sprzęt medyczny, optyka, technik dentystyczny, dietetyka, badania.",
+    "przewaga": "Kto się na to godzi, ma zawód potrzebny coraz bardziej. Osób starszych przybywa, a chętnych do opieki nie."
+  },
+  "F40": {
+    "tekst": "Odpowiedzialność za czyjeś zdrowie",
+    "czego_to_dotyczy": "Zdrowie, ratownictwo, kierowanie autobusem, elektryka, gaz, konstrukcje na budowie, obsługa dźwigu. Twój błąd może tam zaszkodzić drugiemu człowiekowi.",
+    "co_zostaje": "Zostają zawody, gdzie błąd kosztuje czas albo pieniądze, a nie zdrowie: handel, biuro, grafika, informatyka, produkcja, gastronomia.",
+    "przewaga": "Kto bierze taką odpowiedzialność, dostaje uprawnienia i stanowiska, których nie powierza się przypadkowym ludziom. Właśnie za to się tam płaci."
+  },
+  "F31": {
+    "tekst": "Obsługa niezadowolonych klientów",
+    "czego_to_dotyczy": "Reklamacje, serwis, infolinia, handel, hotele, bank, urząd. Człowiek przychodzi tam zwykle wtedy, gdy coś nie zadziałało.",
+    "co_zostaje": "Zostają zawody bez rozmowy z klientem po fakcie: produkcja, warsztat, magazyn, projektowanie, programowanie, laboratorium, transport.",
+    "przewaga": "Kto umie rozmawiać ze złym klientem i go uspokoić, jest w każdej firmie ratunkiem. Tę umiejętność ma naprawdę mało osób."
+  },
+  "F32": {
+    "tekst": "Częste wystąpienia przed grupą",
+    "czego_to_dotyczy": "Nauczanie, szkolenia, prezentacje handlowe, stanowiska kierownicze, doradztwo, przewodnictwo. Mówi się tam do wielu osób naraz, i to często.",
+    "co_zostaje": "Zostają zawody, w których pracujesz z jedną osobą albo z rzeczą: serwis, warsztat, projektowanie, laboratorium, programowanie, rzemiosło.",
+    "przewaga": "Kto umie stanąć przed grupą, dostaje szkolenia i zespół pod opiekę. Tę umiejętność widać od razu, a chętnych jest mało."
+  },
+  "F41": {
+    "tekst": "Stała presja czasu i wyniku",
+    "czego_to_dotyczy": "Sprzedaż, gastronomia, media, logistyka, budowa z terminem, informatyka przy uruchomieniach. Ktoś tam codziennie patrzy, czy zdążysz na czas.",
+    "co_zostaje": "Zostają zawody z równym tempem: rzemiosło, laboratorium, urząd, szkoła, serwis, produkcja, opieka nad sprzętem.",
+    "przewaga": "Kto pracuje dobrze pod presją, trafia tam, gdzie płaci się za wynik, a nie za godziny. Sam wpływa wtedy na swoją wypłatę."
+  },
+  "F43": {
+    "tekst": "Poprawianie swojej pracy po raz czwarty",
+    "czego_to_dotyczy": "Projektowanie, grafika, architektura, reklama, pisanie, programowanie na zlecenie. Klient ogląda efekt i prosi o zmiany, czasem wiele razy z rzędu.",
+    "co_zostaje": "Zostają zawody, w których robota raz zrobiona jest skończona: montaż, produkcja, naprawa, gastronomia, transport, opieka, praca w terenie.",
+    "przewaga": "Kto znosi poprawki spokojnie, pracuje z najbardziej wymagającymi klientami. Za dopracowaną rzecz płacą oni najwyżej."
+  }
+}

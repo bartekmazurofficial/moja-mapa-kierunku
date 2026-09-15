@@ -1,0 +1,272 @@
+{
+  "1": {
+    "nazwa": "Biznes, strategia i zarządzanie",
+    "sciezka_rozwoju": [
+      "start przy projektach",
+      "rola specjalisty",
+      "prowadzenie zespołu"
+    ],
+    "co_warto_wiedziec": "Tu nikt nie zaczyna od kierowania ludźmi. Najpierw robisz dobrze jedną rzecz, potem dostajesz zespół.",
+    "ikona": "compass"
+  },
+  "2": {
+    "nazwa": "Marketing i komunikacja",
+    "sciezka_rozwoju": [
+      "własne treści i pierwsze zlecenia",
+      "kursy branżowe",
+      "praca w firmie albo agencji"
+    ],
+    "co_warto_wiedziec": "Liczy się to, co pokażesz, a nie to, jaką masz szkołę. Zebrane prace otwierają drzwi szybciej niż dyplom.",
+    "ikona": "megaphone"
+  },
+  "3": {
+    "nazwa": "Sprzedaż i rozwój biznesu",
+    "sciezka_rozwoju": [
+      "start w obsłudze klienta",
+      "własni klienci",
+      "opieka nad dużymi umowami"
+    ],
+    "co_warto_wiedziec": "To jedno z niewielu miejsc, gdzie nikt nie pyta o szkołę. Pytają o to, ile udało się sprzedać w ostatnich miesiącach.",
+    "ikona": "handshake"
+  },
+  "4": {
+    "nazwa": "Finanse i księgowość",
+    "sciezka_rozwoju": [
+      "technikum albo studia ekonomiczne",
+      "praca w biurze rachunkowym",
+      "certyfikaty zawodowe"
+    ],
+    "co_warto_wiedziec": "Dokładność cenią tu wyżej niż tempo. Jeden błąd w rozliczeniu kosztuje firmę prawdziwe pieniądze.",
+    "ikona": "calculator"
+  },
+  "5": {
+    "nazwa": "Administracja, procesy i obsługa",
+    "sciezka_rozwoju": [
+      "technikum albo dowolne studia",
+      "praca w biurze",
+      "samodzielne prowadzenie spraw"
+    ],
+    "co_warto_wiedziec": "Wejść tu jest łatwo, wyróżnić się trudniej. Wyróżnia się ten, kto ogarnia programy do faktur i dokumentów.",
+    "ikona": "folder"
+  },
+  "6": {
+    "nazwa": "Analiza danych",
+    "sciezka_rozwoju": [
+      "mocna matematyka w szkole",
+      "kursy i własne projekty",
+      "studia ścisłe albo start od juniora"
+    ],
+    "co_warto_wiedziec": "Kurs wystarczy, żeby wejść. Dalej decyduje matematyka, bo bez niej po kilku latach kończy się grunt.",
+    "ikona": "chart"
+  },
+  "7": {
+    "nazwa": "Prawo",
+    "sciezka_rozwoju": [
+      "studia prawnicze",
+      "praca pomocnicza w kancelarii",
+      "aplikacja i egzaminy"
+    ],
+    "co_warto_wiedziec": "To jedna z najdłuższych dróg i nie da się jej skrócić. Za to już w czasie studiów można pracować w kancelarii i zobaczyć ten zawód od środka.",
+    "ikona": "scales"
+  },
+  "8": {
+    "nazwa": "Służby mundurowe i bezpieczeństwo",
+    "sciezka_rozwoju": [
+      "dobra kondycja i zdrowie",
+      "nabór i szkoła służbowa",
+      "specjalizacja w służbie"
+    ],
+    "co_warto_wiedziec": "Tu nie decyduje szkoła, tylko nabór: sprawność, zdrowie i rozmowa. Ciało przygotowuje się powoli, więc ta część drogi zaczyna się najwcześniej.",
+    "ikona": "shield"
+  },
+  "9": {
+    "nazwa": "Technologia i oprogramowanie",
+    "sciezka_rozwoju": [
+      "własne projekty od zera",
+      "pierwsza praca techniczna",
+      "wąska specjalizacja"
+    ],
+    "co_warto_wiedziec": "Nikt tu nie pyta o dyplom. Pytają o to, co potrafisz pokazać, a nauka nie kończy się po wejściu do pracy.",
+    "ikona": "laptop"
+  },
+  "10": {
+    "nazwa": "Inżynieria i produkcja",
+    "sciezka_rozwoju": [
+      "technikum techniczne",
+      "studia inżynierskie",
+      "uprawnienia zawodowe"
+    ],
+    "co_warto_wiedziec": "Bez dyplomu inżyniera pracujesz przy maszynach, z dyplomem je projektujesz. Tu papier zmienia rodzaj pracy, nie tylko wypłatę.",
+    "ikona": "gear"
+  },
+  "11": {
+    "nazwa": "Nauka i badania",
+    "sciezka_rozwoju": [
+      "studia ścisłe albo przyrodnicze",
+      "praca w laboratorium",
+      "doktorat"
+    ],
+    "co_warto_wiedziec": "Tej drogi nie da się przejść bokiem, bo wszystko idzie przez uczelnię. Za to laboratorium można zobaczyć od środka już na studiach.",
+    "ikona": "microscope"
+  },
+  "12": {
+    "nazwa": "Budownictwo i architektura",
+    "sciezka_rozwoju": [
+      "technikum budowlane",
+      "studia i praktyka na budowie",
+      "uprawnienia budowlane"
+    ],
+    "co_warto_wiedziec": "Tu różnicę robią uprawnienia, nie staż. Doświadczenie widzi Twój szef, uprawnienia widzi cały rynek.",
+    "ikona": "crane"
+  },
+  "13": {
+    "nazwa": "Rzemiosło i usługi techniczne",
+    "sciezka_rozwoju": [
+      "szkoła branżowa albo nauka u fachowca",
+      "egzamin zawodowy",
+      "własne zlecenia"
+    ],
+    "co_warto_wiedziec": "Dobrego fachowca brakuje wszędzie i to się szybko nie zmieni. O pieniądzach decyduje nie sama robota, tylko dobrze policzone zlecenie.",
+    "ikona": "wrench"
+  },
+  "14": {
+    "nazwa": "Transport i logistyka",
+    "sciezka_rozwoju": [
+      "kurs i uprawnienia",
+      "praca w magazynie albo spedycji",
+      "planowanie i kierowanie"
+    ],
+    "co_warto_wiedziec": "Uprawnienia wchodzą tu szybciej niż dyplom i od razu widać je w wypłacie. Spokój przy pośpiechu znaczy tu więcej niż wiedza z książek.",
+    "ikona": "truck"
+  },
+  "15": {
+    "nazwa": "Rolnictwo, przyroda i zwierzęta",
+    "sciezka_rozwoju": [
+      "praktyka w gospodarstwie albo lecznicy",
+      "technikum rolnicze lub weterynaryjne",
+      "studia przy weterynarii"
+    ],
+    "co_warto_wiedziec": "Praca ze zwierzętami z bliska wygląda inaczej niż z daleka. Jeden dzień w lecznicy albo w gospodarstwie mówi o niej więcej niż dziesięć filmów.",
+    "ikona": "leaf"
+  },
+  "16": {
+    "nazwa": "Medycyna i ratownictwo",
+    "sciezka_rozwoju": [
+      "biologia i chemia w szkole",
+      "studia medyczne",
+      "staż i specjalizacja"
+    ],
+    "co_warto_wiedziec": "Do tych zawodów wchodzi się tylko przez egzaminy, inaczej się nie da. Jest też krótsza droga: technik albo opiekun medyczny pracuje w tych samych murach.",
+    "ikona": "stethoscope"
+  },
+  "17": {
+    "nazwa": "Zdrowie, rehabilitacja i ciało",
+    "sciezka_rozwoju": [
+      "kurs zawodowy albo technikum",
+      "studia przy pełnych uprawnieniach",
+      "własny gabinet"
+    ],
+    "co_warto_wiedziec": "Masaż i dietetyka mają wejście przez kurs, fizjoterapia tylko przez studia. Ta jedna różnica ustawia całą resztę drogi.",
+    "ikona": "spine"
+  },
+  "18": {
+    "nazwa": "Sport i aktywność fizyczna",
+    "sciezka_rozwoju": [
+      "uprawnienia instruktorskie",
+      "pierwsi podopieczni",
+      "wąska specjalizacja treningowa"
+    ],
+    "co_warto_wiedziec": "Pracę dają tu ludzie, którzy do Ciebie wracają, a nie papier ze szkoły. Godziny są takie, kiedy inni mają wolne: rano, wieczorem i w weekend.",
+    "ikona": "whistle"
+  },
+  "19": {
+    "nazwa": "Opieka i praca socjalna",
+    "sciezka_rozwoju": [
+      "wolontariat albo kurs opiekuna",
+      "praca w placówce",
+      "studia przy pracy socjalnej"
+    ],
+    "co_warto_wiedziec": "To praca, w której trzeba umieć zostawić cudze sprawy za drzwiami. Kto się tego uczy od początku, zostaje w zawodzie na lata.",
+    "ikona": "heart"
+  },
+  "20": {
+    "nazwa": "Psychologia i wsparcie",
+    "sciezka_rozwoju": [
+      "studia psychologiczne",
+      "praktyka pod okiem doświadczonych",
+      "szkoła terapii"
+    ],
+    "co_warto_wiedziec": "Same studia to dopiero początek: prowadzenie terapii wymaga jeszcze osobnej szkoły. Szybciej pracuje się z ludźmi w doradztwie i w firmach.",
+    "ikona": "brain"
+  },
+  "21": {
+    "nazwa": "Edukacja i szkolenia",
+    "sciezka_rozwoju": [
+      "korepetycje i prowadzenie zajęć",
+      "studia kierunkowe",
+      "przygotowanie pedagogiczne"
+    ],
+    "co_warto_wiedziec": "Do szkoły wchodzi się tylko przez studia i przygotowanie pedagogiczne. Poza szkołą liczy się jedno: czy ludzie coś po Tobie zapamiętali.",
+    "ikona": "book"
+  },
+  "22": {
+    "nazwa": "Wspólnota, organizacje i posługa",
+    "sciezka_rozwoju": [
+      "wolontariat",
+      "koordynowanie małych projektów",
+      "prowadzenie działań i zbiórek"
+    ],
+    "co_warto_wiedziec": "Drzwi otwiera tu zaufanie ludzi, a nie papier. Pieniądze bywają niepewne, bo zależą od tego, kto akurat wspiera daną sprawę.",
+    "ikona": "hands"
+  },
+  "23": {
+    "nazwa": "Projektowanie i sztuki wizualne",
+    "sciezka_rozwoju": [
+      "zbiór własnych prac",
+      "pierwsze zlecenia",
+      "specjalizacja w jednym rodzaju projektów"
+    ],
+    "co_warto_wiedziec": "Zbiór Twoich prac decyduje o wszystkim. Nikt nie pyta o szkołę, kiedy widzi dobre rzeczy.",
+    "ikona": "palette"
+  },
+  "24": {
+    "nazwa": "Media, film i treści",
+    "sciezka_rozwoju": [
+      "własne nagrania i teksty",
+      "praca na planie albo w redakcji",
+      "własna produkcja"
+    ],
+    "co_warto_wiedziec": "W tej branży dorobek zastępuje dyplom najszybciej ze wszystkich. Wejść jest łatwo, utrzymać się trudniej, bo praca bywa nieregularna.",
+    "ikona": "camera"
+  },
+  "25": {
+    "nazwa": "Muzyka i sztuki sceniczne",
+    "sciezka_rozwoju": [
+      "regularne ćwiczenie i granie przed ludźmi",
+      "szkoła muzyczna albo teatralna",
+      "własne projekty i zlecenia"
+    ],
+    "co_warto_wiedziec": "Efekt przychodzi po latach ćwiczeń i nie da się tego przyspieszyć. Wielu ludzi z tej branży łączy granie z uczeniem innych i to daje spokój o rachunki.",
+    "ikona": "microphone"
+  },
+  "26": {
+    "nazwa": "Gastronomia i hotelarstwo",
+    "sciezka_rozwoju": [
+      "praca od prostych zadań w kuchni",
+      "szkoła branżowa",
+      "własna specjalność"
+    ],
+    "co_warto_wiedziec": "Tego zawodu uczysz się na miejscu, nie z książki. Praca idzie wtedy, kiedy inni odpoczywają: wieczory, weekendy i święta.",
+    "ikona": "chef"
+  },
+  "27": {
+    "nazwa": "Przedsiębiorczość i budowanie firmy",
+    "sciezka_rozwoju": [
+      "dobry fach w ręku",
+      "pierwsze własne zlecenia",
+      "firma z zespołem"
+    ],
+    "co_warto_wiedziec": "Najpierw fach, potem firma. Właściciel robi co innego niż jego ludzie: szuka klientów i pilnuje pieniędzy.",
+    "ikona": "storefront"
+  }
+}

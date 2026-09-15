@@ -12,7 +12,8 @@ import { BLOKI_A1 } from "../content/a1";
 import { BLOKI_A2 } from "../content/a2";
 import { PARY_A3 } from "../content/a3";
 import { PARY_A4 } from "../content/a4";
-import { PARY_M1 } from "../content/m1";
+import { PARY_MIEKKIE_M1 } from "../content/m1";
+import { PARY_A6 } from "../content/a6";
 import type { KodModulu } from "./typy";
 
 export interface PlanModulu {
@@ -68,8 +69,15 @@ export function zbudujPlan(modul: KodModulu, losowa: () => number = Math.random)
       break;
     }
     case "M1": {
-      plan.kolejnosc = mieszaj(PARY_M1.map((p) => p.id), losowa);
-      for (const p of PARY_M1) plan.odwrocone[p.id] = losowa() < 0.5;
+      // Trzy wymiary twarde nie maja tu par: sa pytane wprost, na koncu
+      // czesci A, i ich kolejnosc jest stala.
+      plan.kolejnosc = mieszaj(PARY_MIEKKIE_M1.map((p) => p.id), losowa);
+      for (const p of PARY_MIEKKIE_M1) plan.odwrocone[p.id] = losowa() < 0.5;
+      break;
+    }
+    case "A6": {
+      plan.kolejnosc = mieszaj(PARY_A6.map((p) => p.id), losowa);
+      for (const p of PARY_A6) plan.odwrocone[p.id] = losowa() < 0.5;
       break;
     }
     default:

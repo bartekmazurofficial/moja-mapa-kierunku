@@ -14,7 +14,8 @@ import { BLOKI_A1 } from "../content/a1";
 import { BLOKI_A2 } from "../content/a2";
 import { PARY_A3 } from "../content/a3";
 import { FORMULY_A4, NAPIECIA_A4, PARY_A4 } from "../content/a4";
-import { PARY_M1 } from "../content/m1";
+import { PARY_MIEKKIE_M1, PYTANIA_WPROST_M1 } from "../content/m1";
+import { OSIE_A6, PARY_A6 } from "../content/a6";
 import type { PunktStartu, WynikiModulow } from "./typy";
 
 /** Wagi miejsc w bloku. Srodkowe waza trzy razy mniej niz skrajne, celowo. */
@@ -418,7 +419,11 @@ export function policzA5(o: OdpowiedziA5): WynikA5 {
 // =====================================================================
 
 export interface OdpowiedziM1 {
-  czescA: Record<string, "A" | "B">;
+  /**
+   * Klucz pary daje „A" albo „B", klucz `wprost_GOD` i dwa pozostale daja
+   * kod odpowiedzi z pytania wprost. Jeden rekord, bo to jedna czesc modulu.
+   */
+  czescA: Record<string, string>;
   /** numer obszaru -> tekst albo struktura */
   czescB: Record<number, unknown>;
 }
@@ -428,10 +433,30 @@ export interface WynikM1 {
   czescB: Record<number, unknown>;
 }
 
+/**
+ * Trzy wymiary twarde czyta sie z jednej odpowiedzi wprost, nie z par.
+ *
+ * Mapa kod odpowiedzi na miejsce na osi stoi przy pytaniu, w tresci modulu,
+ * zeby nie dalo sie zmienic jednego bez drugiego. `null` znaczy „nie wiem"
+ * i jest jedyna wartoscia, ktora niczego nie przycina.
+ */
+const WPROST_M1 = new Map(
+  PYTANIA_WPROST_M1.map((p) => [
+    p.wymiar,
+    new Map(p.opcje.map((o) => [o.kod, o.pozycja])),
+  ]),
+);
+
 export function policzM1(o: OdpowiedziM1): WynikM1 {
   const shape: Record<string, number | null> = {};
   for (const wymiar of WYMIARY_M1) {
-    const pary = PARY_M1.filter((p) => p.wymiar === wymiar.kod);
+    const wprost = WPROST_M1.get(wymiar.kod);
+    if (wprost) {
+      const odpowiedz = o.czescA[`wprost_${wymiar.kod}`] as string | undefined;
+      shape[wymiar.kod] = odpowiedz === undefined ? null : (wprost.get(odpowiedz) ?? null);
+      continue;
+    }
+    const pary = PARY_MIEKKIE_M1.filter((p) => p.wymiar === wymiar.kod);
     const odpowiedziane = pary.filter((p) => o.czescA[p.id] !== undefined);
     if (odpowiedziane.length === 0) {
       shape[wymiar.kod] = null;
@@ -441,6 +466,136 @@ export function policzM1(o: OdpowiedziM1): WynikM1 {
     shape[wymiar.kod] = (wybraneA / odpowiedziane.length) * 100;
   }
   return { shape, czescB: o.czescB };
+}
+
+// =====================================================================
+// A6 — JAK SIE UCZE
+// =====================================================================
+
+export interface OdpowiedziA6 {
+  /** id pary -> wybrany biegun */
+  czescA: Record<string, "A" | "B">;
+  /** id pytania -> kod odpowiedzi. „nie_wiem" jest pelnoprawna odpowiedzia. */
+  czescB: Record<string, string>;
+}
+
+/** Ile lat nauki uczestnik jest gotow oddac. `null` znaczy „nie wiem", nie zero. */
+export type GotowoscNauki = 0 | 2 | 4 | 5 | null;
+
+export interface WynikA6 {
+  /** kod osi -> 0-100, gdzie 100 to piec razy biegun A. `null`, gdy nie odpowiedzial. */
+  osie: Record<string, number | null>;
+  /** Ile lat nauki jest gotow oddac zamiast pracy. */
+  lata: GotowoscNauki;
+  /** Nauka po godzinach, obok pracy. `null` przy „nie wiem". */
+  wieczorami: boolean | null;
+  /** Przeprowadzka dla nauki. `null` przy „nie wiem". */
+  przeprowadzka: "gdziekolwiek" | "region" | "nie" | null;
+  /**
+   * Werdykt: czy droga przez dluga szkole ma dla tego czlowieka sens.
+   *
+   * Nigdy nie usuwa zawodow. Przesuwa cala grupe drog w gore albo w dol
+   * i dopisuje zdanie do raportu. `null`, gdy modul jest pusty albo gdy
+   * uczestnik na wszystkim postawil „nie wiem": brak odpowiedzi nie jest
+   * odpowiedzia „nie na studia".
+   */
+  werdykt: "studia" | "obie_drogi" | "krotka_droga" | null;
+  /** Zdania do raportu, po jednym na os wyrazna. */
+  wnioski: string[];
+}
+
+const LATA_A6: Record<string, GotowoscNauki> = {
+  zero: 0,
+  do_dwoch: 2,
+  trzy_cztery: 4,
+  piec_wiecej: 5,
+  nie_wiem: null,
+};
+
+/**
+ * Prog wyrazistosci osi nauki: trzy pary na cztery to jeszcze nie strona,
+ * cztery na cztery juz tak. Przy czterech parach mozliwe wartosci to
+ * 0, 25, 50, 75 i 100, wiec prog 75 znaczy „co najmniej trzy z czterech".
+ */
+const WYRAZNA_A6 = 75;
+
+export function policzA6(o: OdpowiedziA6): WynikA6 {
+  const osie: Record<string, number | null> = {};
+  const wnioski: string[] = [];
+
+  for (const os of OSIE_A6) {
+    const pary = PARY_A6.filter((p) => p.os === os.kod);
+    const odpowiedziane = pary.filter((p) => o.czescA[p.id] !== undefined);
+    if (odpowiedziane.length === 0) {
+      osie[os.kod] = null;
+      continue;
+    }
+    const a = odpowiedziane.filter((p) => o.czescA[p.id] === "A").length;
+    const pozycja = (a / odpowiedziane.length) * 100;
+    osie[os.kod] = pozycja;
+    if (pozycja >= WYRAZNA_A6) wnioski.push(os.wniosekA);
+    else if (pozycja <= 100 - WYRAZNA_A6) wnioski.push(os.wniosekB);
+  }
+
+  const lata = LATA_A6[o.czescB.lata] ?? null;
+  const wieczorami =
+    o.czescB.wieczorami === "tak" ? true : o.czescB.wieczorami === "nie" ? false : null;
+  const przeprowadzka =
+    o.czescB.przeprowadzka_nauka === "tak"
+      ? "gdziekolwiek"
+      : o.czescB.przeprowadzka_nauka === "region"
+        ? "region"
+        : o.czescB.przeprowadzka_nauka === "nie"
+          ? "nie"
+          : null;
+
+  return {
+    osie,
+    lata,
+    wieczorami,
+    przeprowadzka,
+    werdykt: werdyktNauki(osie, lata),
+    wnioski,
+  };
+}
+
+/**
+ * Trzy sygnaly decyduja o werdykcie i kazdy z nich moze byc nieobecny.
+ *
+ * `lata` jest najmocniejsze, bo to deklaracja wprost, a nie wniosek z par.
+ * Osie TEO i EGZ dokladaja sie tylko wtedy, gdy wyszly wyraznie: czlowiek,
+ * ktory nie znosi teorii i uczy sie robiac, odbije sie od kierunku, na ktorym
+ * pierwszy projekt jest na trzecim roku, nawet jesli deklaruje piec lat.
+ *
+ * Przy samych „nie wiem" werdyktu nie ma. Milczenie nie jest odmowa studiow.
+ */
+function werdyktNauki(
+  osie: Record<string, number | null>,
+  lata: GotowoscNauki,
+): WynikA6["werdykt"] {
+  const odpowiedziane = Object.values(osie).filter((x) => x !== null).length;
+  if (odpowiedziane === 0 && lata === null) return null;
+
+  let punkty = 0;
+  if (lata === 5) punkty += 2;
+  else if (lata === 4) punkty += 1;
+  else if (lata === 2) punkty -= 1;
+  else if (lata === 0) punkty -= 2;
+
+  const teo = osie.TEO;
+  const czy = osie.CZY;
+  if (teo !== null && teo !== undefined) {
+    if (teo >= WYRAZNA_A6) punkty += 1;
+    else if (teo <= 100 - WYRAZNA_A6) punkty -= 1;
+  }
+  if (czy !== null && czy !== undefined) {
+    if (czy >= WYRAZNA_A6) punkty += 1;
+    else if (czy <= 100 - WYRAZNA_A6) punkty -= 1;
+  }
+
+  if (punkty >= 2) return "studia";
+  if (punkty <= -2) return "krotka_droga";
+  return "obie_drogi";
 }
 
 // =====================================================================
@@ -454,6 +609,7 @@ export interface KompletOdpowiedzi {
   a3: OdpowiedziA3;
   a4: OdpowiedziA4;
   a5: OdpowiedziA5;
+  a6: OdpowiedziA6;
   m1: OdpowiedziM1;
 }
 
@@ -464,6 +620,7 @@ export function zlozWynikiModulow(o: KompletOdpowiedzi): WynikiModulow {
   const a3 = policzA3(o.a3);
   const a4 = policzA4(o.a4);
   const a5 = policzA5(o.a5);
+  const a6 = policzA6(o.a6);
   const m1 = policzM1(o.m1);
 
   return {
@@ -480,5 +637,6 @@ export function zlozWynikiModulow(o: KompletOdpowiedzi): WynikiModulow {
     g: a5.g,
     weta: a5.weta,
     shape: m1.shape,
+    nauka: a6,
   };
 }
