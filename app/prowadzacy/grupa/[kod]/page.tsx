@@ -5,6 +5,7 @@ import { pobierzGrupe, NAZWY_MODULOW } from "@/lib/prowadzacy/dane";
 import { otworzModulAkcja, odslonWarstweAkcja } from "@/lib/prowadzacy/akcje";
 import { Logowanie } from "@/components/prowadzacy/Logowanie";
 import { MODULY_SPOTKANIA, MODULY_SPOTKANIA_NOWE } from "@/lib/moduly/otwarcie";
+import { KOLEJNOSC_NOWA, programGrupy } from "@/lib/moduly/ekrany";
 import { WARSTWY } from "@/lib/raport/sekcje";
 import { TEMPO } from "@/lib/engine/config";
 import { Bramy } from "@/components/pulpit/Bramy";
@@ -18,6 +19,8 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   if (!grupa) notFound();
 
   const otwarte = new Set(grupa.otwarteModuly);
+  // Ktora wersja programu obowiazuje te grupe: rozstrzyga to, co jej otwarto.
+  const nowyProgram = programGrupy(otwarte) === KOLEJNOSC_NOWA;
   const odsloniete = new Set(grupa.otwarteWarstwy);
 
   return (
@@ -119,8 +122,21 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           <p className="mt-2 text-male text-atrament-sciszony">
             Jedno kliknięcie odsłania warstwę całej grupie.
           </p>
+          {/*
+            Nowy raport ma cztery sekcje i tylko jedna z nich jest zamknieta:
+            zawody, za warstwa W4B. Pozostale warstwy naleza do starego
+            raportu i przy grupie nowego programu nie odslaniaja niczego,
+            wiec pokazujemy wylacznie te, ktora cos robi.
+          */}
+          {nowyProgram ? (
+            <p className="mt-1 text-drobne text-atrament-slaby">
+              W nowym programie jedyną zamkniętą częścią raportu są zawody.
+            </p>
+          ) : null}
           <div className="mt-4 flex flex-wrap gap-2">
-            {WARSTWY.filter((w) => w.kod !== "ZAWSZE").map((w) => (
+            {WARSTWY.filter((w) => w.kod !== "ZAWSZE")
+              .filter((w) => !nowyProgram || w.kod === "W4B")
+              .map((w) => (
               <form key={w.kod} action={odslonWarstweAkcja}>
                 <input type="hidden" name="grupaId" value={grupa.id} />
                 <input type="hidden" name="warstwa" value={w.kod} />
@@ -134,10 +150,12 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
                   }`}
                 >
                   {odsloniete.has(w.kod) ? `${w.kod} odsłonięta` : `Odsłoń ${w.kod}`}
-                  <span className="block text-drobne text-atrament-slaby">{w.nazwa}</span>
+                  <span className="block text-drobne text-atrament-slaby">
+                    {nowyProgram ? "Zawody w raporcie i karty zawodów" : w.nazwa}
+                  </span>
                 </button>
               </form>
-            ))}
+              ))}
           </div>
         </div>
       </section>
