@@ -74,6 +74,14 @@
   --color-kasowanie-tlo: #ffe9ee;
 
   /*
+   * Zgoda: „da się bez studiów", „potrzebujesz", warunki przyjęte w A5.
+   * Para jest w PARY_KOLOROW jako blok zielony i przechodzi 4,5:1 zarówno
+   * na tle bloku, jak i pod białym napisem.
+   */
+  --color-zgoda: #067a45;
+  --color-zgoda-tlo: #e3faed;
+
+  /*
    * Trzeci akcent: pomarańcz. Znak zapytania w nagłówku, adnotacje odręczne,
    * koniec gradientu. Jeden odcień na akcent (#b8460f), osobny na znaczenie
    * (--color-uwaga, --color-koszt), żeby ozdoba nie czytała się jak ostrzeżenie.

@@ -1,6 +1,7 @@
 /** Zawartosc raportu, sekcja po sekcji. Tylko to, co wolno pokazac. */
 
 import type { SensStudiow } from "../engine/typy";
+import type { SekcjeKoncowe } from "./koncowy";
 
 export interface PozycjaOpisowa {
   tytul: string;
@@ -206,4 +207,11 @@ export interface Raport {
   moja_decyzja?: { tresc: string | null };
   pierwsze_kroki?: { kroki: string[] };
   notatka?: { tresc: string | null };
+
+  /**
+   * Czesci, ktore powstaja dopiero ze zlozenia modulow i sa wylacznie
+   * w raporcie koncowym. Podlegaja tym samym regulom odslaniania co reszta:
+   * patrz lib/raport/koncowy.ts.
+   */
+  koncowy?: SekcjeKoncowe;
 }

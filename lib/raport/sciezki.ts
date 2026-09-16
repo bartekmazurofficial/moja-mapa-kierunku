@@ -29,6 +29,7 @@
  * Sam by tego nie znalazl, bo odbilby sie od pierwszego wyniku wyszukiwania.
  */
 
+import { SCIEZKI_TRESC } from "./biblioteki";
 import type { BazaReferencyjna, Obszar, Zawod } from "../domain/typy";
 import type { WynikSilnika, WynikObszaru, WynikZawodu } from "../engine/typy";
 
@@ -340,19 +341,43 @@ function wybierzOsiem(kandydaci: Kandydat[]): Kandydat[] {
   return wybrani.slice(0, ILE_SCIEZEK);
 }
 
-/** Jedna karta. Zawody i poziom sa juz policzone przy budowie kandydata. */
+/**
+ * Powod dopasowania bez przedrostka.
+ *
+ * Silnik zwraca powody jako „ciagnie Cie: liczby i wyciaganie wnioskow
+ * z danych", bo tam stoja w zdaniu. Na karcie sciezki przedrostek powtarza to,
+ * co juz mowi naglowek „Dlaczego pasuje", i wydluza punkt z pieciu slow do
+ * dziesieciu.
+ */
+function bezPrzedrostka(powod: string): string {
+  const i = powod.indexOf(": ");
+  return i === -1 ? powod : powod.slice(i + 2);
+}
+
+/**
+ * Jedna karta. Zawody i poziom sa juz policzone przy budowie kandydata.
+ *
+ * Sciezka rozwoju, zdanie „co warto wiedziec" i ikona pochodza z biblioteki
+ * tresci, a nie z tego pliku: to sa teksty stale dla obszaru, takie same
+ * u kazdego uczestnika, i maja byc do poprawienia bez ruszania kodu.
+ *
+ * Plakietka mowi o czasie, nie o poziomie. „Szybkie" i „srednie" sa nazwami
+ * poziomu wejscia w bazie i uczestnikowi nie mowia nic; „do roku" i „3-5 lat"
+ * mowia dokladnie to, o co pyta.
+ */
 function zlozSciezke(k: Kandydat, litera: string): Sciezka {
+  const tresc = SCIEZKI_TRESC[String(k.obszar.id)];
   return {
     litera,
     obszar: k.obszar.id,
     nazwa: k.obszar.nazwa,
-    ikona: `sciezka-${k.obszar.id}`,
+    ikona: tresc?.ikona ?? `sciezka-${k.obszar.id}`,
     grupaNauki: k.grupaNauki,
-    ileNauki: k.wejscie.etykieta,
-    dlaczegoPasuje: k.obszar.dlaczegoPasuje.slice(0, 3),
+    ileNauki: k.wejscie.czas,
+    dlaczegoPasuje: k.obszar.dlaczegoPasuje.slice(0, 3).map(bezPrzedrostka),
     zawody: k.karta.map((z) => z.nazwaWyswietlana),
-    sciezkaRozwoju: [],
-    coWartoWiedziec: "",
+    sciezkaRozwoju: tresc?.sciezka_rozwoju ?? [],
+    coWartoWiedziec: tresc?.co_warto_wiedziec ?? "",
     bezStudiow: true,
     najblizej: false,
     powodWyboru: k.ukrytyAtut

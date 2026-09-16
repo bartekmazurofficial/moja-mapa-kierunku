@@ -22,6 +22,7 @@ import { CWIARTKI, MACIERZ_WSPARCIA, RAMKI_A2 } from "../content/a2";
 import { OBSZARY_M1 } from "../content/m1";
 import { etykietaM1 } from "../moduly/ekrany";
 import { stopkaRaportu } from "./sekcje";
+import { zbudujKoncowy } from "./koncowy";
 import type { BazaReferencyjna } from "../domain/typy";
 import type { Raport } from "./typy";
 import { znakObszaru } from "@/lib/karty/obszary";
@@ -475,6 +476,22 @@ export function zbudujRaport(dane: DaneRaportu): Raport {
   if (wolno("profil_w_jednym_ekranie")) {
     raport.profil_w_jednym_ekranie = { zdania: profilWJednymEkranie(silnik, a1, a2, a4, dane.imie) };
   }
+
+  // --- CZESCI RAPORTU KONCOWEGO ---
+  // Buduja sie z tych samych wynikow co reszta i z tymi samymi regulami
+  // odslaniania: `wolno` idzie do srodka, a nie jest sprawdzane tutaj.
+  raport.koncowy = zbudujKoncowy({
+    a1,
+    a2,
+    a3,
+    a4,
+    a5,
+    m1,
+    silnik,
+    odpowiedziA5: odpowiedzi.a5.czescA,
+    baza,
+    wolno,
+  });
 
   // --- PO SESJI 1:1 ---
   if (wolno("moja_decyzja")) raport.moja_decyzja = { tresc: dane.decyzja?.tresc ?? null };

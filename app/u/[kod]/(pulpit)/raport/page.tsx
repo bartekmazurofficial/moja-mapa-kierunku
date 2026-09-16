@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { RaportWidok } from "@/components/raport/Raport";
+import { RaportKoncowy } from "@/components/raport/RaportKoncowy";
 import { pobierzRaport } from "@/lib/raport/serwer";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +14,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   // Nawigacja stoi w pulpicie po lewej, więc raport nie powtarza linku wstecz.
   return (
     <Suspense>
-      <RaportWidok widok={widok} kodUczestnika={kod} />
+      <RaportKoncowy widok={widok} kodUczestnika={kod} />
     </Suspense>
   );
 }
