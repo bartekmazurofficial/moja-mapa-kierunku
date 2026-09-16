@@ -32,12 +32,9 @@ import {
   POZYCJE_OPCJONALNE,
 } from "@/lib/content/poziom-zycia";
 import { kwotaProgu, policzBudzet, type OdpowiedziBudzetu } from "@/lib/engine/budzet";
+import { zl } from "@/lib/ui/kwota";
 import type { WlasciwosciPozycji } from "@/components/Pozycja";
 
-/** „3 500 zł". Spacja niełamiąca, żeby kwota nie pękała na końcu wiersza. */
-export function zl(kwota: number): string {
-  return `${Math.round(kwota).toLocaleString("pl-PL").replace(/ /g, " ")} zł`;
-}
 
 interface Stan {
   decyzje: Record<string, string>;
