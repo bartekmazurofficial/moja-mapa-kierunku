@@ -101,7 +101,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
               {ukonczone === 0
                 ? "Zaczynasz. Pierwszy moduł jest najkrótszy."
                 : ukonczone >= MODULY.length
-                  ? "Masz za sobą wszystkie siedem części."
+                  ? "Masz za sobą wszystkie moduły."
                   : `Jesteś w trakcie budowania swojego profilu. Przed Tobą jeszcze ${MODULY.length - ukonczone} ${MODULY.length - ukonczone === 1 ? "moduł" : "moduły"}.`}
             </p>
           </div>

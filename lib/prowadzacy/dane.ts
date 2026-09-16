@@ -18,7 +18,7 @@ import { stanDostepu } from "../raport/dostep";
 import { OPIS_ETAPU } from "../engine/layer0-start";
 import { KOD_GRUPY_POKAZ } from "../pokaz";
 import { rolaSesji } from "./sesja";
-import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "../moduly/ekrany";
+import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW, programGrupy } from "../moduly/ekrany";
 import { OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_A3, FILTRY_A5 } from "../domain/slowniki";
 import { OBSZARY_M1 } from "../content/m1";
 import { MARKER_ZAKONCZENIA, type KodModulu } from "../moduly/typy";
@@ -89,6 +89,10 @@ export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null>
   if (!grupa) return null;
 
   const otwarte = await otwarteModuly(grupa.id);
+  // Kolumny tabeli zaleza od wersji programu tej grupy. Bez tego grupa nowego
+  // programu pokazuje osiem pustych kolumn starych modulow i wyglada, jakby
+  // nikt niczego nie wypelnil.
+  const MODULY_GRUPY = programGrupy(otwarte);
   const idUczestnikow = grupa.uczestnicy.map((u) => u.id);
 
   // Czas i liczba odpowiedzi na modul, jednym zapytaniem dla calej grupy.
@@ -136,7 +140,7 @@ export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null>
   // nie uczestnika. Najpierw mediana, potem najwyzej dwie najbardziej odstajace
   // osoby: ostrzezenie u polowy grupy przestaje byc ostrzezeniem.
   const oflagowani = new Set<string>();
-  for (const m of KOLEJNOSC_MODULOW) {
+  for (const m of MODULY_GRUPY) {
     const czasyModulu = grupa.uczestnicy
       .filter((u) => stanModulu(u.id, m) === "gotowy")
       .map((u) => ({ id: u.id, naBlok: naBlok(u.id, m) }))
@@ -152,7 +156,7 @@ export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null>
   }
 
   const uczestnicy: WierszGrupy[] = grupa.uczestnicy.map((u) => {
-    const moduly = KOLEJNOSC_MODULOW.map((m) => ({
+    const moduly = MODULY_GRUPY.map((m) => ({
       kod: m,
       stan: stanModulu(u.id, m),
       pobiezny: oflagowani.has(`${u.id}|${m}`),
@@ -198,7 +202,7 @@ export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null>
     kod: grupa.kod,
     nazwa: grupa.nazwa,
     uczestnicy,
-    otwarteModuly: KOLEJNOSC_MODULOW.filter((m) => otwarte.has(m)),
+    otwarteModuly: MODULY_GRUPY.filter((m) => otwarte.has(m)),
     otwarteWarstwy: grupa.odslony.filter((o) => o.odblokowana).map((o) => o.warstwa as KodWarstwy),
   };
 }
