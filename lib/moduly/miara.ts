@@ -65,7 +65,28 @@ const SEKUND_NA_POZYCJE = 8;
  * minuty" na czternascie pytan, czego nikt nie zrobi. Trzydziesci piec sekund
  * to nadal oszacowanie, ale rzedu wielkosci, ktory sie broni.
  */
-const SEKUND_W_MODULE: Record<string, number> = { A0: 35 };
+/**
+ * Moduly leja licza sie jeszcze inaczej.
+ *
+ * Etap leja to jedna „pozycja" w sensie zapisu, ale szescdziesiat kafli do
+ * przeczytania i pietnascie decyzji do podjecia. Osiem sekund dawaloby tam
+ * „okolo dwie minuty" na caly etap, czyli liczbe, ktora jest nieprawda
+ * i ktora uczestnik wylapie po pol minucie.
+ *
+ * Trzy minuty na etap to nadal oszacowanie, ale rzedu wielkosci, ktory da
+ * sie obronic: etap pierwszy trwa dluzej, dwa kolejne krocej, calosc modulu
+ * wychodzi kolo dwunastu minut.
+ *
+ * Panel poziomu zycia to jeden ekran i dziesiec decyzji z opisami progow,
+ * wiec piec minut.
+ */
+const SEKUND_W_MODULE: Record<string, number> = {
+  A0: 35,
+  Z: 180,
+  L: 180,
+  U: 180,
+  F: 60,
+};
 
 export function sekundNaPozycje(modul?: string): number {
   return (modul && SEKUND_W_MODULE[modul]) || SEKUND_NA_POZYCJE;

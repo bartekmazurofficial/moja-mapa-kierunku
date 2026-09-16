@@ -28,11 +28,21 @@ import { pobierzOdpowiedzi, type ZapisaneOdpowiedzi } from "../moduly/serwer";
 import { MARKER_ZAKONCZENIA } from "../moduly/typy";
 import { CZESCI_MODULOW } from "../moduly/ekrany";
 import { bankModulu, nazwaPozycji, type ModulLeja } from "../moduly/ekrany-nowe";
-import { policzLej, trzyListy, type OdpowiedziLeja, type WynikLeja } from "../moduly/lej";
+import {
+  policzLej,
+  trzyListy,
+  PROG_MOCNY,
+  PROG_ROZJAZDU,
+  type OdpowiedziLeja,
+  type WynikLeja,
+} from "../moduly/lej";
 import { policzBudzet, type WynikBudzetu } from "../engine/budzet";
 import { policzDopasowania, wybierzDoRaportu, type DopasowanieZawodu } from "../engine/ranking-czynnosci";
 import { odczytajZarobki, type ZarobkiZawodu } from "../engine/zarobki";
 import { NAZWY_LIST } from "../content/bank-czynnosci";
+import { PASMA_ZAWODOW } from "../engine/config";
+import { znakObszaru } from "../karty/obszary";
+import type { ZawodWRaporcie } from "./typy";
 
 export interface PozycjaZNazwa {
   id: number;
@@ -177,5 +187,227 @@ export async function zbudujWynikNowy(uczestnikId: string): Promise<WynikNowegoP
     poziom,
     zawody: wybierzDoRaportu(ranking),
     domkniete: { Z: ciekawosc.gotowy, L: lubie.gotowy, U: umiem.gotowy, F: maPoziom },
+  };
+}
+
+/* ================================================================== */
+/* PELNA LISTA KART ZAWODOW                                            */
+/* ================================================================== */
+
+/**
+ * Pasmo opisowe zawodu, **po normalizacji do wlasnego najlepszego wyniku**.
+ *
+ * Progi bezwzgledne tu nie dzialaja i probowalem ich najpierw. Surowy wynik
+ * jest srednia wazona z szescdziesieciu czynnosci, z ktorych jeden zawod
+ * dotyka kilkunastu, wiec jego wysokosc zalezy glownie od tego, ile pozycji
+ * uczestnik w ogole zaznaczyl. W pomiarze na dwoch profilach najlepszy zawod
+ * dostal 47 punktow u jednego i 33 u drugiego: przy stalym progu drugi
+ * uczestnik nie zobaczylby ani jednego zdania, choc jego lista jest rownie
+ * dobra.
+ *
+ * Dlatego dzielimy przez wlasny najlepszy wynik i uzywamy tych samych progow
+ * co stary silnik, ktory robil dokladnie to samo. Pasmo mowi „to pasuje do
+ * Ciebie na tle reszty Twojej listy", a nie „na tle innych ludzi": porownan
+ * miedzy uczestnikami nie ma tu nadal zadnych.
+ *
+ * **Liczba nie wychodzi na ekran.** Uczestnik dostaje zdanie.
+ */
+function pasmoNowe(wynik: number, najlepszy: number) {
+  // Ranking prawie pusty: zadnego zdania o dopasowaniu nie wolno wtedy wydac.
+  if (najlepszy < MINIMALNY_SZCZYT) return PASMA_ZAWODOW[PASMA_ZAWODOW.length - 1];
+  const znormalizowany = (wynik / najlepszy) * 100;
+  return PASMA_ZAWODOW.find((x) => znormalizowany >= x.od)!;
+}
+
+/**
+ * Ponizej tego wyniku najlepszy zawod uczestnika nie zasluguje na zadne
+ * zdanie o dopasowaniu. Przy lejku wymuszajacym zaznaczenia na kazdym etapie
+ * ta granica nie powinna sie uruchomic; jest na wypadek danych z importu.
+ */
+const MINIMALNY_SZCZYT = 12;
+
+/**
+ * Trzy zdania uzasadnienia, w tej samej roli co w starym raporcie.
+ *
+ * Pierwsze mowi, co uczestnik sam zaznaczyl, drugie o drodze wejscia, trzecie
+ * o pieniadzach. Zadne nie zaczyna sie od „system uznal": kazde wskazuje
+ * odpowiedz, ktora da sie znalezc we wlasnym module.
+ */
+function uzasadnienieNowe(z: DopasowanieZawodu): string[] {
+  const zdania: string[] = [];
+  if (z.trafienia.length > 0) {
+    zdania.push(`Wchodzi tu, bo sam zaznaczyłeś: ${z.trafienia.join(", ")}.`);
+  } else if (z.czynnosci.length > 0) {
+    zdania.push(
+      `W tej pracy najwięcej waży: ${z.czynnosci.slice(0, 3).map((c) => c.nazwa.toLowerCase()).join(", ")}.`,
+    );
+  }
+  zdania.push(
+    z.bezStudiow
+      ? "Da się tu wejść bez studiów."
+      : "Ta droga prowadzi przez studia albo dłuższą naukę.",
+  );
+  if (z.finanse.zarobki) zdania.push(z.finanse.komunikat);
+  return zdania;
+}
+
+/**
+ * Wszystkie karty zawodow w kolejnosci nowego rankingu.
+ *
+ * Osobno od `zbudujWynikNowy`, bo to jest inna lista: raport pokazuje osiem
+ * do dziesieciu z wymuszona roznorodnoscia, a strona kart pokazuje cale sto
+ * piecdziesiat siedem, zeby dalo sie przeczytac takze te, ktore nie weszly.
+ */
+export async function kartyNowego(uczestnikId: string): Promise<ZawodWRaporcie[]> {
+  const [l, u, f] = await Promise.all([
+    pobierzOdpowiedzi(uczestnikId, "L"),
+    pobierzOdpowiedzi(uczestnikId, "U"),
+    pobierzOdpowiedzi(uczestnikId, "F"),
+  ]);
+  const lubie = policzLej(odczytajLej(l), bankModulu("L"));
+  const umiem = policzLej(odczytajLej(u), bankModulu("U"));
+  if (lubie.top5.length === 0 && umiem.top5.length === 0) return [];
+
+  const panel = f["B"]?.["panel"] as
+    | { decyzje?: Record<string, string>; opcjonalne?: Record<string, number> }
+    | undefined;
+  const wejscie = Object.fromEntries(
+    Object.entries(f["A"] ?? {})
+      .filter(([kod, v]) => kod !== MARKER_ZAKONCZENIA && typeof v === "string")
+      .map(([kod, v]) => [kod, v as string]),
+  );
+  const poziom = domkniety("F", f)
+    ? policzBudzet({ wejscie, decyzje: panel?.decyzje ?? {}, opcjonalne: panel?.opcjonalne ?? {} })
+    : undefined;
+
+  const [baza, zarobki, karty] = await Promise.all([
+    pobierzBazeReferencyjna(),
+    pobierzZarobki(),
+    prisma.karta.findMany({ select: { kod: true, pelna: true } }),
+  ]);
+  const pelna = new Map(karty.map((k) => [k.kod, k.pelna]));
+  const obszary = new Map(baza.obszary.map((o) => [o.id, o]));
+  const zawodyPoKodzie = new Map(baza.zawody.map((z) => [z.kod, z]));
+
+  const ranking = policzDopasowania(lubie.sila, umiem.sila, baza.zawody, zarobki, poziom);
+  const najlepszy = ranking[0]?.dopasowanie ?? 0;
+
+  return ranking.map((d) => {
+    const z = zawodyPoKodzie.get(d.kod)!;
+    const o = obszary.get(z.obszar);
+    const p = pasmoNowe(d.dopasowanie, najlepszy);
+    return {
+      kod: d.kod,
+      nazwa: d.nazwa,
+      pasmo: p.kod,
+      pasmoOpis: p.opis,
+      obszar: o?.nazwa ?? "",
+      obszarId: z.obszar,
+      grupaObszaru: o?.grupa ?? "",
+      znakObszaru: o ? znakObszaru(o.zainteresowania) : null,
+      poziom: z.poziom,
+      studia: z.studia,
+      koszt: z.koszt,
+      zagrozenie: z.zagr,
+      // Trzy drogi i klastry nalezaly do warstwy pierwszej starego raportu.
+      // Nowy program ich nie liczy, wiec nie udajemy, ze je ma.
+      droga: null,
+      klasterKod: null,
+      uzasadnienie: uzasadnienieNowe(d),
+      flagi: {
+        trampolina: z.flaga === "trampolina",
+        zagrozony: z.zagr === "wysokie",
+        barieraKosztowa: z.koszt === "wysoki",
+        zdanieKierunkowe: null,
+      },
+      ostrzezenia: [],
+      zGwarancji: null,
+      maPelnaKarte: pelna.get(d.kod) ?? false,
+    };
+  });
+}
+
+/* ================================================================== */
+/* KARTA DLA PROWADZACEGO                                              */
+/* ================================================================== */
+
+export interface KartaNowegoProgramu {
+  tematy: string[];
+  lubie: string[];
+  umiem: string[];
+  /** Czynnosci wysoko w „lubie" i nisko w „umiem", i odwrotnie. */
+  rozjazdy: Array<{ czynnosc: string; strona: "lubie" | "umiem" }>;
+  poziom: { minimum: number; komfort: number; cel: number } | null;
+  /** Co najbardziej podnosi koszt. Trzy pozycje wystarcza na rozmowe. */
+  kosztNajwiekszy: Array<{ nazwa: string; kwota: number; udzial: number }>;
+  zawody: Array<{
+    nazwa: string;
+    bezStudiow: boolean;
+    pasmoFinansowe: string;
+    widelki: string | null;
+    trafienia: string[];
+  }>;
+  /** Czego jeszcze nie ma. Prowadzacy ma wiedziec, czego nie pyta. */
+  brakujaceModuly: string[];
+}
+
+/** Nazwy modulow do zdania „czego jeszcze nie ma". */
+const NAZWY_NOWYCH: Record<string, string> = {
+  Z: "Co mnie ciekawi",
+  L: "Co lubię robić",
+  U: "W czym jestem dobry",
+  F: "Poziom życia i dochodu",
+};
+
+/**
+ * Karta uczestnika nowego programu, dla prowadzacego przed sesja.
+ *
+ * Powstala, bo stara karta **zmyslala**. Budowala sie ze starego silnika,
+ * ktory dla uczestnika nowego programu nie ma ani jednej odpowiedzi, wiec
+ * wypisywala piec obszarow, piec kompetencji i ostrzezenia antyprofilowe
+ * przy zawodach, o ktore nikt nigdy nie zapytal. Zdanie o czlowieku
+ * wystawione bez danych jest gorsze niz puste miejsce, a na sesji
+ * indywidualnej jest wprost szkodliwe.
+ *
+ * Rozjazdy sa tu najwazniejsze: to jedyna rzecz, ktorej uczestnik sam
+ * o sobie nie widzi, a ktora zmienia rozmowe.
+ */
+export async function kartaNowego(uczestnikId: string): Promise<KartaNowegoProgramu> {
+  const w = await zbudujWynikNowy(uczestnikId);
+
+  const rozjazdy: KartaNowegoProgramu["rozjazdy"] = [];
+  for (const id of bankModulu("L")) {
+    const l = w.lubie.wynik.sila[id] ?? 0;
+    const u = w.umiem.wynik.sila[id] ?? 0;
+    if (l >= PROG_MOCNY && l - u >= PROG_ROZJAZDU) {
+      rozjazdy.push({ czynnosc: nazwaPozycji("L", id), strona: "lubie" });
+    } else if (u >= PROG_MOCNY && u - l >= PROG_ROZJAZDU) {
+      rozjazdy.push({ czynnosc: nazwaPozycji("L", id), strona: "umiem" });
+    }
+  }
+
+  return {
+    tematy: w.ciekawosc.top5.map((p) => p.nazwa),
+    lubie: w.lubie.top5.map((p) => p.nazwa),
+    umiem: w.umiem.top5.map((p) => p.nazwa),
+    rozjazdy,
+    poziom: w.poziom
+      ? { minimum: w.poziom.minimum, komfort: w.poziom.komfort, cel: w.poziom.cel }
+      : null,
+    kosztNajwiekszy: (w.poziom?.skladniki ?? [])
+      .slice(0, 3)
+      .map((s) => ({ nazwa: s.nazwa, kwota: s.kwota, udzial: s.udzial })),
+    zawody: w.zawody.map((z) => ({
+      nazwa: z.nazwa,
+      bezStudiow: z.bezStudiow,
+      pasmoFinansowe: z.finanse.pasmo,
+      widelki: z.finanse.zarobki
+        ? `${z.finanse.zarobki.start} do ${z.finanse.zarobki.szczyt} zł netto`
+        : null,
+      trafienia: z.trafienia,
+    })),
+    brakujaceModuly: (["Z", "L", "U", "F"] as const)
+      .filter((m) => !w.domkniete[m])
+      .map((m) => NAZWY_NOWYCH[m]),
   };
 }

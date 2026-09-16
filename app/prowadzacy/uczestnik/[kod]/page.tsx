@@ -13,6 +13,7 @@ import {
   Wizja,
 } from "@/components/prowadzacy/Karta";
 import { Korekty } from "@/components/prowadzacy/Korekty";
+import { KartaNowa } from "@/components/prowadzacy/KartaNowa";
 
 export const dynamic = "force-dynamic";
 
@@ -59,16 +60,28 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </div>
       </header>
 
-      <div className="flex flex-col gap-4">
-        <KtoToJest karta={karta} />
-        <TrzyDrogiPanel karta={karta} />
-        <Rozjazdy rozjazdy={karta.rozjazdy} />
-        <Ostrzezenia karta={karta} />
-        <PytanieUczestnika karta={karta} />
-        <Wizja karta={karta} />
-        <UsunieteWetem karta={karta} />
-        <Korekty karta={karta} />
-      </div>
+      {/*
+        Dwie wersje programu, dwie karty. Bloki starego silnika nie renderuja
+        sie dla uczestnika nowego programu, bo nie maja z czego powstac.
+      */}
+      {karta.nowy ? (
+        <div className="flex flex-col gap-4">
+          <KartaNowa karta={karta.nowy} />
+          <PytanieUczestnika karta={karta} />
+          <Korekty karta={karta} />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          <KtoToJest karta={karta} />
+          <TrzyDrogiPanel karta={karta} />
+          <Rozjazdy rozjazdy={karta.rozjazdy} />
+          <Ostrzezenia karta={karta} />
+          <PytanieUczestnika karta={karta} />
+          <Wizja karta={karta} />
+          <UsunieteWetem karta={karta} />
+          <Korekty karta={karta} />
+        </div>
+      )}
     </main>
   );
 }

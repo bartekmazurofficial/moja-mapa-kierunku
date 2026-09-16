@@ -375,3 +375,141 @@ export async function zbudujPdf(dane: DanePdf): Promise<Buffer> {
   await wczytajFonty();
   return renderToBuffer(<Dokument {...dane} />);
 }
+
+/* ================================================================== */
+/* PDF NOWEGO PROGRAMU                                                 */
+/* ================================================================== */
+
+/**
+ * Cztery sekcje zamiast dwudziestu dwoch, w tej samej typografii.
+ *
+ * Reguly PDF sa te same co w starej wersji i najwazniejsza z nich obowiazuje
+ * tu tak samo: **sekcje zamkniete sa pomijane, nie wygaszane**. Uczestnik,
+ * ktory pobiera plik przed odsloniecem zawodow, dostaje dokument bez sekcji
+ * czwartej, a nie dokument z pusta ramka i obietnica.
+ *
+ * Zawody sa tu z uzasadnieniem i widelkami, ale **bez liczby dopasowania**,
+ * tak samo jak na ekranie. Plik bedzie istniec latami i ktos go przeczyta bez
+ * nas w pokoju, wiec nie moze zawierac zdania, ktorego nie dalo sie obronic.
+ */
+export interface DanePdfNowy {
+  imie: string;
+  dataWygenerowania: string;
+  stopka: string;
+  tematy: string[];
+  lubie: string[];
+  umiem: string[];
+  listy: Array<{ tytul: string; opis: string; pozycje: string[] }>;
+  poziom: { minimum: string; komfort: string; cel: string; rocznie: string } | null;
+  koszty: Array<{ nazwa: string; kwota: string; udzial: number }>;
+  /** Pusta lista znaczy: warstwa z zawodami jeszcze zamknieta. */
+  zawody: Array<{
+    nazwa: string;
+    bezStudiow: boolean;
+    uzasadnienie: string | null;
+    widelki: string | null;
+    finanse: string | null;
+  }>;
+}
+
+function DokumentNowy(d: DanePdfNowy) {
+  const stopka = (
+    <Text style={s.stopka} fixed render={({ pageNumber }) => `${d.stopka}   ·   ${pageNumber}`} />
+  );
+  const Naglowek = ({ tytul }: { tytul: string }) => (
+    <Text style={s.naglowekSekcji} minPresenceAhead={48}>
+      {tytul}
+    </Text>
+  );
+
+  return (
+    <Document title={`Moja mapa kierunku: ${d.imie}`} author="Fundacja Służąc Życiu">
+      <Page size="A4" style={s.tytulowaStrona}>
+        <Text style={s.nadtytul}>FUNDACJA SŁUŻĄC ŻYCIU</Text>
+        <Text style={s.tytul}>Moja mapa kierunku</Text>
+        <Text style={s.imie}>{d.imie}</Text>
+        <Text style={s.dataDuza}>{d.dataWygenerowania}</Text>
+        <Text style={s.zastrzezenie}>{d.stopka}</Text>
+      </Page>
+
+      <Page size="A4" style={s.strona}>
+        {d.tematy.length > 0 ? (
+          <View style={s.sekcja}>
+            <Naglowek tytul="Co Cię ciekawi" />
+            <Text style={s.akapit}>
+              Piątka tematów, przy których zostałeś po trzech coraz trudniejszych pytaniach. Temat
+              nie jest zawodem: mówi, w jakiej branży ta sama praca będzie dla Ciebie ciekawsza.
+            </Text>
+            <Punkty pozycje={d.tematy.map((t, i) => `${i + 1}. ${t}`)} />
+          </View>
+        ) : null}
+
+        {d.lubie.length > 0 || d.umiem.length > 0 ? (
+          <View style={s.sekcja}>
+            <Naglowek tytul="Co lubisz i w czym jesteś dobry" />
+            <Text style={s.etykieta}>LUBISZ NAJBARDZIEJ</Text>
+            <Punkty pozycje={d.lubie.map((t, i) => `${i + 1}. ${t}`)} />
+            <Text style={s.etykieta}>WYCHODZI CI NAJLEPIEJ</Text>
+            <Punkty pozycje={d.umiem.map((t, i) => `${i + 1}. ${t}`)} />
+            {d.listy
+              .filter((l) => l.pozycje.length > 0)
+              .map((l) => (
+                <View key={l.tytul} style={s.karta}>
+                  <Text style={s.pozycja}>{l.tytul}</Text>
+                  <Text style={s.drobne}>{l.opis}</Text>
+                  <Text style={s.drobne}>{l.pozycje.join(" · ")}</Text>
+                </View>
+              ))}
+          </View>
+        ) : null}
+
+        {d.poziom ? (
+          <View style={s.sekcja}>
+            <Naglowek tytul="Ile kosztuje życie, którego chcesz" />
+            <Text style={s.akapit}>
+              Nie pytaliśmy, ile chcesz zarabiać. Zaprojektowałeś życie, a kwota wyszła z niego
+              sama. Dlatego da się ją sprawdzić.
+            </Text>
+            <Text style={s.drobne}>Minimum: {d.poziom.minimum} netto miesięcznie</Text>
+            <Text style={s.drobne}>Komfort: {d.poziom.komfort} netto miesięcznie</Text>
+            <Text style={s.drobne}>Cel: {d.poziom.cel} netto miesięcznie</Text>
+            <Text style={s.drobne}>Rocznie: {d.poziom.rocznie}</Text>
+            <Text style={s.etykieta}>CO NAJBARDZIEJ PODNOSI TEN KOSZT</Text>
+            <Punkty pozycje={d.koszty.map((k) => `${k.nazwa}: ${k.kwota}, ${k.udzial}%`)} />
+          </View>
+        ) : null}
+
+        {d.zawody.length > 0 ? (
+          <View style={s.sekcja}>
+            <Naglowek tytul="Zawody, od których warto zacząć" />
+            <Text style={s.akapit}>
+              To nie jest wyrok ani ranking. To lista miejsc, w których Twoje odpowiedzi spotykają
+              się z realną pracą, celowo różnorodna.
+            </Text>
+            {d.zawody.map((z, i) => (
+              <View key={z.nazwa} style={s.karta}>
+                <Text style={s.pozycja}>
+                  {i + 1}. {z.nazwa}
+                  {z.bezStudiow ? "  (bez studiów)" : ""}
+                </Text>
+                {z.uzasadnienie ? <Text style={s.drobne}>{z.uzasadnienie}</Text> : null}
+                {z.widelki ? <Text style={s.drobne}>{z.widelki}</Text> : null}
+                {z.finanse ? <Text style={s.drobne}>{z.finanse}</Text> : null}
+              </View>
+            ))}
+            <Text style={s.drobne}>
+              Ta lista ma być punktem wyjścia do rozmowy, a nie jej końcem.
+            </Text>
+          </View>
+        ) : null}
+
+        {stopka}
+      </Page>
+    </Document>
+  );
+}
+
+export async function zbudujPdfNowy(dane: DanePdfNowy): Promise<Buffer> {
+  await wczytajFonty();
+  return renderToBuffer(<DokumentNowy {...dane} />);
+}

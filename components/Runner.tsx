@@ -500,7 +500,7 @@ export function Runner({
                     {rownaSciezka ? zakresPytan.max : `do ${zakresPytan.max}`}
                   </span>
                   <span className="mt-1 text-[0.6rem] font-bold uppercase tracking-[0.16em] text-atrament-slaby">
-                    {odmianaPytan(zakresPytan.max)}
+                    {odmianaPytan(zakresPytan.max, modul)}
                   </span>
                 </span>
               </div>
@@ -542,7 +542,7 @@ export function Runner({
                 {[
                   {
                     tekst: rownaSciezka
-                      ? `${zakresPytan.max} ${odmianaPytan(zakresPytan.max)}`
+                      ? `${zakresPytan.max} ${odmianaPytan(zakresPytan.max, modul)}`
                       : `od ${zakresPytan.min} do ${zakresPytan.max} pytań, zależnie od tego, gdzie jesteś`,
                     kropka: "#1d5bff",
                   },
@@ -1066,8 +1066,19 @@ function odmiana(
   return wiele;
 }
 
-const odmianaPytan = (ile: number) =>
-  odmiana(ile, "pytanie", "pytania", "pytań");
+/**
+ * Jak nazwac to, co uczestnik ma przed soba.
+ *
+ * W modulach leja „pytanie" jest nieprawda: jeden ekran to szescdziesiat
+ * kafli i pietnascie decyzji, a w zapisie widnieje jako jedna pozycja.
+ * „Krok" opisuje to uczciwie i nie sugeruje, ze bedzie latwiej, niz bedzie.
+ */
+const MODULY_KROKOW = new Set(["Z", "L", "U"]);
+
+const odmianaPytan = (ile: number, modul?: string) =>
+  MODULY_KROKOW.has(modul ?? "")
+    ? odmiana(ile, "krok", "kroki", "kroków")
+    : odmiana(ile, "pytanie", "pytania", "pytań");
 
 /**
  * Tło ekranu wstępu: pastelowy gradient na całe okno i dwie plamy koloru

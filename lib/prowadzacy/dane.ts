@@ -18,7 +18,14 @@ import { stanDostepu } from "../raport/dostep";
 import { OPIS_ETAPU } from "../engine/layer0-start";
 import { KOD_GRUPY_POKAZ } from "../pokaz";
 import { rolaSesji } from "./sesja";
-import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW, programGrupy } from "../moduly/ekrany";
+import {
+  CZESCI_MODULOW,
+  KOLEJNOSC_MODULOW,
+  KOLEJNOSC_NOWA,
+  NAZWY_MODULOW,
+  programGrupy,
+} from "../moduly/ekrany";
+import { kartaNowego, type KartaNowegoProgramu } from "../raport/nowy";
 import { OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_A3, FILTRY_A5 } from "../domain/slowniki";
 import { OBSZARY_M1 } from "../content/m1";
 import { MARKER_ZAKONCZENIA, type KodModulu } from "../moduly/typy";
@@ -236,6 +243,12 @@ export interface KartaUczestnika {
   } | null;
   /** Zawody do dopisania recznie: cala baza, posortowana. */
   wszystkieZawody: Array<{ kod: string; nazwa: string }>;
+  /**
+   * Dane z nowego programu. Obecne wylacznie u uczestnikow grup, ktore go
+   * maja; u pozostalych `null`. Gdy jest, pola starego silnika powyzej sa
+   * puste, bo nie ma z czego ich policzyc.
+   */
+  nowy: KartaNowegoProgramu | null;
 }
 
 export async function pobierzKarteUczestnika(kodDostepu: string): Promise<KartaUczestnika | null> {
@@ -245,6 +258,64 @@ export async function pobierzKarteUczestnika(kodDostepu: string): Promise<KartaU
   });
   if (!uczestnik) return null;
   if (!(await wolnoZobaczyc(uczestnik.grupa.kod))) return null;
+
+  /**
+   * Uczestnik nowego programu nie przechodzi przez stary silnik.
+   *
+   * Przed ta galezia karta wypisywala mu piec obszarow, piec kompetencji
+   * i ostrzezenia antyprofilowe przy zawodach, o ktore nikt nigdy nie zapytal:
+   * stary silnik uruchomiony na pustych modulach zwraca domyslny ranking,
+   * ktory z zewnatrz wyglada jak wynik. Na sesji indywidualnej to jest
+   * najgorsze mozliwe zrodlo zdania o czlowieku.
+   */
+  const otwarte = await otwarteModuly(uczestnik.grupaId);
+  if (programGrupy(otwarte) === KOLEJNOSC_NOWA) {
+    const [nowy, wszystkieZawody] = await Promise.all([
+      kartaNowego(uczestnik.id),
+      pobierzBazeReferencyjna().then((b) =>
+        b.zawody
+          .map((z) => ({ kod: z.kod, nazwa: z.nazwaWyswietlana }))
+          .sort((a, b2) => a.nazwa.localeCompare(b2.nazwa, "pl")),
+      ),
+    ]);
+    return {
+      kodDostepu: uczestnik.kodDostepu,
+      imie: uczestnik.imie,
+      grupa: { kod: uczestnik.grupa.kod, nazwa: uczestnik.grupa.nazwa },
+      etap: null,
+      wiek: null,
+      coGoCiagnie: [],
+      wCzymMozeBycDobry: [],
+      jakDziala: [],
+      coJestWazne: [],
+      czegoNieChce: [],
+      drogi: [],
+      rozjazdy: [],
+      ostrzezenia: [],
+      pytanie: uczestnik.pytanie?.tresc ?? null,
+      wizja: [],
+      usunieteWetem: [],
+      korekty: uczestnik.korekty.map((k) => ({
+        id: k.id,
+        typ: k.typ,
+        wartosc: k.wartosc,
+        uzasadnienie: k.uzasadnienie,
+      })),
+      sesja: uczestnik.sesja
+        ? {
+            decyzja: uczestnik.sesja.decyzja,
+            coPrzekonalo: uczestnik.sesja.coPrzekonalo,
+            coSprawdzic: uczestnik.sesja.coSprawdzic,
+            kroki: uczestnik.sesja.kroki ? (JSON.parse(uczestnik.sesja.kroki) as string[]) : [],
+            wrocicZa: uczestnik.sesja.wrocicZa,
+            notatka: uczestnik.sesja.notatka,
+            odbyta: uczestnik.sesja.odbyta,
+          }
+        : null,
+      wszystkieZawody,
+      nowy,
+    };
+  }
 
   const [odpowiedzi, baza] = await Promise.all([
     zbierzOdpowiedzi(uczestnik.id),
@@ -336,6 +407,7 @@ export async function pobierzKarteUczestnika(kodDostepu: string): Promise<KartaU
     wszystkieZawody: baza.zawody
       .map((z) => ({ kod: z.kod, nazwa: z.nazwaWyswietlana }))
       .sort((a, b) => a.nazwa.localeCompare(b.nazwa, "pl")),
+    nowy: null,
   };
 }
 

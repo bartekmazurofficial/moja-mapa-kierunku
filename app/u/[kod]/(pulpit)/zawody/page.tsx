@@ -1,7 +1,27 @@
 import { notFound } from "next/navigation";
 import { pobierzRaport } from "@/lib/raport/serwer";
+import { kartyNowego } from "@/lib/raport/nowy";
+import { pobierzUczestnika } from "@/lib/moduly/serwer";
+import { otwarteModuly } from "@/lib/moduly/otwarcie";
+import { KOLEJNOSC_NOWA, programGrupy } from "@/lib/moduly/ekrany";
+import { stanDostepu } from "@/lib/raport/dostep";
+import { prisma } from "@/lib/db/klient";
 import { Bramy } from "@/components/pulpit/Bramy";
 import { ListaZawodow, type ZawodNaLiscie } from "@/components/pulpit/ListaZawodow";
+
+/** Ekran zamiast listy, dopoki prowadzacy nie odslonil zawodow. */
+function Zamkniete({ spotkanie }: { spotkanie: number }) {
+  return (
+    <div className="szklo p-8">
+      <h1 className="text-naglowek font-extrabold tracking-tight">Karty zawodów</h1>
+      <p className="proza mt-4 max-w-czytelna">
+        Ta część otworzy się na {spotkanie === 2 ? "drugim" : "czwartym"} spotkaniu, po obszarach.
+        Kolejność ma znaczenie: konkretny zawód czyta się inaczej, kiedy wiadomo już, z jakiej
+        dziedziny wyszedł.
+      </p>
+    </div>
+  );
+}
 
 export const dynamic = "force-dynamic";
 
@@ -11,26 +31,41 @@ export const dynamic = "force-dynamic";
  */
 export default async function Strona({ params }: { params: Promise<{ kod: string }> }) {
   const { kod } = await params;
-  const widok = await pobierzRaport(kod);
-  if (!widok) notFound();
+  const uczestnik = await pobierzUczestnika(kod);
+  if (!uczestnik) notFound();
 
-  const sekcja = widok.raport.zawody;
+  const otwarte = await otwarteModuly(uczestnik.grupaId);
+  const nowy = programGrupy(otwarte) === KOLEJNOSC_NOWA;
 
-  if (!sekcja) {
-    return (
-      <div className="szklo p-8">
-        <h1 className="text-naglowek font-extrabold tracking-tight">Karty zawodów</h1>
-        <p className="proza mt-4 max-w-czytelna">
-          Ta część otworzy się na czwartym spotkaniu, po obszarach. Kolejność ma znaczenie:
-          konkretny zawód czyta się inaczej, kiedy wiadomo już, z jakiej dziedziny wyszedł.
-        </p>
-      </div>
+  /**
+   * Kolejnosc listy musi pochodzic z tego silnika, ktory wypelnial uczestnik.
+   *
+   * Przed ta poprawka uczestnik nowego programu dostawal liste ulozona przez
+   * stary silnik, ktory nie mial ani jednej jego odpowiedzi, i czytal przy
+   * pierwszym zawodzie „to bardzo mocno do Ciebie pasuje". Zdanie o
+   * dopasowaniu wystawione bez danych jest gorsze niz brak zdania.
+   */
+  let wszystkie: ZawodNaLiscie[];
+  let oceny: Record<string, string>;
+
+  if (nowy) {
+    const dostep = await stanDostepu(uczestnik.id, uczestnik.grupaId);
+    if (!dostep.dostepne.has("zawody")) return <Zamkniete spotkanie={2} />;
+    const karty = await kartyNowego(uczestnik.id);
+    if (karty.length === 0) return <Zamkniete spotkanie={2} />;
+    wszystkie = karty.map((z) => ({ ...z, klaster: null }));
+    const zapisane = await prisma.ocenaZawodu.findMany({ where: { uczestnikId: uczestnik.id } });
+    oceny = Object.fromEntries(zapisane.map((o) => [o.zawodKod, o.ocena]));
+  } else {
+    const widok = await pobierzRaport(kod);
+    if (!widok) notFound();
+    const sekcja = widok.raport.zawody;
+    if (!sekcja) return <Zamkniete spotkanie={4} />;
+    wszystkie = sekcja.pozycje.flatMap((p) =>
+      p.zawody.map((z) => ({ ...z, klaster: p.typ === "klaster" ? p.nazwa : null })),
     );
+    oceny = widok.oceny;
   }
-
-  const wszystkie: ZawodNaLiscie[] = sekcja.pozycje.flatMap((p) =>
-    p.zawody.map((z) => ({ ...z, klaster: p.typ === "klaster" ? p.nazwa : null })),
-  );
 
   return (
     <div className="flex flex-col gap-5">
@@ -57,7 +92,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </p>
       </header>
 
-      <ListaZawodow kod={kod} zawody={wszystkie} oceny={widok.oceny} />
+      <ListaZawodow kod={kod} zawody={wszystkie} oceny={oceny} />
     </div>
   );
 }

@@ -17,6 +17,7 @@ import {
   Wizja,
 } from "@/components/prowadzacy/Karta";
 import { Korekty } from "@/components/prowadzacy/Korekty";
+import { KartaNowa } from "@/components/prowadzacy/KartaNowa";
 import { Bramy } from "@/components/pulpit/Bramy";
 
 export const dynamic = "force-dynamic";
@@ -97,15 +98,26 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </div>
 
         {/* PRAWA: dane uczestnika, rozjazdy, ostrzeżenia */}
+        {/* Nowy program ma wlasna karte: bloki starego silnika stalyby tu puste. */}
         <div className="flex flex-col gap-4">
-          <Rozjazdy rozjazdy={karta.rozjazdy} />
-          <TrzyDrogiPanel karta={karta} />
-          <PytanieUczestnika karta={karta} />
-          <KtoToJest karta={karta} />
-          <Ostrzezenia karta={karta} />
-          <Wizja karta={karta} />
-          <UsunieteWetem karta={karta} />
-          <Korekty karta={karta} />
+          {karta.nowy ? (
+            <>
+              <KartaNowa karta={karta.nowy} />
+              <PytanieUczestnika karta={karta} />
+              <Korekty karta={karta} />
+            </>
+          ) : (
+            <>
+              <Rozjazdy rozjazdy={karta.rozjazdy} />
+              <TrzyDrogiPanel karta={karta} />
+              <PytanieUczestnika karta={karta} />
+              <KtoToJest karta={karta} />
+              <Ostrzezenia karta={karta} />
+              <Wizja karta={karta} />
+              <UsunieteWetem karta={karta} />
+              <Korekty karta={karta} />
+            </>
+          )}
         </div>
       </div>
 
