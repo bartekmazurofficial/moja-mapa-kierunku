@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { pobierzPostepModulow, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
 import { stanDostepu } from "@/lib/raport/dostep";
-import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
+import { CZESCI_MODULOW, NAZWY_MODULOW, programGrupy } from "@/lib/moduly/ekrany";
 import { DZIS_ODKRYWASZ, KROTKO } from "@/lib/moduly/opisy";
 import { WARSTWY } from "@/lib/raport/sekcje";
 import { Bramy } from "@/components/pulpit/Bramy";
@@ -37,7 +37,10 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
     stanDostepu(uczestnik.id, uczestnik.grupaId),
   ]);
 
-  const stan = (m: (typeof KOLEJNOSC_MODULOW)[number]): Stan => {
+  // Lista modulow zalezy od tego, ktora wersje programu ma ta grupa.
+  const MODULY = programGrupy(otwarte);
+
+  const stan = (m: KodModulu): Stan => {
     const gotowe = zakonczone.get(m)?.size ?? 0;
     if (!otwarte.has(m)) return "zamkniety";
     if (gotowe >= CZESCI_MODULOW[m].length) return "gotowy";
@@ -45,12 +48,12 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   };
 
   const dalej =
-    KOLEJNOSC_MODULOW.find((m) => stan(m) === "wtrakcie") ??
-    KOLEJNOSC_MODULOW.find((m) => stan(m) === "przed");
-  const nastepnyZamkniety = KOLEJNOSC_MODULOW.find((m) => stan(m) === "zamkniety");
+    MODULY.find((m) => stan(m) === "wtrakcie") ??
+    MODULY.find((m) => stan(m) === "przed");
+  const nastepnyZamkniety = MODULY.find((m) => stan(m) === "zamkniety");
 
-  const ukonczone = KOLEJNOSC_MODULOW.filter((m) => stan(m) === "gotowy").length;
-  const procent = Math.round((ukonczone / KOLEJNOSC_MODULOW.length) * 100);
+  const ukonczone = MODULY.filter((m) => stan(m) === "gotowy").length;
+  const procent = Math.round((ukonczone / MODULY.length) * 100);
 
   const otwarteWarstwy = WARSTWY.filter(
     (w) => w.kod !== "ZAWSZE" && dostep.warstwy.get(w.kod) !== null,
@@ -103,7 +106,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
               <div className="mt-1.5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <p className="text-naglowek-duzy font-extrabold leading-none tabular-nums">
                   {ukonczone}
-                  <span className="text-naglowek-maly text-atrament-slaby"> z {KOLEJNOSC_MODULOW.length}</span>
+                  <span className="text-naglowek-maly text-atrament-slaby"> z {MODULY.length}</span>
                 </p>
                 <p className="text-male text-atrament-sciszony">
                   części ukończonych
@@ -112,7 +115,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
               </div>
               {/* Siedem przystanków zamiast paska: widać, ile zostało, a nie ułamek. */}
               <ol className="mt-3 flex items-center gap-1.5">
-                {KOLEJNOSC_MODULOW.map((m) => {
+                {MODULY.map((m) => {
                   const s = stan(m);
                   return (
                     <li key={m} className="flex-1">
@@ -159,7 +162,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </div>
 
         <ol className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7">
-          {KOLEJNOSC_MODULOW.map((m, i) => (
+          {MODULY.map((m, i) => (
             <li key={m}>
               <KafelekModulu
                 kod={kod}

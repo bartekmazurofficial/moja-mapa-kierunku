@@ -91,6 +91,29 @@ function kwotaKategorii(
   return k.naOsobe ? zMiastem * osob : zMiastem;
 }
 
+/**
+ * Ile kosztuje dany prog przy tych odpowiedziach wstepnych.
+ *
+ * Panel pokazuje przy kazdym progu kwote juz po mnozniku miasta i po liczbie
+ * osob, a nie kwote bazowa. Inaczej uczestnik wybiera „3500" i widzi na gorze,
+ * ze doliczylo sie 2450, i przestaje ufac calemu ekranowi.
+ *
+ * Funkcja jest tu, a nie w komponencie, zeby wzor byl jeden: przepisany do
+ * widoku rozjechalby sie przy pierwszej zmianie regul liczenia.
+ */
+export function kwotaProgu(
+  kategoria: KategoriaKosztu,
+  prog: string,
+  odpowiedzi: OdpowiedziBudzetu = PUSTY,
+): number {
+  const zKim = opcjaWejscia(odpowiedzi, "z_kim", "sam");
+  const miasto = opcjaWejscia(odpowiedzi, "miasto", "duze");
+  const osob = zKim === "partner" || zKim === "malzenstwo" ? 2 : 1;
+  return Math.round(
+    kwotaKategorii(kategoria, prog, { ...odpowiedzi, wlasne: {} }, osob, MNOZNIK_MIASTA[miasto] ?? 1),
+  );
+}
+
 export function policzBudzet(odpowiedzi: OdpowiedziBudzetu = PUSTY): WynikBudzetu {
   const o = odpowiedzi;
   const zKim = opcjaWejscia(o, "z_kim", "sam");

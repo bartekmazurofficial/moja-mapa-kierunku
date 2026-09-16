@@ -10,6 +10,8 @@ import {
   zbudujCzesc,
   NAZWY_MODULOW,
   KOLEJNOSC_MODULOW,
+  KOLEJNOSC_NOWA,
+  WSZYSTKIE_MODULY,
   liczbaPozycjiModulu,
   minutyModulu,
   zakresPozycjiModulu,
@@ -28,10 +30,13 @@ const KONTEKST = {
 };
 
 describe("wszystkie moduły dają się złożyć", () => {
-  it("siedem modułów, każdy z co najmniej jedną częścią", () => {
-    expect(MODULY).toHaveLength(8);
+  it("dwanaście modułów: osiem starego programu i cztery nowego", () => {
+    expect(MODULY).toHaveLength(12);
     expect(KOLEJNOSC_MODULOW).toHaveLength(8);
-    expect(new Set(KOLEJNOSC_MODULOW).size).toBe(8);
+    expect(KOLEJNOSC_NOWA).toHaveLength(4);
+    // Zaden kod nie moze nalezec do obu programow: od przynaleznosci zalezy,
+    // ktora liste widzi grupa.
+    expect(new Set(WSZYSTKIE_MODULY).size).toBe(12);
     for (const m of MODULY) expect(NAZWY_MODULOW[m].length).toBeGreaterThan(3);
   });
 

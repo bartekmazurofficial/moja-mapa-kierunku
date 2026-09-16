@@ -3,7 +3,7 @@ import { pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly } from "@/lib/moduly/otwarcie";
 import { coZniknie } from "@/lib/moduly/odnowa";
 import { PotwierdzenieResetu } from "@/components/moduly/PotwierdzenieResetu";
-import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
+import { CZESCI_MODULOW, NAZWY_MODULOW, WSZYSTKIE_MODULY } from "@/lib/moduly/ekrany";
 import type { KodModulu } from "@/lib/moduly/typy";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +22,7 @@ export default async function Strona({
   params: Promise<{ kod: string; modul: string }>;
 }) {
   const { kod, modul } = await params;
-  if (!KOLEJNOSC_MODULOW.includes(modul as KodModulu)) notFound();
+  if (!WSZYSTKIE_MODULY.includes(modul as KodModulu)) notFound();
 
   const uczestnik = await pobierzUczestnika(kod);
   if (!uczestnik) notFound();

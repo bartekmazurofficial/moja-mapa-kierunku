@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { pobierzPostepModulow, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly } from "@/lib/moduly/otwarcie";
 import { stanDostepu } from "@/lib/raport/dostep";
-import { CZESCI_MODULOW, KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
+import { CZESCI_MODULOW, programGrupy } from "@/lib/moduly/ekrany";
 import { Nawigacja, type PozycjaNawigacji } from "@/components/pulpit/Nawigacja";
 import { Marka } from "@/components/pulpit/Marka";
 
@@ -32,7 +32,8 @@ export default async function Uklad({
     stanDostepu(uczestnik.id, uczestnik.grupaId),
   ]);
 
-  const doZrobienia = KOLEJNOSC_MODULOW.filter((m) => otwarte.has(m));
+  const program = programGrupy(otwarte);
+  const doZrobienia = program.filter((m) => otwarte.has(m));
   const ukonczone = doZrobienia.filter(
     (m) => (zakonczone.get(m)?.size ?? 0) >= CZESCI_MODULOW[m].length,
   ).length;
@@ -58,7 +59,11 @@ export default async function Uklad({
       podpis: "Karty do przeczytania",
       href: `/u/${kod}/zawody`,
       ikona: "zawody",
-      zamkniete: dostep.dostepne.has("zawody") ? undefined : "otworzy się na spotkaniu 4",
+      // Numer spotkania zalezy od programu: stary odslania zawody na czwartym,
+      // nowy na drugim, bo ma o polowe mniej modulow.
+      zamkniete: dostep.dostepne.has("zawody")
+        ? undefined
+        : `otworzy się na spotkaniu ${program.length === 4 ? 2 : 4}`,
     },
   ];
 

@@ -21,6 +21,21 @@ import { MOSTEK, wagiZawodu, zgodnosc } from "@/lib/engine/mostek";
 import { policzDopasowania, wybierzDoRaportu, MIN_BEZ_STUDIOW, MAX_Z_KATEGORII, DO_RAPORTU } from "@/lib/engine/ranking-czynnosci";
 import { policzBudzet } from "@/lib/engine/budzet";
 import { odczytajZarobki, dopasowanieFinansowe, punktyFinansowe } from "@/lib/engine/zarobki";
+import { kwotaProgu } from "@/lib/engine/budzet";
+import {
+  bankModulu,
+  czescEtapu,
+  czescPoziomuB,
+  czescUkladania,
+  type ModulLeja,
+} from "@/lib/moduly/ekrany-nowe";
+import {
+  CZESCI_MODULOW,
+  KOLEJNOSC_MODULOW,
+  KOLEJNOSC_NOWA,
+  programGrupy,
+} from "@/lib/moduly/ekrany";
+import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import type { BazaReferencyjna } from "@/lib/domain/typy";
 
 let baza: BazaReferencyjna;
@@ -365,5 +380,124 @@ describe("dopasowanie finansowe", () => {
 
   it("brak widełek nie karze zawodu ani go nie premiuje", () => {
     expect(punktyFinansowe(dopasowanieFinansowe(null, poziom).pasmo)).toBe(50);
+  });
+});
+
+/* ================================================================== */
+/* EKRANY NOWYCH MODULOW                                               */
+/* ================================================================== */
+
+describe("ekrany czterech nowych modułów", () => {
+  const MODULY: ModulLeja[] = ["Z", "L", "U"];
+
+  it("każdy moduł leja ma cztery części: trzy etapy i układanie", () => {
+    for (const m of MODULY) expect(CZESCI_MODULOW[m]).toEqual(["A", "B", "C", "D"]);
+    expect(CZESCI_MODULOW.F).toEqual(["A", "B"]);
+  });
+
+  it("etap pierwszy pokazuje cały bank, kolejne tylko to, co przeszło", () => {
+    for (const m of MODULY) {
+      const bank = bankModulu(m);
+      const etap1 = czescEtapu(m, 1, bank, "ziarno");
+      const pozycja = etap1.ekrany.find((e) => e.pozycje?.length)!.pozycje![0];
+      expect(pozycja.typ).toBe("lej");
+      expect(pozycja.opcje).toHaveLength(bank.length);
+      expect(pozycja.limit).toBe(LIMITY.etap1);
+
+      const przeszlo = bank.slice(0, 15);
+      const etap2 = czescEtapu(m, 2, przeszlo, "ziarno").ekrany[0].pozycje![0];
+      expect(etap2.opcje).toHaveLength(15);
+      expect(etap2.limit).toBe(LIMITY.etap2);
+      // Lej zweza sie tylko w jedna strone: na etapie drugim nie moze pojawic
+      // sie nic, czego nie bylo na pierwszym.
+      const kody = new Set(etap2.opcje!.map((o) => o.kod));
+      for (const k of kody) expect(przeszlo.map(String)).toContain(k);
+
+      const etap3 = czescEtapu(m, 3, przeszlo.slice(0, 8), "ziarno").ekrany[0].pozycje![0];
+      expect(etap3.opcje).toHaveLength(8);
+      expect(etap3.limit).toBe(LIMITY.etap3);
+    }
+  });
+
+  it("tasowanie banku jest różne dla dwóch uczestników i stałe dla jednego", () => {
+    const kody = (ziarno: string) =>
+      czescEtapu("L", 1, bankModulu("L"), ziarno).ekrany[1].pozycje![0].opcje!.map((o) => o.kod);
+    expect(kody("uczestnik-a")).toEqual(kody("uczestnik-a"));
+    expect(kody("uczestnik-a")).not.toEqual(kody("uczestnik-b"));
+  });
+
+  it("moduł Z kończy się obowiązkowym ekranem przejścia, pozostałe nie", () => {
+    const z = czescUkladania("Z", [1, 2, 3, 4, 5]);
+    expect(z.ekrany.some((e) => e.klucz === "Z_przejscie")).toBe(true);
+    for (const m of ["L", "U"] as ModulLeja[]) {
+      expect(czescUkladania(m, [1, 2, 3, 4, 5]).ekrany).toHaveLength(1);
+    }
+  });
+
+  it("układanie prosi o dokładnie tyle pozycji, ile przeszło ostatni etap", () => {
+    const pelna = czescUkladania("U", [1, 2, 3, 4, 5]).ekrany[0].pozycje![0];
+    expect(pelna.typ).toBe("kolejnosc");
+    expect(pelna.ile).toBe(5);
+    // Uczestnik, ktory zaznaczyl mniej niz piec, ma ulozyc tyle, ile ma,
+    // a nie utknac na ekranie, ktory czeka na piata pozycje.
+    expect(czescUkladania("U", [1, 2, 3]).ekrany[0].pozycje![0].ile).toBe(3);
+  });
+
+  it("panel poziomu życia dostaje odpowiedzi wstępne i wolno go przejść bez zmian", () => {
+    const panel = czescPoziomuB({ miasto: "warszawa", z_kim: "partner" }).ekrany[0].pozycje![0];
+    expect(panel.typ).toBe("progi");
+    expect(panel.wejscieBudzetu).toEqual({ miasto: "warszawa", z_kim: "partner" });
+    expect(pozycjaKompletna(panel, undefined)).toBe(true);
+  });
+
+  it("etap leja bez zaznaczeń nie przepuszcza dalej, z zaznaczeniem przepuszcza", () => {
+    const poz = czescEtapu("Z", 1, bankModulu("Z"), "x").ekrany[1].pozycje![0];
+    expect(pozycjaKompletna(poz, [])).toBe(false);
+    expect(pozycjaKompletna(poz, [3])).toBe(true);
+  });
+
+  it("niepełna kolejność nie przepuszcza dalej", () => {
+    const poz = czescUkladania("L", [1, 2, 3, 4, 5]).ekrany[0].pozycje![0];
+    expect(pozycjaKompletna(poz, [1, 2, 3])).toBe(false);
+    expect(pozycjaKompletna(poz, [1, 2, 3, 4, 5])).toBe(true);
+  });
+});
+
+describe("która wersja programu obowiązuje grupę", () => {
+  it("grupa bez otwarć widzi stary program", () => {
+    expect(programGrupy([])).toEqual(KOLEJNOSC_MODULOW);
+  });
+
+  it("jeden otwarty moduł nowego programu przełącza całą listę", () => {
+    expect(programGrupy(["Z"])).toEqual(KOLEJNOSC_NOWA);
+  });
+
+  it("grupa pilotażowa ze starymi modułami zostaje przy starym programie", () => {
+    expect(programGrupy(["A0", "A1", "A3"])).toEqual(KOLEJNOSC_MODULOW);
+  });
+
+  it("żaden kod nie należy do obu programów", () => {
+    for (const m of KOLEJNOSC_NOWA) expect(KOLEJNOSC_MODULOW).not.toContain(m);
+  });
+});
+
+describe("kwota progu w panelu zgadza się z sumą", () => {
+  it("kwota progu uwzględnia miasto i liczbę osób", () => {
+    const mieszkanie = KATEGORIE_AKTYWNE.find((k) => k.kod === "mieszkanie")!;
+    const wWarszawie = kwotaProgu(mieszkanie, "dobre", { wejscie: { miasto: "warszawa" }, decyzje: {}, opcjonalne: {} });
+    const wMalej = kwotaProgu(mieszkanie, "dobre", { wejscie: { miasto: "mala" }, decyzje: {}, opcjonalne: {} });
+    expect(wWarszawie).toBeGreaterThan(wMalej);
+    expect(wMalej).toBe(Math.round(3500 * 0.7));
+  });
+
+  it("zmiana progu podnosi sumę dokładnie o różnicę pokazaną przy progach", () => {
+    const wejscie = { miasto: "duze" };
+    const mieszkanie = KATEGORIE_AKTYWNE.find((k) => k.kod === "mieszkanie")!;
+    const przed = policzBudzet({ wejscie, decyzje: {}, opcjonalne: {} });
+    const po = policzBudzet({ wejscie, decyzje: { mieszkanie: "duze" }, opcjonalne: {} });
+    const roznica =
+      kwotaProgu(mieszkanie, "duze", { wejscie, decyzje: {}, opcjonalne: {} }) -
+      kwotaProgu(mieszkanie, "dobre", { wejscie, decyzje: {}, opcjonalne: {} });
+    expect(po.komfort - przed.komfort).toBe(roznica);
   });
 });

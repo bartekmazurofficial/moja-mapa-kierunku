@@ -26,6 +26,15 @@ import { INSTRUKCJA_M1, OBSZARY_M1, PARY_MIEKKIE_M1, PYTANIA_WPROST_M1 } from ".
 import { PRZEDMIOTY_A0, PYTANIA_A0, INSTRUKCJA_A0 } from "../content/a0";
 import { ODDECHY } from "../content/wspolne";
 import { FILTRY_A5, OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_M1 } from "../domain/slowniki";
+import {
+  bankModulu,
+  czescEtapu,
+  czescPoziomuA,
+  czescPoziomuB,
+  czescUkladania,
+  CZESCI_NOWE,
+  type ModulLeja,
+} from "./ekrany-nowe";
 import type { CzescModulu, Ekran, KodModulu, Pozycja } from "./typy";
 import { zbudujPlan, type PlanModulu } from "./plan";
 import { minutyZPozycji, zakresPozycji } from "./miara";
@@ -42,6 +51,21 @@ export interface KontekstModulu {
   m1Szkice?: Record<number, string>;
   /** M1: warunki srodowiskowe z A3, pokazywane w obszarze 2. */
   a3Warunki?: string[];
+  /**
+   * Lej: pozycje, ktore przeszly poprzedni etap. Na etapie pierwszym pusta.
+   * Bez tego etap drugi pokazywalby caly bank i lej przestalby byc lejem.
+   */
+  lejDostepne?: number[];
+  /**
+   * Ziarno tasowania banku: identyfikator uczestnika.
+   *
+   * Ta sama osoba przy powrocie do modulu widzi te sama kolejnosc, a dwie
+   * rozne osoby widza inna. W module `U` to jedyna rzecz, ktora nie pozwala
+   * mechanicznie powtorzyc wyborow z modulu `L`.
+   */
+  ziarno?: string;
+  /** F: odpowiedzi wstepne, potrzebne panelowi do liczenia sumy. */
+  budzetWejscie?: Record<string, string>;
 }
 
 export const NAZWY_MODULOW: Record<KodModulu, string> = {
@@ -53,6 +77,10 @@ export const NAZWY_MODULOW: Record<KodModulu, string> = {
   A5: "Filtry rzeczywistości",
   A6: "Jak się uczę",
   M1: "Jakiego życia chcesz",
+  Z: "Co mnie ciekawi",
+  L: "Co lubię robić",
+  U: "W czym jestem dobry",
+  F: "Poziom życia i dochodu",
 };
 
 /**
@@ -62,6 +90,38 @@ export const NAZWY_MODULOW: Record<KodModulu, string> = {
  * jak chcesz zyc".
  */
 export const KOLEJNOSC_MODULOW: KodModulu[] = ["A0", "A1", "A3", "A2", "A4", "M1", "A5", "A6"];
+
+/**
+ * Kolejnosc nowego programu.
+ *
+ * Ciekawosc, potem oba tory czynnosci, na koncu poziom zycia. Poziom zycia
+ * musi isc ostatni: propozycja zawodow porownuje widelki z kwota, ktora z
+ * niego wychodzi, a zapytanie o pieniadze na poczatku przestawia wszystkie
+ * wczesniejsze odpowiedzi pod zarobki.
+ *
+ * Modul `U` po `L`, nigdy odwrotnie: kto najpierw powie, w czym jest dobry,
+ * ten potem „lubi" dokladnie to samo.
+ */
+export const KOLEJNOSC_NOWA: KodModulu[] = ["Z", "L", "U", "F"];
+
+/** Kazdy istniejacy kod modulu, obu programow. Do sprawdzania adresow. */
+export const WSZYSTKIE_MODULY: KodModulu[] = [...KOLEJNOSC_MODULOW, ...KOLEJNOSC_NOWA];
+
+/**
+ * Ktora wersja programu obowiazuje te grupe.
+ *
+ * Rozstrzyga to, co prowadzacy otworzyl, a nie przelacznik w konfiguracji.
+ * Grupa, ktorej otwarto choc jeden modul nowego programu, widzi cztery
+ * moduly; kazda inna widzi osiem.
+ *
+ * Tak, a nie flaga na grupie, z jednego powodu: grupa pilotazowa ma
+ * wypelnione osiem starych modulow i jej wyniki maja sie dalej otwierac.
+ * Wersja programu wynika z tego, co sie z ta grupa faktycznie robilo.
+ */
+export function programGrupy(otwarte: Iterable<KodModulu>): KodModulu[] {
+  for (const m of otwarte) if (KOLEJNOSC_NOWA.includes(m)) return KOLEJNOSC_NOWA;
+  return KOLEJNOSC_MODULOW;
+}
 
 /**
  * Ile pozycji ma caly modul. Do paska postepu na liscie modulow.
@@ -930,6 +990,10 @@ export const CZESCI_MODULOW: Record<KodModulu, string[]> = {
   A5: ["A", "B", "C"],
   A6: ["A", "B"],
   M1: ["A", "B"],
+  Z: CZESCI_NOWE.Z,
+  L: CZESCI_NOWE.L,
+  U: CZESCI_NOWE.U,
+  F: CZESCI_NOWE.F,
 };
 
 export function zbudujCzesc(
@@ -975,6 +1039,20 @@ export function zbudujCzesc(
     case "M1B":
       return czescM1B(kontekst);
     default:
+      // Nowy program. Jedna galaz zamiast szesnastu wpisow, bo trzy moduly
+      // leja roznia sie wylacznie bankiem.
+      if (modul === "Z" || modul === "L" || modul === "U") {
+        const m = modul as ModulLeja;
+        const dostepne = kontekst.lejDostepne ?? bankModulu(m);
+        if (czesc === "A") return czescEtapu(m, 1, bankModulu(m), kontekst.ziarno ?? m);
+        if (czesc === "B") return czescEtapu(m, 2, dostepne, kontekst.ziarno ?? m);
+        if (czesc === "C") return czescEtapu(m, 3, dostepne, kontekst.ziarno ?? m);
+        if (czesc === "D") return czescUkladania(m, dostepne);
+      }
+      if (modul === "F") {
+        if (czesc === "A") return czescPoziomuA();
+        if (czesc === "B") return czescPoziomuB(kontekst.budzetWejscie ?? {});
+      }
       throw new Error(`nieznana część modułu: ${klucz}`);
   }
 }

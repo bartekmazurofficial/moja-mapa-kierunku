@@ -51,13 +51,24 @@ export interface KategoriaKosztu {
 
 export interface PytanieWejsciowe {
   kod: string;
+  /** Krotka etykieta, do panelu i raportu. */
   nazwa: string;
+  /**
+   * Pelne pytanie na ekranie.
+   *
+   * Osobno od `nazwa`, bo „Forma mieszkania" jest dobra etykieta i zla
+   * nagloweczkiem: uczestnik czyta naglowek jako pytanie i ma odpowiedziec,
+   * a nie odgadnac, o co chodzi. Wszystkie w czasie przyszlym: pytamy o
+   * zycie, ktore chce miec, a nie o to, jak mieszka dzis z rodzicami.
+   */
+  pytanie: string;
   opcje: Array<{ kod: string; nazwa: string; domyslna?: boolean }>;
 }
 
 export const PYTANIA_WEJSCIOWE: PytanieWejsciowe[] = [
   {
     kod: "z_kim",
+    pytanie: "Z kim chcesz mieszkać?",
     nazwa: "Z kim mieszkasz",
     opcje: [
       { kod: "sam", nazwa: "Sam albo sama", domyslna: true },
@@ -68,6 +79,7 @@ export const PYTANIA_WEJSCIOWE: PytanieWejsciowe[] = [
   },
   {
     kod: "dzieci",
+    pytanie: "Ile chcesz mieć dzieci?",
     nazwa: "Liczba dzieci",
     opcje: [
       { kod: "0", nazwa: "Bez dzieci", domyslna: true },
@@ -79,6 +91,7 @@ export const PYTANIA_WEJSCIOWE: PytanieWejsciowe[] = [
   },
   {
     kod: "miasto",
+    pytanie: "Gdzie chcesz mieszkać?",
     nazwa: "Typ miejscowości",
     opcje: [
       { kod: "mala", nazwa: "Mała miejscowość" },
@@ -90,6 +103,7 @@ export const PYTANIA_WEJSCIOWE: PytanieWejsciowe[] = [
   },
   {
     kod: "mieszkanie_forma",
+    pytanie: "W czym chcesz mieszkać?",
     nazwa: "Forma mieszkania",
     opcje: [
       { kod: "pokoj", nazwa: "Pokój" },
@@ -101,6 +115,7 @@ export const PYTANIA_WEJSCIOWE: PytanieWejsciowe[] = [
   },
   {
     kod: "zwierze",
+    pytanie: "Czy chcesz mieć zwierzę?",
     nazwa: "Zwierzę",
     opcje: [
       { kod: "brak", nazwa: "Brak", domyslna: true },

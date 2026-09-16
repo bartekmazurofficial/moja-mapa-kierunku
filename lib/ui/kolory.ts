@@ -119,6 +119,12 @@ export const KOLORY_MODULOW: Record<KodModulu, Kolor> = {
   M1: KOLORY.czerwony,
   A5: KOLORY.turkus,
   A6: KOLORY.zielony,
+  // Nowy program. Cztery kolejne kolory kola, zeby cztery kafle na liscie
+  // modulow dalo sie rozroznic jednym spojrzeniem.
+  Z: KOLORY.turkus,
+  L: KOLORY.zielony,
+  U: KOLORY.niebieski,
+  F: KOLORY.zolty,
 };
 
 /**

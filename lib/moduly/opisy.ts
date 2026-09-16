@@ -18,6 +18,10 @@ export const PO_CO: Record<KodModulu, string> = {
   M1: "Jakiego życia chcesz. Jedyna część, w której piszesz własnymi słowami.",
   A5: "Warunki pracy, które są nie do pogodzenia z tym, jak chcesz żyć.",
   A6: "Jak się uczysz. Od tego zależy, czy droga przez szkołę ma dla Ciebie sens.",
+  Z: "Jakie tematy Cię ciekawią. Nie zawód, nie kierunek, tylko to, o czym chciałbyś wiedzieć więcej.",
+  L: "Co lubisz robić. Same czynności, bez pytania, czy Ci to wychodzi.",
+  U: "W czym już dziś jesteś dobry. Nie co chciałbyś umieć, tylko na co masz dowody.",
+  F: "Jakiego życia chcesz i ile ono kosztuje. Kwota wychodzi z Twoich wyborów, nie z deklaracji.",
 };
 
 /** Hasło na kafelek: trzy, cztery słowa, bez kropki. */
@@ -30,6 +34,10 @@ export const KROTKO: Record<KodModulu, string> = {
   M1: "Jakiego życia naprawdę chcesz",
   A5: "Warunki, które akceptujesz",
   A6: "Twój sposób uczenia się",
+  Z: "Tematy, które Cię ciągną",
+  L: "Czynności, które lubisz",
+  U: "To, co Ci wychodzi",
+  F: "Życie, które chcesz mieć",
 };
 
 /** Końcówka zdania „Dziś odkrywasz…" na stronie głównej. */
@@ -42,6 +50,10 @@ export const DZIS_ODKRYWASZ: Record<KodModulu, string> = {
   M1: "jakiego życia chcesz.",
   A5: "na co się zgadzasz, a na co nie.",
   A6: "jak się uczysz najlepiej.",
+  Z: "co Cię naprawdę ciekawi.",
+  L: "co lubisz robić.",
+  U: "w czym już jesteś dobry.",
+  F: "ile kosztuje życie, którego chcesz.",
 };
 
 /**
@@ -57,6 +69,10 @@ export const DOPISEK: Record<KodModulu, string> = {
   M1: "To Twoje życie.",
   A5: "Szczerość\nsię opłaca.",
   A6: "Każdy uczy się\ninaczej.",
+  Z: "Ciekawość\nto nie zawód.",
+  L: "Nieważne,\nczy Ci wychodzi.",
+  U: "Tylko to,\nco masz na to dowody.",
+  F: "Nic nie musisz\nzmieniać.",
 };
 
 /**
@@ -91,4 +107,8 @@ export const PODTYTUL: Record<KodModulu, string> = {
   M1: "Nie o pracy, tylko o życiu. Pytamy o to, czego chcesz.",
   A5: "Nie pytamy, czy to wytrzymasz. Pytamy, jak byś to zniósł.",
   A6: "Nie ma lepszej strony. Jest ta, która jest bliżej Ciebie.",
+  Z: "Nie pytamy o zawód. Pytamy, o czym chciałbyś wiedzieć więcej.",
+  L: "Nie pytamy, czy Ci to wychodzi. Pytamy, czy lubisz to robić.",
+  U: "Nie wybieraj tego, co chciałbyś umieć. Wybieraj to, na co masz dowody.",
+  F: "Wszystko jest już ustawione. Zmieniasz tylko to, co chcesz mieć inaczej.",
 };

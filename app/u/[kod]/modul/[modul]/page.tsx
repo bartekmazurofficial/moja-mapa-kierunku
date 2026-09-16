@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Runner } from "@/components/Runner";
 import { pobierzStanModulu, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
-import { KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
+import { NAZWY_MODULOW, WSZYSTKIE_MODULY, programGrupy } from "@/lib/moduly/ekrany";
 import { ZAMKNIECIE } from "@/lib/content/wspolne";
 import { Ukonczenie } from "@/components/moduly/Ukonczenie";
 import type { KodModulu } from "@/lib/moduly/typy";
@@ -20,11 +20,12 @@ function odmiana(ile: number, jeden: string, kilka: string, wiele: string): stri
 export const dynamic = "force-dynamic";
 
 /**
- * Lista modulow pochodzi z KOLEJNOSC_MODULOW, a nie z wlasnej kopii.
+ * Lista modulow pochodzi ze wspolnej stalej, a nie z wlasnej kopii.
  * Kopia przezyla dolozenie osmego modulu i strona odpowiadala 404 na adres,
- * ktory reszta aplikacji uznawala za poprawny.
+ * ktory reszta aplikacji uznawala za poprawny. Dopuszczamy tu kody obu
+ * programow: o tym, ktory obowiazuje te grupe, rozstrzyga i tak otwarcie.
  */
-const MODULY = KOLEJNOSC_MODULOW;
+const MODULY = WSZYSTKIE_MODULY;
 
 export default async function Strona({
   params,
@@ -57,6 +58,8 @@ export default async function Strona({
     );
   }
 
+  // Numer „moduł 2 z 4" liczy sie w obrebie programu tej grupy.
+  const program = programGrupy(otwarte);
   const stan = await pobierzStanModulu(uczestnik.id, modul as KodModulu);
 
   if (stan.czesc === null || stan.definicja === null) {
@@ -72,7 +75,7 @@ export default async function Strona({
       stan.zakonczoneCzesci.length > 1
         ? odmiana(stan.zakonczoneCzesci.length, "część", "części", "części")
         : null,
-      `moduł ${KOLEJNOSC_MODULOW.indexOf(modul as KodModulu) + 1} z ${KOLEJNOSC_MODULOW.length}`,
+      `moduł ${program.indexOf(modul as KodModulu) + 1} z ${program.length}`,
     ].filter((x): x is string => Boolean(x));
 
     return (
@@ -102,8 +105,8 @@ export default async function Strona({
       definicja={stan.definicja}
       zapisane={stan.zapisane}
       nazwaModulu={NAZWY_MODULOW[modul as KodModulu]}
-      numerModulu={KOLEJNOSC_MODULOW.indexOf(modul as KodModulu) + 1}
-      liczbaModulow={KOLEJNOSC_MODULOW.length}
+      numerModulu={program.indexOf(modul as KodModulu) + 1}
+      liczbaModulow={program.length}
     />
   );
 }

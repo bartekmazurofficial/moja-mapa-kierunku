@@ -53,4 +53,8 @@ export const ZAMKNIECIE: Record<string, string> = {
   M1: "Gotowe. To jedyna część, której nikt nie policzy. Twój tekst trafia do raportu dosłownie, bez skracania.",
   A5: "Gotowe. Te warunki są filtrem: zawody, których nie chcesz, znikną z Twojego wyniku, a nie zjadą niżej.",
   A6: "Gotowe. To była ostatnia część. Teraz prowadzący otwiera Twój raport.",
+  Z: "Gotowe. Twoja piątka tematów nie decyduje o zawodzie, tylko o tym, w jakiej branży ten sam zawód będzie dla Ciebie ciekawszy.",
+  L: "Gotowe. To jest tor „chcę”. Za chwilę zapytamy o drugi, o „umiem”, i dopiero nałożenie obu coś znaczy.",
+  U: "Gotowe. Masz już oba tory. Tam, gdzie się rozjeżdżają, leży najciekawsza część Twojego wyniku.",
+  F: "Gotowe. Z tych wyborów wychodzi kwota, do której porównamy widełki każdego zawodu. Nie odwrotnie.",
 };

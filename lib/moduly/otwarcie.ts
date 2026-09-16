@@ -28,8 +28,24 @@ export const MODULY_SPOTKANIA: Record<number, KodModulu[]> = {
   4: ["A5", "A6"],
 };
 
+/**
+ * Nowy program: cztery moduly zamiast osmiu.
+ *
+ * Trzymane osobno od `MODULY_SPOTKANIA`, dopoki obie wersje wspolistnieja.
+ * Grupa pilotazowa ma wypelnione osiem starych modulow i skasowanie tego
+ * byloby skasowaniem jej wynikow.
+ */
+export const MODULY_SPOTKANIA_NOWE: Record<number, KodModulu[]> = {
+  1: ["Z", "L", "U"],
+  2: ["F"],
+};
+
 export const SPOTKANIE_MODULU: Record<KodModulu, number> = {
   A0: 1, A1: 1, A3: 1, A2: 2, M1: 3, A4: 3, A5: 4, A6: 4,
+  // Nowy program: ciekawosc i oba tory czynnosci na pierwszym spotkaniu,
+  // poziom zycia na drugim. Zawody padaja dopiero po poziomie zycia, bo bez
+  // niego nie ma z czym porownac widelek.
+  Z: 1, L: 1, U: 1, F: 2,
 };
 
 export async function otwarteModuly(grupaId: string): Promise<Set<KodModulu>> {
@@ -48,6 +64,11 @@ export async function otworzModul(grupaId: string, modul: KodModulu): Promise<vo
 
 export async function otworzSpotkanie(grupaId: string, nr: number): Promise<void> {
   for (const modul of MODULY_SPOTKANIA[nr] ?? []) await otworzModul(grupaId, modul);
+}
+
+/** To samo dla nowego programu. Osobna funkcja, bo numery spotkan sie pokrywaja. */
+export async function otworzSpotkanieNowe(grupaId: string, nr: number): Promise<void> {
+  for (const modul of MODULY_SPOTKANIA_NOWE[nr] ?? []) await otworzModul(grupaId, modul);
 }
 
 /**

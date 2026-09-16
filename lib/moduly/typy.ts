@@ -6,7 +6,27 @@
  * rankingowy, jedna para, jeden zestaw pozycji na skali.
  */
 
-export type KodModulu = "A0" | "A1" | "A2" | "A3" | "A4" | "A5" | "A6" | "M1";
+/**
+ * Kody modulow.
+ *
+ * Osiem pierwszych to program w wersji z czterech spotkan. Cztery ostatnie to
+ * program nowy: `Z` ciekawosc, `L` co lubie robic, `U` w czym jestem dobry,
+ * `F` poziom zycia i dochodu. Trzy pierwsze z nowych maja te sama mechanike
+ * leja, czwarty jest panelem kosztow.
+ */
+export type KodModulu =
+  | "A0"
+  | "A1"
+  | "A2"
+  | "A3"
+  | "A4"
+  | "A5"
+  | "A6"
+  | "M1"
+  | "Z"
+  | "L"
+  | "U"
+  | "F";
 
 /**
  * Marker zamkniecia czesci modulu. Czesci zlozone z samych pol
@@ -25,7 +45,10 @@ export type TypPozycji =
   | "wielokrotny"
   | "dowody"
   | "tekst"
-  | "kilka_tekstow";
+  | "kilka_tekstow"
+  | "lej"
+  | "kolejnosc"
+  | "progi";
 
 export interface OpcjaWyboru {
   kod: string;
@@ -110,6 +133,29 @@ export interface Pozycja {
   warunek?: { pozycja: string; wartosci: string[] };
   /** kotwica: pytanie o ekspozycje obok skali. */
   pytanieEkspozycja?: string;
+  /**
+   * lej: ile najwyzej mozna zaznaczyc na tym etapie.
+   *
+   * Limit jest twardy, a nie podpowiedzia. Cala wartosc leja bierze sie stad,
+   * ze na kazdym etapie trzeba cos odpuscic: uczestnik, ktory zaznacza
+   * czterdziesci tematow, nie powiedzial nic.
+   */
+  limit?: number;
+  /**
+   * kolejnosc: ile pozycji uczestnik ustawia. Dzis zawsze piec.
+   *
+   * Osobne pole zamiast `dokladnie`, bo `dokladnie` w A0 znaczy „zaznacz
+   * dokladnie tyle", a tu chodzi o dlugosc ulozonej listy.
+   */
+  ile?: number;
+  /**
+   * progi: odpowiedzi wstepne modulu `F`, wbudowane na serwerze.
+   *
+   * Panel musi znac miasto i liczbe osob, zeby liczyc sume w trakcie
+   * wypelniania. Odpowiedzi wstepne padaja w czesci A, panel stoi w czesci B,
+   * wiec przy budowaniu czesci B sa juz w bazie.
+   */
+  wejscieBudzetu?: Record<string, string>;
 }
 
 export interface Ekran {

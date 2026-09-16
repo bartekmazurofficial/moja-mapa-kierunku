@@ -12,7 +12,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "../db/klient";
-import { KOLEJNOSC_MODULOW } from "./ekrany";
+import { WSZYSTKIE_MODULY } from "./ekrany";
 import { otwarteModuly } from "./otwarcie";
 import { wyczyscModul } from "./odnowa";
 import type { KodModulu } from "./typy";
@@ -20,7 +20,7 @@ import type { KodModulu } from "./typy";
 export async function wypelnijOdNowa(dane: FormData) {
   const kod = String(dane.get("kod") ?? "");
   const modul = String(dane.get("modul") ?? "") as KodModulu;
-  if (!KOLEJNOSC_MODULOW.includes(modul)) throw new Error(`nieznany moduł: ${modul}`);
+  if (!WSZYSTKIE_MODULY.includes(modul)) throw new Error(`nieznany moduł: ${modul}`);
 
   const uczestnik = await prisma.uczestnik.findUnique({
     where: { kodDostepu: kod },

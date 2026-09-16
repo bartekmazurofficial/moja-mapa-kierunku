@@ -76,6 +76,38 @@ export async function zbudujKontekst(
 ): Promise<KontekstModulu> {
   const kontekst: KontekstModulu = {};
 
+  /**
+   * Lej: kazdy etap dostaje to, co przeszlo poprzedni.
+   *
+   * Ziarno tasowania to identyfikator uczestnika, nie losowa liczba: ta sama
+   * osoba przy powrocie widzi te sama kolejnosc banku. Bez tego lista
+   * przestawialaby sie pod palcami przy kazdym wejsciu.
+   */
+  if (modul === "Z" || modul === "L" || modul === "U") {
+    kontekst.ziarno = uczestnikId;
+    const zEtapu = (czesc: string, pole: string): number[] => {
+      const w = (zapisane[czesc] ?? {})[pole];
+      return Array.isArray(w) ? (w as number[]) : [];
+    };
+    if (czesc === "B") kontekst.lejDostepne = zEtapu("A", "etap1");
+    if (czesc === "C") kontekst.lejDostepne = zEtapu("B", "etap2");
+    if (czesc === "D") kontekst.lejDostepne = zEtapu("C", "etap3");
+  }
+
+  /**
+   * Panel poziomu zycia liczy sume w trakcie wypelniania, wiec musi znac
+   * odpowiedzi wstepne z czesci A. Sa juz w bazie: czesc A jest domknieta,
+   * zanim czesc B w ogole powstanie.
+   */
+  if (modul === "F" && czesc === "B") {
+    const czescA = (zapisane["A"] ?? {}) as Record<string, unknown>;
+    kontekst.budzetWejscie = Object.fromEntries(
+      Object.entries(czescA)
+        .filter(([kod, v]) => kod !== MARKER_ZAKONCZENIA && typeof v === "string")
+        .map(([kod, v]) => [kod, v as string]),
+    );
+  }
+
   if (modul === "A3" && czesc === "B") {
     const czescA = (zapisane["A"] ?? {}) as Record<string, "A" | "B">;
     const wynik = policzA3({ czescA, czescB: {} });

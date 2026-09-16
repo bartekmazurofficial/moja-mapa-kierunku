@@ -24,6 +24,23 @@ export function pozycjaKompletna(pozycja: Pozycja, wartosc: unknown): boolean {
     }
     case "dowody":
       return Array.isArray(wartosc);
+    case "lej": {
+      // Limit gorny pilnuje komponent; tu sprawdzamy tylko, czy cokolwiek
+      // zostalo zaznaczone. Etap z zerem zaznaczen nie niesie informacji,
+      // a lej bez wejscia nie ma z czego sie zwezac.
+      const w = wartosc as number[] | undefined;
+      return Array.isArray(w) && w.length > 0;
+    }
+    case "kolejnosc": {
+      // Kolejnosc musi byc pelna: piatka z trzema ustawionymi miejscami
+      // dawalaby dwie pozycje o sile nierozroznialnej od siebie.
+      const w = wartosc as number[] | undefined;
+      return Array.isArray(w) && w.length === (pozycja.ile ?? 5);
+    }
+    case "progi":
+      // Panel poziomu zycia wolno przejsc bez jednej zmiany: wszystkie progi
+      // maja wartosc domyslna i to jest odpowiedz jak kazda inna.
+      return true;
     case "tekst":
       return typeof wartosc === "string" && wartosc.trim().length > 0;
     case "kilka_tekstow":

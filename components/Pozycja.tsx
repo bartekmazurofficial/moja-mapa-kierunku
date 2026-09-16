@@ -17,6 +17,8 @@ import { Ikona, Obraz } from "@/components/Ikona";
 import { kluczBieguna, maObraz } from "@/lib/ui/obrazy";
 import { kolorWyboru, type Kolor } from "@/lib/ui/kolory";
 import { kolejnoscDoPokazania } from "@/lib/moduly/ranking";
+import { Kolejnosc, LejWyboru } from "@/components/moduly/Lej";
+import { PanelBudzetu } from "@/components/moduly/PanelBudzetu";
 export { pozycjaKompletna } from "@/lib/moduly/walidacja";
 
 export interface WlasciwosciPozycji {
@@ -60,6 +62,12 @@ export function Pozycja(props: WlasciwosciPozycji) {
       return <PoleTekstowe {...props} />;
     case "kilka_tekstow":
       return <KilkaTekstow {...props} />;
+    case "lej":
+      return <LejWyboru {...props} />;
+    case "kolejnosc":
+      return <Kolejnosc {...props} />;
+    case "progi":
+      return <PanelBudzetu {...props} />;
     default:
       return null;
   }
