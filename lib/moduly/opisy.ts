@@ -1,3 +1,5 @@
+import type { KodModulu } from "./typy";
+
 /**
  * Jednym zdaniem o każdej części, językiem uczestnika.
  *
@@ -7,7 +9,7 @@
  */
 
 /** Po co jest ta część. Pełne zdanie, na listę modułów. */
-export const PO_CO: Record<string, string> = {
+export const PO_CO: Record<KodModulu, string> = {
   A0: "Kilka podstawowych informacji o Twojej sytuacji: gdzie jesteś, co Ci idzie, na co masz przestrzeń.",
   A1: "Co Cię realnie ciągnie. Nie deklaracje, tylko wybory między konkretnymi zajęciami.",
   A3: "Jak naturalnie działasz: sam czy z ludźmi, z planem czy w biegu, cisza czy ruch.",
@@ -15,10 +17,11 @@ export const PO_CO: Record<string, string> = {
   A4: "Czego potrzebujesz od pracy, żeby miała dla Ciebie sens.",
   M1: "Jakiego życia chcesz. Jedyna część, w której piszesz własnymi słowami.",
   A5: "Warunki pracy, które są nie do pogodzenia z tym, jak chcesz żyć.",
+  A6: "Jak się uczysz. Od tego zależy, czy droga przez szkołę ma dla Ciebie sens.",
 };
 
 /** Hasło na kafelek: trzy, cztery słowa, bez kropki. */
-export const KROTKO: Record<string, string> = {
+export const KROTKO: Record<KodModulu, string> = {
   A0: "Twoja sytuacja i możliwości",
   A1: "Co Cię ciekawi w praktyce",
   A3: "Twój styl działania",
@@ -26,10 +29,11 @@ export const KROTKO: Record<string, string> = {
   A4: "Twoje wartości w praktyce",
   M1: "Jakiego życia naprawdę chcesz",
   A5: "Warunki, które akceptujesz",
+  A6: "Twój sposób uczenia się",
 };
 
 /** Końcówka zdania „Dziś odkrywasz…" na stronie głównej. */
-export const DZIS_ODKRYWASZ: Record<string, string> = {
+export const DZIS_ODKRYWASZ: Record<KodModulu, string> = {
   A0: "od czego zaczynasz.",
   A1: "co naprawdę Cię ciągnie.",
   A3: "jak naturalnie działasz.",
@@ -37,13 +41,14 @@ export const DZIS_ODKRYWASZ: Record<string, string> = {
   A4: "co jest dla Ciebie ważne.",
   M1: "jakiego życia chcesz.",
   A5: "na co się zgadzasz, a na co nie.",
+  A6: "jak się uczysz najlepiej.",
 };
 
 /**
  * Dopisek na marginesie ekranu pytania. Ozdoba, nigdy nośnik treści: obok
  * zawsze stoi pełne pytanie. Bez ocen i bez „świetnie Ci idzie".
  */
-export const DOPISEK: Record<string, string> = {
+export const DOPISEK: Record<KodModulu, string> = {
   A0: "Od tego zaczynamy.",
   A1: "Pierwszy odruch\nzwykle ma rację.",
   A3: "Twój styl\nma moc.",
@@ -51,6 +56,7 @@ export const DOPISEK: Record<string, string> = {
   A4: "Wybierz,\nnie oceniaj.",
   M1: "To Twoje życie.",
   A5: "Szczerość\nsię opłaca.",
+  A6: "Każdy uczy się\ninaczej.",
 };
 
 /**
@@ -76,7 +82,7 @@ export const WSKAZOWKA: Record<string, string> = {};
  * Zdanie pod pytaniem na ekranie wyboru. Powtarza zasadę modułu z instrukcji,
  * bo instrukcję czyta się raz, a pytań jest trzydzieści sześć.
  */
-export const PODTYTUL: Record<string, string> = {
+export const PODTYTUL: Record<KodModulu, string> = {
   A0: "Kilka informacji o Twojej sytuacji. Bez oceniania.",
   A1: "Nie pytamy, czy Ci to wyjdzie. Pytamy, czy chciałbyś to robić.",
   A3: "Nie ma dobrych ani złych odpowiedzi. Liczy się to, co jest najbliżej Ciebie.",
@@ -84,4 +90,5 @@ export const PODTYTUL: Record<string, string> = {
   A4: "Obie odpowiedzi są dobre. Wybierz tę, która bardziej do Ciebie pasuje.",
   M1: "Nie o pracy, tylko o życiu. Pytamy o to, czego chcesz.",
   A5: "Nie pytamy, czy to wytrzymasz. Pytamy, jak byś to zniósł.",
+  A6: "Nie ma lepszej strony. Jest ta, która jest bliżej Ciebie.",
 };

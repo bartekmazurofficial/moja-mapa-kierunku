@@ -1,7 +1,7 @@
 /**
  * Znak części programu.
  *
- * Siedem rysowanych glifów, po jednym na moduł, żeby kafelek podróży dało się
+ * Osiem rysowanych glifów, po jednym na moduł, żeby kafelek podróży dało się
  * rozpoznać z odległości, a nie tylko przeczytać. Czysta ozdoba: obok zawsze
  * stoi pełna nazwa części, więc czytnik ekranu niczego nie traci.
  */
@@ -21,6 +21,8 @@ const ZNAKI: Record<string, string[]> = {
   M1: ["M3 19h18", "m7 19 6.5-12L20 19", "M13.5 7V3l3.5 1.4-3.5 1.4"],
   // Filtry rzeczywistości: suwaki.
   A5: ["M4 7h16", "M4 12h16", "M4 17h16", "M9 5v4", "M15 10v4", "M7 15v4"],
+  // Jak się uczę: otwarta książka.
+  A6: ["M4 6h6a2 2 0 0 1 2 2v11a2 2 0 0 0-2-2H4z", "M20 6h-6a2 2 0 0 0-2 2v11a2 2 0 0 1 2-2h6z"],
 };
 
 export function ZnakModulu({ modul, rozmiar = 26 }: { modul: string; rozmiar?: number }) {

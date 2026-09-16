@@ -27,13 +27,13 @@ import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import { ZAPIS_SAM } from "@/lib/content/wspolne";
 import { czegoNieZapytamyA0, sciezkaA0 } from "@/lib/content/a0";
 import { minutyZPozycji, zakresPozycji } from "@/lib/moduly/miara";
-import type { CzescModulu, Ekran } from "@/lib/moduly/typy";
+import type { CzescModulu, Ekran, KodModulu } from "@/lib/moduly/typy";
 
 const MARKER_ZAKONCZENIA = "__zakonczono";
 
 interface Wlasciwosci {
   kodUczestnika: string;
-  modul: string;
+  modul: KodModulu;
   definicja: CzescModulu;
   zapisane: Record<string, unknown>;
   nazwaModulu: string;

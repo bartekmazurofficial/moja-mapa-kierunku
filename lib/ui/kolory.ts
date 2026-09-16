@@ -1,3 +1,5 @@
+import type { KodModulu } from "../moduly/typy";
+
 /**
  * Kolory kategorii.
  *
@@ -96,11 +98,19 @@ export function kolorKategorii(klucz: string): Kolor {
   return KOLORY[KOLEJNOSC_KOLOROW[skrot(klucz) % KOLEJNOSC_KOLOROW.length]];
 }
 
+
 /**
  * Kolor części programu. W obrębie jednego spotkania kolory są różne, bo
  * części tego spotkania stoją obok siebie w jednym szeregu.
  */
-export const KOLORY_MODULOW: Record<string, Kolor> = {
+/**
+ * Typ jest tu `Record<KodModulu, ...>`, a nie `Record<string, ...>`, i to nie
+ * jest kosmetyka. Przy luznym typie dolozenie osmego modulu nie zepsulo
+ * kompilacji, tylko produkcje: panel uczestnika siegal po `kolor.tlo`
+ * z niezdefiniowanego wpisu i cala strona konczyla sie wyjatkiem po stronie
+ * serwera. Przy typie scislym brakujacy modul jest bledem kompilacji.
+ */
+export const KOLORY_MODULOW: Record<KodModulu, Kolor> = {
   A0: KOLORY.turkus,
   A1: KOLORY.zielony,
   A3: KOLORY.fiolet,
@@ -108,6 +118,7 @@ export const KOLORY_MODULOW: Record<string, Kolor> = {
   A4: KOLORY.zolty,
   M1: KOLORY.czerwony,
   A5: KOLORY.turkus,
+  A6: KOLORY.zielony,
 };
 
 /**

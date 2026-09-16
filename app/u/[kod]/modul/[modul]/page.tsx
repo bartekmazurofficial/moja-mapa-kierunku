@@ -98,7 +98,7 @@ export default async function Strona({
        */
       key={`${modul}-${stan.czesc}`}
       kodUczestnika={kod}
-      modul={modul}
+      modul={modul as KodModulu}
       definicja={stan.definicja}
       zapisane={stan.zapisane}
       nazwaModulu={NAZWY_MODULOW[modul as KodModulu]}

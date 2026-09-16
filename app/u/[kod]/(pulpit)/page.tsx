@@ -9,6 +9,7 @@ import { WARSTWY } from "@/lib/raport/sekcje";
 import { Bramy } from "@/components/pulpit/Bramy";
 import { ZnakModulu } from "@/components/pulpit/ZnakModulu";
 import { Panorama } from "@/components/pulpit/Panorama";
+import type { KodModulu } from "@/lib/moduly/typy";
 
 export const dynamic = "force-dynamic";
 
@@ -276,7 +277,7 @@ function KafelekModulu({
   spotkanie,
 }: {
   kod: string;
-  modul: string;
+  modul: KodModulu;
   numer: number;
   stan: Stan;
   spotkanie: number;
@@ -293,7 +294,7 @@ function KafelekModulu({
         <ZnakModulu modul={modul} rozmiar={26} />
       </span>
       <span className="mt-2 block text-male font-bold leading-snug text-atrament">
-        {NAZWY_MODULOW[modul as keyof typeof NAZWY_MODULOW]}
+        {NAZWY_MODULOW[modul]}
       </span>
       <span className="mt-1 hidden text-drobne leading-snug text-atrament-slaby xl:block">
         {KROTKO[modul]}
