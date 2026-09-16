@@ -59,6 +59,15 @@ export interface SekcjeKoncowe {
   doSprawdzenia: { warunek: string; zdanie: string } | null;
   napiecie: { tytul: string; tresc: string } | null;
   przewaga: { pozycje: string[]; komunikat: string } | null;
+  /**
+   * Wszystko, na co uczestnik sie zgodzil, w krotkim brzmieniu.
+   *
+   * Pelny tekst warunku („Studia trwajace piec lat albo dluzej") jest pisany
+   * do ekranu z pytaniem, gdzie stoi sam w wierszu. W raporcie te same rzeczy
+   * stoja obok siebie jako plakietki i musza byc krotkie, inaczej kolumna
+   * robi sie z nich na pol ekranu wysoka.
+   */
+  zgody: string[];
   powtorzone: { tresc: string; komunikat: string } | null;
   /**
    * Sekcja osma. Liczy ja `lib/raport/sciezki.ts`, bo trzyma wlasne reguly:
@@ -296,6 +305,14 @@ export function zbudujKoncowy(dane: {
   const zgodzoneKody = !wolno("na_co_gotow")
     ? []
     : Object.keys(TRUDNE_A5).filter((kod) => dane.odpowiedziA5[kod] === "tak");
+  // Krotkie brzmienie tam, gdzie je mamy; reszta pelnym tekstem warunku.
+  const zgody = !wolno("na_co_gotow")
+    ? []
+    : Object.entries(dane.odpowiedziA5)
+        .filter(([, odp]) => odp === "tak")
+        .map(([kod]) => TRUDNE_A5[kod] ?? WARUNKI_TRESC[kod]?.tekst ?? kod)
+        .slice(0, 10);
+
   const przewaga =
     zgodzoneKody.length >= 4
       ? {
@@ -321,6 +338,7 @@ export function zbudujKoncowy(dane: {
     doSprawdzenia: wolno("srodowisko") ? zbudujDoSprawdzenia(a2, a3) : null,
     napiecie,
     przewaga,
+    zgody,
     powtorzone: wolno("czego_nie_chce") ? znajdzPowtorzone(m1, a5) : null,
     sciezki,
   };

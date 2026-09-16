@@ -272,8 +272,26 @@ export function zbudujSciezki(
       etykieta: ETYKIETY_GRUP[g],
       litery: sciezki.filter((s) => s.grupaNauki === g).map((s) => s.litera),
     })),
-    czegoNieBrac: [],
-    jednaDecyzja: null,
+    /**
+     * Osiem kierunkow, ktorych nie warto brac, z odwolaniem do wlasnej
+     * odpowiedzi uczestnika. Liczy je silnik jako antydopasowania i to jest
+     * dobrze: gdyby ta lista powstawala tutaj, mowilaby co innego niz sekcja
+     * „czego raczej unikac" z tych samych danych.
+     *
+     * Nie jest to lista zawodow usunietych wetem. Tamtej uczestnik nie widzi
+     * nigdy i nie ma jej w zadnym eksporcie.
+     */
+    czegoNieBrac: silnik.warstwa1.antydopasowania
+      .slice(0, 8)
+      .map((a) => ({ co: a.nazwa, dlaczego: a.komunikat })),
+    /**
+     * Wspolny pierwszy krok wszystkich osmiu sciezek.
+     *
+     * Bierzemy go z zakonczenia silnika, bo tam jest liczony z etapu edukacji,
+     * a nie z drogi: dla kazdej z osmiu sciezek pierwszy ruch jest ten sam
+     * i wlasnie to jest tresc bloku „jedna decyzja zamiast osmiu".
+     */
+    jednaDecyzja: silnik.zakonczenie?.pierwszyKrok ?? null,
   };
 }
 

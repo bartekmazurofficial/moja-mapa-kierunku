@@ -62,6 +62,37 @@ export const PARY_KOLOROW: Array<{ nazwa: string; tekst: string; tlo: string }> 
   { nazwa: "biały na gradiencie, fiolet", tekst: "#ffffff", tlo: "#6d3df5" },
   { nazwa: "biały na gradiencie, róż", tekst: "#ffffff", tlo: "#c2185b" },
 
+  // Raport koncowy: wlasna, nasycona paleta. Kazdy pelny kolor stoi pod bialym
+  // napisem, kazdy pastel pod atramentowym. Dwa odcienie z makiety zostaly
+  // przyciemnione, bo nie przechodzily: zielen #0f8f68 dawala 4,08, a pomarancz
+  // #c2651a 4,06. Patrz components/raport/barwy.ts.
+  { nazwa: "biały na granacie raportu", tekst: "#ffffff", tlo: "#1d2a8c" },
+  { nazwa: "biały na niebieskim raportu", tekst: "#ffffff", tlo: "#2f4ae0" },
+  { nazwa: "biały na błękicie raportu", tekst: "#ffffff", tlo: "#3a55e8" },
+  { nazwa: "biały na fiolecie raportu", tekst: "#ffffff", tlo: "#5c31c9" },
+  { nazwa: "biały na jasnym fiolecie raportu", tekst: "#ffffff", tlo: "#7a4ff5" },
+  { nazwa: "biały na amarancie raportu", tekst: "#ffffff", tlo: "#a13fd0" },
+  { nazwa: "biały na magencie raportu", tekst: "#ffffff", tlo: "#a52f9e" },
+  { nazwa: "biały na zieleni raportu", tekst: "#ffffff", tlo: "#0b6b55" },
+  { nazwa: "biały na jasnej zieleni raportu", tekst: "#ffffff", tlo: "#0d8460" },
+  { nazwa: "biały na średniej zieleni raportu", tekst: "#ffffff", tlo: "#0f7a5f" },
+  { nazwa: "biały na rdzy raportu", tekst: "#ffffff", tlo: "#8a3f0c" },
+  { nazwa: "biały na jasnej rdzy raportu", tekst: "#ffffff", tlo: "#b45a14" },
+  { nazwa: "biały na karminie raportu", tekst: "#ffffff", tlo: "#8d1b3f" },
+  { nazwa: "biały na jasnym karminie raportu", tekst: "#ffffff", tlo: "#b32f5c" },
+  { nazwa: "biały na wiśni raportu", tekst: "#ffffff", tlo: "#a8244c" },
+  { nazwa: "biały na ciemnym pasie raportu", tekst: "#ffffff", tlo: "#16203c" },
+  { nazwa: "biały na fioletowym pasie raportu", tekst: "#ffffff", tlo: "#3b1f63" },
+  { nazwa: "biały na śliwkowym pasie raportu", tekst: "#ffffff", tlo: "#7a2350" },
+  { nazwa: "atrament na pastelu niebieskim", tekst: "#16203c", tlo: "#eef2ff" },
+  { nazwa: "atrament na pastelu zielonym", tekst: "#16203c", tlo: "#d9ffef" },
+  { nazwa: "atrament na pastelu fioletowym", tekst: "#16203c", tlo: "#f2ecff" },
+  { nazwa: "atrament na pastelu pomarańczowym", tekst: "#16203c", tlo: "#fff3e0" },
+  { nazwa: "atrament na pastelu błękitnym", tekst: "#16203c", tlo: "#e8f0ff" },
+  { nazwa: "atrament na pastelu różowym", tekst: "#16203c", tlo: "#ffeef3" },
+  { nazwa: "atrament na pastelu liliowym", tekst: "#16203c", tlo: "#f6ecff" },
+  { nazwa: "słaby raportu na bieli", tekst: "#5a6383", tlo: "#ffffff" },
+
   // Trzy stopnie w A5: „dam rade", „zalezy", „to nie dla mnie". Kazda karta
   // ma wlasne tlo, wlasny znak i wlasny pierscien wyboru. Trzeci stopien jest
   // ceglasty, nie czerwony: to jedyna odpowiedz, ktora usuwa zawody

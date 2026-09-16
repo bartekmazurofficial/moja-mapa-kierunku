@@ -17,6 +17,9 @@
  *     dowody z zycia, czyli zdarzenia, a nie wynik.
  *   - **Sekcja dziewiata jest pusta i taka zostaje.** Wypelnia ja prowadzacy
  *     razem z uczestnikiem na rozmowie, a nie algorytm.
+ *
+ * Paleta jest wlasna i nasycona, inaczej niz w reszcie produktu. Powod
+ * i komplet kolorow: `components/raport/barwy.ts`.
  */
 
 import { useState } from "react";
@@ -24,18 +27,74 @@ import type { WidokRaportu } from "@/lib/raport/serwer";
 import type { Sciezka } from "@/lib/raport/sciezki";
 import { SEKCJE_PO_ID } from "@/lib/raport/sekcje";
 import { TEKSTY_KONCOWE } from "@/lib/content/koncowy";
-import { Bramy } from "@/components/pulpit/Bramy";
+import { BARWA, BARWA_SEKCJI, GRADIENT, PASTELE } from "./barwy";
 
-const SEKCJE: Array<{ nr: string; id: string; tytul: string; zrodlo: string }> = [
-  { nr: "01", id: "to-jestes-ty", tytul: "To jesteś Ty", zrodlo: "profil_w_jednym_ekranie" },
-  { nr: "02", id: "co-cie-ciagnie", tytul: "Co Cię ciągnie", zrodlo: "co_mnie_interesuje" },
-  { nr: "03", id: "co-ci-wychodzi", tytul: "Co Ci wychodzi", zrodlo: "w_czym_dobry" },
-  { nr: "04", id: "jakiej-pracy", tytul: "Jakiej pracy potrzebujesz", zrodlo: "srodowisko" },
-  { nr: "05", id: "co-wazne", tytul: "Co jest dla Ciebie ważne", zrodlo: "wartosci" },
-  { nr: "06", id: "granice", tytul: "Na co się nie zgadzasz", zrodlo: "na_co_gotow" },
-  { nr: "07", id: "twoje-slowa", tytul: "Twoje słowa", zrodlo: "wizja_zycia" },
-  { nr: "08", id: "twoje-sciezki", tytul: "Twoje ścieżki", zrodlo: "zawody" },
-  { nr: "09", id: "co-dalej", tytul: "Co dalej", zrodlo: "moja_decyzja" },
+const CIEN = "shadow-[0_1px_2px_rgba(22,32,60,.05),0_18px_48px_-32px_rgba(22,32,60,.4)]";
+
+const SEKCJE: Array<{ nr: string; id: string; tytul: string; podpis: string; zrodlo: string }> = [
+  {
+    nr: "01",
+    id: "to-jestes-ty",
+    tytul: "To jesteś Ty",
+    podpis: "Sześć cech, które wyszły najmocniej.",
+    zrodlo: "profil_w_jednym_ekranie",
+  },
+  {
+    nr: "02",
+    id: "co-cie-ciagnie",
+    tytul: "Co Cię ciągnie",
+    podpis: "Pięć rzeczy wybieranych najczęściej z dwudziestu czterech.",
+    zrodlo: "co_mnie_interesuje",
+  },
+  {
+    nr: "03",
+    id: "co-ci-wychodzi",
+    tytul: "Co Ci wychodzi",
+    podpis: "Kropki to potwierdzenia z życia, nie ocena.",
+    zrodlo: "w_czym_dobry",
+  },
+  {
+    nr: "04",
+    id: "jakiej-pracy",
+    tytul: "Jakiej pracy potrzebujesz",
+    podpis: "Warunki, w których dasz z siebie najwięcej.",
+    zrodlo: "srodowisko",
+  },
+  {
+    nr: "05",
+    id: "co-wazne",
+    tytul: "Co jest dla Ciebie ważne",
+    podpis: "Wartości, które wygrywały najczęściej.",
+    zrodlo: "wartosci",
+  },
+  {
+    nr: "06",
+    id: "granice",
+    tytul: "Na co się nie zgadzasz, a co akceptujesz",
+    podpis: "Twoje granice i strefa komfortu.",
+    zrodlo: "na_co_gotow",
+  },
+  {
+    nr: "07",
+    id: "twoje-slowa",
+    tytul: "Twoje słowa",
+    podpis: "Tego nikt nie liczył. Napisałeś to sam.",
+    zrodlo: "wizja_zycia",
+  },
+  {
+    nr: "08",
+    id: "twoje-sciezki",
+    tytul: "Twoje ścieżki",
+    podpis: "Obszary zawodowe dopasowane do wyniku. To nie ranking.",
+    zrodlo: "zawody",
+  },
+  {
+    nr: "09",
+    id: "co-dalej",
+    tytul: "Co dalej",
+    podpis: "Te trzy pola wypełniasz razem z prowadzącym, na rozmowie.",
+    zrodlo: "moja_decyzja",
+  },
 ];
 
 export function RaportKoncowy({ widok, kodUczestnika }: { widok: WidokRaportu; kodUczestnika: string }) {
@@ -63,32 +122,92 @@ export function RaportKoncowy({ widok, kodUczestnika }: { widok: WidokRaportu; k
   function kiedy(zrodlo: string): string | null {
     if (dostepne.has(zrodlo)) return null;
     const warstwa = SEKCJE_PO_ID.get(zrodlo)?.warstwa;
-    const zamknieta = widok.zamkniete.find((w) => w.kod === warstwa);
-    return zamknieta?.kiedy ?? "po kolejnym spotkaniu";
+    return widok.zamkniete.find((w) => w.kod === warstwa)?.kiedy ?? "po kolejnym spotkaniu";
   }
 
+  const sciezkiOtwarte = kiedy("zawody") === null;
+
   return (
-    <div className="mx-auto w-full max-w-[72rem] px-4 pb-16 pt-6 sm:px-6">
-      <Czolo raport={raport} />
-      <Nawigacja />
+    <div className="mx-auto flex w-full max-w-[74rem] flex-col gap-5 px-3 pb-16 pt-5 sm:px-5">
+      <Czolo raport={raport} postep={widok.postep} />
 
-      {SEKCJE.map((s) => (
-        <Sekcja key={s.id} nr={s.nr} id={s.id} tytul={s.tytul} kiedy={kiedy(s.zrodlo)}>
-          {s.id === "to-jestes-ty" && <ToJestesTy kafle={k?.kafle ?? []} zdania={raport.profil_w_jednym_ekranie?.zdania ?? []} />}
-          {s.id === "co-cie-ciagnie" && <CoCieCiagnie raport={raport} />}
-          {s.id === "co-ci-wychodzi" && <CoCiWychodzi raport={raport} />}
-          {s.id === "jakiej-pracy" && <JakiejPracy raport={raport} />}
-          {s.id === "co-wazne" && <CoWazne raport={raport} />}
-          {s.id === "granice" && <Granice raport={raport} />}
-          {s.id === "twoje-slowa" && <TwojeSlowa raport={raport} />}
-          {s.id === "twoje-sciezki" && <TwojeSciezki raport={raport} />}
-          {s.id === "co-dalej" && (
-            <CoDalej raport={raport} pytanie={pytanie} zapiszPytanie={zapiszPytanie} />
-          )}
-        </Sekcja>
-      ))}
+      <Panel id="to-jestes-ty" kiedy={kiedy}>
+        <ToJestesTy kafle={k?.kafle ?? []} />
+      </Panel>
 
-      <NaKoniec />
+      {/* Dwie sekcje obok siebie: obie sa listami i obie mieszcza sie w polowie
+          szerokosci, wiec para czyta sie jak jeden rozklad, a nie dwa ekrany. */}
+      <div className="grid items-start gap-5 lg:grid-cols-2">
+        <Panel id="co-cie-ciagnie" kiedy={kiedy}>
+          <CoCieCiagnie raport={raport} />
+        </Panel>
+        <Panel id="co-ci-wychodzi" kiedy={kiedy}>
+          <CoCiWychodzi raport={raport} />
+        </Panel>
+      </div>
+
+      <div className="grid items-start gap-5 lg:grid-cols-2">
+        <Panel id="jakiej-pracy" kiedy={kiedy}>
+          <JakiejPracy raport={raport} />
+        </Panel>
+        <Panel id="co-wazne" kiedy={kiedy}>
+          <CoWazne raport={raport} />
+        </Panel>
+      </div>
+
+      <Panel
+        id="granice"
+        kiedy={kiedy}
+        obok="Granice usuwają zawody z listy. Zgoda na trudne warunki otwiera te, których inni unikają."
+      >
+        <Granice raport={raport} />
+      </Panel>
+
+      <Panel id="twoje-slowa" kiedy={kiedy}>
+        <TwojeSlowa raport={raport} />
+      </Panel>
+
+      <Panel id="twoje-sciezki" kiedy={kiedy}>
+        <TwojeSciezki raport={raport} />
+      </Panel>
+
+      {sciezkiOtwarte && k?.sciezki?.czegoNieBrac.length ? (
+        <section className={`rounded-[1.4rem] bg-panel p-6 ${CIEN} sm:p-8`}>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <h2 className="text-naglowek font-extrabold tracking-[-0.025em] text-atrament">
+              Czego nie brać
+            </h2>
+            <p className="max-w-[26rem] text-male leading-snug text-atrament-sciszony sm:text-right">
+              {TEKSTY_KONCOWE.czegoNieBrac}
+            </p>
+          </div>
+          <ul className="mt-5 grid gap-x-8 sm:grid-cols-2">
+            {k.sciezki.czegoNieBrac.map((p) => (
+              <li key={p.co} className="flex gap-4 border-b border-linia py-3.5">
+                <span
+                  className="w-[9rem] shrink-0 text-male font-bold leading-snug"
+                  style={{ color: BARWA.wisnia }}
+                >
+                  {p.co}
+                </span>
+                <span className="min-w-0 flex-1 text-male leading-snug text-atrament-sciszony">
+                  {p.dlaczego}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      <Panel
+        id="co-dalej"
+        kiedy={kiedy}
+        odreczny={"Przyjdź z jednym pytaniem,\nna które raport nie odpowiedział."}
+      >
+        <CoDalej raport={raport} pytanie={pytanie} zapiszPytanie={zapiszPytanie} />
+      </Panel>
+
+      <Stopka />
     </div>
   );
 }
@@ -97,80 +216,142 @@ export function RaportKoncowy({ widok, kodUczestnika }: { widok: WidokRaportu; k
 /* SZKIELET                                                            */
 /* ================================================================== */
 
-function Czolo({ raport }: { raport: WidokRaportu["raport"] }) {
+function Znak({ rozmiar = "h-11 w-11" }: { rozmiar?: string }) {
   return (
-    <header className="szklo relative overflow-hidden rounded-karta p-6 sm:p-10">
-      <Bramy klasa="pointer-events-none absolute -right-10 -top-8 hidden h-[15rem] w-[24rem] opacity-50 lg:block" />
-      <p className="text-drobne font-bold uppercase tracking-[0.2em] text-atrament-slaby">
-        Raport końcowy · {raport.dataWygenerowania}
-      </p>
-      <h1 className="mt-3 text-naglowek-duzy font-extrabold leading-[1.05] tracking-[-0.03em] text-atrament sm:text-tytul">
-        Moja mapa <span className="gradient-tytul">kierunku</span>
-      </h1>
-      <p className="mt-3 text-tresc-duza font-semibold text-atrament">{raport.imie}</p>
+    <span
+      aria-hidden
+      className={`flex ${rozmiar} shrink-0 items-center justify-center rounded-full`}
+      style={{ background: BARWA.atrament }}
+    >
+      <svg viewBox="0 0 24 24" className="h-1/2 w-1/2" fill="none" stroke="#ffffff" strokeWidth="2">
+        <circle cx="12" cy="12" r="7.5" />
+      </svg>
+    </span>
+  );
+}
 
-      <div className="mt-6 max-w-[42rem] rounded-karta border border-linia bg-panel/70 p-5">
-        <p className="text-drobne font-bold uppercase tracking-[0.16em] text-akcent-jasny">
-          Jak czytać ten raport
-        </p>
-        <div className="proza mt-2.5">
-          {TEKSTY_KONCOWE.jakCzytac.map((z) => (
-            <p key={z}>{z}</p>
-          ))}
+function Czolo({
+  raport,
+  postep,
+}: {
+  raport: WidokRaportu["raport"];
+  postep: WidokRaportu["postep"];
+}) {
+  const zdanie = raport.profil_w_jednym_ekranie?.zdania?.[0] ?? null;
+  return (
+    <header className={`rounded-[1.4rem] bg-panel p-6 ${CIEN} sm:p-9`}>
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-linia pb-5">
+        <div className="flex flex-wrap items-center gap-3.5">
+          <Znak />
+          <span>
+            <span className="block text-tresc-duza font-extrabold leading-tight text-atrament">
+              DreamWork
+            </span>
+            <span className="block text-drobne font-semibold text-atrament-slaby">
+              Fundacja Służąc Życiu
+            </span>
+          </span>
+          <span className="hidden max-w-[16rem] border-l border-linia pl-3.5 text-drobne leading-snug text-atrament-slaby sm:block">
+            Młodzi ludzie. Prawdziwe możliwości. Lepsze jutro.
+          </span>
         </div>
+        <p className="text-drobne font-bold uppercase tracking-[0.18em] text-atrament-slaby">
+          Raport końcowy · {raport.dataWygenerowania}
+        </p>
       </div>
+
+      <div className="mt-6 flex flex-wrap items-start justify-between gap-6">
+        <div className="min-w-0 flex-1">
+          <p className="text-drobne font-bold uppercase tracking-[0.2em] text-atrament-slaby">
+            Indywidualny raport rozwojowo-zawodowy
+          </p>
+          <h1 className="mt-2.5 text-naglowek-duzy font-extrabold leading-[1.02] tracking-[-0.04em] text-atrament sm:text-tytul">
+            Moja mapa <span className="gradient-tytul">kierunku</span>
+          </h1>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span
+              className="rounded-lg px-3 py-1.5 text-male font-bold text-na-akcencie"
+              style={{ background: BARWA.atrament }}
+            >
+              {raport.imie}
+            </span>
+            <span className="rounded-lg bg-plyta px-3 py-1.5 text-male font-semibold text-atrament-sciszony">
+              {postep.ukonczonych} z {postep.wszystkich} testów ukończonych
+            </span>
+          </div>
+        </div>
+        <p
+          aria-hidden
+          className="odreczny hidden max-w-[13rem] whitespace-pre-line rounded-[1.2rem] border border-linia bg-plyta p-4 text-left lg:block"
+        >
+          {"Nie musisz wiedzieć\nwszystkiego dziś.\nWażne, że idziesz\nw dobrym kierunku."}
+        </p>
+      </div>
+
+      {zdanie ? (
+        <p
+          className="mt-6 max-w-[40rem] rounded-[1.1rem] border-l-4 border-white/70 p-5 text-tresc-duza font-bold leading-snug text-na-akcencie"
+          style={{ background: GRADIENT.zdanie }}
+        >
+          {zdanie}
+        </p>
+      ) : null}
     </header>
   );
 }
 
-function Nawigacja() {
-  return (
-    <nav aria-label="Sekcje raportu" className="mt-5 flex flex-wrap gap-2">
-      {SEKCJE.map((s) => (
-        <a
-          key={s.id}
-          href={`#${s.id}`}
-          className="przejscie rounded-full border border-linia bg-panel px-3.5 py-1.5 text-male font-semibold text-atrament-sciszony hover:border-linia-mocna hover:text-atrament"
-        >
-          <span className="mr-1.5 font-boksowy text-drobne text-atrament-slaby">{s.nr}</span>
-          {s.tytul}
-        </a>
-      ))}
-    </nav>
-  );
-}
-
-function Sekcja({
-  nr,
+function Panel({
   id,
-  tytul,
   kiedy,
+  obok,
+  odreczny,
   children,
 }: {
-  nr: string;
   id: string;
-  tytul: string;
-  kiedy: string | null;
+  kiedy: (zrodlo: string) => string | null;
+  /** Zdanie przy prawej krawędzi nagłówka sekcji. */
+  obok?: string;
+  /** Dopisek odręczny przy prawej krawędzi, zamiast zdania. */
+  odreczny?: string;
   children: React.ReactNode;
 }) {
+  const s = SEKCJE.find((x) => x.id === id)!;
+  const zamknieta = kiedy(s.zrodlo);
   return (
-    <section id={id} className="mt-8 scroll-mt-4">
-      <div className="mb-4 flex flex-wrap items-baseline gap-3">
-        <span className="przycisk-gradient rounded-lg px-2.5 py-1 font-boksowy text-male font-bold text-na-akcencie">
-          {nr}
-        </span>
-        <h2 className="text-naglowek font-extrabold tracking-[-0.02em] text-atrament sm:text-naglowek-duzy">
-          {tytul}
-        </h2>
+    <section id={id} className={`scroll-mt-4 rounded-[1.4rem] bg-panel p-6 ${CIEN} sm:p-8`}>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-3.5">
+          <span
+            aria-hidden
+            className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg font-boksowy text-drobne font-bold text-na-akcencie"
+            style={{ background: BARWA_SEKCJI[id] }}
+          >
+            {s.nr}
+          </span>
+          <div>
+            <h2 className="text-naglowek font-extrabold leading-tight tracking-[-0.025em] text-atrament">
+              {s.tytul}
+            </h2>
+            <p className="mt-0.5 text-male text-atrament-sciszony">{s.podpis}</p>
+          </div>
+        </div>
+        {obok ? (
+          <p className="max-w-[24rem] text-male leading-snug text-atrament-sciszony sm:text-right">{obok}</p>
+        ) : null}
+        {odreczny ? (
+          <p aria-hidden className="odreczny hidden max-w-[16rem] whitespace-pre-line text-right lg:block">
+            {odreczny}
+          </p>
+        ) : null}
       </div>
-      {kiedy ? <Zamknieta kiedy={kiedy} /> : children}
+      <div className="mt-5">{zamknieta ? <Zamknieta kiedy={zamknieta} /> : children}</div>
     </section>
   );
 }
 
 function Zamknieta({ kiedy }: { kiedy: string }) {
   return (
-    <div className="rounded-karta border border-dashed border-linia-mocna bg-plyta p-6 text-center">
+    <div className="rounded-[1.1rem] border border-dashed border-linia-mocna bg-plyta p-7 text-center">
       <p className="text-tresc font-semibold text-atrament-sciszony">Ta część otworzy się {kiedy}.</p>
       <p className="mt-1.5 text-male text-atrament-slaby">
         Kolejność ma znaczenie. Gdybyś zobaczył to teraz, następna część byłaby mniej Twoja.
@@ -179,13 +360,14 @@ function Zamknieta({ kiedy }: { kiedy: string }) {
   );
 }
 
-function Karta({ children, klasa = "" }: { children: React.ReactNode; klasa?: string }) {
-  return <div className={`rounded-karta border border-linia bg-panel p-5 sm:p-6 ${klasa}`}>{children}</div>;
-}
-
-function Nadpis({ children }: { children: React.ReactNode }) {
+function Nadpis({ children, kolor }: { children: React.ReactNode; kolor?: string }) {
   return (
-    <p className="text-drobne font-bold uppercase tracking-[0.16em] text-atrament-slaby">{children}</p>
+    <p
+      className="text-drobne font-bold uppercase tracking-[0.16em]"
+      style={{ color: kolor ?? BARWA.slaby }}
+    >
+      {children}
+    </p>
   );
 }
 
@@ -193,35 +375,27 @@ function Nadpis({ children }: { children: React.ReactNode }) {
 /* 01 TO JESTES TY                                                     */
 /* ================================================================== */
 
-function ToJestesTy({ kafle, zdania }: { kafle: Array<{ tekst: string; zrodlo: string }>; zdania: string[] }) {
+function ToJestesTy({ kafle }: { kafle: Array<{ tekst: string; zrodlo: string }> }) {
   return (
-    <>
-      <p className="mb-4 max-w-czytelna text-tresc text-atrament-sciszony">
-        Sześć rzeczy, które wyszły najmocniej w ośmiu częściach programu. Każda z innego pytania.
-      </p>
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {kafle.map((kafel) => (
-          <li key={kafel.tekst} className="rounded-karta border border-linia bg-panel p-5">
-            <span aria-hidden className="block h-1 w-9 rounded-full przycisk-gradient" />
-            <p className="mt-3.5 text-tresc-duza font-bold leading-snug text-atrament">{kafel.tekst}</p>
-            <p className="mt-1.5 text-drobne uppercase tracking-[0.12em] text-atrament-slaby">
-              {kafel.zrodlo}
-            </p>
-          </li>
-        ))}
-      </ul>
-      {zdania.length > 0 ? (
-        <Karta klasa="mt-4">
-          <Nadpis>Jednym zdaniem</Nadpis>
-          <div className="proza mt-2">
-            {zdania.map((z) => (
-              <p key={z}>{z}</p>
-            ))}
-          </div>
-          <p className="mt-3 text-male text-atrament-slaby">{TEKSTY_KONCOWE.zdanieOZdaniu}</p>
-        </Karta>
-      ) : null}
-    </>
+    <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      {kafle.map((kafel, i) => (
+        <li
+          key={kafel.tekst}
+          className="flex min-h-[7.5rem] flex-col justify-between rounded-[1.1rem] p-4"
+          style={{ background: GRADIENT.kafle[i % GRADIENT.kafle.length] }}
+        >
+          <span aria-hidden className="block h-1 w-7 rounded-full bg-white/80" />
+          <span>
+            <span className="block font-boksowy text-drobne font-bold text-white/70">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="mt-1 block text-male font-bold leading-snug text-na-akcencie">
+              {kafel.tekst}
+            </span>
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -234,37 +408,40 @@ function CoCieCiagnie({ raport }: { raport: WidokRaportu["raport"] }) {
   if (!sekcja) return null;
   return (
     <>
-      <p className="mb-4 max-w-czytelna text-tresc text-atrament-sciszony">
-        Pięć rzeczy, które wybierałeś najczęściej, z dwudziestu czterech, które Ci pokazaliśmy.
-      </p>
-      <ol className="flex flex-col gap-2.5">
+      <ol className="flex flex-col gap-2">
         {sekcja.gora.map((p, i) => (
-          <li key={p.tytul} className="flex gap-4 rounded-karta border border-linia bg-panel p-4 sm:p-5">
-            <span className="font-boksowy text-naglowek font-extrabold leading-none text-akcent-jasny">
+          <li
+            key={p.tytul}
+            className="flex items-center gap-4 rounded-xl px-4 py-3"
+            style={{ background: p.nieProbowal ? "#fff3e0" : "#f2f4fb" }}
+          >
+            <span
+              className="font-boksowy text-tresc-duza font-extrabold leading-none"
+              style={{ color: p.nieProbowal ? BARWA.rdza : BARWA.niebieski }}
+            >
               {i + 1}
             </span>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-baseline gap-2">
-                <p className="text-tresc-duza font-bold leading-snug text-atrament">{p.tytul}</p>
-                {p.nieProbowal ? (
-                  <span className="rounded-full bg-uwaga-tlo px-2.5 py-0.5 text-drobne font-bold uppercase tracking-[0.1em] text-uwaga">
-                    jeszcze nie sprawdzone
-                  </span>
-                ) : null}
-              </div>
-              {p.opis ? <p className="mt-1 text-tresc leading-snug text-atrament-sciszony">{p.opis}</p> : null}
-            </div>
+            <span className="min-w-0 flex-1 text-male font-semibold leading-snug text-atrament">
+              {p.tytul}
+            </span>
+            {p.nieProbowal ? (
+              <span
+                className="shrink-0 rounded-full px-2.5 py-1 text-drobne font-bold text-na-akcencie"
+                style={{ background: BARWA.rdza }}
+              >
+                jeszcze nie sprawdzone
+              </span>
+            ) : null}
           </li>
         ))}
       </ol>
       {sekcja.dol.length > 0 ? (
-        <Karta klasa="mt-4">
-          <Nadpis>A czego nie</Nadpis>
-          <p className="mt-2 text-tresc text-atrament-sciszony">
-            Nie ciągnie Cię: {sekcja.dol.map((p) => p.tytul.toLowerCase()).join(", ")}. To nie wada, tylko
-            kierunek.
+        <div className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 border-t border-linia pt-4">
+          <Nadpis>Nie ciągnie</Nadpis>
+          <p className="min-w-0 flex-1 text-male leading-snug text-atrament-sciszony">
+            {sekcja.dol.map((p) => p.tytul.toLowerCase()).join(", ")}. To nie wada, to kierunek.
           </p>
-        </Karta>
+        </div>
       ) : null}
     </>
   );
@@ -274,50 +451,46 @@ function CoCieCiagnie({ raport }: { raport: WidokRaportu["raport"] }) {
 /* 03 CO CI WYCHODZI                                                   */
 /* ================================================================== */
 
-function Kropki({ ile }: { ile: number }) {
-  return (
-    <span aria-label={`${ile} z trzech`} className="flex shrink-0 gap-1">
-      {[0, 1, 2].map((i) => (
-        <span
-          key={i}
-          aria-hidden
-          className={`block h-2.5 w-2.5 rounded-full ${i < ile ? "bg-akcent" : "bg-linia-mocna"}`}
-        />
-      ))}
-    </span>
-  );
-}
-
 function CoCiWychodzi({ raport }: { raport: WidokRaportu["raport"] }) {
   const sekcja = raport.w_czym_dobry;
   const atuty = raport.koncowy?.ukryteAtuty ?? [];
   if (!sekcja) return null;
   return (
     <>
-      <p className="mb-4 max-w-czytelna text-tresc text-atrament-sciszony">{TEKSTY_KONCOWE.kropki}</p>
-      <ul className="flex flex-col gap-1.5">
+      <ul className="flex flex-col">
         {sekcja.mocne.map((p) => (
-          <li
-            key={p.tytul}
-            className="flex items-center gap-4 rounded-xl border border-linia bg-panel px-4 py-3"
-          >
-            <span className="min-w-0 flex-1 text-tresc font-semibold text-atrament">{p.tytul}</span>
-            <span className="hidden text-male text-atrament-slaby sm:block">
-              {p.dowody === 0 ? "bez przykładów" : p.dowody === 1 ? "1 przykład" : `${p.dowody} przykłady`}
+          <li key={p.tytul} className="flex items-center gap-3 border-b border-linia py-2.5 last:border-b-0">
+            <span className="min-w-0 flex-1 text-male font-semibold leading-snug text-atrament">
+              {p.tytul}
             </span>
-            <Kropki ile={p.dowody} />
+            <span aria-hidden className="flex shrink-0 gap-1">
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  className="block h-2.5 w-2.5 rounded-full"
+                  style={{ background: i < p.dowody ? BARWA.fiolet : "#dfe3f2" }}
+                />
+              ))}
+            </span>
+            <span className="w-8 shrink-0 text-right font-boksowy text-drobne font-semibold text-atrament-slaby">
+              {p.dowody}/3
+            </span>
           </li>
         ))}
       </ul>
       {atuty.length > 0 ? (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          {atuty.map((a, i) => (
-            <Karta key={a.nazwa} klasa="bg-akcent-tlo/60">
-              <Nadpis>Rzecz, o której nie wiedziałeś · {i + 1}</Nadpis>
-              <p className="mt-2 text-tresc-duza font-bold text-atrament">{a.nazwa}</p>
-              <p className="mt-1.5 text-tresc leading-snug text-atrament-sciszony">{a.dlaczego}</p>
-            </Karta>
-          ))}
+        <div className="mt-5 rounded-[1.1rem] p-5" style={{ background: GRADIENT.atuty }}>
+          <p className="text-drobne font-bold uppercase tracking-[0.16em] text-white/80">
+            {atuty.length === 1 ? "Rzecz, o której nie wiedziałeś" : "Dwie rzeczy, o których nie wiedziałeś"}
+          </p>
+          <ul className="mt-3 flex flex-col gap-3">
+            {atuty.map((a) => (
+              <li key={a.nazwa} className="border-l-2 border-white/70 pl-3">
+                <span className="text-male font-bold text-na-akcencie">{a.nazwa}</span>
+                <span className="mt-0.5 block text-male leading-snug text-white/90">{a.dlaczego}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       ) : null}
     </>
@@ -333,56 +506,60 @@ function JakiejPracy({ raport }: { raport: WidokRaportu["raport"] }) {
   const warunki = k?.warunki ?? [];
   if (warunki.length === 0) {
     return (
-      <Karta>
-        <p className="text-tresc text-atrament-sciszony">
-          {raport.srodowisko?.komunikatGdyPusto ??
-            "Na tym etapie jesteś elastyczny środowiskowo i to jest przewaga, nie brak."}
-        </p>
-      </Karta>
+      <p className="rounded-xl bg-plyta p-5 text-tresc text-atrament-sciszony">
+        {raport.srodowisko?.komunikatGdyPusto ??
+          "Na tym etapie jesteś elastyczny środowiskowo i to jest przewaga, nie brak."}
+      </p>
     );
   }
   return (
     <>
-      <p className="mb-4 max-w-czytelna text-tresc text-atrament-sciszony">
-        Rzeczy, bez których będzie Ci ciężko, i ich druga strona.
-      </p>
-      <div className="overflow-hidden rounded-karta border border-linia">
-        <div className="grid grid-cols-2 bg-plyta">
-          <p className="border-r border-linia px-4 py-2.5 text-drobne font-bold uppercase tracking-[0.14em] text-zgoda">
-            Potrzebujesz
-          </p>
-          <p className="px-4 py-2.5 text-drobne font-bold uppercase tracking-[0.14em] text-kasowanie">
-            Nie dla Ciebie
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <Nadpis kolor={BARWA.zielenSrednia}>Potrzebujesz</Nadpis>
+          <ul className="mt-2 flex flex-col gap-2">
+            {warunki.map((w) => (
+              <li
+                key={w.potrzebujesz}
+                className="flex gap-2.5 rounded-xl px-3.5 py-2.5 text-male font-semibold leading-snug text-na-akcencie"
+                style={{ background: GRADIENT.zgody }}
+              >
+                <span aria-hidden>✓</span>
+                <span className="min-w-0 flex-1">{w.potrzebujesz}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <Nadpis kolor={BARWA.wisnia}>Nie dla Ciebie</Nadpis>
+          <ul className="mt-2 flex flex-col gap-2">
+            {warunki.map((w) => (
+              <li
+                key={w.nieDlaCiebie}
+                className="flex gap-2.5 rounded-xl px-3.5 py-2.5 text-male font-semibold leading-snug text-na-akcencie"
+                style={{ background: GRADIENT.weta }}
+              >
+                <span aria-hidden>✕</span>
+                <span className="min-w-0 flex-1">{w.nieDlaCiebie}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      {(k?.przezyjeszBez.length ?? 0) > 0 ? (
+        <p className="mt-4 text-male text-atrament-sciszony">
+          <span className="font-semibold text-atrament">Lubisz, ale przeżyjesz bez tego: </span>
+          {k!.przezyjeszBez.join(", ")}.
+        </p>
+      ) : null}
+      {k?.doSprawdzenia ? (
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 border-t border-linia pt-4">
+          <Nadpis kolor={BARWA.rdza}>Do sprawdzenia</Nadpis>
+          <p className="min-w-0 flex-1 text-male leading-snug text-atrament-sciszony">
+            Potrzebujesz tego: {k.doSprawdzenia.warunek}. Ale {k.doSprawdzenia.zdanie}.
           </p>
         </div>
-        {warunki.map((w) => (
-          <div key={w.potrzebujesz} className="grid grid-cols-2 border-t border-linia bg-panel">
-            <p className="border-r border-linia px-4 py-3 text-tresc leading-snug text-atrament">
-              {w.potrzebujesz}
-            </p>
-            <p className="px-4 py-3 text-tresc leading-snug text-atrament-sciszony">{w.nieDlaCiebie}</p>
-          </div>
-        ))}
-      </div>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {(k?.przezyjeszBez.length ?? 0) > 0 ? (
-          <Karta>
-            <Nadpis>Lubisz, ale przeżyjesz bez tego</Nadpis>
-            <p className="mt-2 text-tresc text-atrament-sciszony">{k!.przezyjeszBez.join(" · ")}</p>
-          </Karta>
-        ) : null}
-        {k?.doSprawdzenia ? (
-          <Karta klasa="bg-uwaga-tlo/70 border-uwaga/30">
-            <Nadpis>Jedna rzecz do sprawdzenia</Nadpis>
-            <p className="mt-2 text-tresc leading-snug text-atrament">
-              Powiedziałeś, że potrzebujesz tego: {k.doSprawdzenia.warunek}. Ale {k.doSprawdzenia.zdanie}.
-            </p>
-            <p className="mt-2 text-male text-atrament-sciszony">
-              To nie problem. To pierwsza rzecz, którą warto o sobie sprawdzić.
-            </p>
-          </Karta>
-        ) : null}
-      </div>
+      ) : null}
     </>
   );
 }
@@ -396,110 +573,105 @@ function CoWazne({ raport }: { raport: WidokRaportu["raport"] }) {
   if (!sekcja) return null;
   return (
     <>
-      <p className="mb-4 max-w-czytelna text-tresc text-atrament-sciszony">
-        Rzeczy, które wygrywały najczęściej, kiedy trzeba było wybierać.
-      </p>
-      <ol className="flex flex-col gap-2.5">
+      <ol className="flex flex-col gap-3">
         {sekcja.gora.slice(0, 3).map((w, i) => (
-          <li key={w.tytul} className="flex gap-4 rounded-karta border border-linia bg-panel p-4 sm:p-5">
-            <span className="font-boksowy text-naglowek font-extrabold leading-none text-akcent-jasny">
+          <li
+            key={w.tytul}
+            className="flex items-start gap-4 rounded-[1.1rem] p-5"
+            style={{ background: GRADIENT.wartosci[i] }}
+          >
+            <span className="font-boksowy text-naglowek font-extrabold leading-none text-white/80">
               {i + 1}
             </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-tresc-duza font-bold leading-snug text-atrament">{w.tytul}</p>
-              {w.opis ? <p className="mt-1 text-tresc leading-snug text-atrament-sciszony">{w.opis}</p> : null}
-              {w.dopisek ? (
-                <p className="mt-1.5 text-male font-semibold text-akcent-jasny">{w.dopisek}</p>
+            <span className="min-w-0 flex-1">
+              <span className="block text-tresc-duza font-bold leading-snug text-na-akcencie">
+                {w.tytul}
+              </span>
+              {w.opis ? (
+                <span className="mt-1 block text-male leading-snug text-white/90">{w.opis}</span>
               ) : null}
-            </div>
+              {w.dopisek ? (
+                <span className="mt-1 block text-male font-semibold text-white/90">{w.dopisek}</span>
+              ) : null}
+            </span>
           </li>
         ))}
       </ol>
       {raport.koncowy?.napiecie ? (
-        <Karta klasa="mt-4 bg-uwaga-tlo/70 border-uwaga/30">
-          <Nadpis>Jedna rzecz, która się bije</Nadpis>
-          <p className="mt-2 text-tresc-duza font-bold text-atrament">{raport.koncowy.napiecie.tytul}</p>
-          <p className="mt-1.5 text-tresc leading-snug text-atrament-sciszony">
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 border-t border-linia pt-4">
+          <Nadpis kolor={BARWA.rdza}>Napięcie</Nadpis>
+          <p className="min-w-0 flex-1 text-male leading-snug text-atrament-sciszony">
             {raport.koncowy.napiecie.tresc}
           </p>
-        </Karta>
+        </div>
       ) : null}
     </>
   );
 }
 
 /* ================================================================== */
-/* 06 NA CO SIE NIE ZGADZASZ                                           */
+/* 06 GRANICE                                                          */
 /* ================================================================== */
 
 function Granice({ raport }: { raport: WidokRaportu["raport"] }) {
   const weta = raport.czego_nie_chce?.weta ?? [];
   const miekkie = raport.na_co_gotow?.nie ?? [];
   const przewaga = raport.koncowy?.przewaga ?? null;
+  const zgody = przewaga?.pozycje ?? raport.koncowy?.zgody ?? [];
   return (
-    <>
-      <p className="mb-4 max-w-czytelna text-tresc text-atrament-sciszony">
-        Dwa poziomy: to, co wykluczyłeś całkowicie, i to, co po prostu Ci nie leży.
-      </p>
-      <div className="grid gap-3 lg:grid-cols-2">
-        <Karta>
-          <Nadpis>To wykluczyłeś całkowicie</Nadpis>
-          {weta.length === 0 ? (
-            <p className="mt-2 text-tresc text-atrament-sciszony">
-              Nie wykluczyłeś niczego całkowicie. Wszystkie drogi zostają otwarte.
-            </p>
-          ) : (
-            <>
-              <ul className="mt-2.5 flex flex-col gap-1.5">
-                {weta.map((w) => (
-                  <li
-                    key={w}
-                    className="rounded-lg border border-kasowanie/25 bg-kasowanie-tlo px-3.5 py-2 text-tresc font-semibold text-atrament"
-                  >
-                    {w}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 text-male text-atrament-sciszony">
-                {TEKSTY_KONCOWE.wetaOpis} {TEKSTY_KONCOWE.wetaZostaje}
-              </p>
-            </>
-          )}
-        </Karta>
-        <Karta>
-          <Nadpis>To po prostu Ci nie leży</Nadpis>
-          {miekkie.length === 0 ? (
-            <p className="mt-2 text-tresc text-atrament-sciszony">Tu nic nie odrzuciłeś.</p>
-          ) : (
-            <>
-              <p className="mt-2.5 text-tresc leading-snug text-atrament-sciszony">
-                {miekkie.join(" · ")}
-              </p>
-              <p className="mt-3 text-male text-atrament-slaby">{TEKSTY_KONCOWE.miekkieNie}</p>
-            </>
-          )}
-        </Karta>
+    <div className="grid items-start gap-4 lg:grid-cols-[1fr_1fr_15rem]">
+      <div className="rounded-[1.1rem] p-5" style={{ background: GRADIENT.weta }}>
+        <p className="text-drobne font-bold uppercase tracking-[0.16em] text-white/80">Tego nie chcesz</p>
+        <p className="mt-1 text-male text-white/90">
+          {weta.length > 0
+            ? `${weta.length === 1 ? "Pierwsza pozycja to weto" : "Dwa pierwsze to weta"}: usuwają zawody całkowicie.`
+            : "Nie wykluczyłeś niczego całkowicie."}
+        </p>
+        <ul className="mt-3 flex flex-col gap-1.5">
+          {[...weta, ...miekkie].slice(0, 8).map((w, i) => (
+            <li
+              key={w}
+              className="flex gap-2.5 rounded-lg bg-white/15 px-3 py-2 text-male leading-snug text-na-akcencie"
+            >
+              <span aria-hidden className="text-white/80">
+                ✕
+              </span>
+              <span className={`min-w-0 flex-1 ${i < weta.length ? "font-bold" : ""}`}>{w}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-      {przewaga ? (
-        <Karta klasa="mt-3 bg-zgoda-tlo/60 border-zgoda/25">
-          <Nadpis>A teraz druga strona</Nadpis>
-          <p className="mt-2 text-tresc text-atrament">
-            Zgodziłeś się na {przewaga.pozycje.length} rzeczy, na które większość ludzi się nie zgadza.
-          </p>
-          <ul className="mt-2.5 flex flex-wrap gap-1.5">
-            {przewaga.pozycje.map((p) => (
-              <li
-                key={p}
-                className="rounded-full border border-zgoda/25 bg-panel px-3 py-1 text-male font-semibold text-atrament"
-              >
-                {p}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 text-tresc leading-snug text-atrament-sciszony">{przewaga.komunikat}</p>
-        </Karta>
-      ) : null}
-    </>
+
+      <div className="rounded-[1.1rem] p-5" style={{ background: GRADIENT.zgody }}>
+        <p className="text-drobne font-bold uppercase tracking-[0.16em] text-white/80">Na to się zgadzasz</p>
+        <p className="mt-1 text-male text-white/90">
+          {przewaga
+            ? `${przewaga.pozycje.length} warunków, na które większość się nie zgadza.`
+            : "Warunki, które przyjmujesz bez zastrzeżeń."}
+        </p>
+        <ul className="mt-3 grid gap-1.5 sm:grid-cols-2">
+          {zgody.map((p) => (
+            <li
+              key={p}
+              className="flex gap-2 rounded-lg bg-white/15 px-3 py-2 text-male leading-snug text-na-akcencie"
+            >
+              <span aria-hidden className="text-white/80">
+                ✓
+              </span>
+              <span className="min-w-0 flex-1">{p}</span>
+            </li>
+          ))}
+        </ul>
+        {przewaga ? <p className="mt-3 text-male leading-snug text-white/90">{przewaga.komunikat}</p> : null}
+      </div>
+
+      <p
+        aria-hidden
+        className="odreczny hidden whitespace-pre-line rounded-[1.1rem] border border-linia bg-plyta p-5 text-left lg:block"
+      >
+        {"Twoje granice są ważne.\nOne pomagają Ci wybrać\ndobrą drogę."}
+      </p>
+    </div>
   );
 }
 
@@ -511,39 +683,43 @@ function TwojeSlowa({ raport }: { raport: WidokRaportu["raport"] }) {
   const obszary = (raport.wizja_zycia?.obszary ?? []).filter((o) => o.tresc.some((t) => t.trim().length > 0));
   if (obszary.length === 0) {
     return (
-      <Karta>
-        <p className="text-tresc text-atrament-sciszony">
-          Ta część jest pusta, bo nic tu jeszcze nie napisałeś. Możesz wrócić do części „Jakiego życia
-          chcesz" i ją uzupełnić.
-        </p>
-      </Karta>
+      <p className="rounded-xl bg-plyta p-5 text-tresc text-atrament-sciszony">
+        Ta część jest pusta, bo nic tu jeszcze nie napisałeś. Możesz wrócić do części „Jakiego życia
+        chcesz" i ją uzupełnić.
+      </p>
     );
   }
   return (
     <>
-      <p className="mb-4 max-w-czytelna text-tresc text-atrament-sciszony">
-        Tego nikt nie liczył. Napisałeś to sam.
-      </p>
-      <ul className="grid gap-3 sm:grid-cols-2">
-        {obszary.map((o) => (
-          <li key={o.tytul} className="rounded-karta border border-linia bg-panel p-5">
+      <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {obszary.map((o, i) => (
+          <li
+            key={o.tytul}
+            className="flex flex-col justify-between gap-3 rounded-[1.1rem] p-4"
+            style={{ background: PASTELE[i % PASTELE.length] }}
+          >
             <p className="odreczny text-atrament">
-              {o.tresc.filter((t) => t.trim().length > 0).join(" · ")}
+              „{o.tresc.filter((t) => t.trim().length > 0).join(" · ")}"
             </p>
-            <p className="mt-3 inline-block rounded-full bg-plyta px-3 py-1 text-drobne font-bold uppercase tracking-[0.12em] text-atrament-slaby">
+            <p
+              className="w-fit rounded-full px-2.5 py-1 text-drobne font-bold uppercase tracking-[0.1em] text-na-akcencie"
+              style={{ background: BARWA_SEKCJI["twoje-slowa"] }}
+            >
               {o.tytul}
             </p>
           </li>
         ))}
       </ul>
       {raport.koncowy?.powtorzone ? (
-        <Karta klasa="mt-4 bg-akcent-tlo/60">
-          <Nadpis>Uwaga</Nadpis>
-          <p className="odreczny mt-2 text-atrament">„{raport.koncowy.powtorzone.tresc}"</p>
-          <p className="mt-2.5 text-tresc leading-snug text-atrament-sciszony">
+        <div
+          className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-2 rounded-[1.1rem] p-5"
+          style={{ background: GRADIENT.ciemny }}
+        >
+          <p className="text-drobne font-bold uppercase tracking-[0.16em] text-white/70">Uwaga</p>
+          <p className="min-w-0 flex-1 text-male leading-snug text-na-akcencie">
             {raport.koncowy.powtorzone.komunikat}
           </p>
-        </Karta>
+        </div>
       ) : null}
     </>
   );
@@ -553,48 +729,18 @@ function TwojeSlowa({ raport }: { raport: WidokRaportu["raport"] }) {
 /* 08 TWOJE SCIEZKI                                                    */
 /* ================================================================== */
 
-function KartaSciezki({ s }: { s: Sciezka }) {
-  return (
-    <li
-      className={`flex flex-col rounded-karta border-2 bg-panel p-5 ${
-        s.najblizej ? "border-akcent" : "border-linia"
-      }`}
-    >
-      <div className="flex items-baseline justify-between gap-3">
-        <span className="przycisk-gradient rounded-lg px-2.5 py-1 font-boksowy text-male font-bold text-na-akcencie">
-          {s.litera}
-        </span>
-        {s.najblizej ? (
-          <span className="rounded-full bg-akcent-tlo px-2.5 py-0.5 text-drobne font-bold uppercase tracking-[0.1em] text-akcent-jasny">
-            najbliżej wyniku
-          </span>
-        ) : null}
-      </div>
-      <h3 className="mt-3 text-tresc-duza font-extrabold leading-snug text-atrament">{s.nazwa}</h3>
-      <p className="mt-2 inline-block w-fit rounded-full bg-plyta px-3 py-1 text-drobne font-bold uppercase tracking-[0.1em] text-atrament-sciszony">
-        Nauka: {s.ileNauki}
-      </p>
-
-      <Blok tytul="Dlaczego pasuje" pozycje={s.dlaczegoPasuje} />
-      <Blok tytul="Przykładowe zawody" pozycje={s.zawody} />
-      <Blok tytul="Ścieżka rozwoju" pozycje={s.sciezkaRozwoju} />
-
-      <p className="mt-3 text-male leading-snug text-atrament-sciszony">{s.coWartoWiedziec}</p>
-      <p className="mt-4 rounded-lg bg-zgoda-tlo px-3 py-2 text-male font-bold text-zgoda">
-        ✓ {TEKSTY_KONCOWE.bezStudiow}
-      </p>
-    </li>
-  );
-}
-
 function Blok({ tytul, pozycje }: { tytul: string; pozycje: string[] }) {
   if (pozycje.length === 0) return null;
   return (
-    <div className="mt-3.5">
+    <div className="mt-3">
       <Nadpis>{tytul}</Nadpis>
-      <ul className="mt-1.5 flex flex-col gap-1">
+      <ul className="mt-1.5 flex flex-col gap-0.5">
         {pozycje.map((p) => (
-          <li key={p} className="border-l-2 border-linia-mocna pl-2.5 text-male leading-snug text-atrament">
+          <li
+            key={p}
+            className="border-l-2 pl-2.5 text-male leading-snug text-atrament"
+            style={{ borderColor: BARWA.niebieski }}
+          >
             {p}
           </li>
         ))}
@@ -603,18 +749,61 @@ function Blok({ tytul, pozycje }: { tytul: string; pozycje: string[] }) {
   );
 }
 
+function KartaSciezki({ s }: { s: Sciezka }) {
+  return (
+    <li
+      className={`flex flex-col rounded-[1.1rem] border-2 bg-panel p-4 ${s.najblizej ? "" : "border-linia"}`}
+      style={s.najblizej ? { borderColor: BARWA.amarant } : undefined}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <span
+          aria-hidden
+          className="flex h-7 w-7 items-center justify-center rounded-lg font-boksowy text-drobne font-bold text-na-akcencie"
+          style={{ background: s.najblizej ? BARWA.amarant : BARWA.niebieski }}
+        >
+          {s.litera}
+        </span>
+        {s.najblizej ? (
+          <span
+            className="rounded-full px-2.5 py-1 text-drobne font-bold text-na-akcencie"
+            style={{ background: BARWA.amarant }}
+          >
+            Najbliżej wyniku
+          </span>
+        ) : null}
+      </div>
+
+      <h3 className="mt-3 text-tresc font-extrabold leading-snug text-atrament">{s.nazwa}</h3>
+      <p
+        className="mt-2 w-fit rounded-md px-2.5 py-1 text-drobne font-bold uppercase tracking-[0.08em] text-na-akcencie"
+        style={{ background: BARWA.granat }}
+      >
+        Nauka: {s.ileNauki}
+      </p>
+
+      <Blok tytul="Dlaczego pasuje" pozycje={s.dlaczegoPasuje} />
+      <Blok tytul="Przykładowe zawody" pozycje={s.zawody} />
+      <Blok tytul="Ścieżka rozwoju" pozycje={s.sciezkaRozwoju} />
+      <span aria-hidden className="block h-4 shrink-0" />
+
+      {/* `mt-auto` przykleja plakietkę do dołu karty: karty w rzędzie mają
+          różną długość list, a plakietka ma stać w jednej linii we wszystkich. */}
+      <p
+        className="mt-auto rounded-lg px-3 pb-2 pt-2 text-male font-bold text-na-akcencie"
+        style={{ background: GRADIENT.zgody, marginTop: "auto" }}
+      >
+        ✓ {TEKSTY_KONCOWE.bezStudiow}
+      </p>
+    </li>
+  );
+}
+
 function TwojeSciezki({ raport }: { raport: WidokRaportu["raport"] }) {
   const s = raport.koncowy?.sciezki;
   if (!s) return null;
   return (
     <>
-      <div className="proza mb-4 max-w-czytelna">
-        {TEKSTY_KONCOWE.sciezkiWstep.map((z) => (
-          <p key={z}>{z}</p>
-        ))}
-      </div>
-
-      <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <ul className="grid items-start gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {s.sciezki.map((sc) => (
           <KartaSciezki key={sc.litera} s={sc} />
         ))}
@@ -622,16 +811,20 @@ function TwojeSciezki({ raport }: { raport: WidokRaportu["raport"] }) {
 
       {s.grupy.length > 0 ? (
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          {s.grupy.map((g) => (
-            <div key={g.grupa} className="rounded-karta border border-linia bg-plyta p-4">
-              <p className="text-drobne font-bold uppercase leading-snug tracking-[0.12em] text-atrament-sciszony">
+          {s.grupy.map((g, i) => (
+            <div
+              key={g.grupa}
+              className="flex flex-col justify-between gap-4 rounded-[1.1rem] p-5"
+              style={{ background: GRADIENT.progi[i % GRADIENT.progi.length] }}
+            >
+              <p className="text-drobne font-bold uppercase leading-snug tracking-[0.12em] text-white/90">
                 {g.etykieta}
               </p>
-              <p className="mt-2.5 flex flex-wrap gap-1.5">
+              <p className="flex flex-wrap gap-2">
                 {g.litery.map((l) => (
                   <span
                     key={l}
-                    className="flex h-8 w-8 items-center justify-center rounded-full bg-panel font-boksowy text-male font-bold text-atrament"
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 font-boksowy text-male font-bold text-na-akcencie"
                   >
                     {l}
                   </span>
@@ -642,28 +835,13 @@ function TwojeSciezki({ raport }: { raport: WidokRaportu["raport"] }) {
         </div>
       ) : null}
 
-      {s.czegoNieBrac.length > 0 ? (
-        <Karta klasa="mt-4">
-          <h3 className="text-naglowek-maly font-extrabold text-atrament">Czego nie brać</h3>
-          <p className="mt-1.5 max-w-czytelna text-male text-atrament-sciszony">
-            {TEKSTY_KONCOWE.czegoNieBrac}
-          </p>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-            {s.czegoNieBrac.map((p) => (
-              <li key={p.co} className="rounded-lg border border-linia bg-plyta px-3.5 py-2.5">
-                <span className="text-tresc font-semibold text-kasowanie">{p.co}</span>
-                <span className="mt-0.5 block text-male text-atrament-sciszony">{p.dlaczego}</span>
-              </li>
-            ))}
-          </ul>
-        </Karta>
-      ) : null}
-
       {s.jednaDecyzja ? (
-        <Karta klasa="mt-3 bg-akcent-tlo/60">
-          <Nadpis>Jedna decyzja zamiast ośmiu</Nadpis>
-          <p className="mt-2 text-tresc leading-snug text-atrament">{s.jednaDecyzja}</p>
-        </Karta>
+        <div className="mt-3 rounded-[1.1rem] p-5" style={{ background: GRADIENT.decyzja }}>
+          <p className="text-drobne font-bold uppercase tracking-[0.16em] text-white/80">
+            Jedna decyzja zamiast ośmiu
+          </p>
+          <p className="mt-2 text-tresc font-bold leading-snug text-na-akcencie">{s.jednaDecyzja}</p>
+        </div>
       ) : null}
     </>
   );
@@ -673,17 +851,32 @@ function TwojeSciezki({ raport }: { raport: WidokRaportu["raport"] }) {
 /* 09 CO DALEJ                                                         */
 /* ================================================================== */
 
-function PoleSesji({ tytul, podpis, tresc }: { tytul: string; podpis: string; tresc: string | null }) {
+function PoleSesji({
+  nr,
+  tytul,
+  podpis,
+  tresc,
+}: {
+  nr: string;
+  tytul: string;
+  podpis: string;
+  tresc: string | null;
+}) {
   return (
-    <div className="rounded-karta border border-linia bg-panel p-5">
-      <p className="text-tresc font-bold text-atrament">{tytul}</p>
+    <div className="rounded-[1.1rem] border border-linia bg-plyta p-5">
+      <p className="flex items-center gap-2 text-tresc font-bold text-atrament">
+        <span aria-hidden style={{ color: BARWA.zielenSrednia }}>
+          {nr}
+        </span>
+        {tytul}
+      </p>
       <p className="mt-0.5 text-male text-atrament-slaby">{podpis}</p>
       {tresc ? (
-        <p className="mt-3 text-tresc leading-relaxed text-atrament-sciszony">{tresc}</p>
+        <p className="mt-3 text-male leading-relaxed text-atrament-sciszony">{tresc}</p>
       ) : (
-        <div aria-hidden className="mt-4 flex flex-col gap-3.5">
+        <div aria-hidden className="mt-4 flex flex-col gap-4">
           {[0, 1, 2].map((i) => (
-            <span key={i} className="block h-px bg-linia" />
+            <span key={i} className="block h-px bg-linia-mocna" />
           ))}
         </div>
       )}
@@ -703,32 +896,32 @@ function CoDalej({
   const kroki = raport.pierwsze_kroki?.kroki ?? [];
   return (
     <>
-      <div className="proza mb-4 max-w-czytelna">
-        {TEKSTY_KONCOWE.coDalej.map((z) => (
-          <p key={z}>{z}</p>
-        ))}
-      </div>
       <div className="grid gap-3 lg:grid-cols-3">
         <PoleSesji
-          tytul="① Moja decyzja"
+          nr="①"
+          tytul="Moja decyzja"
           podpis="co wybieram i dlaczego"
           tresc={raport.moja_decyzja?.tresc ?? null}
         />
         <PoleSesji
-          tytul="② Pierwszy krok"
+          nr="②"
+          tytul="Pierwszy krok"
           podpis="jedna rzecz: co, kiedy, za ile"
           tresc={kroki.length > 0 ? kroki.join(" · ") : null}
         />
         <PoleSesji
-          tytul="③ Notatka prowadzącego"
+          nr="③"
+          tytul="Notatka prowadzącego"
           podpis="co warto zapamiętać"
           tresc={raport.notatka?.tresc ?? null}
         />
       </div>
 
-      <Karta klasa="mt-4">
-        <Nadpis>Jedno pytanie na rozmowę</Nadpis>
-        <p className="mt-2 max-w-czytelna text-tresc text-atrament-sciszony">
+      <div className="mt-4 rounded-[1.1rem] p-5" style={{ background: GRADIENT.decyzja }}>
+        <p className="text-drobne font-bold uppercase tracking-[0.16em] text-white/80">
+          Jedno pytanie na rozmowę
+        </p>
+        <p className="mt-2 max-w-[42rem] text-male leading-snug text-white/90">
           {TEKSTY_KONCOWE.jednoPytanie}
         </p>
         <label className="mt-3 block">
@@ -737,25 +930,48 @@ function CoDalej({
             id="pytanie-na-rozmowe"
             value={pytanie}
             onChange={(e) => zapiszPytanie(e.target.value)}
-            rows={3}
+            rows={2}
             placeholder="Na co ten raport nie odpowiedział?"
-            className="w-full rounded-xl border border-linia bg-plyta px-4 py-3 text-tresc text-atrament placeholder:text-atrament-slaby focus:border-akcent focus:outline-none"
+            className="w-full rounded-xl border border-white/40 bg-white/15 px-4 py-3 text-male text-na-akcencie placeholder:text-white/70 focus:border-white focus:outline-none"
           />
         </label>
-      </Karta>
+      </div>
     </>
   );
 }
 
-function NaKoniec() {
+function Stopka() {
   return (
-    <section className="mt-8 grid gap-3 sm:grid-cols-3">
-      {TEKSTY_KONCOWE.naKoniec.map((p) => (
-        <div key={p.tytul} className="rounded-karta border border-linia bg-panel p-5">
-          <p className="text-tresc font-bold text-atrament">{p.tytul}</p>
-          <p className="mt-1.5 text-male leading-snug text-atrament-sciszony">{p.tresc}</p>
-        </div>
-      ))}
-    </section>
+    <footer
+      className="grid items-center gap-4 rounded-[1.4rem] p-6 sm:p-7 lg:grid-cols-[auto_1fr_auto]"
+      style={{ background: GRADIENT.ciemny }}
+    >
+      <span className="flex items-center gap-3">
+        <span
+          aria-hidden
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20"
+        >
+          <svg viewBox="0 0 24 24" className="h-1/2 w-1/2" fill="none" stroke="#ffffff" strokeWidth="2">
+            <circle cx="12" cy="12" r="7.5" />
+          </svg>
+        </span>
+        <span>
+          <span className="block text-tresc font-extrabold leading-tight text-na-akcencie">DreamWork</span>
+          <span className="block text-drobne text-white/80">Fundacja Służąc Życiu</span>
+        </span>
+      </span>
+      <span className="text-male text-white/90 lg:text-center">
+        Moja mapa kierunku · program rozwojowo-zawodowy dla osób 16–24
+      </span>
+      {/* Kolor wprost, nie klasą: `.odreczny` ustawia własny fiolet i na
+          ciemnym pasie stopki zostawał nieczytelny. */}
+      <span
+        aria-hidden
+        className="odreczny hidden whitespace-pre-line text-right lg:block"
+        style={{ color: "#ffffff" }}
+      >
+        {"Więcej dobrych ludzi\nna dobrych miejscach"}
+      </span>
+    </footer>
   );
 }

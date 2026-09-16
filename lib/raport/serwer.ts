@@ -7,6 +7,8 @@ import { stanDostepu } from "./dostep";
 import { znakObszaru } from "@/lib/karty/obszary";
 import { zbudujRaport } from "./budowa";
 import { SEKCJE, WARSTWY, type KodWarstwy } from "./sekcje";
+import { KOLEJNOSC_MODULOW } from "../moduly/ekrany";
+import { MARKER_ZAKONCZENIA } from "../moduly/typy";
 import type { Raport } from "./typy";
 
 export interface WidokRaportu {
@@ -18,6 +20,8 @@ export interface WidokRaportu {
   blokadaA2: boolean;
   oceny: Record<string, string>;
   pytanie: string | null;
+  /** Ile modułów uczestnik domknął, z ilu. Plakietka w nagłówku raportu. */
+  postep: { ukonczonych: number; wszystkich: number };
 }
 
 export async function pobierzRaport(kodDostepu: string): Promise<WidokRaportu | null> {
@@ -27,11 +31,18 @@ export async function pobierzRaport(kodDostepu: string): Promise<WidokRaportu | 
   });
   if (!uczestnik) return null;
 
-  const [dostep, odpowiedzi, baza, karty] = await Promise.all([
+  const [dostep, odpowiedzi, baza, karty, domkniete] = await Promise.all([
     stanDostepu(uczestnik.id, uczestnik.grupaId),
     zbierzOdpowiedzi(uczestnik.id),
     pobierzBazeReferencyjna(),
     prisma.karta.findMany({ select: { kod: true, pelna: true } }),
+    // Moduł liczy się jako ukończony, gdy ma marker domknięcia ostatniej
+    // części. To ten sam sygnał, po którym pulpit rysuje pasek postępu.
+    prisma.odpowiedz.findMany({
+      where: { uczestnikId: uczestnik.id, pozycja: MARKER_ZAKONCZENIA },
+      select: { modul: true },
+      distinct: ["modul"],
+    }),
   ]);
 
   const raport = zbudujRaport({
@@ -70,6 +81,10 @@ export async function pobierzRaport(kodDostepu: string): Promise<WidokRaportu | 
     blokadaA2: dostep.blokadaA2,
     oceny: Object.fromEntries(uczestnik.oceny.map((o) => [o.zawodKod, o.ocena])),
     pytanie: uczestnik.pytanie?.tresc ?? null,
+    postep: {
+      ukonczonych: new Set(domkniete.map((d) => d.modul)).size,
+      wszystkich: KOLEJNOSC_MODULOW.length,
+    },
   };
 }
 
