@@ -20,6 +20,7 @@ import { LIMITY, policzLej, przetasuj, trzyListy } from "@/lib/moduly/lej";
 import { MOSTEK, wagiZawodu, zgodnosc } from "@/lib/engine/mostek";
 import { policzDopasowania, wybierzDoRaportu, MIN_BEZ_STUDIOW, MAX_Z_KATEGORII, DO_RAPORTU } from "@/lib/engine/ranking-czynnosci";
 import { policzBudzet } from "@/lib/engine/budzet";
+import { odczytajZarobki, dopasowanieFinansowe, punktyFinansowe } from "@/lib/engine/zarobki";
 import type { BazaReferencyjna } from "@/lib/domain/typy";
 
 let baza: BazaReferencyjna;
@@ -287,5 +288,82 @@ describe("poziom życia", () => {
     const w = policzBudzet();
     expect(w.skladniki[0].kod).toBe("mieszkanie");
     expect(w.skladniki[0].udzial).toBeGreaterThan(20);
+  });
+});
+
+describe("zarobki z kart zawodów", () => {
+  it("odczytuje widełki z tabeli w karcie", () => {
+    const z = odczytajZarobki(
+      "| Etap | Widełki |\n|---|---|\n| Młodszy | **○**6000 do 9000 zł |\n| Starszy | **○**16 000 do 26 000 zł |",
+    );
+    expect(z).not.toBeNull();
+    expect(z!.wierszy).toBe(2);
+    // Brutto przeliczone na netto: nigdy nie pokazujemy kwoty brutto obok
+    // kosztu życia, bo to dwie różne rzeczy.
+    expect(z!.start).toBeLessThan(6000);
+    expect(z!.szczyt).toBeLessThan(26000);
+  });
+
+  it("pomija stawki godzinowe i dzienne", () => {
+    const z = odczytajZarobki(
+      "| Etat w teatrze | **○**4500 do 9000 zł |\n| Dubbing, stawka godzinowa | **○**150 do 500 zł |",
+    );
+    expect(z!.wierszy).toBe(1);
+  });
+
+  it("pomija kwoty w obcej walucie", () => {
+    const z = odczytajZarobki(
+      "| Etat | **○**5500 do 8500 zł |\n| **Za granicą:** Niemcy **○**2400 do 3400 EUR netto |",
+    );
+    expect(z!.wierszy).toBe(1);
+    expect(z!.start).toBe(Math.round(5500 * 0.72));
+  });
+
+  it("pomija przychód własnej działalności, bo to nie dochód", () => {
+    const z = odczytajZarobki(
+      "| Etat | **○**5500 do 8500 zł |\n| Własna działalność, przychód | **○**15 000 do 35 000 zł przychodu |",
+    );
+    expect(z!.wierszy).toBe(1);
+  });
+
+  it("karta bez widełek daje null, a nie zero", () => {
+    expect(odczytajZarobki(null)).toBeNull();
+    expect(odczytajZarobki("Nie mamy jeszcze danych.")).toBeNull();
+  });
+
+  it("większość kart z bazy ma czytelne widełki", async () => {
+    const karty = await prisma.karta.findMany();
+    let z = 0;
+    for (const k of karty) {
+      const s = (JSON.parse(k.sekcje) as Array<{ klucz: string | null; tresc: string }>).find(
+        (x) => x.klucz === "pieniadze",
+      );
+      if (odczytajZarobki(s?.tresc)) z += 1;
+    }
+    expect(z).toBeGreaterThan(100);
+  });
+});
+
+describe("dopasowanie finansowe", () => {
+  const poziom = { minimum: 5000, komfort: 9000, cel: 13000 };
+
+  it("zawód powyżej celu dostaje najwyższe pasmo", () => {
+    const d = dopasowanieFinansowe({ start: 8000, typowy: 14000, szczyt: 20000, wierszy: 3, zmienny: false }, poziom);
+    expect(d.pasmo).toBe("bardzo_wysokie");
+  });
+
+  it("zawód, który dochodzi do celu dopiero na szczycie, dostaje wysokie", () => {
+    const d = dopasowanieFinansowe({ start: 4000, typowy: 8000, szczyt: 14000, wierszy: 3, zmienny: false }, poziom);
+    expect(d.pasmo).toBe("wysokie");
+  });
+
+  it("zawód poniżej minimum dostaje najniższe pasmo, ale nie znika", () => {
+    const d = dopasowanieFinansowe({ start: 3000, typowy: 3500, szczyt: 4000, wierszy: 2, zmienny: false }, poziom);
+    expect(d.pasmo).toBe("bardzo_niskie");
+    expect(d.komunikat).toContain("To nie znaczy, że jest zły");
+  });
+
+  it("brak widełek nie karze zawodu ani go nie premiuje", () => {
+    expect(punktyFinansowe(dopasowanieFinansowe(null, poziom).pasmo)).toBe(50);
   });
 });

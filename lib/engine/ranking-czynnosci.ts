@@ -21,6 +21,7 @@
 
 import { BANK_CZYNNOSCI, CZYNNOSC_PO_ID, type KategoriaCzynnosci } from "../content/bank-czynnosci";
 import { wagiZawodu, zgodnosc } from "./mostek";
+import { dopasowanieFinansowe, punktyFinansowe, type DopasowanieFinansowe, type ZarobkiZawodu } from "./zarobki";
 import type { Zawod } from "../domain/typy";
 
 export const WAGA_LUBIE = 0.55;
@@ -44,6 +45,16 @@ export interface DopasowanieZawodu {
   czynnosci: Array<{ czynnosc: number; nazwa: string; waga: number }>;
   /** Czynnosci z TOP 5 uczestnika, ktore w tym zawodzie cos znacza. */
   trafienia: string[];
+  /** Widelki kontra poziom zycia uczestnika. Null, gdy karta ich nie podaje. */
+  finanse: DopasowanieFinansowe;
+  /**
+   * Ranking B: 75 procent dopasowania roli plus 25 procent finansow.
+   *
+   * Osobna liczba, nie korekta pierwszej. Uczestnik ma widziec, co pasuje do
+   * niego, i osobno, co z tego dowiezie poziom zycia, ktory opisal. Zlanie
+   * tych dwoch w jedna liczbe ukrywa wybor, ktorego nie wolno robic za niego.
+   */
+  dopasowanieZFinansami: number;
 }
 
 /**
@@ -69,10 +80,17 @@ function kategoriaWiodaca(wagi: Array<{ czynnosc: number; waga: number }>): Kate
   return najlepsza;
 }
 
+export const WAGA_ROLI_W_B = 0.75;
+export const WAGA_FINANSOW_W_B = 0.25;
+
 export function policzDopasowania(
   silaLubie: Record<number, number>,
   silaUmiem: Record<number, number>,
   zawody: Zawod[],
+  /** Widelki po kodzie zawodu. Pusta mapa znaczy: nie porownujemy finansow. */
+  zarobki: Map<string, ZarobkiZawodu | null> = new Map(),
+  /** Trzy poziomy z modulu czwartego. Bez nich finanse sa nieznane. */
+  poziom?: { minimum: number; komfort: number; cel: number },
 ): DopasowanieZawodu[] {
   const top5Lubie = new Set(
     BANK_CZYNNOSCI.filter((c) => (silaLubie[c.id] ?? 0) >= 60).map((c) => c.id),
@@ -83,11 +101,15 @@ export function policzDopasowania(
       const wagi = wagiZawodu(z);
       const l = zgodnosc(silaLubie, wagi);
       const u = zgodnosc(silaUmiem, wagi);
+      const dopasowanie = WAGA_LUBIE * l + WAGA_UMIEM * u;
+      const finanse = poziom
+        ? dopasowanieFinansowe(zarobki.get(z.kod) ?? null, poziom)
+        : { pasmo: "nieznane" as const, komunikat: "", zarobki: null };
       return {
         kod: z.kod,
         nazwa: z.nazwaWyswietlana,
         obszar: z.obszar,
-        dopasowanie: WAGA_LUBIE * l + WAGA_UMIEM * u,
+        dopasowanie,
         zgodnoscLubie: l,
         zgodnoscUmiem: u,
         kategoriaWiodaca: kategoriaWiodaca(wagi),
@@ -101,6 +123,9 @@ export function policzDopasowania(
           .filter((w) => top5Lubie.has(w.czynnosc))
           .slice(0, 4)
           .map((w) => CZYNNOSC_PO_ID.get(w.czynnosc)?.nazwa ?? String(w.czynnosc)),
+        finanse,
+        dopasowanieZFinansami:
+          WAGA_ROLI_W_B * dopasowanie + WAGA_FINANSOW_W_B * punktyFinansowe(finanse.pasmo),
       };
     })
     .sort((a, b) => b.dopasowanie - a.dopasowanie || a.kod.localeCompare(b.kod));
@@ -118,6 +143,7 @@ export function policzDopasowania(
  */
 export const MIN_BEZ_STUDIOW = 3;
 export const MAX_Z_KATEGORII = 3;
+export const MIN_DOWOZI_FINANSE = 2;
 
 export function wybierzDoRaportu(ranking: DopasowanieZawodu[]): DopasowanieZawodu[] {
   // Pula kandydatow jest szeroka celowo. Przy dwudziestu najlepszych limit
@@ -142,6 +168,22 @@ export function wybierzDoRaportu(ranking: DopasowanieZawodu[]): DopasowanieZawod
     if (wybrani.filter((w) => w.bezStudiow).length >= MIN_BEZ_STUDIOW) break;
     if (z.bezStudiow && mozna(z)) dodaj(z);
   }
+
+  // Kwota druga: co najmniej dwa zawody, ktore dowioza poziom zycia.
+  // Bez tej kwoty lista bywa spojna zawodowo i cala ponizej minimum, a to
+  // jest dokladnie ten blad, ktory modul czwarty ma wylapywac.
+  for (const z of kandydaci) {
+    if (wybrani.filter((w) => w.finanse.pasmo === "bardzo_wysokie" || w.finanse.pasmo === "wysokie").length >= MIN_DOWOZI_FINANSE) break;
+    if ((z.finanse.pasmo === "bardzo_wysokie" || z.finanse.pasmo === "wysokie") && mozna(z)) dodaj(z);
+  }
+
+  // Jeden zawod z rankingu B, ktorego nie ma wysoko w rankingu A. To jest
+  // miejsce na zawod, o ktorym uczestnik sam by nie pomyslal: pasuje nieco
+  // slabiej, ale dowozi to, co opisal w module czwartym.
+  const zRankinguB = [...kandydaci].sort((a, b) => b.dopasowanieZFinansami - a.dopasowanieZFinansami);
+  const wysokoWA = new Set(kandydaci.slice(0, 8).map((z) => z.kod));
+  const inny = zRankinguB.find((z) => !wysokoWA.has(z.kod) && mozna(z));
+  if (inny) dodaj(inny);
 
   // Reszta po wyniku, z limitem na kategorie.
   for (const z of kandydaci) {
