@@ -106,7 +106,13 @@ export function odczytajZarobki(trescSekcji: string | null | undefined): Zarobki
   if (!trescSekcji) return null;
 
   const zakresy: Array<{ od: number; do: number }> = [];
-  for (const linia of trescSekcji.split("\n")) {
+  // Dzielimy takze na kropce srodkowej, nie tylko na koncu wiersza.
+  //
+  // Czesc kart nie ma tabeli, tylko jedno zdanie: „etat w spa 4000 do 6000 zl
+  // · wlasna praktyka 8000 do 18 000 zl przychodu". Przy podziale wylacznie po
+  // wierszach jedno slowo „przychodu" na koncu takiego zdania odrzucalo je
+  // cale, razem z widelkami etatu, ktore sa poprawne.
+  for (const linia of trescSekcji.split(/\n|·/)) {
     if (NIE_MIESIECZNE.test(linia) || OBCA_WALUTA.test(linia) || PRZYCHOD.test(linia)) continue;
     // „6000 do 9000 zl" albo „10 000 do 16 000 zl"
     const m = /(\d[\d\s ]*)\s*do\s*(\d[\d\s ]*)/.exec(linia);
