@@ -9,7 +9,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db/klient";
 import { wypelnijUczestnika, type ProfilTestowy } from "@/lib/testy/wypelnianie";
-import { otworzSpotkanie } from "@/lib/moduly/otwarcie";
 import { zbudujWynikNowy, type WynikNowegoProgramu } from "@/lib/raport/nowy";
 import { DO_RAPORTU, MAX_Z_KATEGORII, MIN_BEZ_STUDIOW } from "@/lib/engine/ranking-czynnosci";
 
@@ -23,8 +22,6 @@ async function uczestnik(profil: ProfilTestowy, kod: string) {
     create: { kod: KOD_GRUPY, nazwa: "Nowy program (automat)" },
     update: {},
   });
-  await otworzSpotkanie(grupa.id, 1);
-  await otworzSpotkanie(grupa.id, 2);
 
   const u = await prisma.uczestnik.upsert({
     where: { kodDostepu: kod },

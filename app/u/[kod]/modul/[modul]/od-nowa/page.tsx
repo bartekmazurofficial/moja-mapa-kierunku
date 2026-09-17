@@ -1,6 +1,5 @@
 import { notFound, redirect } from "next/navigation";
 import { pobierzUczestnika } from "@/lib/moduly/serwer";
-import { otwarteModuly } from "@/lib/moduly/otwarcie";
 import { coZniknie } from "@/lib/moduly/odnowa";
 import { PotwierdzenieResetu } from "@/components/moduly/PotwierdzenieResetu";
 import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
@@ -27,8 +26,6 @@ export default async function Strona({
   const uczestnik = await pobierzUczestnika(kod);
   if (!uczestnik) notFound();
 
-  const otwarte = await otwarteModuly(uczestnik.grupaId);
-  if (!otwarte.has(modul as KodModulu)) notFound();
 
   const stan = await coZniknie(uczestnik.id, modul as KodModulu);
   // Nie ma czego kasowac: wchodzimy wprost w modul, zamiast pytac o zgode

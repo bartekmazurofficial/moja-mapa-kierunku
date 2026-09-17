@@ -13,7 +13,6 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "../db/klient";
 import { KOLEJNOSC_MODULOW } from "./ekrany";
-import { otwarteModuly } from "./otwarcie";
 import { wyczyscModul } from "./odnowa";
 import type { KodModulu } from "./typy";
 
@@ -27,11 +26,6 @@ export async function wypelnijOdNowa(dane: FormData) {
     select: { id: true, grupaId: true },
   });
   if (!uczestnik) throw new Error("nieznany kod dostępu");
-
-  // Modul zamkniety przez prowadzacego nie daje sie ani wypelnic, ani
-  // wyczyscic: inaczej uczestnik skasowalby odpowiedzi i zostal z niczym.
-  const otwarte = await otwarteModuly(uczestnik.grupaId);
-  if (!otwarte.has(modul)) throw new Error("moduł nie jest otwarty");
 
   await wyczyscModul(uczestnik.id, modul);
 

@@ -18,7 +18,6 @@
 
 import { prisma } from "../lib/db/klient";
 import { KOLEJNOSC_MODULOW } from "../lib/moduly/ekrany";
-import { otworzModul, otworzSpotkanie, zamknijModul } from "../lib/moduly/otwarcie";
 import { odblokujWarstwe, zamknijWarstwe } from "../lib/raport/dostep";
 import { WARSTWY, type KodWarstwy } from "../lib/raport/sekcje";
 
@@ -61,15 +60,9 @@ async function main() {
       sesje: (await prisma.sesja.deleteMany({ where: { uczestnikId: { in: idki } } })).count,
     };
 
-    // Stan pierwszego dnia: otwarte spotkanie pierwsze, żadna warstwa raportu.
-    for (const m of KOLEJNOSC_MODULOW) await zamknijModul(grupa.id, m);
+    // Assessment jest dostepny od razu i nie ma czego otwierac. Kasujemy
+    // tylko odsloniecia raportu: stan pierwszego dnia to zamkniete zawody.
     for (const w of WARSTWY) await zamknijWarstwe(grupa.id, w.kod);
-
-    // Domyslnie otwarte wszystkie moduly: uczestnik ma miec dostep do kazdego
-    // testu od startu. `--spotkanie1` wraca do stanu, w ktorym prowadzacy
-    // otwiera je po kolei.
-    if (tylkoSpotkanie1) await otworzSpotkanie(grupa.id, 1);
-    else for (const m of KOLEJNOSC_MODULOW) await otworzModul(grupa.id, m);
 
     // Domyslnie odsloniete wszystkie warstwy raportu: do testow ma byc widac
     // caly produkt, razem z kartami zawodow. `--spotkanie1` wraca do stanu

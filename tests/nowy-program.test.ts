@@ -30,6 +30,7 @@ import {
   type ModulLeja,
 } from "@/lib/moduly/ekrany-nowe";
 import { CZESCI_MODULOW, KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
+import { nastepnyEtap, numerEtapu, stanAssessmentu } from "@/lib/moduly/etapy";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import type { BazaReferencyjna } from "@/lib/domain/typy";
 
@@ -476,5 +477,65 @@ describe("kwota progu w panelu zgadza się z sumą", () => {
       kwotaProgu(mieszkanie, "duze", { wejscie, decyzje: {}, opcjonalne: {} }) -
       kwotaProgu(mieszkanie, "dobre", { wejscie, decyzje: {}, opcjonalne: {} });
     expect(po.komfort - przed.komfort).toBe(roznica);
+  });
+});
+
+/* ================================================================== */
+/* JEDEN ASSESSMENT, CZTERY ETAPY                                      */
+/* ================================================================== */
+
+describe("stan assessmentu", () => {
+  const pusty = new Map<string, Set<string>>();
+
+  it("uczestnik bez ani jednej odpowiedzi zaczyna od etapu pierwszego", () => {
+    const s = stanAssessmentu(pusty);
+    expect(s.biezacy).toBe("Z");
+    expect(s.ukonczonych).toBe(0);
+    expect(s.rozpoczety).toBe(false);
+    expect(s.gotowy).toBe(false);
+    expect(s.etapy.map((e) => e.numer)).toEqual([1, 2, 3, 4]);
+  });
+
+  it("domknięty etap przesuwa na następny", () => {
+    const z = new Map([["Z", new Set(CZESCI_MODULOW.Z)]]);
+    const s = stanAssessmentu(z);
+    expect(s.biezacy).toBe("L");
+    expect(s.ukonczonych).toBe(1);
+    expect(s.etapy[0].stan).toBe("gotowy");
+    expect(s.etapy[1].stan).toBe("przed");
+  });
+
+  it("etap zaczęty, ale niedomknięty, jest bieżący", () => {
+    const s = stanAssessmentu(new Map([["Z", new Set(["A"])]]), new Map([["Z", 3]]));
+    expect(s.biezacy).toBe("Z");
+    expect(s.etapy[0].stan).toBe("wtrakcie");
+    expect(s.rozpoczety).toBe(true);
+  });
+
+  it("komplet czterech etapów kończy assessment", () => {
+    const wszystkie = new Map(
+      KOLEJNOSC_MODULOW.map((m) => [m, new Set(CZESCI_MODULOW[m])] as const),
+    );
+    const s = stanAssessmentu(wszystkie);
+    expect(s.gotowy).toBe(true);
+    expect(s.biezacy).toBeNull();
+    expect(s.ukonczonych).toBe(4);
+  });
+
+  it("każdy etap poza ostatnim prowadzi w następny", () => {
+    // To jest cala mechanika „jednego assessmentu": po etapie nie wraca sie
+    // do spisu tresci, tylko idzie dalej.
+    expect(nastepnyEtap("Z")).toBe("L");
+    expect(nastepnyEtap("L")).toBe("U");
+    expect(nastepnyEtap("U")).toBe("F");
+    expect(nastepnyEtap("F")).toBeNull();
+  });
+
+  it("pieniądze są ostatnie, a „umiem” po „lubię”", () => {
+    // Zapytanie o pieniadze wczesniej przestawia wszystkie poprzednie
+    // odpowiedzi pod zarobki; kto najpierw powie, w czym jest dobry, ten
+    // potem „lubi" dokladnie to samo.
+    expect(numerEtapu("F")).toBe(4);
+    expect(numerEtapu("U")).toBeGreaterThan(numerEtapu("L"));
   });
 });

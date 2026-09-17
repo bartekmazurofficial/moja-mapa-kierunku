@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { pobierzPostepModulow, pobierzUczestnika } from "@/lib/moduly/serwer";
-import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
 import { stanDostepu } from "@/lib/raport/dostep";
-import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
-import { DZIS_ODKRYWASZ, KROTKO } from "@/lib/moduly/opisy";
-import { WARSTWY } from "@/lib/raport/sekcje";
+import { NAZWY_MODULOW } from "@/lib/moduly/ekrany";
+import { stanAssessmentu, type StanEtapu } from "@/lib/moduly/etapy";
+import { KROTKO, PO_CO } from "@/lib/moduly/opisy";
 import { Bramy } from "@/components/pulpit/Bramy";
 import { ZnakModulu } from "@/components/pulpit/ZnakModulu";
 import { Panorama } from "@/components/pulpit/Panorama";
@@ -13,129 +12,126 @@ import type { KodModulu } from "@/lib/moduly/typy";
 
 export const dynamic = "force-dynamic";
 
-type Stan = "zamkniety" | "przed" | "wtrakcie" | "gotowy";
-
 /**
  * Strona główna uczestnika: gdzie jestem i co jest dalej.
  *
- * Trzy rzeczy naraz, bo o trzy uczestnik pyta po wejściu: ile już za mną,
- * co robię teraz i czego jeszcze nie widzę. Ostatnia jest najważniejsza:
- * raport otwiera się warstwami i uczestnik ma **wiedzieć, że coś jest
- * zamknięte**, zamiast szukać tego po zakładkach.
+ * Assessment jest **jedną rzeczą do zrobienia**, a nie spisem czterech zadań.
+ * Dlatego cały ekran prowadzi do jednego przycisku, a cztery etapy stoją pod
+ * nim jako mapa drogi, nie jako menu do wybierania. Osobna zakładka „Moduły"
+ * zniknęła: powtarzała te same cztery nazwy i kazała kliknąć o jeden ekran
+ * więcej, zanim dało się zacząć.
  *
  * Czego tu nie ma i być nie może: wyniku przed spotkaniem. Kafelek „co już
- * wiemy" pokazuje wyłącznie warstwy, które prowadzący odsłonił.
+ * wiesz" pokazuje wyłącznie to, co prowadzący odsłonił.
  */
 export default async function Strona({ params }: { params: Promise<{ kod: string }> }) {
   const { kod } = await params;
   const uczestnik = await pobierzUczestnika(kod);
   if (!uczestnik) notFound();
 
-  const [{ zakonczone }, otwarte, dostep] = await Promise.all([
+  const [{ zakonczone, odpowiedziWModule }, dostep] = await Promise.all([
     pobierzPostepModulow(uczestnik.id),
-    otwarteModuly(uczestnik.grupaId),
     stanDostepu(uczestnik.id, uczestnik.grupaId),
   ]);
 
-  const stan = (m: KodModulu): Stan => {
-    const gotowe = zakonczone.get(m)?.size ?? 0;
-    if (!otwarte.has(m)) return "zamkniety";
-    if (gotowe >= CZESCI_MODULOW[m].length) return "gotowy";
-    return gotowe > 0 ? "wtrakcie" : "przed";
-  };
-
-  const dalej =
-    KOLEJNOSC_MODULOW.find((m) => stan(m) === "wtrakcie") ??
-    KOLEJNOSC_MODULOW.find((m) => stan(m) === "przed");
-  const nastepnyZamkniety = KOLEJNOSC_MODULOW.find((m) => stan(m) === "zamkniety");
-
-  const ukonczone = KOLEJNOSC_MODULOW.filter((m) => stan(m) === "gotowy").length;
-  const procent = Math.round((ukonczone / KOLEJNOSC_MODULOW.length) * 100);
-
-  const otwarteWarstwy = WARSTWY.filter(
-    (w) => w.kod !== "ZAWSZE" && dostep.warstwy.get(w.kod) !== null,
-  );
-  const zamknieteWarstwy = WARSTWY.filter(
-    (w) => w.kod !== "ZAWSZE" && dostep.warstwy.get(w.kod) === null,
-  );
+  const stan = stanAssessmentu(zakonczone, odpowiedziWModule);
+  const procent = Math.round((stan.ukonczonych / stan.etapy.length) * 100);
+  const biezacy = stan.etapy.find((e) => e.kod === stan.biezacy);
+  const zawodyOtwarte = dostep.dostepne.has("zawody");
 
   return (
     <div className="flex flex-col gap-3">
-      {/* NAGŁÓWEK: powitanie z lewej, postęp i zdanie na dziś z prawej.
-          Jeden rząd zamiast dwóch, żeby całość mieściła się na ekranie
-          komputera bez przewijania. */}
+      {/* NAGŁÓWEK: powitanie i jeden przycisk. Wszystko inne jest pod nim. */}
       <header className="szklo relative overflow-hidden p-5 sm:p-6">
         <div
           aria-hidden
           className="pointer-events-none absolute -right-24 -top-32 h-80 w-80 rounded-full bg-akcent/20 blur-3xl"
         />
+        <Bramy klasa="pointer-events-none absolute -right-6 bottom-0 hidden h-[13rem] w-[20rem] opacity-70 xl:block" />
         <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr] lg:items-center">
           <div>
-            <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">Twój program</p>
+            <p className="text-drobne uppercase tracking-[0.18em] text-atrament-slaby">
+              Twój assessment
+            </p>
             <h1 className="mt-2 text-naglowek-maly font-extrabold leading-[1.1] tracking-tight sm:text-naglowek 2xl:text-naglowek-duzy">
-              Cześć, {uczestnik.imie}.{dalej ? " Dziś odkrywasz," : ""}
+              Cześć, {uczestnik.imie}.
               <br />
               <span className="gradient-tytul">
-                {dalej ? (DZIS_ODKRYWASZ[dalej] ?? "co Cię ciągnie.") : "Masz to za sobą."}
+                {stan.gotowy
+                  ? "Masz to za sobą."
+                  : stan.rozpoczety
+                    ? "Zostało jeszcze trochę."
+                    : "Zacznijmy od tego, co Cię ciekawi."}
               </span>
             </h1>
             <p className="mt-2 max-w-czytelna text-male leading-relaxed text-atrament-sciszony">
-              Krok po kroku poznajesz siebie, swoje mocne strony i realne możliwości.
+              {stan.gotowy
+                ? "Wszystkie cztery etapy są wypełnione. Twój raport jest gotowy do czytania."
+                : "Jeden assessment, cztery etapy. Możesz przerwać w dowolnym momencie i wrócić w to samo miejsce."}
             </p>
-            {dalej ? (
-              <Link
-                href={`/u/${kod}/modul/${dalej}`}
-                className="przejscie przycisk-gradient mt-4 inline-flex min-h-11 items-center gap-3 rounded-2xl px-6 text-male font-bold"
-              >
-                {stan(dalej) === "wtrakcie" ? "Dokończ" : "Zacznij"}: {NAZWY_MODULOW[dalej]}
-                <span aria-hidden>→</span>
-              </Link>
-            ) : (
-              <p className="mt-5 inline-flex rounded-xl border border-linia bg-szklo px-5 py-3 text-male text-atrament-sciszony">
-                Masz wypełnione wszystko, co jest teraz otwarte.
+
+            <Link
+              href={stan.gotowy ? `/u/${kod}/raport` : `/u/${kod}/assessment`}
+              className="przejscie przycisk-gradient mt-5 inline-flex min-h-[3.25rem] items-center gap-3 rounded-2xl px-7 text-tresc font-bold"
+            >
+              {stan.gotowy
+                ? "Zobacz swój raport"
+                : stan.rozpoczety
+                  ? `Wróć do assessmentu: etap ${biezacy?.numer ?? 1}`
+                  : "Zacznij assessment"}
+              <span aria-hidden>→</span>
+            </Link>
+
+            {!stan.gotowy && biezacy ? (
+              <p className="mt-2.5 text-drobne text-atrament-slaby">
+                Następny etap: {biezacy.nazwa}. {PO_CO[biezacy.kod]}
               </p>
-            )}
+            ) : null}
           </div>
 
           <div className="relative flex flex-col gap-3">
             <div className="rounded-2xl border border-linia bg-panel/80 p-4">
-              <p className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">Twój postęp</p>
+              <p className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
+                Twój postęp
+              </p>
               <div className="mt-1.5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <p className="text-naglowek-duzy font-extrabold leading-none tabular-nums">
-                  {ukonczone}
-                  <span className="text-naglowek-maly text-atrament-slaby"> z {KOLEJNOSC_MODULOW.length}</span>
+                  {stan.ukonczonych}
+                  <span className="text-naglowek-maly text-atrament-slaby">
+                    {" "}
+                    z {stan.etapy.length}
+                  </span>
                 </p>
                 <p className="text-male text-atrament-sciszony">
-                  części ukończonych
-                  <span className="ml-2 text-drobne text-atrament-slaby">{procent}% programu</span>
+                  etapów wypełnionych
+                  <span className="ml-2 text-drobne text-atrament-slaby">{procent}%</span>
                 </p>
               </div>
               {/* Przystanki zamiast paska: widać, ile zostało, a nie ułamek. */}
               <ol className="mt-3 flex items-center gap-1.5">
-                {KOLEJNOSC_MODULOW.map((m) => {
-                  const s = stan(m);
-                  return (
-                    <li key={m} className="flex-1">
-                      <span className="sr-only">
-                        {NAZWY_MODULOW[m]}: {OPIS_STANU[s]}
-                      </span>
-                      <span
-                        aria-hidden
-                        className={`block h-2 rounded-full ${
-                          s === "gotowy"
-                            ? "bg-gradient-to-r from-akcent-ciemny to-akcent"
-                            : s === "wtrakcie"
-                              ? "bg-akcent/45"
-                              : "bg-linia"
-                        }`}
-                      />
-                    </li>
-                  );
-                })}
+                {stan.etapy.map((e) => (
+                  <li key={e.kod} className="flex-1">
+                    <span className="sr-only">
+                      {e.nazwa}: {OPIS_STANU[e.stan]}
+                    </span>
+                    <span
+                      aria-hidden
+                      className={`block h-2 rounded-full ${
+                        e.stan === "gotowy"
+                          ? "bg-gradient-to-r from-akcent-ciemny to-akcent"
+                          : e.stan === "wtrakcie"
+                            ? "bg-akcent/45"
+                            : "bg-linia"
+                      }`}
+                    />
+                  </li>
+                ))}
               </ol>
             </div>
             <div className="flex items-start gap-3 rounded-2xl border border-akcent/20 bg-akcent-tlo/60 px-4 py-3">
-              <span aria-hidden className="text-naglowek font-extrabold leading-none text-akcent/40">„</span>
+              <span aria-hidden className="text-naglowek font-extrabold leading-none text-akcent/40">
+                „
+              </span>
               <p className="text-tresc font-semibold leading-snug text-atrament">
                 Nie musisz znać całej drogi. Wystarczy, że zrobisz kolejny krok.
               </p>
@@ -144,36 +140,21 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </div>
       </header>
 
-      {/* CZTERY CZĘŚCI */}
+      {/* CZTERY ETAPY: mapa drogi, nie menu. */}
       <section>
-        <div className="mb-2 flex items-end justify-between gap-4 px-1">
-          <h2 className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
-            Cztery części Twojej podróży
-          </h2>
-          <Link
-            href={`/u/${kod}/moduly`}
-            className="przejscie shrink-0 text-male font-semibold text-akcent-jasny hover:underline"
-          >
-            Zobacz szczegóły <span aria-hidden>→</span>
-          </Link>
-        </div>
-
-        <ol className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7">
-          {KOLEJNOSC_MODULOW.map((m, i) => (
-            <li key={m}>
-              <KafelekModulu
-                kod={kod}
-                modul={m}
-                numer={i + 1}
-                stan={stan(m)}
-                spotkanie={SPOTKANIE_MODULU[m]}
-              />
+        <h2 className="mb-2 px-1 text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
+          Cztery etapy, po kolei
+        </h2>
+        <ol className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {stan.etapy.map((e) => (
+            <li key={e.kod}>
+              <KafelekEtapu kod={kod} etap={e} biezacy={e.kod === stan.biezacy} />
             </li>
           ))}
         </ol>
       </section>
 
-      {/* CO JUŻ WIDAĆ, CO JESZCZE NIE */}
+      {/* CO JUŻ WIDAĆ */}
       <div className="grid gap-3 lg:grid-cols-[1fr_1fr_0.8fr]">
         <section className="szklo p-5">
           <h2 className="flex items-center gap-3 text-naglowek-maly font-bold">
@@ -184,29 +165,36 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
             </span>
             Co już o sobie wiesz
           </h2>
-          {otwarteWarstwy.length > 0 ? (
+          {stan.rozpoczety ? (
             <>
               <ul className="mt-3 flex flex-col gap-1.5">
-                {otwarteWarstwy.slice(0, 3).map((w) => (
-                  <li key={w.kod} className="flex items-start gap-3">
-                    <Ptaszek />
-                    <span className="text-male leading-relaxed text-atrament-sciszony">{w.nazwa}</span>
+                {stan.etapy
+                  .filter((e) => e.stan === "gotowy")
+                  .map((e) => (
+                    <li key={e.kod} className="flex items-start gap-3">
+                      <Ptaszek />
+                      <span className="text-male leading-relaxed text-atrament-sciszony">
+                        {e.nazwa}
+                      </span>
+                    </li>
+                  ))}
+                {stan.ukonczonych === 0 ? (
+                  <li className="text-male text-atrament-sciszony">
+                    Pierwszy etap jest zaczęty. Raport zapełni się, kiedy go domkniesz.
                   </li>
-                ))}
+                ) : null}
               </ul>
               <Link
                 href={`/u/${kod}/raport`}
                 className="przejscie przycisk-pigulka mt-4 inline-flex min-h-10 items-center gap-2 rounded-2xl px-5 text-male font-semibold"
               >
-                {otwarteWarstwy.length > 4 ? `Otwórz raport, ${otwarteWarstwy.length} części` : "Otwórz raport"}{" "}
-                <span aria-hidden>→</span>
+                Otwórz raport <span aria-hidden>→</span>
               </Link>
             </>
           ) : (
             <p className="proza mt-4">
-              Na razie nic nie jest odsłonięte. Pierwsze wnioski zobaczysz po spotkaniu, razem
-              z prowadzącym. To nie jest opóźnienie, tylko kolejność: wynik czyta się inaczej, kiedy
-              jest komu zadać pytanie.
+              Raport zapełnia się sam, w miarę jak wypełniasz etapy. Po pierwszym zobaczysz w nim
+              swoją piątkę tematów.
             </p>
           )}
         </section>
@@ -221,20 +209,24 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
             </span>
             Co jeszcze odkryjesz
           </h2>
-          {zamknieteWarstwy.length > 0 ? (
-            <ul className="mt-3 flex flex-col gap-2">
-              {zamknieteWarstwy.slice(0, 3).map((w) => (
-                <li key={w.kod} className="flex items-start gap-3">
-                  <span aria-hidden className="mt-1.5 h-3.5 w-3.5 shrink-0 rounded-full border border-linia-mocna" />
-                  <span className="min-w-0">
-                    <span className="block text-male leading-snug text-atrament-sciszony">{w.nazwa}</span>
-                    <span className="block text-drobne text-atrament-slaby">{w.kiedy}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
+          {zawodyOtwarte ? (
+            <>
+              <p className="proza mt-3">
+                Zawody są już odsłonięte. Znajdziesz je na końcu raportu i w kartach zawodów.
+              </p>
+              <Link
+                href={`/u/${kod}/zawody`}
+                className="przejscie przycisk-pigulka mt-4 inline-flex min-h-10 items-center gap-2 rounded-2xl px-5 text-male font-semibold"
+              >
+                Karty zawodów <span aria-hidden>→</span>
+              </Link>
+            </>
           ) : (
-            <p className="proza mt-4">Cały raport jest już otwarty.</p>
+            <p className="proza mt-3">
+              Konkretne zawody odsłania prowadzący na spotkaniu, po omówieniu obszarów. To nie jest
+              opóźnienie, tylko kolejność: konkretny zawód czyta się zupełnie inaczej, kiedy
+              wiadomo już, z czego wyszedł.
+            </p>
           )}
         </section>
 
@@ -248,9 +240,9 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
             ma sens.
           </h2>
           <p className="mt-3 max-w-[14rem] text-male leading-relaxed text-atrament-sciszony">
-            {nastepnyZamkniety
-              ? `Kolejna część otworzy się na ${SPOTKANIE_MODULU[nastepnyZamkniety]}. spotkaniu. Termin ustala prowadzący.`
-              : "Wszystkie części są już otwarte. Reszta zależy od Ciebie."}
+            {stan.gotowy
+              ? "Odpowiedzi są zapisane. Reszta zależy od Ciebie."
+              : "Nikt tego za Ciebie nie wypełni i nikt nie sprawdzi, czy odpowiedziałeś dobrze."}
           </p>
         </section>
       </div>
@@ -258,78 +250,70 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   );
 }
 
-const OPIS_STANU: Record<Stan, string> = {
-  gotowy: "wypełnione",
-  wtrakcie: "zaczęte",
+const OPIS_STANU: Record<StanEtapu["stan"], string> = {
+  gotowy: "wypełniony",
+  wtrakcie: "zaczęty",
   przed: "do zrobienia",
-  zamkniety: "jeszcze zamknięte",
 };
 
 /**
- * Kafelek jednej części. Zamknięta jest widoczna i podpisana, ale nieklikalna:
- * uczestnik ma wiedzieć, co go czeka, a nie patrzeć na pustą listę.
+ * Kafelek etapu.
+ *
+ * Wypełniony prowadzi do własnych odpowiedzi, bieżący i przyszły w sam
+ * assessment. Żaden nie jest zamknięty: kolejność pilnuje sam przebieg,
+ * a uczestnik, który klika w etap czwarty przed drugim, i tak trafia tam,
+ * gdzie skończył.
  */
-function KafelekModulu({
+function KafelekEtapu({
   kod,
-  modul,
-  numer,
-  stan,
-  spotkanie,
+  etap,
+  biezacy,
 }: {
   kod: string;
-  modul: KodModulu;
-  numer: number;
-  stan: Stan;
-  spotkanie: number;
+  etap: StanEtapu;
+  biezacy: boolean;
 }) {
-  const tresc = (
-    <>
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-male font-bold tabular-nums text-atrament-slaby">{numer}</span>
-        <Odznaka stan={stan} spotkanie={spotkanie} />
-      </div>
-      <span
-        className={`mt-3 block ${stan === "zamkniety" ? "text-atrament-slaby" : "text-akcent-jasny"}`}
-      >
-        <ZnakModulu modul={modul} rozmiar={26} />
-      </span>
-      <span className="mt-2 block text-male font-bold leading-snug text-atrament">
-        {NAZWY_MODULOW[modul]}
-      </span>
-      <span className="mt-1 hidden text-drobne leading-snug text-atrament-slaby xl:block">
-        {KROTKO[modul]}
-      </span>
-    </>
-  );
-
-  if (stan === "zamkniety") {
-    return <div className="h-full rounded-karta border border-linia bg-tlo/70 p-3.5">{tresc}</div>;
-  }
-
   return (
     <Link
-      href={`/u/${kod}/modul/${modul}`}
-      className={`przejscie szklo block h-full p-3.5 ${
-        stan === "wtrakcie" ? "szklo-akcent" : "hover:border-akcent/45"
+      href={etap.stan === "gotowy" ? `/u/${kod}/wyniki/${etap.kod}` : `/u/${kod}/assessment`}
+      className={`przejscie szklo block h-full p-4 ${
+        biezacy ? "szklo-akcent" : "hover:border-akcent/45"
       }`}
     >
-      {tresc}
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-male font-bold tabular-nums text-atrament-slaby">
+          Etap {etap.numer}
+        </span>
+        <Odznaka stan={etap.stan} />
+      </div>
+      <span className="mt-3 block text-akcent-jasny">
+        <ZnakModulu modul={etap.kod as KodModulu} rozmiar={26} />
+      </span>
+      <span className="mt-2 block text-tresc font-bold leading-snug text-atrament">
+        {NAZWY_MODULOW[etap.kod]}
+      </span>
+      <span className="mt-1 block text-drobne leading-snug text-atrament-slaby">
+        {KROTKO[etap.kod]}
+      </span>
+      {etap.stan === "wtrakcie" ? (
+        <span className="mt-2 block text-drobne font-semibold text-akcent-jasny">
+          {etap.domkniete} z {etap.wszystkich} części
+        </span>
+      ) : null}
     </Link>
   );
 }
 
-function Odznaka({ stan, spotkanie }: { stan: Stan; spotkanie: number }) {
-  const styl: Record<Stan, string> = {
+function Odznaka({ stan }: { stan: StanEtapu["stan"] }) {
+  const styl: Record<StanEtapu["stan"], string> = {
     gotowy: "border-akcent/40 bg-akcent-tlo text-akcent-jasny",
     wtrakcie: "border-uwaga/40 bg-uwaga-tlo text-uwaga",
     przed: "border-linia-mocna text-atrament-sciszony",
-    zamkniety: "border-linia text-atrament-slaby",
   };
-  const tekst: Record<Stan, string> = {
-    gotowy: "ukończony",
+  const tekst: Record<StanEtapu["stan"], string> = {
+    gotowy: "wypełniony",
     wtrakcie: "w trakcie",
     przed: "do zrobienia",
-    zamkniety: `spotkanie ${spotkanie}`,
   };
   return (
     <span
@@ -352,4 +336,3 @@ function Ptaszek() {
     </span>
   );
 }
-

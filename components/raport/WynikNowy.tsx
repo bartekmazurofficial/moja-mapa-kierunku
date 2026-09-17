@@ -26,6 +26,20 @@ import { OPISY_PASM } from "@/lib/engine/zarobki";
 import { INSTRUKCJA_POZIOMU_ZYCIA } from "@/lib/content/poziom-zycia";
 import type { WynikNowegoProgramu } from "@/lib/raport/nowy";
 
+/**
+ * Co napisac, gdy lista wyszla pusta.
+ *
+ * Pusto na kazdej z trzech list znaczy co innego i wczesniej stalo tu jedno
+ * zdanie o tym, ze „tory pokrywaja sie wyjatkowo mocno" — nieprawdziwe
+ * dokladnie w tym przypadku, w ktorym pojawialo sie najczesciej, czyli przy
+ * pustej liscie „lubie i umiem".
+ */
+const PUSTA_LISTA = [
+  "Tu nic nie wyszło, i to samo w sobie jest informacją: rzeczy, które lubisz, i te, które Ci wychodzą, to na razie dwa różne zbiory. Na sesji warto zapytać, skąd ta różnica.",
+  "Tu nic nie wyszło. To, co lubisz, już dziś Ci wychodzi, więc nie ma osobnej listy „do nadrobienia”.",
+  "Tu nic nie wyszło. Nie ma u Ciebie rzeczy, które robisz dobrze wbrew sobie.",
+];
+
 interface Wlasciwosci {
   wynik: WynikNowegoProgramu;
   kodUczestnika: string;
@@ -178,10 +192,7 @@ export function WynikNowy({ wynik, kodUczestnika, zawodyOdslonite, imie }: Wlasc
                       ))}
                     </ul>
                   ) : (
-                    <p className="mt-3 text-male text-white/70">
-                      Na tej liście nic nie wyszło. To nie jest brak: to znaczy, że oba Twoje tory
-                      pokrywają się wyjątkowo mocno.
-                    </p>
+                    <p className="mt-3 text-male text-white/85">{PUSTA_LISTA[i] ?? PUSTA_LISTA[0]}</p>
                   )}
                 </div>
               ))}

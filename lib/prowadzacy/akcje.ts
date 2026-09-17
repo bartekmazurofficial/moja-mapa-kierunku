@@ -13,7 +13,6 @@ import { redirect } from "next/navigation";
 import { prisma } from "../db/klient";
 import { hasloPoprawne, rolaSesji, zbudujCiasteczko, NAZWA_CIASTECZKA } from "./sesja";
 import { pokazWlaczony } from "../pokaz";
-import { otworzModul, otworzSpotkanie } from "../moduly/otwarcie";
 import { odblokujWarstwe } from "../raport/dostep";
 import type { KodModulu } from "../moduly/typy";
 import type { KodWarstwy } from "../raport/sekcje";
@@ -69,15 +68,6 @@ export async function zalogujPokaz() {
 export async function wyloguj() {
   (await cookies()).delete(NAZWA_CIASTECZKA);
   redirect("/prowadzacy");
-}
-
-export async function otworzModulAkcja(dane: FormData) {
-  await wymagajSesji();
-  const grupaId = String(dane.get("grupaId"));
-  const modul = String(dane.get("modul"));
-  if (/^\d$/.test(modul)) await otworzSpotkanie(grupaId, Number(modul));
-  else await otworzModul(grupaId, modul as KodModulu);
-  revalidatePath("/prowadzacy/grupa/[kod]", "page");
 }
 
 export async function odslonWarstweAkcja(dane: FormData) {

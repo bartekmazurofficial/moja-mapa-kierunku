@@ -9,7 +9,6 @@
 
 import { prisma } from "@/lib/db/klient";
 import { wypelnijUczestnika, type ProfilTestowy } from "@/lib/testy/wypelnianie";
-import { otworzModul } from "@/lib/moduly/otwarcie";
 import { CZESCI_MODULOW, KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
 import { MARKER_ZAKONCZENIA } from "@/lib/moduly/typy";
 
@@ -45,7 +44,6 @@ async function wypelniony(uczestnikId: string): Promise<boolean> {
  */
 export async function uczestnikTestowy(profil: ProfilTestowy = "rzemieslniczy") {
   const grupa = await grupaTestowa();
-  for (const m of KOLEJNOSC_MODULOW) await otworzModul(grupa.id, m);
 
   const { kod, imie } = UCZESTNICY[profil];
   let uczestnik = await prisma.uczestnik.findUnique({ where: { kodDostepu: kod } });

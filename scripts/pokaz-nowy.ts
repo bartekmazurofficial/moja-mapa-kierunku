@@ -16,7 +16,6 @@
 
 import { prisma } from "../lib/db/klient";
 import { wypelnijUczestnika } from "../lib/testy/wypelnianie";
-import { otworzSpotkanie } from "../lib/moduly/otwarcie";
 import { odblokujWarstwe } from "../lib/raport/dostep";
 import { KOLEJNOSC_MODULOW } from "../lib/moduly/ekrany";
 import { WARSTWY } from "../lib/raport/sekcje";
@@ -50,7 +49,6 @@ async function main() {
   }
   const zapisanych = await wypelnijUczestnika(pelny.id, "rzemieslniczy");
 
-  for (const nr of [1, 2]) await otworzSpotkanie(grupa.id, nr);
   for (const w of WARSTWY) await odblokujWarstwe(grupa.id, w.kod);
 
   console.log(`\nGrupa pokazowa nowego programu (kod grupy ${sformatujKod(grupa.kod)})`);

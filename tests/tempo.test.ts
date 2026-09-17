@@ -9,7 +9,6 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { prisma } from "@/lib/db/klient";
 import { pobierzGrupe } from "@/lib/prowadzacy/dane";
 import { TEMPO } from "@/lib/engine/config";
-import { otwarteModuly, otworzModul } from "@/lib/moduly/otwarcie";
 import { MARKER_ZAKONCZENIA } from "@/lib/moduly/typy";
 import { grupaZKompletem } from "./pomocnicze/fixtury";
 
@@ -34,7 +33,6 @@ beforeAll(async () => {
   const grupa = await grupaZKompletem();
   grupaKod = grupa.kod;
   grupaId = grupa.id;
-  if (!(await otwarteModuly(grupaId)).has("Z")) await otworzModul(grupaId, "Z");
 });
 
 afterAll(async () => {
@@ -43,7 +41,7 @@ afterAll(async () => {
   }
 });
 
-/** Uczestnicy, którzy mają moduł A1 zamknięty. */
+/** Uczestnicy bez zmierzonego czasu w etapie pierwszym. */
 async function zGotowymA1() {
   const widok = await pobierzGrupe(grupaKod);
   return (widok?.uczestnicy ?? []).filter(

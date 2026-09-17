@@ -1,11 +1,15 @@
 import Link from "next/link";
 
 /**
- * Ekran po ukończeniu assessmentu.
+ * Ekran po ukończeniu etapu.
  *
- * Uczestnik właśnie skończył kilkadziesiąt minut pracy i dotąd dostawał za to
+ * Uczestnik właśnie skończył kilkanaście minut pracy i dotąd dostawał za to
  * jeden akapit. Tutaj dostaje moment: pierścień się domyka, ptaszek się rysuje,
  * iskry rozchodzą się na boki, a dopiero potem pojawia się tekst i wyjście dalej.
+ *
+ * **Wyjście prowadzi w następny etap, nie do spisu treści.** Assessment jest
+ * jedną rzeczą do zrobienia, a lista, na którą trzeba wrócić po każdej części,
+ * zamienia go w cztery osobne zadania i po drugim ludzie nie wracają.
  *
  * Dwie rzeczy, które wyglądają na ozdobę, a są regułą:
  *
@@ -26,17 +30,20 @@ export function Ukonczenie({
   nazwaModulu,
   zamkniecie,
   znaczniki,
-  zObszarami,
+  dalej,
+  ostatni,
 }: {
   kodUczestnika: string;
   modul: string;
   nazwaModulu: string;
-  /** Zdanie zamykające moduł, z lib/content/wspolne.ts. */
+  /** Zdanie zamykające etap, z lib/content/wspolne.ts. */
   zamkniecie: string;
   /** Fakty o wykonanej pracy. Nigdy nic o wyniku. */
   znaczniki: string[];
-  /** A0 nie ma ekranu odpowiedzi, więc nie pokazujemy do niego wyjścia. */
-  zObszarami: boolean;
+  /** Dokąd prowadzi główny przycisk: następny etap albo raport. */
+  dalej: { href: string; etykieta: string };
+  /** Czy to był ostatni etap. Rozstrzyga, co stoi w nadpisie i w tytule. */
+  ostatni: boolean;
 }) {
   const KROPKI = ["#1d5bff", "#6d3df5", "#b8460f"];
 
@@ -215,7 +222,7 @@ export function Ukonczenie({
           className="mb-4 text-drobne font-bold uppercase tracking-[0.22em] text-atrament-slaby"
           style={{ ["--ruch" as string]: "wschod", ["--czas" as string]: "700ms", ["--zwloka" as string]: "1280ms" }}
         >
-          Assessment zakończony
+          {ostatni ? "Assessment zakończony" : `${nazwaModulu}: etap zamknięty`}
         </p>
 
         <h1 className="text-naglowek-duzy font-extrabold leading-[1.06] tracking-[-0.035em] text-atrament sm:text-tytul">
@@ -224,14 +231,14 @@ export function Ukonczenie({
             className="block"
             style={{ ["--ruch" as string]: "wschod", ["--czas" as string]: "820ms", ["--zwloka" as string]: "1380ms" }}
           >
-            Świetna robota.
+            {ostatni ? "Świetna robota." : "Gotowe."}
           </span>
           <span
             data-ruch
             className="gradient-tytul block pb-[0.08em] leading-[1.22]"
             style={{ ["--ruch" as string]: "wschod", ["--czas" as string]: "820ms", ["--zwloka" as string]: "1520ms" }}
           >
-            Twoje odpowiedzi są zapisane
+            {ostatni ? "Masz to za sobą" : "Idziemy dalej"}
           </span>
         </h1>
 
@@ -287,10 +294,10 @@ export function Ukonczenie({
             }}
           />
           <Link
-            href={zObszarami ? `/u/${kodUczestnika}/wyniki/${modul}` : `/u/${kodUczestnika}/moduly`}
+            href={dalej.href}
             className="przejscie przycisk-gradient relative inline-flex min-h-[3.75rem] items-center gap-3.5 overflow-hidden rounded-full px-10 text-tresc-duza font-bold"
           >
-            {zObszarami ? "Zobacz swoje odpowiedzi" : "Wróć do listy"}
+            {dalej.etykieta}
             <span aria-hidden>→</span>
             {/* Połysk przechodzący przez przycisk: to jedyna rzecz do zrobienia
                 na tym ekranie i ma być widać, gdzie kliknąć. */}
@@ -318,10 +325,16 @@ export function Ukonczenie({
           style={{ ["--ruch" as string]: "rozjasnienie", ["--czas" as string]: "700ms", ["--zwloka" as string]: "2320ms" }}
         >
           <Link
-            href={`/u/${kodUczestnika}/moduly`}
+            href={`/u/${kodUczestnika}/wyniki/${modul}`}
             className="przejscie text-male font-semibold text-atrament-slaby hover:text-akcent-jasny"
           >
-            Wróć do panelu
+            Zobacz swoje odpowiedzi
+          </Link>
+          <Link
+            href={`/u/${kodUczestnika}`}
+            className="przejscie text-male font-semibold text-atrament-slaby hover:text-akcent-jasny"
+          >
+            Przerwij i wróć później
           </Link>
           <Link
             href={`/u/${kodUczestnika}/modul/${modul}/od-nowa`}

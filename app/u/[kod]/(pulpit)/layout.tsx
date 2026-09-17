@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 import { pobierzPostepModulow, pobierzUczestnika } from "@/lib/moduly/serwer";
-import { otwarteModuly } from "@/lib/moduly/otwarcie";
 import { stanDostepu } from "@/lib/raport/dostep";
-import { CZESCI_MODULOW, KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
+import { stanAssessmentu } from "@/lib/moduly/etapy";
 import { Nawigacja, type PozycjaNawigacji } from "@/components/pulpit/Nawigacja";
 import { Marka } from "@/components/pulpit/Marka";
 
@@ -26,26 +25,24 @@ export default async function Uklad({
   const uczestnik = await pobierzUczestnika(kod);
   if (!uczestnik) notFound();
 
-  const [{ zakonczone }, otwarte, dostep] = await Promise.all([
+  const [{ zakonczone, odpowiedziWModule }, dostep] = await Promise.all([
     pobierzPostepModulow(uczestnik.id),
-    otwarteModuly(uczestnik.grupaId),
     stanDostepu(uczestnik.id, uczestnik.grupaId),
   ]);
 
-  const doZrobienia = KOLEJNOSC_MODULOW.filter((m) => otwarte.has(m));
-  const ukonczone = doZrobienia.filter(
-    (m) => (zakonczone.get(m)?.size ?? 0) >= CZESCI_MODULOW[m].length,
-  ).length;
-  const zostalo = doZrobienia.length - ukonczone;
+  const stan = stanAssessmentu(zakonczone, odpowiedziWModule);
 
+  /**
+   * Trzy pozycje, nie cztery. „Moduły" byly osobna zakladka ze spisem tresci
+   * tego samego, co stoi w przegladzie: uczestnik czytal tam te same cztery
+   * nazwy drugi raz i klikal o jeden ekran wiecej, zeby zaczac.
+   */
   const pozycje: PozycjaNawigacji[] = [
-    { etykieta: "Przegląd", podpis: "Gdzie jesteś", href: `/u/${kod}`, ikona: "przeglad" },
     {
-      etykieta: "Moduły",
-      podpis: doZrobienia.length === 0 ? "otworzą się na spotkaniu" : `${ukonczone} z ${doZrobienia.length} wypełnionych`,
-      href: `/u/${kod}/moduly`,
-      ikona: "moduly",
-      odznaka: zostalo > 0 ? String(zostalo) : undefined,
+      etykieta: "Przegląd",
+      podpis: stan.gotowy ? "Masz to za sobą" : `${stan.ukonczonych} z 4 etapów`,
+      href: `/u/${kod}`,
+      ikona: "przeglad",
     },
     {
       etykieta: "Mój raport",
@@ -58,7 +55,7 @@ export default async function Uklad({
       podpis: "Karty do przeczytania",
       href: `/u/${kod}/zawody`,
       ikona: "zawody",
-      zamkniete: dostep.dostepne.has("zawody") ? undefined : "otworzy się na spotkaniu 2",
+      zamkniete: dostep.dostepne.has("zawody") ? undefined : "odsłoni je prowadzący",
     },
   ];
 
@@ -101,13 +98,11 @@ export default async function Uklad({
             <div className="h-1.5 overflow-hidden rounded-full bg-linia">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-akcent-ciemny to-akcent-jasny"
-                style={{ width: `${doZrobienia.length > 0 ? (ukonczone / doZrobienia.length) * 100 : 0}%` }}
+                style={{ width: `${(stan.ukonczonych / 4) * 100}%` }}
               />
             </div>
             <p className="mt-2 hidden text-drobne text-atrament-slaby lg:block">
-              {doZrobienia.length === 0
-                ? "Pierwsza część otworzy się na spotkaniu."
-                : `${ukonczone} z ${doZrobienia.length} otwartych części`}
+              {stan.gotowy ? "Assessment wypełniony" : `${stan.ukonczonych} z 4 etapów za Tobą`}
             </p>
           </div>
 

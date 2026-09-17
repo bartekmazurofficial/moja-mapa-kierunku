@@ -36,7 +36,7 @@ interface Wlasciwosci {
   definicja: CzescModulu;
   zapisane: Record<string, unknown>;
   nazwaModulu: string;
-  /** Który to moduł z czterech. Pasek u góry pokazuje to, a nie postęp w ekranach. */
+  /** Który to etap z czterech. Pasek u góry pokazuje to, a nie postęp w ekranach. */
   numerModulu: number;
   liczbaModulow: number;
 }
@@ -351,16 +351,16 @@ export function Runner({
       */}
       {ekran.typ === "wstep" ? <TloWstepu /> : null}
       {/*
-        Nagłówek: znak programu, numer modułu z czterech i licznik ekranów.
+        Nagłówek: znak programu, numer etapu z czterech i licznik ekranów.
         Pasek pokazuje, który to moduł, a nie ile ekranów zostało: pasek rosnący
         o ułamek przy każdym pytaniu każe liczyć, ile jeszcze, zamiast myśleć.
       */}
       <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
-        <Marka href={`/u/${kodUczestnika}/moduly`} />
+        <Marka href={`/u/${kodUczestnika}`} />
         <div className="flex flex-col items-end gap-1.5 pt-1">
           <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
             <p className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
-              Moduł {numerModulu} z {liczbaModulow}
+              Etap {numerModulu} z {liczbaModulow}
               {postepPytan ? (
                 <span className="normal-case tracking-normal tabular-nums">
                   <span aria-hidden className="mx-2">·</span>

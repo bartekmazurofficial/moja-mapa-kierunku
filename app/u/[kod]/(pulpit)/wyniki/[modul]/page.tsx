@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { pobierzUczestnika } from "@/lib/moduly/serwer";
-import { otwarteModuly } from "@/lib/moduly/otwarcie";
 import { planszaWynikow } from "@/lib/moduly/wyniki";
 import { KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { Ikona } from "@/components/Ikona";
@@ -30,8 +29,6 @@ export default async function Strona({
   const uczestnik = await pobierzUczestnika(kod);
   if (!uczestnik) notFound();
 
-  const otwarte = await otwarteModuly(uczestnik.grupaId);
-  if (!otwarte.has(modul as KodModulu)) notFound();
 
   const plansza = await planszaWynikow(uczestnik.id, modul as KodModulu);
   const nazwa = NAZWY_MODULOW[modul as KodModulu];
@@ -41,7 +38,7 @@ export default async function Strona({
       <header className="szklo relative overflow-hidden p-7 sm:p-9 lg:pr-[22rem]">
         <Bramy klasa="pointer-events-none absolute -right-10 bottom-0 hidden h-[13rem] w-[20rem] opacity-60 lg:block" />
         <Link
-          href={`/u/${kod}/moduly`}
+          href={`/u/${kod}`}
           className="przejscie inline-flex items-center gap-2 text-male text-atrament-slaby hover:text-atrament"
         >
           <span aria-hidden>←</span> Wszystkie części

@@ -2,9 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { zalogowany } from "@/lib/prowadzacy/sesja";
 import { pobierzGrupe, NAZWY_MODULOW } from "@/lib/prowadzacy/dane";
-import { otworzModulAkcja, odslonWarstweAkcja } from "@/lib/prowadzacy/akcje";
+import { KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
+import { odslonWarstweAkcja } from "@/lib/prowadzacy/akcje";
 import { Logowanie } from "@/components/prowadzacy/Logowanie";
-import { MODULY_SPOTKANIA } from "@/lib/moduly/otwarcie";
 import { WARSTWY } from "@/lib/raport/sekcje";
 import { TEMPO } from "@/lib/engine/config";
 import { Bramy } from "@/components/pulpit/Bramy";
@@ -17,7 +17,6 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   const grupa = await pobierzGrupe(kod);
   if (!grupa) notFound();
 
-  const otwarte = new Set(grupa.otwarteModuly);
   const odsloniete = new Set(grupa.otwarteWarstwy);
 
   return (
@@ -35,45 +34,30 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </h1>
         <p className="proza mt-3 max-w-czytelna">
           {grupa.uczestnicy.length} {grupa.uczestnicy.length === 1 ? "uczestnik" : "uczestników"}.
-          Jedno kliknięcie otwiera moduł albo warstwę raportu całej grupie.
+          Jedno kliknięcie odsłania zawody całej grupie.
         </p>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2">
         <div className="szklo p-6">
           <h2 className="text-drobne uppercase tracking-[0.14em] text-atrament-slaby">
-            Moduły otwarte dla grupy
+            Assessment
           </h2>
           <p className="mt-2 text-male text-atrament-sciszony">
-            Otwarte zostaje otwarte. Moduł nieotwarty jest niedostępny także pod bezpośrednim
-            adresem.
+            Cztery etapy, jeden przebieg. Uczestnik ma assessment dostępny od razu i przechodzi
+            etapy po kolei; nie ma tu nic do otwierania.
           </p>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {Object.entries(MODULY_SPOTKANIA).map(([nr, moduly]) => {
-              const wszystkieOtwarte = moduly.every((m) => otwarte.has(m));
-              return (
-                <form key={nr} action={otworzModulAkcja}>
-                  <input type="hidden" name="grupaId" value={grupa.id} />
-                  <input type="hidden" name="modul" value={nr} />
-                  <button
-                    type="submit"
-                    disabled={wszystkieOtwarte}
-                    className={`przejscie min-h-12 rounded-xl border px-4 py-2 text-left text-male ${
-                      wszystkieOtwarte
-                        ? "border-akcent/35 bg-akcent-tlo/60 text-atrament-sciszony"
-                        : "border-linia-mocna bg-szklo font-semibold hover:border-akcent hover:text-akcent-jasny"
-                    }`}
-                  >
-                    {wszystkieOtwarte ? `Spotkanie ${nr} otwarte` : `Otwórz spotkanie ${nr}`}
-                    <span className="block text-drobne text-atrament-slaby">
-                      {moduly.map((m) => NAZWY_MODULOW[m]).join(" · ")}
-                    </span>
-                  </button>
-                </form>
-              );
-            })}
-          </div>
+          <p className="mt-2 text-drobne text-atrament-slaby">
+            Kolejności pilnuje sam przebieg: po każdym etapie ekran przerzuca w następny.
+            Jedyne, co odsłaniasz Ty, to zawody, obok.
+          </p>
+          <ol className="mt-4 flex flex-col gap-1.5">
+            {KOLEJNOSC_MODULOW.map((m, i) => (
+              <li key={m} className="text-male text-atrament">
+                <span className="text-atrament-slaby">{i + 1}.</span> {NAZWY_MODULOW[m]}
+              </li>
+            ))}
+          </ol>
         </div>
 
         <div className="szklo p-6">
@@ -184,7 +168,7 @@ function Kropka({
   pobiezny,
 }: {
   kod: string;
-  stan: "zamkniety" | "pusty" | "wtrakcie" | "gotowy";
+  stan: "pusty" | "wtrakcie" | "gotowy";
   pobiezny: boolean;
 }) {
   const opis =

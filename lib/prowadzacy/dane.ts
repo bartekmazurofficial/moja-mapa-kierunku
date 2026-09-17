@@ -9,7 +9,6 @@
 import "server-only";
 import { prisma } from "../db/klient";
 import { pobierzBazeReferencyjna } from "../db/repozytorium";
-import { otwarteModuly } from "../moduly/otwarcie";
 import { stanDostepu } from "../raport/dostep";
 import { KOD_GRUPY_POKAZ } from "../pokaz";
 import { rolaSesji } from "./sesja";
@@ -39,7 +38,7 @@ function mediana(liczby: number[]): number {
     : (posortowane[srodek - 1] + posortowane[srodek]) / 2;
 }
 
-export type StanModulu = "zamkniety" | "pusty" | "wtrakcie" | "gotowy";
+export type StanModulu = "pusty" | "wtrakcie" | "gotowy";
 
 export interface WierszGrupy {
   kodDostepu: string;
@@ -55,7 +54,6 @@ export interface WidokGrupy {
   kod: string;
   nazwa: string;
   uczestnicy: WierszGrupy[];
-  otwarteModuly: KodModulu[];
   otwarteWarstwy: KodWarstwy[];
 }
 
@@ -82,7 +80,6 @@ export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null>
   });
   if (!grupa) return null;
 
-  const otwarte = await otwarteModuly(grupa.id);
   const MODULY_GRUPY = KOLEJNOSC_MODULOW;
   const idUczestnikow = grupa.uczestnicy.map((u) => u.id);
 
@@ -113,7 +110,6 @@ export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null>
     const gotowe = zamkniete.get(klucz)?.size ?? 0;
     const wszystkie = CZESCI_MODULOW[m].length;
     const postep = grupa.uczestnicy.find((u) => u.id === uczestnikId)?.postepy.find((p) => p.kod === m);
-    if (!otwarte.has(m)) return "zamkniety";
     if (gotowe >= wszystkie) return "gotowy";
     return postep?.rozpoczety ? "wtrakcie" : "pusty";
   };
@@ -193,7 +189,6 @@ export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null>
     kod: grupa.kod,
     nazwa: grupa.nazwa,
     uczestnicy,
-    otwarteModuly: MODULY_GRUPY.filter((m) => otwarte.has(m)),
     otwarteWarstwy: grupa.odslony.filter((o) => o.odblokowana).map((o) => o.warstwa as KodWarstwy),
   };
 }
