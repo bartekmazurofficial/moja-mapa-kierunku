@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { pobierzPostepModulow, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
 import { stanDostepu } from "@/lib/raport/dostep";
-import { CZESCI_MODULOW, NAZWY_MODULOW, programGrupy } from "@/lib/moduly/ekrany";
+import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { DZIS_ODKRYWASZ, KROTKO } from "@/lib/moduly/opisy";
 import { WARSTWY } from "@/lib/raport/sekcje";
 import { Bramy } from "@/components/pulpit/Bramy";
@@ -37,9 +37,6 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
     stanDostepu(uczestnik.id, uczestnik.grupaId),
   ]);
 
-  // Lista modulow zalezy od tego, ktora wersje programu ma ta grupa.
-  const MODULY = programGrupy(otwarte);
-
   const stan = (m: KodModulu): Stan => {
     const gotowe = zakonczone.get(m)?.size ?? 0;
     if (!otwarte.has(m)) return "zamkniety";
@@ -48,12 +45,12 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   };
 
   const dalej =
-    MODULY.find((m) => stan(m) === "wtrakcie") ??
-    MODULY.find((m) => stan(m) === "przed");
-  const nastepnyZamkniety = MODULY.find((m) => stan(m) === "zamkniety");
+    KOLEJNOSC_MODULOW.find((m) => stan(m) === "wtrakcie") ??
+    KOLEJNOSC_MODULOW.find((m) => stan(m) === "przed");
+  const nastepnyZamkniety = KOLEJNOSC_MODULOW.find((m) => stan(m) === "zamkniety");
 
-  const ukonczone = MODULY.filter((m) => stan(m) === "gotowy").length;
-  const procent = Math.round((ukonczone / MODULY.length) * 100);
+  const ukonczone = KOLEJNOSC_MODULOW.filter((m) => stan(m) === "gotowy").length;
+  const procent = Math.round((ukonczone / KOLEJNOSC_MODULOW.length) * 100);
 
   const otwarteWarstwy = WARSTWY.filter(
     (w) => w.kod !== "ZAWSZE" && dostep.warstwy.get(w.kod) !== null,
@@ -106,16 +103,16 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
               <div className="mt-1.5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <p className="text-naglowek-duzy font-extrabold leading-none tabular-nums">
                   {ukonczone}
-                  <span className="text-naglowek-maly text-atrament-slaby"> z {MODULY.length}</span>
+                  <span className="text-naglowek-maly text-atrament-slaby"> z {KOLEJNOSC_MODULOW.length}</span>
                 </p>
                 <p className="text-male text-atrament-sciszony">
                   części ukończonych
                   <span className="ml-2 text-drobne text-atrament-slaby">{procent}% programu</span>
                 </p>
               </div>
-              {/* Siedem przystanków zamiast paska: widać, ile zostało, a nie ułamek. */}
+              {/* Przystanki zamiast paska: widać, ile zostało, a nie ułamek. */}
               <ol className="mt-3 flex items-center gap-1.5">
-                {MODULY.map((m) => {
+                {KOLEJNOSC_MODULOW.map((m) => {
                   const s = stan(m);
                   return (
                     <li key={m} className="flex-1">
@@ -147,11 +144,11 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </div>
       </header>
 
-      {/* SIEDEM CZĘŚCI */}
+      {/* CZTERY CZĘŚCI */}
       <section>
         <div className="mb-2 flex items-end justify-between gap-4 px-1">
           <h2 className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
-            Siedem części Twojej podróży
+            Cztery części Twojej podróży
           </h2>
           <Link
             href={`/u/${kod}/moduly`}
@@ -162,7 +159,7 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </div>
 
         <ol className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7">
-          {MODULY.map((m, i) => (
+          {KOLEJNOSC_MODULOW.map((m, i) => (
             <li key={m}>
               <KafelekModulu
                 kod={kod}

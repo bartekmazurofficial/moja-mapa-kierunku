@@ -74,7 +74,7 @@ describe("stan serwera po domknięciu części", () => {
   });
 
   it("po skasowaniu ostatniej części moduł wraca dokładnie do niej", async () => {
-    const modul: KodModulu = "A4";
+    const modul: KodModulu = "F";
     const ostatnia = CZESCI_MODULOW[modul].at(-1)!;
     await prisma.odpowiedz.deleteMany({ where: { uczestnikId, modul, czesc: ostatnia } });
     const stan = await pobierzStanModulu(uczestnikId, modul);

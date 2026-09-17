@@ -10,7 +10,8 @@
 import { prisma } from "@/lib/db/klient";
 import { wypelnijUczestnika, type ProfilTestowy } from "@/lib/testy/wypelnianie";
 import { otworzModul } from "@/lib/moduly/otwarcie";
-import { KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
+import { CZESCI_MODULOW, KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
+import { MARKER_ZAKONCZENIA } from "@/lib/moduly/typy";
 
 const KOD_GRUPY = "TESTAUTO";
 const NAZWA = "Grupa testowa (automat)";
@@ -29,8 +30,17 @@ async function grupaTestowa() {
   return prisma.grupa.create({ data: { kod: KOD_GRUPY, nazwa: NAZWA } });
 }
 
+/** Czy uczestnik ma domknięte wszystkie cztery moduły. */
+async function wypelniony(uczestnikId: string): Promise<boolean> {
+  const domkniete = await prisma.odpowiedz.count({
+    where: { uczestnikId, pozycja: MARKER_ZAKONCZENIA, modul: { in: KOLEJNOSC_MODULOW } },
+  });
+  const wszystkich = KOLEJNOSC_MODULOW.reduce((s, m) => s + CZESCI_MODULOW[m].length, 0);
+  return domkniete >= wszystkich;
+}
+
 /**
- * Zwraca uczestnika o danym profilu, z wypełnionymi siedmioma modułami
+ * Zwraca uczestnika o danym profilu, z wypełnionymi czterema modułami
  * i wszystkimi modułami otwartymi. Tworzy go, jeśli jeszcze nie istnieje.
  */
 export async function uczestnikTestowy(profil: ProfilTestowy = "rzemieslniczy") {
@@ -45,8 +55,10 @@ export async function uczestnikTestowy(profil: ProfilTestowy = "rzemieslniczy") 
     });
   }
 
-  const ile = await prisma.odpowiedz.count({ where: { uczestnikId: uczestnik.id } });
-  if (ile < 300) await wypelnijUczestnika(uczestnik.id, profil);
+  // Liczymy wylacznie moduly, ktore program dzis ma. Uczestnik z poprzedniej
+  // wersji ma w bazie kilkaset odpowiedzi, ktorych nikt juz nie czyta, a
+  // fikstura uznawala go za wypelnionego i oddawala pusty profil.
+  if (!(await wypelniony(uczestnik.id))) await wypelnijUczestnika(uczestnik.id, profil);
 
   return uczestnik;
 }
@@ -66,8 +78,7 @@ export async function grupaZKompletem() {
         data: { grupaId: grupa.id, imie: `Test dodatkowy ${i + 1}`, kodDostepu: kod },
       });
     }
-    const ile = await prisma.odpowiedz.count({ where: { uczestnikId: u.id } });
-    if (ile < 300) await wypelnijUczestnika(u.id, profil);
+    if (!(await wypelniony(u.id))) await wypelnijUczestnika(u.id, profil);
   }
   return grupa;
 }

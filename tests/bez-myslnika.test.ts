@@ -71,13 +71,14 @@ describe("myślnik pauzowy nie wraca", () => {
 
 describe("czas wypełniania nie wraca na ekran uczestnika", () => {
   it("instrukcje modułów nie podają, ile to zajmie", async () => {
-    const { INSTRUKCJA_A1 } = await import("@/lib/content/a1");
-    const { INSTRUKCJA_A2 } = await import("@/lib/content/a2");
+    const { INSTRUKCJA_ZAINTERESOWAN } = await import("@/lib/content/bank-zainteresowan");
+    const { INSTRUKCJA_LUBIE, INSTRUKCJA_UMIEM } = await import("@/lib/content/bank-czynnosci");
+    const { INSTRUKCJA_POZIOMU_ZYCIA } = await import("@/lib/content/poziom-zycia");
     const teksty = [
-      ...INSTRUKCJA_A1.wprowadzenie,
-      ...INSTRUKCJA_A1.rozwiniecie,
-      ...INSTRUKCJA_A2.wprowadzenie,
-      ...INSTRUKCJA_A2.rozwiniecie,
+      ...INSTRUKCJA_ZAINTERESOWAN.wprowadzenie,
+      ...INSTRUKCJA_LUBIE.wprowadzenie,
+      ...INSTRUKCJA_UMIEM.wprowadzenie,
+      ...INSTRUKCJA_POZIOMU_ZYCIA.wprowadzenie,
     ];
     for (const t of teksty) {
       expect(t, t).not.toMatch(/\b\d+\s*(minut|godzin)/i);

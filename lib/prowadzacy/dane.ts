@@ -9,25 +9,12 @@
 import "server-only";
 import { prisma } from "../db/klient";
 import { pobierzBazeReferencyjna } from "../db/repozytorium";
-import { zbierzOdpowiedzi } from "../moduly/zbieranie";
-import { zlozWynikiModulow } from "../engine/moduly";
-import { uruchomSilnik } from "../engine";
-import { policzRozjazdy, type Rozjazd } from "../panel/rozjazdy";
 import { otwarteModuly } from "../moduly/otwarcie";
 import { stanDostepu } from "../raport/dostep";
-import { OPIS_ETAPU } from "../engine/layer0-start";
 import { KOD_GRUPY_POKAZ } from "../pokaz";
 import { rolaSesji } from "./sesja";
-import {
-  CZESCI_MODULOW,
-  KOLEJNOSC_MODULOW,
-  KOLEJNOSC_NOWA,
-  NAZWY_MODULOW,
-  programGrupy,
-} from "../moduly/ekrany";
+import { CZESCI_MODULOW, KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "../moduly/ekrany";
 import { kartaNowego, type KartaNowegoProgramu } from "../raport/nowy";
-import { OBSZARY_A1, KOMPETENCJE_A2, WARTOSCI_A4, WYMIARY_A3, FILTRY_A5 } from "../domain/slowniki";
-import { OBSZARY_M1 } from "../content/m1";
 import { MARKER_ZAKONCZENIA, type KodModulu } from "../moduly/typy";
 import { TEMPO } from "../engine/config";
 import type { KodWarstwy } from "../raport/sekcje";
@@ -96,10 +83,7 @@ export async function pobierzGrupe(kodGrupy: string): Promise<WidokGrupy | null>
   if (!grupa) return null;
 
   const otwarte = await otwarteModuly(grupa.id);
-  // Kolumny tabeli zaleza od wersji programu tej grupy. Bez tego grupa nowego
-  // programu pokazuje osiem pustych kolumn starych modulow i wyglada, jakby
-  // nikt niczego nie wypelnil.
-  const MODULY_GRUPY = programGrupy(otwarte);
+  const MODULY_GRUPY = KOLEJNOSC_MODULOW;
   const idUczestnikow = grupa.uczestnicy.map((u) => u.id);
 
   // Czas i liczba odpowiedzi na modul, jednym zapytaniem dla calej grupy.
@@ -218,19 +202,7 @@ export interface KartaUczestnika {
   kodDostepu: string;
   imie: string;
   grupa: { kod: string; nazwa: string };
-  etap: string | null;
-  wiek: string | null;
-  coGoCiagnie: string[];
-  wCzymMozeBycDobry: string[];
-  jakDziala: string[];
-  coJestWazne: string[];
-  czegoNieChce: string[];
-  drogi: Array<{ etykieta: string; obszar: string; poziom: string; zawody: string[] }>;
-  rozjazdy: Rozjazd[];
-  ostrzezenia: Array<{ zawod: string; droga: string; zdania: string[] }>;
   pytanie: string | null;
-  wizja: Array<{ tytul: string; tresc: string }>;
-  usunieteWetem: Array<{ nazwa: string; filtry: string[] }>;
   korekty: Array<{ id: string; typ: string; wartosc: string | null; uzasadnienie: string | null }>;
   sesja: {
     decyzja: string | null;
@@ -243,150 +215,32 @@ export interface KartaUczestnika {
   } | null;
   /** Zawody do dopisania recznie: cala baza, posortowana. */
   wszystkieZawody: Array<{ kod: string; nazwa: string }>;
-  /**
-   * Dane z nowego programu. Obecne wylacznie u uczestnikow grup, ktore go
-   * maja; u pozostalych `null`. Gdy jest, pola starego silnika powyzej sa
-   * puste, bo nie ma z czego ich policzyc.
-   */
-  nowy: KartaNowegoProgramu | null;
+  /** Piatki, rozjazdy, poziom zycia i zawody. Serce karty. */
+  nowy: KartaNowegoProgramu;
 }
 
 export async function pobierzKarteUczestnika(kodDostepu: string): Promise<KartaUczestnika | null> {
   const uczestnik = await prisma.uczestnik.findUnique({
     where: { kodDostepu },
-    include: { grupa: true, oceny: true, pytanie: true, korekty: true, sesja: true },
+    include: { grupa: true, pytanie: true, korekty: true, sesja: true },
   });
   if (!uczestnik) return null;
   if (!(await wolnoZobaczyc(uczestnik.grupa.kod))) return null;
 
-  /**
-   * Uczestnik nowego programu nie przechodzi przez stary silnik.
-   *
-   * Przed ta galezia karta wypisywala mu piec obszarow, piec kompetencji
-   * i ostrzezenia antyprofilowe przy zawodach, o ktore nikt nigdy nie zapytal:
-   * stary silnik uruchomiony na pustych modulach zwraca domyslny ranking,
-   * ktory z zewnatrz wyglada jak wynik. Na sesji indywidualnej to jest
-   * najgorsze mozliwe zrodlo zdania o czlowieku.
-   */
-  const otwarte = await otwarteModuly(uczestnik.grupaId);
-  if (programGrupy(otwarte) === KOLEJNOSC_NOWA) {
-    const [nowy, wszystkieZawody] = await Promise.all([
-      kartaNowego(uczestnik.id),
-      pobierzBazeReferencyjna().then((b) =>
-        b.zawody
-          .map((z) => ({ kod: z.kod, nazwa: z.nazwaWyswietlana }))
-          .sort((a, b2) => a.nazwa.localeCompare(b2.nazwa, "pl")),
-      ),
-    ]);
-    return {
-      kodDostepu: uczestnik.kodDostepu,
-      imie: uczestnik.imie,
-      grupa: { kod: uczestnik.grupa.kod, nazwa: uczestnik.grupa.nazwa },
-      etap: null,
-      wiek: null,
-      coGoCiagnie: [],
-      wCzymMozeBycDobry: [],
-      jakDziala: [],
-      coJestWazne: [],
-      czegoNieChce: [],
-      drogi: [],
-      rozjazdy: [],
-      ostrzezenia: [],
-      pytanie: uczestnik.pytanie?.tresc ?? null,
-      wizja: [],
-      usunieteWetem: [],
-      korekty: uczestnik.korekty.map((k) => ({
-        id: k.id,
-        typ: k.typ,
-        wartosc: k.wartosc,
-        uzasadnienie: k.uzasadnienie,
-      })),
-      sesja: uczestnik.sesja
-        ? {
-            decyzja: uczestnik.sesja.decyzja,
-            coPrzekonalo: uczestnik.sesja.coPrzekonalo,
-            coSprawdzic: uczestnik.sesja.coSprawdzic,
-            kroki: uczestnik.sesja.kroki ? (JSON.parse(uczestnik.sesja.kroki) as string[]) : [],
-            wrocicZa: uczestnik.sesja.wrocicZa,
-            notatka: uczestnik.sesja.notatka,
-            odbyta: uczestnik.sesja.odbyta,
-          }
-        : null,
-      wszystkieZawody,
-      nowy,
-    };
-  }
-
-  const [odpowiedzi, baza] = await Promise.all([
-    zbierzOdpowiedzi(uczestnik.id),
-    pobierzBazeReferencyjna(),
+  const [nowy, wszystkieZawody] = await Promise.all([
+    kartaNowego(uczestnik.id),
+    pobierzBazeReferencyjna().then((b) =>
+      b.zawody
+        .map((z) => ({ kod: z.kod, nazwa: z.nazwaWyswietlana }))
+        .sort((a, b2) => a.nazwa.localeCompare(b2.nazwa, "pl")),
+    ),
   ]);
-
-  const moduly = zlozWynikiModulow(odpowiedzi);
-  const silnik = uruchomSilnik(moduly, baza);
-  const oceny = Object.fromEntries(uczestnik.oceny.map((o) => [o.zawodKod, o.ocena]));
-  const rozjazdy = policzRozjazdy({ silnik, moduly, baza, oceny });
-
-  const nazwaZawodu = new Map(baza.zawody.map((z) => [z.kod, z.nazwaWyswietlana]));
-  const najA1 = [...OBSZARY_A1]
-    .sort((a, b) => (moduly.z[b.id] ?? 0) - (moduly.z[a.id] ?? 0))
-    .slice(0, 5)
-    .map((o) => o.etykieta);
-  const najA2 = [...KOMPETENCJE_A2]
-    .sort((a, b) => (moduly.k[b.id] ?? 0) - (moduly.k[a.id] ?? 0))
-    .slice(0, 5)
-    .map((k) => k.nazwa);
-  const jakDziala = WYMIARY_A3.filter((w) => (moduly.a3Sila[w.kod] ?? 0) >= 65)
-    .slice(0, 3)
-    .map((w) => ((moduly.a3Pozycje[w.kod] ?? 50) >= 50 ? w.biegunA : w.biegunB));
-  const nazwaWartosci = new Map(WARTOSCI_A4.map((w) => [w.kod, w.nazwa]));
-  const nazwaFiltru = new Map(FILTRY_A5.map((f) => [f.kod, f.tekst]));
-
-  const ostrzezenia = silnik.warstwa2.pozycje
-    .flatMap((p) => p.zawody)
-    .filter((z) => z.ostrzezenia.length > 0)
-    .map((z) => ({
-      zawod: z.nazwa,
-      droga: silnik.warstwa1.drogi.find((d) => d.obszar === z.obszar)?.etykieta ?? "brak",
-      zdania: z.ostrzezenia.map((o) => o.zdanie),
-    }));
-
-  const wizja: Array<{ tytul: string; tresc: string }> = [];
-  for (const obszar of OBSZARY_M1) {
-    const tresc = odpowiedzi.m1.czescB?.[obszar.nr];
-    if (typeof tresc === "string" && tresc.trim().length > 0) {
-      wizja.push({ tytul: obszar.tytul, tresc: tresc.trim() });
-    } else if (Array.isArray(tresc) && tresc.length > 0) {
-      wizja.push({ tytul: obszar.tytul, tresc: tresc.filter(Boolean).join(" · ") });
-    }
-  }
 
   return {
     kodDostepu: uczestnik.kodDostepu,
     imie: uczestnik.imie,
     grupa: { kod: uczestnik.grupa.kod, nazwa: uczestnik.grupa.nazwa },
-    // A0 zyje w tabeli odpowiedzi, nie w tabeli PunktStartu: ta jest pusta.
-    etap: moduly.punktStartu ? OPIS_ETAPU[moduly.punktStartu.etap] : null,
-    wiek: null,
-    coGoCiagnie: najA1,
-    wCzymMozeBycDobry: najA2,
-    jakDziala,
-    coJestWazne: moduly.a4Top5.map((k) => nazwaWartosci.get(k) ?? k),
-    czegoNieChce: moduly.weta.map((k) => nazwaFiltru.get(k) ?? k),
-    drogi: silnik.warstwa1.drogi.map((d) => ({
-      etykieta: d.etykieta,
-      obszar: d.nazwaObszaru,
-      poziom: `${d.poziom.przyklad} · ${d.poziom.czas}`,
-      zawody: d.zawody.map((k) => nazwaZawodu.get(k) ?? k),
-    })),
-    rozjazdy,
-    ostrzezenia,
     pytanie: uczestnik.pytanie?.tresc ?? null,
-    wizja,
-    usunieteWetem: silnik.warstwa2.usunieteWetem.map((z) => ({
-      nazwa: z.nazwa,
-      filtry: z.filtry.map((f) => nazwaFiltru.get(f) ?? f),
-    })),
     korekty: uczestnik.korekty.map((k) => ({
       id: k.id,
       typ: k.typ,
@@ -404,10 +258,8 @@ export async function pobierzKarteUczestnika(kodDostepu: string): Promise<KartaU
           odbyta: uczestnik.sesja.odbyta,
         }
       : null,
-    wszystkieZawody: baza.zawody
-      .map((z) => ({ kod: z.kod, nazwa: z.nazwaWyswietlana }))
-      .sort((a, b) => a.nazwa.localeCompare(b.nazwa, "pl")),
-    nowy: null,
+    wszystkieZawody,
+    nowy,
   };
 }
 

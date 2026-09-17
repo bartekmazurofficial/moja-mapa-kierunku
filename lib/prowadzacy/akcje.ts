@@ -13,7 +13,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "../db/klient";
 import { hasloPoprawne, rolaSesji, zbudujCiasteczko, NAZWA_CIASTECZKA } from "./sesja";
 import { pokazWlaczony } from "../pokaz";
-import { otworzModul, otworzSpotkanie, otworzSpotkanieNowe } from "../moduly/otwarcie";
+import { otworzModul, otworzSpotkanie } from "../moduly/otwarcie";
 import { odblokujWarstwe } from "../raport/dostep";
 import type { KodModulu } from "../moduly/typy";
 import type { KodWarstwy } from "../raport/sekcje";
@@ -75,10 +75,7 @@ export async function otworzModulAkcja(dane: FormData) {
   await wymagajSesji();
   const grupaId = String(dane.get("grupaId"));
   const modul = String(dane.get("modul"));
-  // „N1" to spotkanie pierwsze nowego programu. Numery spotkan obu wersji
-  // sie pokrywaja, wiec prefiks rozstrzyga, ktorej dotycza.
-  if (/^N\d$/.test(modul)) await otworzSpotkanieNowe(grupaId, Number(modul.slice(1)));
-  else if (/^\d$/.test(modul)) await otworzSpotkanie(grupaId, Number(modul));
+  if (/^\d$/.test(modul)) await otworzSpotkanie(grupaId, Number(modul));
   else await otworzModul(grupaId, modul as KodModulu);
   revalidatePath("/prowadzacy/grupa/[kod]", "page");
 }

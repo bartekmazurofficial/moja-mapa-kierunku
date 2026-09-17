@@ -5,17 +5,7 @@ import { pobierzKarteUczestnika } from "@/lib/prowadzacy/dane";
 import { zapiszSesje } from "@/lib/prowadzacy/akcje";
 import { Logowanie } from "@/components/prowadzacy/Logowanie";
 import { PRZEBIEG, SYTUACJE_TRUDNE } from "@/lib/panel/przebieg";
-import {
-  Blok,
-  KtoToJest,
-  Naglowek,
-  Ostrzezenia,
-  PytanieUczestnika,
-  Rozjazdy,
-  TrzyDrogiPanel,
-  UsunieteWetem,
-  Wizja,
-} from "@/components/prowadzacy/Karta";
+import { Naglowek, PytanieUczestnika } from "@/components/prowadzacy/Karta";
 import { Korekty } from "@/components/prowadzacy/Korekty";
 import { KartaNowa } from "@/components/prowadzacy/KartaNowa";
 import { Bramy } from "@/components/pulpit/Bramy";
@@ -97,27 +87,11 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           </details>
         </div>
 
-        {/* PRAWA: dane uczestnika, rozjazdy, ostrzeżenia */}
-        {/* Nowy program ma wlasna karte: bloki starego silnika stalyby tu puste. */}
+        {/* PRAWA: piątki uczestnika, rozjazdy, poziom życia, zawody */}
         <div className="flex flex-col gap-4">
-          {karta.nowy ? (
-            <>
-              <KartaNowa karta={karta.nowy} />
-              <PytanieUczestnika karta={karta} />
-              <Korekty karta={karta} />
-            </>
-          ) : (
-            <>
-              <Rozjazdy rozjazdy={karta.rozjazdy} />
-              <TrzyDrogiPanel karta={karta} />
-              <PytanieUczestnika karta={karta} />
-              <KtoToJest karta={karta} />
-              <Ostrzezenia karta={karta} />
-              <Wizja karta={karta} />
-              <UsunieteWetem karta={karta} />
-              <Korekty karta={karta} />
-            </>
-          )}
+          <KartaNowa karta={karta.nowy} />
+          <PytanieUczestnika karta={karta} />
+          <Korekty karta={karta} />
         </div>
       </div>
 

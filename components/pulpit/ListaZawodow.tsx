@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Plansza } from "@/components/Ikona";
 import { zdjecieZawodu } from "@/lib/ui/obrazy";
-import { Pasmo } from "@/components/raport/Sekcje";
+import { Pasmo } from "@/components/pulpit/Odznaki";
 import { kolorKategorii } from "@/lib/ui/kolory";
 import { POZIOM, STUDIA } from "@/lib/karty/etykiety";
 import type { ZawodWRaporcie } from "@/lib/raport/typy";

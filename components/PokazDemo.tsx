@@ -11,7 +11,7 @@ import {
 /**
  * Trzy panele do obejrzenia bez kodu.
  *
- * Panel uczestnika przed startem, panel uczestnika po wszystkich siedmiu
+ * Panel uczestnika przed startem, panel uczestnika po wszystkich czterech
  * modułach razem z raportem i panel prowadzącego. Bez tego każdy pokaz
  * produktu wymaga kodu i cudzych danych.
  *
@@ -52,7 +52,7 @@ export async function PokazDemo() {
           href={`/u/${pusty}`}
           numer="1"
           tytul="Uczestnik przed startem"
-          opis="Pusty panel, siedem modułów do wypełnienia."
+          opis="Pusty panel, cztery moduły do wypełnienia."
         />
         <KartaPokazu
           href={`/u/${pelny}/raport`}

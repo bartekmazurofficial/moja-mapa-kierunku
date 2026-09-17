@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly } from "@/lib/moduly/otwarcie";
 import { planszaWynikow } from "@/lib/moduly/wyniki";
-import { NAZWY_MODULOW, WSZYSTKIE_MODULY } from "@/lib/moduly/ekrany";
+import { KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { Ikona } from "@/components/Ikona";
 import { kolorKategorii } from "@/lib/ui/kolory";
 import { Bramy } from "@/components/pulpit/Bramy";
@@ -12,7 +12,7 @@ import type { KodModulu } from "@/lib/moduly/typy";
 export const dynamic = "force-dynamic";
 
 /** Ta sama zasada co na stronie modulu: jedna lista, nie kopia. */
-const MODULY = WSZYSTKIE_MODULY;
+const MODULY = KOLEJNOSC_MODULOW;
 
 /**
  * Wyniki jednego modułu na jednej planszy: wszystkie kategorie naraz,
@@ -25,7 +25,7 @@ export default async function Strona({
   params: Promise<{ kod: string; modul: string }>;
 }) {
   const { kod, modul } = await params;
-  if (!MODULY.includes(modul as KodModulu) || modul === "A0") notFound();
+  if (!MODULY.includes(modul as KodModulu)) notFound();
 
   const uczestnik = await pobierzUczestnika(kod);
   if (!uczestnik) notFound();

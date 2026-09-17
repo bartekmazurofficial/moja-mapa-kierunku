@@ -6,14 +6,12 @@
 import { prisma } from "../lib/db/klient";
 import {
   MODULY_SPOTKANIA,
-  MODULY_SPOTKANIA_NOWE,
   otwarteModuly,
   otworzModul,
   otworzSpotkanie,
-  otworzSpotkanieNowe,
   zamknijModul,
 } from "../lib/moduly/otwarcie";
-import { WSZYSTKIE_MODULY } from "../lib/moduly/ekrany";
+import { KOLEJNOSC_MODULOW } from "../lib/moduly/ekrany";
 import type { KodModulu } from "../lib/moduly/typy";
 
 async function grupyZArgumentu(kod: string) {
@@ -30,7 +28,7 @@ async function main() {
   const [kod, ...co] = process.argv.slice(2);
   if (!kod) {
     console.log("podaj kod grupy, kod uczestnika albo --wszystkie");
-    console.log("potem moduły (A1 A2 M1 · Z L U F), numery spotkań (1 2 3) albo N1 N2 dla nowego programu; prefiks minus zamyka");
+    console.log("potem moduły (Z L U F) albo numery spotkań (1 2); prefiks minus zamyka");
     return;
   }
 
@@ -38,9 +36,6 @@ async function main() {
     for (const arg of co) {
       if (arg.startsWith("-")) {
         await zamknijModul(grupa.id, arg.slice(1) as KodModulu);
-      } else if (/^N\d$/.test(arg)) {
-        // „N1" to spotkanie pierwsze nowego programu.
-        await otworzSpotkanieNowe(grupa.id, Number(arg.slice(1)));
       } else if (/^\d$/.test(arg)) {
         await otworzSpotkanie(grupa.id, Number(arg));
       } else {
@@ -48,12 +43,11 @@ async function main() {
       }
     }
     const otwarte = await otwarteModuly(grupa.id);
-    const opis = WSZYSTKIE_MODULY.filter((m) => otwarte.has(m)).join(" ") || "(nic nie otwarte)";
+    const opis = KOLEJNOSC_MODULOW.map((m) => `${m}${otwarte.has(m) ? "+" : "-"}`).join(" ");
     console.log(`${grupa.nazwa.padEnd(28)} ${opis}`);
   }
 
-  console.log(`\nstary program: ${Object.entries(MODULY_SPOTKANIA).map(([n, m]) => `${n}=${m.join(",")}`).join("  ")}`);
-  console.log(`nowy program:  ${Object.entries(MODULY_SPOTKANIA_NOWE).map(([n, m]) => `N${n}=${m.join(",")}`).join("  ")}`);
+  console.log(`\nspotkania: ${Object.entries(MODULY_SPOTKANIA).map(([n, m]) => `${n}=${m.join(",")}`).join("  ")}`);
   await prisma.$disconnect();
 }
 

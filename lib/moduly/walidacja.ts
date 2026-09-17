@@ -10,20 +10,6 @@ import type { Pozycja } from "./typy";
 export function pozycjaKompletna(pozycja: Pozycja, wartosc: unknown): boolean {
   if (pozycja.opcjonalna) return true;
   switch (pozycja.typ) {
-    case "ranking4":
-      return Object.keys((wartosc as Record<string, number>) ?? {}).length === 4;
-    case "kotwica": {
-      const w = wartosc as { skala?: number } | undefined;
-      return typeof w?.skala === "number";
-    }
-    case "wielokrotny": {
-      const w = (wartosc as string[]) ?? [];
-      if (pozycja.dokladnie) return w.length === pozycja.dokladnie;
-      if (pozycja.minWyborow) return w.length >= pozycja.minWyborow;
-      return w.length > 0;
-    }
-    case "dowody":
-      return Array.isArray(wartosc);
     case "lej": {
       // Limit gorny pilnuje komponent; tu sprawdzamy tylko, czy cokolwiek
       // zostalo zaznaczone. Etap z zerem zaznaczen nie niesie informacji,
@@ -41,11 +27,8 @@ export function pozycjaKompletna(pozycja: Pozycja, wartosc: unknown): boolean {
       // Panel poziomu zycia wolno przejsc bez jednej zmiany: wszystkie progi
       // maja wartosc domyslna i to jest odpowiedz jak kazda inna.
       return true;
-    case "tekst":
-      return typeof wartosc === "string" && wartosc.trim().length > 0;
-    case "kilka_tekstow":
-      return Array.isArray(wartosc);
     default:
+      // „pojedynczy": wystarczy cokolwiek wybranego.
       return wartosc !== undefined && wartosc !== null && wartosc !== "";
   }
 }

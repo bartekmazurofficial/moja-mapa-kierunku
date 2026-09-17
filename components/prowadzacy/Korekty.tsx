@@ -16,7 +16,6 @@ const OPISY: Record<string, string> = {
  */
 export function Korekty({ karta }: { karta: KartaUczestnika }) {
   const nazwy = new Map(karta.wszystkieZawody.map((z) => [z.kod, z.nazwa]));
-  const wRaporcie = karta.drogi.flatMap((d) => d.zawody);
 
   return (
     <Blok tytul="Korekta ręczna">
@@ -104,9 +103,9 @@ export function Korekty({ karta }: { karta: KartaUczestnika }) {
         </button>
       </form>
 
-      {wRaporcie.length > 0 ? (
+      {karta.nowy.zawody.length > 0 ? (
         <p className="mt-4 text-drobne text-atrament-slaby">
-          W trzech drogach są teraz: {wRaporcie.join(", ")}.
+          Silnik proponuje teraz: {karta.nowy.zawody.map((z) => z.nazwa).join(", ")}.
         </p>
       ) : null}
     </Blok>

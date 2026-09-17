@@ -34,7 +34,7 @@ beforeAll(async () => {
   const grupa = await grupaZKompletem();
   grupaKod = grupa.kod;
   grupaId = grupa.id;
-  if (!(await otwarteModuly(grupaId)).has("A1")) await otworzModul(grupaId, "A1");
+  if (!(await otwarteModuly(grupaId)).has("Z")) await otworzModul(grupaId, "Z");
 });
 
 afterAll(async () => {
@@ -47,7 +47,7 @@ afterAll(async () => {
 async function zGotowymA1() {
   const widok = await pobierzGrupe(grupaKod);
   return (widok?.uczestnicy ?? []).filter(
-    (u) => u.moduly.find((m) => m.kod === "A1")?.stan === "gotowy",
+    (u) => u.moduly.find((m) => m.kod === "Z")?.stan === "gotowy",
   );
 }
 
@@ -57,10 +57,10 @@ describe("ostrzeżenie o tempie", () => {
     expect(gotowi.length).toBeGreaterThanOrEqual(TEMPO.MIN_UKONCZEN);
     for (const u of gotowi) {
       const id = (await prisma.uczestnik.findUniqueOrThrow({ where: { kodDostepu: u.kodDostepu } })).id;
-      await ustawCzas(id, "A1", 10_000);
+      await ustawCzas(id, "Z", 10_000);
     }
     const po = await zGotowymA1();
-    expect(po.filter((u) => u.moduly.find((m) => m.kod === "A1")!.pobiezny)).toEqual([]);
+    expect(po.filter((u) => u.moduly.find((m) => m.kod === "Z")!.pobiezny)).toEqual([]);
   });
 
   it("osoba odstająca od swojej grupy dostaje ostrzeżenie", async () => {
@@ -68,10 +68,10 @@ describe("ostrzeżenie o tempie", () => {
     const pierwszy = await prisma.uczestnik.findUniqueOrThrow({
       where: { kodDostepu: gotowi[0].kodDostepu },
     });
-    await ustawCzas(pierwszy.id, "A1", 1_000);
+    await ustawCzas(pierwszy.id, "Z", 1_000);
 
     const po = await zGotowymA1();
-    const oflagowani = po.filter((u) => u.moduly.find((m) => m.kod === "A1")!.pobiezny);
+    const oflagowani = po.filter((u) => u.moduly.find((m) => m.kod === "Z")!.pobiezny);
     expect(oflagowani.map((u) => u.kodDostepu)).toEqual([gotowi[0].kodDostepu]);
   });
 
@@ -81,10 +81,10 @@ describe("ostrzeżenie o tempie", () => {
     // trzy, ale ostrzeżenie dostają dwie najbardziej odstające.
     for (const [i, u] of gotowi.entries()) {
       const id = (await prisma.uczestnik.findUniqueOrThrow({ where: { kodDostepu: u.kodDostepu } })).id;
-      await ustawCzas(id, "A1", i < 3 ? 500 + i * 100 : 10_000);
+      await ustawCzas(id, "Z", i < 3 ? 500 + i * 100 : 10_000);
     }
     const po = await zGotowymA1();
-    const oflagowani = po.filter((u) => u.moduly.find((m) => m.kod === "A1")!.pobiezny);
+    const oflagowani = po.filter((u) => u.moduly.find((m) => m.kod === "Z")!.pobiezny);
     expect(oflagowani.length).toBe(TEMPO.MAKS_OFLAGOWANYCH);
     expect(oflagowani.map((u) => u.kodDostepu).sort()).toEqual(
       gotowi.slice(0, 2).map((u) => u.kodDostepu).sort(),
@@ -98,10 +98,10 @@ describe("ostrzeżenie o tempie", () => {
     // Jedna osoba pracuje wolno, cała reszta szybko. Mediana idzie za większością.
     for (const [i, u] of gotowi.entries()) {
       const id = (await prisma.uczestnik.findUniqueOrThrow({ where: { kodDostepu: u.kodDostepu } })).id;
-      await ustawCzas(id, "A1", i === 0 ? 10_000 : 3_000);
+      await ustawCzas(id, "Z", i === 0 ? 10_000 : 3_000);
     }
     const po = await zGotowymA1();
-    const oflagowani = po.filter((u) => u.moduly.find((m) => m.kod === "A1")!.pobiezny);
+    const oflagowani = po.filter((u) => u.moduly.find((m) => m.kod === "Z")!.pobiezny);
     expect(oflagowani.map((u) => u.imie)).toEqual([]);
   });
 

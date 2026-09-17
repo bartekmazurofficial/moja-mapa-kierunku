@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Runner } from "@/components/Runner";
 import { pobierzStanModulu, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
-import { NAZWY_MODULOW, WSZYSTKIE_MODULY, programGrupy } from "@/lib/moduly/ekrany";
+import { KOLEJNOSC_MODULOW, NAZWY_MODULOW } from "@/lib/moduly/ekrany";
 import { ZAMKNIECIE } from "@/lib/content/wspolne";
 import { Ukonczenie } from "@/components/moduly/Ukonczenie";
 import type { KodModulu } from "@/lib/moduly/typy";
@@ -25,7 +25,7 @@ export const dynamic = "force-dynamic";
  * ktory reszta aplikacji uznawala za poprawny. Dopuszczamy tu kody obu
  * programow: o tym, ktory obowiazuje te grupe, rozstrzyga i tak otwarcie.
  */
-const MODULY = WSZYSTKIE_MODULY;
+const MODULY = KOLEJNOSC_MODULOW;
 
 export default async function Strona({
   params,
@@ -58,8 +58,6 @@ export default async function Strona({
     );
   }
 
-  // Numer „moduł 2 z 4" liczy sie w obrebie programu tej grupy.
-  const program = programGrupy(otwarte);
   const stan = await pobierzStanModulu(uczestnik.id, modul as KodModulu);
 
   if (stan.czesc === null || stan.definicja === null) {
@@ -75,7 +73,7 @@ export default async function Strona({
       stan.zakonczoneCzesci.length > 1
         ? odmiana(stan.zakonczoneCzesci.length, "część", "części", "części")
         : null,
-      `moduł ${program.indexOf(modul as KodModulu) + 1} z ${program.length}`,
+      `moduł ${KOLEJNOSC_MODULOW.indexOf(modul as KodModulu) + 1} z ${KOLEJNOSC_MODULOW.length}`,
     ].filter((x): x is string => Boolean(x));
 
     return (
@@ -105,8 +103,8 @@ export default async function Strona({
       definicja={stan.definicja}
       zapisane={stan.zapisane}
       nazwaModulu={NAZWY_MODULOW[modul as KodModulu]}
-      numerModulu={program.indexOf(modul as KodModulu) + 1}
-      liczbaModulow={program.length}
+      numerModulu={KOLEJNOSC_MODULOW.indexOf(modul as KodModulu) + 1}
+      liczbaModulow={KOLEJNOSC_MODULOW.length}
     />
   );
 }

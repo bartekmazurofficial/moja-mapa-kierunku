@@ -1,23 +1,19 @@
 import { notFound } from "next/navigation";
-import { pobierzRaport } from "@/lib/raport/serwer";
 import { kartyNowego } from "@/lib/raport/nowy";
 import { pobierzUczestnika } from "@/lib/moduly/serwer";
-import { otwarteModuly } from "@/lib/moduly/otwarcie";
-import { KOLEJNOSC_NOWA, programGrupy } from "@/lib/moduly/ekrany";
 import { stanDostepu } from "@/lib/raport/dostep";
 import { prisma } from "@/lib/db/klient";
 import { Bramy } from "@/components/pulpit/Bramy";
 import { ListaZawodow, type ZawodNaLiscie } from "@/components/pulpit/ListaZawodow";
 
 /** Ekran zamiast listy, dopoki prowadzacy nie odslonil zawodow. */
-function Zamkniete({ spotkanie }: { spotkanie: number }) {
+function Zamkniete() {
   return (
     <div className="szklo p-8">
       <h1 className="text-naglowek font-extrabold tracking-tight">Karty zawodów</h1>
       <p className="proza mt-4 max-w-czytelna">
-        Ta część otworzy się na {spotkanie === 2 ? "drugim" : "czwartym"} spotkaniu, po obszarach.
-        Kolejność ma znaczenie: konkretny zawód czyta się inaczej, kiedy wiadomo już, z jakiej
-        dziedziny wyszedł.
+        Ta część otworzy się na drugim spotkaniu, po omówieniu obszarów. Kolejność ma znaczenie:
+        konkretny zawód czyta się inaczej, kiedy wiadomo już, z jakiej dziedziny wyszedł.
       </p>
     </div>
   );
@@ -34,38 +30,23 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
   const uczestnik = await pobierzUczestnika(kod);
   if (!uczestnik) notFound();
 
-  const otwarte = await otwarteModuly(uczestnik.grupaId);
-  const nowy = programGrupy(otwarte) === KOLEJNOSC_NOWA;
-
   /**
-   * Kolejnosc listy musi pochodzic z tego silnika, ktory wypelnial uczestnik.
+   * Kolejnosc listy pochodzi z tego samego silnika, co raport.
    *
-   * Przed ta poprawka uczestnik nowego programu dostawal liste ulozona przez
-   * stary silnik, ktory nie mial ani jednej jego odpowiedzi, i czytal przy
-   * pierwszym zawodzie „to bardzo mocno do Ciebie pasuje". Zdanie o
-   * dopasowaniu wystawione bez danych jest gorsze niz brak zdania.
+   * Uczestnik czyta przy pierwszym zawodzie zdanie o dopasowaniu, wiec ta
+   * kolejnosc musi wynikac z jego odpowiedzi, a nie z czegokolwiek innego.
    */
-  let wszystkie: ZawodNaLiscie[];
-  let oceny: Record<string, string>;
+  const dostep = await stanDostepu(uczestnik.id, uczestnik.grupaId);
+  if (!dostep.dostepne.has("zawody")) return <Zamkniete />;
 
-  if (nowy) {
-    const dostep = await stanDostepu(uczestnik.id, uczestnik.grupaId);
-    if (!dostep.dostepne.has("zawody")) return <Zamkniete spotkanie={2} />;
-    const karty = await kartyNowego(uczestnik.id);
-    if (karty.length === 0) return <Zamkniete spotkanie={2} />;
-    wszystkie = karty.map((z) => ({ ...z, klaster: null }));
-    const zapisane = await prisma.ocenaZawodu.findMany({ where: { uczestnikId: uczestnik.id } });
-    oceny = Object.fromEntries(zapisane.map((o) => [o.zawodKod, o.ocena]));
-  } else {
-    const widok = await pobierzRaport(kod);
-    if (!widok) notFound();
-    const sekcja = widok.raport.zawody;
-    if (!sekcja) return <Zamkniete spotkanie={4} />;
-    wszystkie = sekcja.pozycje.flatMap((p) =>
-      p.zawody.map((z) => ({ ...z, klaster: p.typ === "klaster" ? p.nazwa : null })),
-    );
-    oceny = widok.oceny;
-  }
+  const karty = await kartyNowego(uczestnik.id);
+  if (karty.length === 0) return <Zamkniete />;
+
+  const wszystkie: ZawodNaLiscie[] = karty.map((z) => ({ ...z, klaster: null }));
+  const zapisane = await prisma.ocenaZawodu.findMany({ where: { uczestnikId: uczestnik.id } });
+  const oceny: Record<string, string> = Object.fromEntries(
+    zapisane.map((o) => [o.zawodKod, o.ocena]),
+  );
 
   return (
     <div className="flex flex-col gap-5">

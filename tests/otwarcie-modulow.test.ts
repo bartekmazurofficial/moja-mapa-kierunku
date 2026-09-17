@@ -42,25 +42,28 @@ describe("otwieranie modułów", () => {
     }
   });
 
-  it("spotkanie pierwsze otwiera A0, A1 i A3, i nic więcej", async () => {
-    for (const m of KOLEJNOSC_MODULOW) await zamknijModul(grupaId, m);
+  it("spotkanie pierwsze otwiera trzy moduły czynności i nic więcej", async () => {
+    // Kasujemy wszystko, nie tylko cztery obecne kody: w bazie zostaly
+    // wiersze otwarc modulow z poprzedniej wersji programu.
+    await prisma.otwarcieModulu.deleteMany({ where: { grupaId } });
     await otworzSpotkanie(grupaId, 1);
-    expect([...(await otwarteModuly(grupaId))].sort()).toEqual(["A0", "A1", "A3"]);
+    expect([...(await otwarteModuly(grupaId))].sort()).toEqual(["L", "U", "Z"]);
   });
 
-  it("A2 pozostaje zamknięty do drugiego spotkania", async () => {
-    expect((await otwarteModuly(grupaId)).has("A2")).toBe(false);
+  it("poziom życia pozostaje zamknięty do drugiego spotkania", async () => {
+    // Zawody porównują widełki z kwotą z tego modułu, więc idzie ostatni.
+    expect((await otwarteModuly(grupaId)).has("F")).toBe(false);
     await otworzSpotkanie(grupaId, 2);
-    expect((await otwarteModuly(grupaId)).has("A2")).toBe(true);
+    expect((await otwarteModuly(grupaId)).has("F")).toBe(true);
   });
 
   it("otwarte zostaje otwarte: ponowne otwarcie nie przesuwa daty", async () => {
     const pierwsze = await prisma.otwarcieModulu.findUniqueOrThrow({
-      where: { grupaId_modul: { grupaId, modul: "A1" } },
+      where: { grupaId_modul: { grupaId, modul: "Z" } },
     });
-    await otworzModul(grupaId, "A1");
+    await otworzModul(grupaId, "Z");
     const drugie = await prisma.otwarcieModulu.findUniqueOrThrow({
-      where: { grupaId_modul: { grupaId, modul: "A1" } },
+      where: { grupaId_modul: { grupaId, modul: "Z" } },
     });
     expect(drugie.otwarty.getTime()).toBe(pierwsze.otwarty.getTime());
   });

@@ -15,10 +15,10 @@
  */
 
 import { prisma } from "../lib/db/klient";
-import { wypelnijNowyProgram } from "../lib/testy/wypelnianie";
-import { otworzSpotkanieNowe } from "../lib/moduly/otwarcie";
+import { wypelnijUczestnika } from "../lib/testy/wypelnianie";
+import { otworzSpotkanie } from "../lib/moduly/otwarcie";
 import { odblokujWarstwe } from "../lib/raport/dostep";
-import { KOLEJNOSC_NOWA } from "../lib/moduly/ekrany";
+import { KOLEJNOSC_MODULOW } from "../lib/moduly/ekrany";
 import { WARSTWY } from "../lib/raport/sekcje";
 import { losowyKod, sformatujKod } from "../lib/kody";
 
@@ -48,13 +48,13 @@ async function main() {
     await prisma.odpowiedz.deleteMany({ where: { uczestnikId: u.id } });
     await prisma.postepModulu.deleteMany({ where: { uczestnikId: u.id } });
   }
-  const zapisanych = await wypelnijNowyProgram(pelny.id, "rzemieslniczy");
+  const zapisanych = await wypelnijUczestnika(pelny.id, "rzemieslniczy");
 
-  for (const nr of [1, 2]) await otworzSpotkanieNowe(grupa.id, nr);
+  for (const nr of [1, 2]) await otworzSpotkanie(grupa.id, nr);
   for (const w of WARSTWY) await odblokujWarstwe(grupa.id, w.kod);
 
   console.log(`\nGrupa pokazowa nowego programu (kod grupy ${sformatujKod(grupa.kod)})`);
-  console.log(`  moduły: ${KOLEJNOSC_NOWA.join(" ")}\n`);
+  console.log(`  moduły: ${KOLEJNOSC_MODULOW.join(" ")}\n`);
   console.log(`  przed startem:  /u/${pusty.kodDostepu}`);
   console.log(`  po modułach:    /u/${pelny.kodDostepu}   (${zapisanych} pozycji)`);
   console.log(`  raport:         /u/${pelny.kodDostepu}/raport\n`);

@@ -1,32 +1,19 @@
 /**
  * Model ekranu assessmentu.
  *
- * Jeden uniwersalny komponent obsluguje wszystkie typy pozycji, ktore
- * wystepuja w siedmiu modulach. Ekran to jedna rzecz do zrobienia: jeden blok
- * rankingowy, jedna para, jeden zestaw pozycji na skali.
+ * Jeden uniwersalny komponent obsluguje wszystkie cztery typy pozycji. Ekran
+ * to jedna rzecz do zrobienia: jeden etap leja, jedno ukladanie piatki, jedno
+ * pytanie wstepne albo caly panel kosztow.
  */
 
 /**
  * Kody modulow.
  *
- * Osiem pierwszych to program w wersji z czterech spotkan. Cztery ostatnie to
- * program nowy: `Z` ciekawosc, `L` co lubie robic, `U` w czym jestem dobry,
- * `F` poziom zycia i dochodu. Trzy pierwsze z nowych maja te sama mechanike
- * leja, czwarty jest panelem kosztow.
+ * `Z` ciekawosc, `L` co lubie robic, `U` w czym jestem dobry, `F` poziom
+ * zycia i dochodu. Trzy pierwsze chodza na mechanice leja, czwarty jest
+ * panelem kosztow.
  */
-export type KodModulu =
-  | "A0"
-  | "A1"
-  | "A2"
-  | "A3"
-  | "A4"
-  | "A5"
-  | "A6"
-  | "M1"
-  | "Z"
-  | "L"
-  | "U"
-  | "F";
+export type KodModulu = "Z" | "L" | "U" | "F";
 
 /**
  * Marker zamkniecia czesci modulu. Czesci zlozone z samych pol
@@ -34,37 +21,15 @@ export type KodModulu =
  */
 export const MARKER_ZAKONCZENIA = "__zakonczono";
 
-export type TypPozycji =
-  | "ranking4"
-  | "kotwica"
-  | "para"
-  | "skala5"
-  | "trzystopniowa"
-  | "tak_nie"
-  | "pojedynczy"
-  | "wielokrotny"
-  | "dowody"
-  | "tekst"
-  | "kilka_tekstow"
-  | "lej"
-  | "kolejnosc"
-  | "progi";
+export type TypPozycji = "pojedynczy" | "lej" | "kolejnosc" | "progi";
 
 export interface OpcjaWyboru {
   kod: string;
   etykieta: string;
-  /**
-   * Nadpis nad etykieta, gdy opcje dziela sie na grupy. W A0 osiem etapow
-   * rozpada sie na „ucze sie" i „po szkole": bez tego uczestnik czyta osiem
-   * rownorzednych zdan i szuka swojego przez chwile dluzej, niz trzeba.
-   */
-  nadpis?: string;
   /** Druga linia pod etykieta. Zdanie wyjasniajace, nie druga nazwa. */
   podpis?: string;
   /** Klucz znaku kategorii, np. "a1-7". Ilustrujemy kategorie, nie pozycje. */
   ikona?: string;
-  /** Opcja wykluczajaca sie z pozostalymi, np. "nic z tego". */
-  wylaczna?: boolean;
   /**
    * Kafel na dwie kolumny siatki.
    *
@@ -73,16 +38,6 @@ export interface OpcjaWyboru {
    * zdjecia; na dwoch kolumnach widac, ze to inny rodzaj odpowiedzi.
    */
   szeroka?: boolean;
-}
-
-export interface StronaPary {
-  kod: string;
-  tekst: string;
-  ikona?: string;
-  /** Nadpis nad zdaniem: nazwa wartosci albo etykieta oferty. */
-  nadpis?: string;
-  /** Podpis pod zdaniem: nazwa wartosci, gdy nie stoi nad nim. */
-  podpis?: string;
 }
 
 export interface Pozycja {
@@ -99,40 +54,16 @@ export interface Pozycja {
   /**
    * Odpowiedzi jako karty z kadrem 16:9 nad tekstem, w siatce.
    *
-   * Domyslnie opcje sa wierszami. W A0 pytamy o sytuacje zyciowa i tam obraz
-   * niesie tresc: „szkola branzowa" i „studiuje" rozniaca sie samym zdaniem
-   * czytaja sie jak formularz, a z kadrem jak wybor. Kadr jest pusty, dopoki
-   * nie ma pliku, i to jest stan docelowy do czasu doslania grafik.
+   * Domyslnie opcje sa wierszami. Kadr wlacza sie tam, gdzie obraz niesie
+   * tresc, a nie ozdobe. Pusty kadr jest poprawnym stanem, dopoki nie ma
+   * pliku ilustracji.
    */
   uklad?: "karty";
-  /**
-   * para: dwie strony wyboru, juz po losowaniu strony.
-   *
-   * `nadpis` i `podpis` sa po to, zeby ta sama para dala sie pokazac w pieciu
-   * formulach A4: raz z nazwa wartosci nad zdaniem („PIENIADZE"), raz
-   * z etykieta oferty („OFERTA A"), raz z nazwa pod zdaniem. Tekst zdania
-   * zmienia sie razem z formula, kod wartosci nie.
-   */
-  stronaA?: StronaPary;
-  stronaB?: StronaPary;
-  /** skala5: etykiety krancow. */
-  krance?: [string, string];
-  /** dowody: trzy pola do zaznaczenia. */
-  pola?: string[];
-  /** kilka_tekstow: kilka pol w jednej pozycji. */
-  zdania?: string[];
-  /** wielokrotny: ograniczenia liczby wyborow. */
-  minWyborow?: number;
-  maksWyborow?: number;
-  /** dokladnie_trzy z modulu A0. */
-  dokladnie?: number;
   opcjonalna?: boolean;
   /** tekst: wieksze pole. */
   duze?: boolean;
   /** Pozycja pokazywana tylko przy okreslonej odpowiedzi na inna pozycje. */
   warunek?: { pozycja: string; wartosci: string[] };
-  /** kotwica: pytanie o ekspozycje obok skali. */
-  pytanieEkspozycja?: string;
   /**
    * lej: ile najwyzej mozna zaznaczyc na tym etapie.
    *
@@ -144,8 +75,8 @@ export interface Pozycja {
   /**
    * kolejnosc: ile pozycji uczestnik ustawia. Dzis zawsze piec.
    *
-   * Osobne pole zamiast `dokladnie`, bo `dokladnie` w A0 znaczy „zaznacz
-   * dokladnie tyle", a tu chodzi o dlugosc ulozonej listy.
+   * Osobne pole od limitu leja: limit mowi, ile najwyzej wolno zaznaczyc,
+   * a to ile pozycji trzeba ustawic w kolejnosci.
    */
   ile?: number;
   /**
@@ -160,7 +91,7 @@ export interface Pozycja {
 
 export interface Ekran {
   klucz: string;
-  /** Znak kategorii dla całego ekranu, np. osi A3 albo obszaru wizji życia. */
+  /** Znak kategorii dla całego ekranu. */
   ikona?: string;
   /** To samo pytanie od drugiej strony. Zachęta, nie kolejne pole. */
   odwrotnie?: string;
@@ -168,35 +99,15 @@ export interface Ekran {
   kolor?: string;
   /**
    * Klucz ilustracji na pas nad odpowiedziami, gdy ma byc inna niz znak
-   * kategorii. A5 pyta o czterdziesci trzy rozne warunki w siedmiu blokach,
-   * wiec obrazek warunku mowi wiecej niz obrazek bloku. Gdy pliku nie ma,
-   * pas cofa sie do znaku kategorii, a gdy i tego nie ma, nie rysuje sie wcale.
+   * kategorii. Gdy pliku nie ma, pas cofa sie do znaku kategorii, a gdy i tego
+   * nie ma, nie rysuje sie wcale.
    */
   obraz?: string;
   typ: "wstep" | "pozycje" | "przerwa" | "koniec";
-  /**
-   * Nadpis nad tytulem ekranu. Bez niego stoi tam nazwa modulu. A4 wpisuje
-   * tu numer bloku i formule („Blok 1 z 5 · Formula klasyczna"), bo piec
-   * formul w jednym module wymaga powiedzenia, w ktorej uczestnik jest.
-   */
+  /** Nadpis nad tytulem ekranu. Bez niego stoi tam nazwa modulu. */
   etykieta?: string;
   /** Zdanie odreczne pod ekranem, gdy ma byc inne niz staly dopisek modulu. */
   dopisek?: string;
-  /**
-   * Dwa pola „przedtem i teraz" na ekranie przerwy. Jedyne uzycie to zmiana
-   * zasady przed blokiem czwartym A4: sam akapit tego nie niesie, bo roznica
-   * miedzy „wazniejsze" a „odpuscilbym" ginie w zdaniu, a w zestawieniu nie.
-   */
-  zestawienie?: Array<{ etykieta: string; tresc: string }>;
-  /** Przerwa ostrzegawcza: inny kolor i inny znak niz zwykla przerwa. */
-  ostrzezenie?: boolean;
-  /**
-   * Akcent calego ekranu. Dzis jedno uzycie: blok czwarty A4 pyta odwrotnie
-   * i ma byc widac, ze to inny blok, takze wtedy, gdy uczestnik przewinal
-   * ekran ostrzegawczy nie czytajac. Kolor nie niesie tu informacji sam:
-   * obok stoi nadpis „Odpuszczam" i zdanie pod tytulem.
-   */
-  akcent?: "pomarancz";
   naglowek?: string;
   akapity?: string[];
   /** Polecenie nad pozycjami. */

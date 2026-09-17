@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db/klient";
-import { CZESCI_MODULOW, programGrupy } from "@/lib/moduly/ekrany";
-import { otwarteModuly } from "@/lib/moduly/otwarcie";
+import { CZESCI_MODULOW, KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
 import { MARKER_ZAKONCZENIA } from "@/lib/moduly/typy";
 import { trybTestowy } from "@/lib/tryb";
 
@@ -26,15 +25,8 @@ export async function ListaTestowa() {
     where: { pozycja: MARKER_ZAKONCZENIA },
     select: { uczestnikId: true, modul: true },
   });
-  // Program grupy, a nie stala lista: grupa nowego programu ma cztery moduly
-  // i licznik „3 z 8" mowilby przy niej nieprawde.
-  const programy = new Map(
-    await Promise.all(
-      grupy.map(async (g) => [g.id, programGrupy(await otwarteModuly(g.id))] as const),
-    ),
-  );
-  const ileGotowych = (grupaId: string, id: string) =>
-    (programy.get(grupaId) ?? []).filter(
+  const ileGotowych = (id: string) =>
+    KOLEJNOSC_MODULOW.filter(
       (m) =>
         zamkniete.filter((z) => z.uczestnikId === id && z.modul === m).length >=
         CZESCI_MODULOW[m].length,
@@ -54,8 +46,7 @@ export async function ListaTestowa() {
           <p className="text-drobne uppercase tracking-[0.12em] text-atrament-slaby">{g.nazwa}</p>
           <ul className="mt-2.5 flex flex-wrap gap-2">
             {g.uczestnicy.map((u) => {
-              const gotowe = ileGotowych(g.id, u.id);
-              const wszystkich = (programy.get(g.id) ?? []).length;
+              const gotowe = ileGotowych(u.id);
               return (
                 <li key={u.id}>
                   <Link
@@ -64,7 +55,7 @@ export async function ListaTestowa() {
                   >
                     {u.imie}
                     <span className="text-drobne tabular-nums text-atrament-slaby">
-                      {gotowe}/{wszystkich}
+                      {gotowe}/{KOLEJNOSC_MODULOW.length}
                     </span>
                   </Link>
                 </li>

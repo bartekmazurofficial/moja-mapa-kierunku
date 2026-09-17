@@ -151,15 +151,4 @@ describe("ilustracje A0", () => {
     expect([...new Set(osierocone)]).toEqual([]);
   });
 
-  it("każdy klucz odpowiedzi wskazuje na opcję, która istnieje w pytaniach", async () => {
-    // Klucz `a0-pytanie-*` ilustruje całe pytanie, reszta pojedynczą odpowiedź.
-    const { PYTANIA_A0, PRZEDMIOTY_A0 } = await import("@/lib/content/a0");
-    const dozwolone = new Set<string>();
-    for (const p of PRZEDMIOTY_A0) dozwolone.add(`a0-przedmiot-${p.kod}`);
-    for (const p of PYTANIA_A0) {
-      dozwolone.add(`a0-pytanie-${p.id}`);
-      for (const o of p.opcje ?? []) dozwolone.add(`a0-${p.id}-${o.kod}`);
-    }
-    expect([...OBRAZY_A0].filter((k) => !dozwolone.has(k))).toEqual([]);
-  });
 });

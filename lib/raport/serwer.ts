@@ -1,92 +1,15 @@
-/** Zlozenie raportu dla uczestnika: dane z bazy plus reguly odslaniania. */
+/**
+ * Warstwa serwerowa kart zawodow.
+ *
+ * Karty otwieraja sie razem z sekcja zawodow w raporcie i nigdy wczesniej.
+ * Sprawdzenie stoi tutaj, w warstwie danych, a nie w stronach: strona moze
+ * zapomniec sprawdzic, zapytanie nie.
+ */
 
+import "server-only";
 import { prisma } from "../db/klient";
-import { pobierzBazeReferencyjna } from "../db/repozytorium";
-import { zbierzOdpowiedzi } from "../moduly/zbieranie";
 import { stanDostepu } from "./dostep";
 import { znakObszaru } from "@/lib/karty/obszary";
-import { zbudujRaport } from "./budowa";
-import { SEKCJE, WARSTWY, type KodWarstwy } from "./sekcje";
-import { KOLEJNOSC_MODULOW } from "../moduly/ekrany";
-import { MARKER_ZAKONCZENIA } from "../moduly/typy";
-import type { Raport } from "./typy";
-
-export interface WidokRaportu {
-  raport: Raport;
-  /** Sekcje, ktore uczestnik widzi teraz. */
-  dostepne: string[];
-  /** Warstwy zamkniete, z informacja kiedy sie otworza. */
-  zamkniete: Array<{ kod: KodWarstwy; nazwa: string; kiedy: string; sekcje: string[] }>;
-  blokadaA2: boolean;
-  oceny: Record<string, string>;
-  pytanie: string | null;
-  /** Ile modułów uczestnik domknął, z ilu. Plakietka w nagłówku raportu. */
-  postep: { ukonczonych: number; wszystkich: number };
-}
-
-export async function pobierzRaport(kodDostepu: string): Promise<WidokRaportu | null> {
-  const uczestnik = await prisma.uczestnik.findUnique({
-    where: { kodDostepu },
-    include: { grupa: true, oceny: true, pytanie: true, korekty: true, sesja: true },
-  });
-  if (!uczestnik) return null;
-
-  const [dostep, odpowiedzi, baza, karty, domkniete] = await Promise.all([
-    stanDostepu(uczestnik.id, uczestnik.grupaId),
-    zbierzOdpowiedzi(uczestnik.id),
-    pobierzBazeReferencyjna(),
-    prisma.karta.findMany({ select: { kod: true, pelna: true } }),
-    // Moduł liczy się jako ukończony, gdy ma marker domknięcia ostatniej
-    // części. To ten sam sygnał, po którym pulpit rysuje pasek postępu.
-    prisma.odpowiedz.findMany({
-      where: { uczestnikId: uczestnik.id, pozycja: MARKER_ZAKONCZENIA },
-      select: { modul: true },
-      distinct: ["modul"],
-    }),
-  ]);
-
-  const raport = zbudujRaport({
-    imie: uczestnik.imie,
-    odpowiedzi,
-    baza,
-    karty: new Map(karty.map((k) => [k.kod, { pelna: k.pelna }])),
-    dostepne: dostep.dostepne,
-    decyzja: uczestnik.sesja
-      ? {
-          tresc: uczestnik.sesja.decyzja,
-          kroki: uczestnik.sesja.kroki ? (JSON.parse(uczestnik.sesja.kroki) as string[]) : [],
-          notatka: uczestnik.sesja.notatka,
-        }
-      : undefined,
-    korekty: uczestnik.korekty.map((k) => ({
-      typ: k.typ,
-      wartosc: k.wartosc,
-      uzasadnienie: k.uzasadnienie,
-    })),
-  });
-
-  const zamkniete = WARSTWY.filter((w) => w.kod !== "ZAWSZE" && dostep.warstwy.get(w.kod) === null).map(
-    (w) => ({
-      kod: w.kod,
-      nazwa: w.nazwa,
-      kiedy: w.kiedy,
-      sekcje: SEKCJE.filter((s) => s.warstwa === w.kod).map((s) => s.tytul),
-    }),
-  );
-
-  return {
-    raport,
-    dostepne: [...dostep.dostepne],
-    zamkniete,
-    blokadaA2: dostep.blokadaA2,
-    oceny: Object.fromEntries(uczestnik.oceny.map((o) => [o.zawodKod, o.ocena])),
-    pytanie: uczestnik.pytanie?.tresc ?? null,
-    postep: {
-      ukonczonych: new Set(domkniete.map((d) => d.modul)).size,
-      wszystkich: KOLEJNOSC_MODULOW.length,
-    },
-  };
-}
 
 export interface KartaZawodu {
   kod: string;

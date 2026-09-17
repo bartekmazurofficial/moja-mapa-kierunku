@@ -5,8 +5,8 @@ import { pobierzPostepModulow, pobierzUczestnika } from "@/lib/moduly/serwer";
 import { otwarteModuly, SPOTKANIE_MODULU } from "@/lib/moduly/otwarcie";
 import {
   CZESCI_MODULOW,
+  KOLEJNOSC_MODULOW,
   NAZWY_MODULOW,
-  programGrupy,
   liczbaPozycjiModulu,
 } from "@/lib/moduly/ekrany";
 import { PO_CO } from "@/lib/moduly/opisy";
@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 type Stan = "zamkniety" | "przed" | "wtrakcie" | "gotowy";
 
 /**
- * Lista modułów: siedem kroków w jednym szeregu.
+ * Lista modułów: cztery kroki w jednym szeregu.
  *
  * Karta zamknięta jest widoczna i podpisana, a nie ukryta. Uczestnik ma
  * wiedzieć, co go czeka i kiedy się otworzy, zamiast patrzeć na skróconą
@@ -36,9 +36,6 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
     otwarteModuly(uczestnik.grupaId),
   ]);
 
-  // Lista modulow zalezy od tego, ktora wersje programu ma ta grupa.
-  const MODULY = programGrupy(otwarte);
-
   const stan = (m: KodModulu): Stan => {
     const gotowe = zakonczone.get(m)?.size ?? 0;
     if (!otwarte.has(m)) return "zamkniety";
@@ -48,10 +45,10 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
     return gotowe > 0 || (odpowiedziWModule.get(m) ?? 0) > 0 ? "wtrakcie" : "przed";
   };
 
-  const ukonczone = MODULY.filter((m) => stan(m) === "gotowy").length;
+  const ukonczone = KOLEJNOSC_MODULOW.filter((m) => stan(m) === "gotowy").length;
   const dalej =
-    MODULY.find((m) => stan(m) === "wtrakcie") ??
-    MODULY.find((m) => stan(m) === "przed");
+    KOLEJNOSC_MODULOW.find((m) => stan(m) === "wtrakcie") ??
+    KOLEJNOSC_MODULOW.find((m) => stan(m) === "przed");
 
   return (
     <div className="flex flex-col gap-4">
@@ -71,13 +68,13 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
           <span className="gradient-tytul">do większej jasności.</span>
         </h1>
         <p className="mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
-          {MODULY.length === 4 ? "Cztery moduły" : "Osiem modułów"}. Każdy odkrywa inny kawałek tego, co już o sobie wiesz. Wypełniaj je po
+          Cztery moduły. Każdy odkrywa inny kawałek tego, co już o sobie wiesz. Wypełniaj je po
           kolei: kolejność jest częścią metody, a nie porządkiem na liście.
         </p>
       </header>
 
       <ol className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7">
-        {MODULY.map((m, i) => (
+        {KOLEJNOSC_MODULOW.map((m, i) => (
           <li key={m}>
             <KartaModulu
               kod={kod}
@@ -94,15 +91,15 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
 
       <footer className="szklo flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:gap-8">
         <div className="flex items-center gap-4">
-          <Pierscien ile={ukonczone} z={MODULY.length} />
+          <Pierscien ile={ukonczone} z={KOLEJNOSC_MODULOW.length} />
           <div>
             <p className="text-tresc-duza font-bold text-atrament">Twój postęp</p>
             <p className="mt-0.5 text-male leading-snug text-atrament-sciszony">
               {ukonczone === 0
                 ? "Zaczynasz. Pierwszy moduł jest najkrótszy."
-                : ukonczone >= MODULY.length
+                : ukonczone >= KOLEJNOSC_MODULOW.length
                   ? "Masz za sobą wszystkie moduły."
-                  : `Jesteś w trakcie budowania swojego profilu. Przed Tobą jeszcze ${MODULY.length - ukonczone} ${MODULY.length - ukonczone === 1 ? "moduł" : "moduły"}.`}
+                  : `Jesteś w trakcie budowania swojego profilu. Przed Tobą jeszcze ${KOLEJNOSC_MODULOW.length - ukonczone} ${KOLEJNOSC_MODULOW.length - ukonczone === 1 ? "moduł" : "moduły"}.`}
             </p>
           </div>
         </div>

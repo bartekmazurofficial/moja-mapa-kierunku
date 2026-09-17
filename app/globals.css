@@ -280,7 +280,7 @@ body::after {
  * Karta wyboru w stanie wybranym.
  *
  * Na ekranie wyboru wszystkie karty wyglądają tak samo i różni je wyłącznie
- * treść. Wybór zaznacza jeden akcent, ten sam we wszystkich siedmiu modułach,
+ * treść. Wybór zaznacza jeden akcent, ten sam we wszystkich modułach,
  * żeby kolor nie wnosił do pomiaru informacji, której uczestnik mieć nie
  * powinien (lib/ui/kolory.ts, KOLOR_KATEGORII_NA_WYBORZE).
  */

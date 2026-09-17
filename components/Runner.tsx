@@ -15,17 +15,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Pozycja } from "./Pozycja";
-import { Plansza, PlanszaPary } from "./Ikona";
+import { Plansza } from "./Ikona";
 import { podzielNaglowek } from "@/lib/ui/naglowek";
 import { Marka } from "./pulpit/Marka";
 import { Bramy } from "./pulpit/Bramy";
 import { Panorama } from "./pulpit/Panorama";
 import { DOPISEK, PODTYTUL, WSKAZOWKA } from "@/lib/moduly/opisy";
-import { maObraz, obrazPlanszy, paraMaObrazy } from "@/lib/ui/obrazy";
+import { maObraz, obrazPlanszy } from "@/lib/ui/obrazy";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import { KolejkaZapisu } from "@/lib/moduly/kolejka-zapisu";
 import { ZAPIS_SAM } from "@/lib/content/wspolne";
-import { czegoNieZapytamyA0, sciezkaA0 } from "@/lib/content/a0";
 import { minutyZPozycji, zakresPozycji } from "@/lib/moduly/miara";
 import type { CzescModulu, Ekran, KodModulu } from "@/lib/moduly/typy";
 
@@ -37,7 +36,7 @@ interface Wlasciwosci {
   definicja: CzescModulu;
   zapisane: Record<string, unknown>;
   nazwaModulu: string;
-  /** Który to moduł z siedmiu. Pasek u góry pokazuje to, a nie postęp w ekranach. */
+  /** Który to moduł z czterech. Pasek u góry pokazuje to, a nie postęp w ekranach. */
   numerModulu: number;
   liczbaModulow: number;
 }
@@ -165,9 +164,11 @@ export function Runner({
   const ekran = widoczne[bezpiecznyIndeks];
 
   const zmien = useCallback(
-    (pozycjaId: string, wartosc: unknown, tekstowa: boolean) => {
+    (pozycjaId: string, wartosc: unknown) => {
       ustawOdpowiedzi((poprzednie) => ({ ...poprzednie, [pozycjaId]: wartosc }));
-      zapisz(pozycjaId, wartosc, !tekstowa);
+      // Wszystkie cztery typy pozycji zapisuja sie natychmiast: zaden nie jest
+      // polem tekstowym, wiec nie ma czego odraczac przy kazdej literze.
+      zapisz(pozycjaId, wartosc, true);
     },
     [zapisz],
   );
@@ -226,7 +227,7 @@ export function Runner({
   const ostatni = bezpiecznyIndeks === widoczne.length - 1;
   // Ekran z jedna decyzja jest optycznie wysrodkowany: nic wiecej na nim nie ma.
   // Lista wyborow (A0) tak nie dziala, bo tam naglowek jest pytaniem.
-  const JEDNA_DECYZJA = ["para", "trzystopniowa", "ranking4"];
+  const JEDNA_DECYZJA: string[] = [];
   const jednaPozycja =
     ekran.typ === "pozycje" &&
     widocznePozycje.length === 1 &&
@@ -275,21 +276,10 @@ export function Runner({
   const kluczPlanszy = [ekran.obraz, ekran.ikona ?? ekran.kolor].find(
     (k): k is string => Boolean(k) && maObraz(k as string),
   );
-  // Para z dwiema ilustracjami dostaje pas dzielony na pół: lewa połowa
-  // należy do lewej odpowiedzi, prawa do prawej. Symetrycznie, więc obraz
-  // nie przechyla wyboru tak, jak przechyliłoby jedno wspólne zdjęcie.
-  const paraZObrazami = paraMaObrazy(
-    widocznePozycje[0]?.stronaA?.ikona,
-    widocznePozycje[0]?.stronaB?.ikona,
-  );
-  const zPlanszaPary = jednaPozycja && typPozycji === "para" && paraZObrazami;
-  // Kadr nad odpowiedziami: przy jednej decyzji (para, trzy stopnie, ranking)
-  // albo wtedy, gdy ekran sam wskazal obraz. To drugie robi A0 tam, gdzie
-  // kadr ilustruje pytanie, a nie odpowiedzi.
+  // Kadr nad odpowiedziami, gdy ekran sam wskazal obraz.
   const zPlansza =
     (jednaPozycja || (Boolean(ekran.obraz) && widocznePozycje.length === 1)) &&
-    Boolean(kluczPlanszy) &&
-    !zPlanszaPary;
+    Boolean(kluczPlanszy);
   // Plansza narysowana pod pytanie jest w 16:9 i idzie na ekran w całości.
   // Kwadratowy kafel kategorii zostaje w pasie o stałej wysokości: rozciągnięty
   // do 16:9 miałby po bokach więcej rozmycia niż obrazu.
@@ -332,7 +322,6 @@ export function Runner({
       : null);
 
   /** Ścieżka A0: którą gałęzią idzie uczestnik po odpowiedzi na pierwsze pytanie. */
-  const sciezka = modul === "A0" ? sciezkaA0(odpowiedzi.etap as string | undefined) : null;
 
   return (
     <div
@@ -362,7 +351,7 @@ export function Runner({
       */}
       {ekran.typ === "wstep" ? <TloWstepu /> : null}
       {/*
-        Nagłówek: znak programu, numer modułu z siedmiu i licznik ekranów.
+        Nagłówek: znak programu, numer modułu z czterech i licznik ekranów.
         Pasek pokazuje, który to moduł, a nie ile ekranów zostało: pasek rosnący
         o ułamek przy każdym pytaniu każe liczyć, ile jeszcze, zamiast myśleć.
       */}
@@ -370,13 +359,6 @@ export function Runner({
         <Marka href={`/u/${kodUczestnika}/moduly`} />
         <div className="flex flex-col items-end gap-1.5 pt-1">
           <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
-            {/* Chip ścieżki: uczestnik ma widzieć, że pytania są dobrane pod
-                niego, a nie że część ekranów zniknęła bez powodu. */}
-            {sciezka ? (
-              <span className="rounded-full bg-akcent-tlo px-3 py-1 text-drobne font-semibold text-akcent-jasny">
-                Ścieżka {sciezka.nr} · {sciezka.nazwa}
-              </span>
-            ) : null}
             <p className="text-drobne uppercase tracking-[0.16em] text-atrament-slaby">
               Moduł {numerModulu} z {liczbaModulow}
               {postepPytan ? (
@@ -683,70 +665,6 @@ export function Runner({
               </p>
             </div>
           </div>
-        ) : ekran.typ === "przerwa" && ekran.ostrzezenie ? (
-          /**
-           * Zmiana zasady w środku modułu.
-           *
-           * Jedyny ekran w programie z własnym kolorem: pomarańcz zamiast
-           * błękitu, znak skierowany w dół zamiast w górę. To nie jest ozdoba.
-           * Blok czwarty A4 pyta odwrotnie i uczestnik, który tego nie zauważy,
-           * odpowiada przez sześć pytań wbrew sobie, a wynik wygląda potem
-           * sensownie i jest fałszywy. Kolor, znak i zestawienie „przedtem
-           * kontra teraz" mówią to trzy razy, różnymi środkami.
-           */
-          <div className="flex flex-col items-center px-2 text-center">
-            <span
-              aria-hidden
-              className="flex h-20 w-20 items-center justify-center rounded-[1.5rem] border border-white/90 bg-white shadow-[0_12px_34px_rgba(184,70,15,0.18)]"
-            >
-              <svg viewBox="0 0 24 24" className="h-8 w-8" fill="var(--color-pomarancz)">
-                <path d="M12 19 3.5 6h17z" />
-              </svg>
-            </span>
-            <p className="mt-6 text-drobne font-bold uppercase tracking-[0.22em] text-pomarancz">
-              {ekran.etykieta ?? nazwaModulu}
-            </p>
-            {ekran.naglowek ? (
-              <h1 className="mt-4 max-w-[18ch] text-naglowek-duzy font-extrabold leading-[1.06] tracking-[-0.03em] text-atrament sm:text-tytul">
-                <DwaTony tekst={ekran.naglowek} pomaranczowy />
-              </h1>
-            ) : null}
-            <div className="proza mt-5 max-w-[42rem] [&_p]:text-tresc-duza">
-              {(ekran.akapity ?? []).map((a, i) => (
-                <p key={i}>{a}</p>
-              ))}
-            </div>
-
-            {ekran.zestawienie ? (
-              <ul className="mt-8 grid w-full max-w-[44rem] gap-4 sm:grid-cols-2">
-                {ekran.zestawienie.map((z, i) => (
-                  <li
-                    key={z.etykieta}
-                    className={`rounded-karta border bg-panel/80 px-6 py-5 text-left ${
-                      i === ekran.zestawienie!.length - 1
-                        ? "border-pomarancz/45 bg-pomarancz-tlo/60"
-                        : "border-linia"
-                    }`}
-                  >
-                    <p
-                      className={`text-male font-extrabold ${
-                        i === ekran.zestawienie!.length - 1 ? "text-pomarancz" : "text-atrament-slaby"
-                      }`}
-                    >
-                      {z.etykieta}
-                    </p>
-                    <p className="mt-1.5 text-tresc leading-snug text-atrament-sciszony">{z.tresc}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-
-            {ekran.dopisek ? (
-              <p aria-hidden className="odreczny odreczny-pomarancz mt-8">
-                {ekran.dopisek}
-              </p>
-            ) : null}
-          </div>
         ) : ekran.typ === "przerwa" ? (
           <div className="szklo relative overflow-hidden p-6 sm:p-9">
             <Bramy klasa="pointer-events-none absolute -right-10 -top-6 hidden h-[13rem] w-[20rem] opacity-60 sm:block" />
@@ -786,7 +704,7 @@ export function Runner({
                     : "text-naglowek-duzy sm:text-tytul"
                 }`}
               >
-                <DwaTony tekst={tytulEkranu} pomaranczowy={ekran.akcent === "pomarancz"} />
+                <DwaTony tekst={tytulEkranu} />
               </h1>
               {podtytul ? (
                 <p className="mx-auto mt-3 max-w-czytelna text-tresc leading-relaxed text-atrament-sciszony">
@@ -812,15 +730,7 @@ export function Runner({
             {/* Plansza pytania: pas na całej szerokości bloków odpowiedzi.
                 Tylko przy pytaniach z jedną decyzją; ekrany z siatką pozycji
                 mają znak przy każdej pozycji z osobna. */}
-            {zPlanszaPary ? (
-              <div className="mx-auto mt-7 w-full max-w-[52rem]">
-                <PlanszaPary
-                  lewy={widocznePozycje[0].stronaA!.ikona as string}
-                  prawy={widocznePozycje[0].stronaB!.ikona as string}
-                  wysokosc={220}
-                />
-              </div>
-            ) : zPlansza && pelnaPlansza ? (
+            {zPlansza && pelnaPlansza ? (
               /* Gotowa plansza pytania: cały kadr w 16:9, bez przycinania.
                  Kolumna węższa niż bloki odpowiedzi, bo przy pełnej szerokości
                  pytanie i odpowiedzi zeszłyby pod krawędź ekranu.
@@ -878,52 +788,13 @@ export function Runner({
                     ostatnia={i === lista.length - 1}
                     wSiatce={siatka}
                     kluczKoloru={ekran.ikona ?? ekran.kolor}
-                    akcent={ekran.akcent}
                     miejsce={i}
                     wartosc={odpowiedzi[p.id]}
-                    naZmiane={(v) => zmien(p.id, v, p.typ === "tekst" || p.typ === "kilka_tekstow")}
+                    naZmiane={(v) => zmien(p.id, v)}
                   />
                 </div>
               ))}
             </div>
-
-            {/*
-              Panel ścieżki pod pierwszym pytaniem A0.
-              Odpowiedź na etap rozstrzyga, o co zapytamy dalej, więc od razu
-              mówimy, ile pytań przed uczestnikiem i czego nie zapytamy.
-              Lista pominiętych tematów jest liczona z pytań, nie wpisana,
-              więc nie rozjedzie się przy następnej zmianie treści.
-            */}
-            {sciezka && ekran.klucz === "A0_etap" ? (
-              <div className="szklo mt-6 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-7 sm:p-6">
-                <div className="min-w-0 flex-1">
-                  <p className="text-drobne font-bold uppercase tracking-[0.18em] text-atrament-slaby">
-                    Twoja ścieżka
-                  </p>
-                  <p className="mt-1.5 text-tresc-duza font-extrabold leading-tight text-atrament">
-                    Ścieżka {sciezka.nr} · {sciezka.nazwa}
-                  </p>
-                  <p className="mt-1 text-male leading-snug text-atrament-sciszony">{sciezka.opis}</p>
-                </div>
-                <ul className="flex shrink-0 flex-wrap gap-2">
-                  <li className="rounded-full bg-akcent-tlo px-3.5 py-1.5 text-male font-semibold text-akcent-jasny">
-                    {pytaniaWidoczne.length} {odmiana(pytaniaWidoczne.length, "pytanie", "pytania", "pytań")}
-                  </li>
-                  <li className="rounded-full bg-akcent-tlo px-3.5 py-1.5 text-male font-semibold text-akcent-jasny">
-                    około {minutyZPozycji(pytaniaWidoczne.length, modul)}{" "}
-                    {odmiana(minutyZPozycji(pytaniaWidoczne.length, modul), "minuta", "minuty", "minut")}
-                  </li>
-                </ul>
-                {czegoNieZapytamyA0(odpowiedzi.etap as string | undefined).length > 0 ? (
-                  <p className="shrink-0 border-t border-linia pt-3 text-male text-atrament-sciszony sm:max-w-[16rem] sm:border-l sm:border-t-0 sm:pl-7 sm:pt-0">
-                    Nie zapytamy Cię o:{" "}
-                    <span className="font-semibold text-atrament">
-                      {czegoNieZapytamyA0(odpowiedzi.etap as string | undefined).join(", ")}
-                    </span>
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
 
             {ekranWyboru && wskazowka ? (
               <p className="wskazowka mt-5">
@@ -1013,10 +884,8 @@ export function Runner({
  * `podzielNaglowek`: obie linie mają wyjść możliwie równe, żeby dłuższa się
  * sama nie łamała i nagłówek miał dokładnie dwa wiersze.
  */
-function DwaTony({ tekst, pomaranczowy }: { tekst: string; pomaranczowy?: boolean }) {
-  // Ekran zmiany zasady ma własny gradient, pomarańczowy: cały ten ekran
-  // mówi „tu jest inaczej", więc niebieski tytuł by mu przeczył.
-  const gradient = pomaranczowy ? "gradient-tytul-pomarancz" : "gradient-tytul";
+function DwaTony({ tekst }: { tekst: string }) {
+  const gradient = "gradient-tytul";
   const { poczatek, koniec, znak } = podzielNaglowek(tekst);
   const ogon = znak ? <span className="znak-pytania">{znak}</span> : null;
 

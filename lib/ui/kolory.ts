@@ -111,16 +111,8 @@ export function kolorKategorii(klucz: string): Kolor {
  * serwera. Przy typie scislym brakujacy modul jest bledem kompilacji.
  */
 export const KOLORY_MODULOW: Record<KodModulu, Kolor> = {
-  A0: KOLORY.turkus,
-  A1: KOLORY.zielony,
-  A3: KOLORY.fiolet,
-  A2: KOLORY.niebieski,
-  A4: KOLORY.zolty,
-  M1: KOLORY.czerwony,
-  A5: KOLORY.turkus,
-  A6: KOLORY.zielony,
-  // Nowy program. Cztery kolejne kolory kola, zeby cztery kafle na liscie
-  // modulow dalo sie rozroznic jednym spojrzeniem.
+  // Cztery kolejne kolory kola, zeby cztery kafle na liscie modulow dalo sie
+  // rozroznic jednym spojrzeniem.
   Z: KOLORY.turkus,
   L: KOLORY.zielony,
   U: KOLORY.niebieski,

@@ -2,7 +2,7 @@
  * Pokaz demonstracyjny: trzy panele do obejrzenia bez kodu.
  *
  * Na ekranie wejścia można pokazać trzy rzeczy naraz: panel uczestnika, który
- * jeszcze nic nie wypełnił, panel uczestnika po wszystkich siedmiu modułach
+ * jeszcze nic nie wypełnił, panel uczestnika po wszystkich czterech modułach
  * razem z raportem, i panel prowadzącego. Bez tego każdy pokaz produktu
  * wymaga kodu i cudzych danych.
  *

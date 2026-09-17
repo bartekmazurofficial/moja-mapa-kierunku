@@ -29,12 +29,7 @@ import {
   czescUkladania,
   type ModulLeja,
 } from "@/lib/moduly/ekrany-nowe";
-import {
-  CZESCI_MODULOW,
-  KOLEJNOSC_MODULOW,
-  KOLEJNOSC_NOWA,
-  programGrupy,
-} from "@/lib/moduly/ekrany";
+import { CZESCI_MODULOW, KOLEJNOSC_MODULOW } from "@/lib/moduly/ekrany";
 import { pozycjaKompletna } from "@/lib/moduly/walidacja";
 import type { BazaReferencyjna } from "@/lib/domain/typy";
 
@@ -460,24 +455,6 @@ describe("ekrany czterech nowych modułów", () => {
     const poz = czescUkladania("L", [1, 2, 3, 4, 5]).ekrany[0].pozycje![0];
     expect(pozycjaKompletna(poz, [1, 2, 3])).toBe(false);
     expect(pozycjaKompletna(poz, [1, 2, 3, 4, 5])).toBe(true);
-  });
-});
-
-describe("która wersja programu obowiązuje grupę", () => {
-  it("grupa bez otwarć widzi stary program", () => {
-    expect(programGrupy([])).toEqual(KOLEJNOSC_MODULOW);
-  });
-
-  it("jeden otwarty moduł nowego programu przełącza całą listę", () => {
-    expect(programGrupy(["Z"])).toEqual(KOLEJNOSC_NOWA);
-  });
-
-  it("grupa pilotażowa ze starymi modułami zostaje przy starym programie", () => {
-    expect(programGrupy(["A0", "A1", "A3"])).toEqual(KOLEJNOSC_MODULOW);
-  });
-
-  it("żaden kod nie należy do obu programów", () => {
-    for (const m of KOLEJNOSC_NOWA) expect(KOLEJNOSC_MODULOW).not.toContain(m);
   });
 });
 

@@ -3,15 +3,7 @@ import { notFound } from "next/navigation";
 import { zalogowany } from "@/lib/prowadzacy/sesja";
 import { pobierzKarteUczestnika } from "@/lib/prowadzacy/dane";
 import { Logowanie } from "@/components/prowadzacy/Logowanie";
-import {
-  KtoToJest,
-  Ostrzezenia,
-  PytanieUczestnika,
-  Rozjazdy,
-  TrzyDrogiPanel,
-  UsunieteWetem,
-  Wizja,
-} from "@/components/prowadzacy/Karta";
+import { PytanieUczestnika } from "@/components/prowadzacy/Karta";
 import { Korekty } from "@/components/prowadzacy/Korekty";
 import { KartaNowa } from "@/components/prowadzacy/KartaNowa";
 
@@ -47,9 +39,6 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
             <h1 className="text-naglowek-duzy font-extrabold leading-tight tracking-tight">
               <span className="gradient-tytul">{karta.imie}</span>
             </h1>
-            {karta.etap ? (
-              <p className="mt-1.5 text-male text-atrament-slaby">{karta.etap}</p>
-            ) : null}
           </div>
           <Link
             href={`/prowadzacy/sesja/${karta.kodDostepu}`}
@@ -60,28 +49,11 @@ export default async function Strona({ params }: { params: Promise<{ kod: string
         </div>
       </header>
 
-      {/*
-        Dwie wersje programu, dwie karty. Bloki starego silnika nie renderuja
-        sie dla uczestnika nowego programu, bo nie maja z czego powstac.
-      */}
-      {karta.nowy ? (
-        <div className="flex flex-col gap-4">
-          <KartaNowa karta={karta.nowy} />
-          <PytanieUczestnika karta={karta} />
-          <Korekty karta={karta} />
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          <KtoToJest karta={karta} />
-          <TrzyDrogiPanel karta={karta} />
-          <Rozjazdy rozjazdy={karta.rozjazdy} />
-          <Ostrzezenia karta={karta} />
-          <PytanieUczestnika karta={karta} />
-          <Wizja karta={karta} />
-          <UsunieteWetem karta={karta} />
-          <Korekty karta={karta} />
-        </div>
-      )}
+      <div className="flex flex-col gap-4">
+        <KartaNowa karta={karta.nowy} />
+        <PytanieUczestnika karta={karta} />
+        <Korekty karta={karta} />
+      </div>
     </main>
   );
 }

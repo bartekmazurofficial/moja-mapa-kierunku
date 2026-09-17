@@ -36,20 +36,20 @@ afterAll(async () => {
 
 describe("co zniknie", () => {
   it("liczy odpowiedzi bez znaczników zakończenia części", async () => {
-    const stan = await coZniknie(uczestnikId, "A1");
-    const wszystkie = await prisma.odpowiedz.count({ where: { uczestnikId, modul: "A1" } });
+    const stan = await coZniknie(uczestnikId, "Z");
+    const wszystkie = await prisma.odpowiedz.count({ where: { uczestnikId, modul: "Z" } });
     const markery = await prisma.odpowiedz.count({
-      where: { uczestnikId, modul: "A1", pozycja: MARKER_ZAKONCZENIA },
+      where: { uczestnikId, modul: "Z", pozycja: MARKER_ZAKONCZENIA },
     });
     expect(stan.odpowiedzi).toBe(wszystkie - markery);
     expect(stan.gotowy).toBe(true);
-    expect(stan.zakonczoneCzesci).toEqual(["A", "B"]);
+    expect(stan.zakonczoneCzesci).toEqual(["A", "B", "C", "D"]);
   });
 
   it("podaje datę ostatniego zapisu, bo okno potwierdzenia nią mówi", async () => {
-    const stan = await coZniknie(uczestnikId, "A1");
+    const stan = await coZniknie(uczestnikId, "Z");
     const ostatnia = await prisma.odpowiedz.findFirst({
-      where: { uczestnikId, modul: "A1", zakonczona: { not: null } },
+      where: { uczestnikId, modul: "Z", zakonczona: { not: null } },
       orderBy: { zakonczona: "desc" },
       select: { zakonczona: true },
     });
@@ -57,69 +57,73 @@ describe("co zniknie", () => {
   });
 
   it("nic nie kasuje", async () => {
-    const przed = await prisma.odpowiedz.count({ where: { uczestnikId, modul: "A1" } });
-    await coZniknie(uczestnikId, "A1");
-    expect(await prisma.odpowiedz.count({ where: { uczestnikId, modul: "A1" } })).toBe(przed);
+    const przed = await prisma.odpowiedz.count({ where: { uczestnikId, modul: "Z" } });
+    await coZniknie(uczestnikId, "Z");
+    expect(await prisma.odpowiedz.count({ where: { uczestnikId, modul: "Z" } })).toBe(przed);
   });
 });
 
 describe("wyczyszczenie modułu", () => {
   it("kasuje odpowiedzi i postęp tylko tego modułu", async () => {
-    const innyPrzed = await prisma.odpowiedz.count({ where: { uczestnikId, modul: "A2" } });
+    const innyPrzed = await prisma.odpowiedz.count({ where: { uczestnikId, modul: "L" } });
     expect(innyPrzed).toBeGreaterThan(0);
 
-    await pobierzPlan(uczestnikId, "A1");
-    const { odpowiedzi } = await wyczyscModul(uczestnikId, "A1");
+    await pobierzPlan(uczestnikId, "Z");
+    const { odpowiedzi } = await wyczyscModul(uczestnikId, "Z");
 
     expect(odpowiedzi).toBeGreaterThan(0);
-    expect(await prisma.odpowiedz.count({ where: { uczestnikId, modul: "A1" } })).toBe(0);
+    expect(await prisma.odpowiedz.count({ where: { uczestnikId, modul: "Z" } })).toBe(0);
     expect(
-      await prisma.postepModulu.count({ where: { uczestnikId, kod: "A1" } }),
+      await prisma.postepModulu.count({ where: { uczestnikId, kod: "Z" } }),
     ).toBe(0);
-    expect(await prisma.odpowiedz.count({ where: { uczestnikId, modul: "A2" } })).toBe(innyPrzed);
+    expect(await prisma.odpowiedz.count({ where: { uczestnikId, modul: "L" } })).toBe(innyPrzed);
 
     // Po wyczyszczeniu nie ma czego pokazac w oknie potwierdzenia, wiec
     // strona `od-nowa` wpuszcza wprost w modul zamiast pytac o zgode na nic.
-    const pusty = await coZniknie(uczestnikId, "A1");
+    const pusty = await coZniknie(uczestnikId, "Z");
     expect(pusty.cokolwiek).toBe(false);
     expect(pusty.ostatniZapis).toBeNull();
   });
 
   it("moduł wraca na pierwszą część i daje się wypełnić jeszcze raz", async () => {
-    const stan = await pobierzStanModulu(uczestnikId, "A1");
+    const stan = await pobierzStanModulu(uczestnikId, "Z");
     expect(stan.czesc).toBe("A");
     expect(stan.definicja).not.toBeNull();
     expect(stan.zakonczoneCzesci).toEqual([]);
 
     await wypelnijUczestnika(uczestnikId, "spoleczny");
-    const poNowym = await coZniknie(uczestnikId, "A1");
+    const poNowym = await coZniknie(uczestnikId, "Z");
     expect(poNowym.gotowy).toBe(true);
   });
 
-  it("nowy przebieg dostaje własną kolejność bloków", async () => {
-    const przed = await pobierzPlan(uczestnikId, "A1");
-    await wyczyscModul(uczestnikId, "A1");
-    const po = await pobierzPlan(uczestnikId, "A1");
-    // Ta sama liczba bloków, wylosowana od nowa: postęp z kolejnością zniknął.
-    expect(po.kolejnosc.length).toBe(przed.kolejnosc.length);
-    expect(JSON.stringify(po)).not.toBe(JSON.stringify(przed));
+  it("kasuje postęp modułu, nie tylko odpowiedzi", async () => {
+    // Postęp trzyma plan i znacznik rozpoczęcia. Bez jego skasowania moduł
+    // wyglądałby w panelu prowadzącego na rozpoczęty, choć jest pusty.
+    await pobierzPlan(uczestnikId, "Z");
+    expect(
+      await prisma.postepModulu.count({ where: { uczestnikId, kod: "Z" } }),
+    ).toBe(1);
+    await wyczyscModul(uczestnikId, "Z");
+    expect(
+      await prisma.postepModulu.count({ where: { uczestnikId, kod: "Z" } }),
+    ).toBe(0);
   });
 
   it("nie rusza korekt prowadzącego", async () => {
     const korekta = await prisma.korekta.create({
       data: { uczestnikId, typ: "do_przeliczenia", uzasadnienie: "test" },
     });
-    await wyczyscModul(uczestnikId, "A3");
+    await wyczyscModul(uczestnikId, "U");
     expect(await prisma.korekta.count({ where: { id: korekta.id } })).toBe(1);
     await prisma.korekta.delete({ where: { id: korekta.id } });
   });
 
   it("nie rusza odpowiedzi innych uczestników", async () => {
     const inny = await uczestnikTestowy("analityczny");
-    const przed = await prisma.odpowiedz.count({ where: { uczestnikId: inny.id, modul: "A4" } });
+    const przed = await prisma.odpowiedz.count({ where: { uczestnikId: inny.id, modul: "F" } });
     expect(przed).toBeGreaterThan(0);
-    await wyczyscModul(uczestnikId, "A4");
-    expect(await prisma.odpowiedz.count({ where: { uczestnikId: inny.id, modul: "A4" } })).toBe(
+    await wyczyscModul(uczestnikId, "F");
+    expect(await prisma.odpowiedz.count({ where: { uczestnikId: inny.id, modul: "F" } })).toBe(
       przed,
     );
   });
