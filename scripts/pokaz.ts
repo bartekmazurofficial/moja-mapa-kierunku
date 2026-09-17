@@ -1,17 +1,17 @@
 /**
- * Grupa pokazowa nowego programu.
+ * Grupa pokazowa: dwa panele uczestnika do obejrzenia bez kodu.
  *
- * Osobna grupa, a nie dodatkowy uczestnik w `POKAZ`, i to nie jest ostroznosc:
- * wersja programu wynika z tego, co grupie otwarto, wiec otwarcie modulu `Z`
- * w grupie pokazowej przelaczyloby na nowy program takze uczestnikow, ktorzy
- * maja demonstrowac stary raport.
+ * Jeden uczestnik przed startem, drugi po wszystkich czterech etapach,
+ * z odslonietymi zawodami. Drugi jest wypelniony tym samym kodem, ktorego
+ * uzywaja testy, wiec jego raport przechodzi przez ten sam silnik co
+ * prawdziwy.
  *
  * **Wszystko tu jest zmyslone.** Skrypt nie dotyka zadnej innej grupy i nie
- * kopiuje danych od nikogo.
+ * kopiuje danych od nikogo. Stalego kodu grupy nie wolno uzyc nigdzie indziej.
  *
  * Uzycie:
- *   npx tsx scripts/pokaz-nowy.ts
- *   DATABASE_URL=... npx tsx scripts/pokaz-nowy.ts     (na bazie produkcyjnej)
+ *   npx tsx scripts/pokaz.ts
+ *   DATABASE_URL=... npx tsx scripts/pokaz.ts     (na bazie produkcyjnej)
  */
 
 import { prisma } from "../lib/db/klient";
@@ -21,9 +21,11 @@ import { KOLEJNOSC_MODULOW } from "../lib/moduly/ekrany";
 import { WARSTWY } from "../lib/raport/sekcje";
 import { losowyKod, sformatujKod } from "../lib/kody";
 
-const KOD_GRUPY = "POKAZNOWY";
-const PUSTY = "Nowy program · przed startem";
-const PELNY = "Nowy program · po czterech modułach";
+import { KOD_GRUPY_POKAZ, IMIE_POKAZ_PELNY, IMIE_POKAZ_PUSTY } from "../lib/pokaz";
+
+const KOD_GRUPY = KOD_GRUPY_POKAZ;
+const PUSTY = IMIE_POKAZ_PUSTY;
+const PELNY = IMIE_POKAZ_PELNY;
 
 async function uczestnik(grupaId: string, imie: string) {
   const istnieje = await prisma.uczestnik.findFirst({ where: { grupaId, imie } });
@@ -34,8 +36,8 @@ async function uczestnik(grupaId: string, imie: string) {
 async function main() {
   const grupa = await prisma.grupa.upsert({
     where: { kod: KOD_GRUPY },
-    update: { nazwa: "Pokaz nowego programu" },
-    create: { kod: KOD_GRUPY, nazwa: "Pokaz nowego programu" },
+    update: { nazwa: "Pokaz demonstracyjny" },
+    create: { kod: KOD_GRUPY, nazwa: "Pokaz demonstracyjny" },
   });
 
   const pusty = await uczestnik(grupa.id, PUSTY);
@@ -51,10 +53,10 @@ async function main() {
 
   for (const w of WARSTWY) await odblokujWarstwe(grupa.id, w.kod);
 
-  console.log(`\nGrupa pokazowa nowego programu (kod grupy ${sformatujKod(grupa.kod)})`);
-  console.log(`  moduły: ${KOLEJNOSC_MODULOW.join(" ")}\n`);
+  console.log(`\nGrupa pokazowa (kod grupy ${sformatujKod(grupa.kod)})`);
+  console.log(`  etapy: ${KOLEJNOSC_MODULOW.join(" ")}\n`);
   console.log(`  przed startem:  /u/${pusty.kodDostepu}`);
-  console.log(`  po modułach:    /u/${pelny.kodDostepu}   (${zapisanych} pozycji)`);
+  console.log(`  po etapach:     /u/${pelny.kodDostepu}   (${zapisanych} pozycji)`);
   console.log(`  raport:         /u/${pelny.kodDostepu}/raport\n`);
   await prisma.$disconnect();
 }

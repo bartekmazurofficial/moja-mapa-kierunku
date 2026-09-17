@@ -2,7 +2,7 @@
  * Pokaz demonstracyjny: trzy panele do obejrzenia bez kodu.
  *
  * Na ekranie wejścia można pokazać trzy rzeczy naraz: panel uczestnika, który
- * jeszcze nic nie wypełnił, panel uczestnika po wszystkich czterech modułach
+ * jeszcze nic nie wypełnił, panel uczestnika po całym assessmencie
  * razem z raportem, i panel prowadzącego. Bez tego każdy pokaz produktu
  * wymaga kodu i cudzych danych.
  *
@@ -22,7 +22,7 @@ export const KOD_GRUPY_POKAZ = "POKAZ";
 
 /** Imiona uczestników pokazowych. Po nich skrypt ich znajduje i odświeża. */
 export const IMIE_POKAZ_PUSTY = "Pokaz · przed startem";
-export const IMIE_POKAZ_PELNY = "Pokaz · po wszystkich modułach";
+export const IMIE_POKAZ_PELNY = "Pokaz · po całym assessmencie";
 
 export function pokazWlaczony(): boolean {
   return process.env.POKAZ_DEMO === "1";
